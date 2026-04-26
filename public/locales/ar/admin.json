@@ -1,0 +1,340 @@
+{
+  "dashboard": {
+    "title": "لوحة القيادة",
+    "description": "مرحباً بعودتك! إليك ما يحدث.",
+    "stats": {
+      "totalUsers": "إجمالي المستخدمين",
+      "totalAds": "إجمالي الإعلانات",
+      "totalSubscriptions": "إجمالي الاشتراكات",
+      "active": "نشط"
+    },
+    "charts": {
+      "weeklyTitle": "الإعلانات المضافة هذا الأسبوع",
+      "weeklySubtitle": "الانهيار اليومي (الاثنين - الأحد)",
+      "timeTitle": "الإعلانات المضافة مع مرور الوقت",
+      "timeSubtitle": "تتبع اتجاهات نشر الإعلانات",
+      "noData": "لا توجد بيانات متاحة لهذه الفترة",
+      "adsPostedLabel": "الإعلانات المضافة"
+    },
+    "periods": {
+      "weekly": "أسبوعي",
+      "monthly": "شهري",
+      "yearly": "سنوي"
+    }
+  },
+  "users": {
+    "title": "المستخدمين",
+    "description": "إدارة جميع المستخدمين المسجلين",
+    "searchPlaceholder": "البحث بالاسم أو الهاتف...",
+    "filterAll": "كل الحالات",
+    "filterActive": "نشط",
+    "filterInactive": "غير نشط",
+    "table": {
+      "user": "المستخدم",
+      "phone": "الهاتف",
+      "role": "الدور",
+      "status": "الحالة",
+      "joined": "انضم",
+      "date": "التاريخ",
+      "actions": "الإجراءات"
+    },
+    "roles": {
+      "super_admin": "مدير للنظام",
+      "staff": "فريق العمل",
+      "business_owner": "عمل تجاري",
+      "user": "مستخدم"
+    },
+    "status": {
+      "active": "نشط",
+      "inactive": "غير نشط"
+    },
+    "actions": {
+      "view": "عرض التفاصيل",
+      "delete": "حذف المستخدم",
+      "changePassword": "تغيير كلمة المرور",
+      "deactivate": "تعطيل",
+      "activate": "تفعيل"
+    },
+    "modals": {
+      "deleteTitle": "حذف المستخدم",
+      "deleteDescription": "هل أنت متأكد أنك تريد حذف {name}؟ لا يمكن التراجع عن هذا الإجراء وسيتم حذف جميع الإعلانات والاشتراكات المرتبطة به.",
+      "deactivateTitle": "تعطيل المستخدم",
+      "deactivateDescription": "هل أنت متأكد أنك تريد تعطيل {name}؟",
+      "activateTitle": "تفعيل المستخدم",
+      "activateDescription": "هل أنت متأكد أنك تريد تفعيل {name}؟",
+      "passwordTitle": "تغيير كلمة المرور",
+      "passwordDescription": "أدخل كلمة مرور جديدة لـ {name}.",
+      "passwordLabel": "كلمة المرور الجديدة",
+      "passwordPlaceholder": "أدخل كلمة المرور الجديدة (6 أحرف كحد أدنى)",
+      "cancel": "إلغاء",
+      "save": "حفظ كلمة المرور",
+      "saving": "جاري الحفظ...",
+      "editTitle": "تعديل بيانات المستخدم",
+      "editDescription": "تحديث معلومات الملف الشخصي لـ {name}"
+    },
+    "messages": {
+      "statusSuccess": "تم {status} {name} بنجاح",
+      "deleteSuccess": "تم حذف المستخدم {name} بنجاح",
+      "passwordSuccess": "تم تغيير كلمة مرور {name} بنجاح",
+      "statusError": "فشل تحديث حالة المستخدم",
+      "deleteError": "فشل حذف المستخدم",
+      "passwordError": "فشل تغيير كلمة المرور",
+      "passwordMinLength": "يجب أن تكون كلمة المرور 6 أحرف على الأقل",
+      "notFound": "لم يتم العثور على مستخدمين",
+      "tryDifferentSearch": "جرب مصطلح بحث مختلف",
+      "nameRequired": "الاسم الكامل مطلوب"
+    },
+    "pagination": {
+      "showing": "عرض {start} إلى {end} من أصل {total}"
+    }
+  },
+  "userDetails": {
+    "back": "العودة إلى المستخدمين",
+    "notFound": "المستخدم غير موجود أو حدث خطأ",
+    "joined": "انضم في {date}",
+    "about": "حول",
+    "stats": {
+      "adsPosted": "الإعلانات المنشورة",
+      "totalViews": "إجمالي المشاهدات"
+    },
+    "subscriptions": {
+      "title": "خطط الاشتراك",
+      "planDetails": "تفاصيل الخطة",
+      "credits": "ائتمانات",
+      "premium": "مميز",
+      "expiresOn": "تنتهي في",
+      "active": "نشط",
+      "noSubscriptions": "لا توجد اشتراكات نشطة"
+    },
+    "ads": {
+      "title": "إعلانات المستخدم",
+      "total": "الإجمالي {count}",
+      "noAds": "هذا المستخدم لم ينشر أي إعلانات بعد.",
+      "viewMore": "عرض المزيد من الإعلانات",
+      "loading": "جاري التحميل..."
+    }
+  },
+  "manageAds": {
+    "title": "إدارة الإعلانات",
+    "description": "عرض وإدارة جميع الإعلانات عبر المنصة",
+    "filters": {
+      "title": "الفلاتر",
+      "purpose": "الغرض",
+      "propertyType": "نوع العقار",
+      "area": "المنطقة",
+      "status": "الحالة",
+      "type": "نوع الإعلان",
+      "premium": "مميز",
+      "normal": "عادي",
+      "all": "الكل",
+      "active": "نشط",
+      "inactive": "غير نشط",
+      "sold": "تم البيع",
+      "error": "الخطأ",
+      "searchPlaceholder": "البحث حسب المستخدم أو الوصف..."
+    },
+    "modals": {
+      "stopTitle": "إيقاف الإعلان",
+      "stopDescription": "هل أنت متأكد أنك تريد إيقاف هذا الإعلان؟ لن يكون مرئياً للمستخدمين بعد الآن.",
+      "activateTitle": "تفعيل الإعلان",
+      "activateDescription": "هل أنت متأكد أنك تريد تفعيل هذا الإعلان؟ سيصبح مرئياً لجميع المستخدمين.",
+      "stopConfirm": "إيقاف الإعلان",
+      "activateConfirm": "تفعيل الإعلان"
+    },
+    "tabs": {
+      "ads": "الإعلانات النشطة",
+      "failed": "الإعلانات الفاشلة"
+    },
+    "buttons": {
+      "convert": "تحويل إلى إعلان"
+    },
+    "messages": {
+      "notFound": "لم يتم العثور على إعلانات تطابق معاييرك",
+      "noFailedFound": "لم يتم العثور على إعلانات فاشلة",
+      "loading": "جاري تحميل الإعلانات...",
+      "deletedSuccessfully": "تم حذف الإعلان الفاشل بنجاح",
+      "failedToDelete": "فشل حذف الإعلان"
+    }
+  },
+  "layout": {
+    "title": "أدمن مسٹر عقار",
+    "role": "مدير عام",
+    "sidebar": {
+      "dashboard": "لوحة القيادة",
+      "users": "المستخدمين",
+      "ads": "الإعلانات",
+      "coupons": "الكوبونات",
+      "subscriptions": "الاشتراكات",
+      "plans": "الباقات",
+      "logout": "تسجيل الخروج",
+      "logoutConfirmTitle": "تسجيل الخروج",
+      "logoutConfirmDescription": "هل أنت متأكد أنك تريد تسجيل الخروج؟"
+    }
+  },
+  "coupons": {
+    "title": "إدارة الكوبونات",
+    "description": "إدارة أكواد الخصم وحدود الاستخدام على مستوى المنصة",
+    "addNew": "إضافة كوبون جديد",
+    "stats": {
+      "total": "إجمالي الكوبونات",
+      "active": "نشط",
+      "inactive": "غير نشط/منتهي"
+    },
+    "filters": {
+      "search": "البحث بكود الكوبون...",
+      "allStatus": "كل الحالات",
+      "active": "نشط",
+      "inactive": "غير نشط/منتهي"
+    },
+    "table": {
+      "code": "كود الكوبون",
+      "discount": "الخصم (%)",
+      "limit": "حد الاستخدام",
+      "used": "المستخدم",
+      "expiry": "تاريخ الانتهاء",
+      "status": "الحالة",
+      "actions": "الإجراءات",
+      "unlimited": "غير محدود"
+    },
+    "status": {
+      "active": "نشط",
+      "inactive": "غير نشط",
+      "expired": "منتهي"
+    },
+    "actions": {
+      "activate": "تفعيل",
+      "deactivate": "تعطيل",
+      "edit": "تعديل",
+      "delete": "حذف"
+    },
+    "modals": {
+      "createTitle": "إنشاء كوبون جديد",
+      "editTitle": "تعديل الكوبون",
+      "deleteTitle": "حذف الكوبون",
+      "deleteDescription": "هل أنت متأكد أنك تريد حذف الكوبون \"{code}\"؟",
+      "deactivateTitle": "تعطيل الكوبون",
+      "deactivateDescription": "هل أنت متأكد أنك تريد تعطيل الكوبون \"{code}\"؟",
+      "activateTitle": "تفعيل الكوبون",
+      "activateDescription": "هل أنت متأكد أنك تريد تفعيل الكوبون \"{code}\"؟",
+      "cancel": "إلغاء",
+      "save": "حفظ التغييرات",
+      "create": "إنشاء كوبون",
+      "loading": "جاري التحميل...",
+      "code": "كود الكوبون",
+      "codeHint": "(لا يمكن التغيير)",
+      "codePlaceholder": "مثال: SUMMER50",
+      "discount": "نسبة الخصم (%)",
+      "limit": "إجمالي حد الاستخدام (0 لغير المحدود)",
+      "expiry": "تاريخ الانتهاء"
+    },
+    "messages": {
+      "noCoupons": "لم يتم العثور على كوبونات",
+      "noCouponsSub": "حاول ضبط الفلاتر أو إنشاء كود كوبون جديد.",
+      "clearFilters": "مسح الفلاتر",
+      "loading": "جاري تحميل الكوبونات...",
+      "createSuccess": "تم إنشاء الكوبون بنجاح",
+      "updateSuccess": "تم تحديث الكوبون بنجاح",
+      "deleteSuccess": "تم حذف الكوبون بنجاح",
+      "activateSuccess": "تم تفعيل الكوبون بنجاح",
+      "deactivateSuccess": "تم تعطيل الكوبون بنجاح",
+      "createError": "فشل إنشاء الكوبون",
+      "updateError": "فشل تحديث الكوبون",
+      "deleteError": "فشل حذف الكوبون",
+      "toggleError": "فشل تغيير حالة الكوبون",
+      "expiryError": "يجب أن يكون تاريخ الانتهاء في المستقبل"
+    }
+  },
+  "subscriptions": {
+    "title": "إدارة الاشتراكات",
+    "description": "عرض وإدارة جميع اشتراكات المستخدمين عبر المنصة",
+    "searchPlaceholder": "البحث بالاسم أو الهاتف...",
+    "table": {
+      "user": "المستخدم",
+      "phone": "الهاتف",
+      "plans": "الخطط",
+      "view": "عرض",
+      "activeCount": "{count} نشط",
+      "monthlyPlan": "الخطة الشهرية",
+      "officePlan": "خطة المكاتب",
+      "actions": "الإجراءات",
+      "noPlan": "لا توجد خطة نشطة",
+      "expires": "تنتهي في",
+      "credits": "الرصيد",
+      "status": "الحالة"
+    },
+    "types": {
+      "month-plan": "الخطة الشهرية",
+      "office-plan": "خطة المكاتب"
+    },
+    "status": {
+      "active": "نشط",
+      "expired": "منتهي",
+      "canceled": "ملغي"
+    },
+    "modals": {
+      "cancelTitle": "إلغاء الاشتراك",
+      "cancelDescription": "هل أنت متأكد أنك تريد إلغاء {type} لـ {name}؟ لا يمكن التراجع عن هذا الإجراء.",
+      "cancelConfirm": "إلغاء الاشتراك",
+      "cancelLoading": "جاري الإلغاء..."
+    },
+    "messages": {
+      "cancelSuccess": "تم إلغاء الاشتراك بنجاح",
+      "cancelError": "فشل إلغاء الاشتراك",
+      "noSubscriptions": "لم يتم العثور على اشتراكات",
+      "loading": "جاري تحميل الاشتراكات..."
+    }
+  },
+  "plans": {
+    "title": "باقات الاشتراك",
+    "description": "إدارة حزم ومميزات الاشتراك في المنصة",
+    "table": {
+      "name": "اسم الباقة",
+      "type": "النوع",
+      "price": "السعر",
+      "duration": "المدة (شهور)",
+      "normal": "إعلانات عادية",
+      "premium": "إعلانات مميزة",
+      "discount": "الخصم (%)",
+      "status": "الحالة",
+      "actions": "الإجراءات"
+    },
+    "status": {
+      "active": "نشط",
+      "inactive": "غير نشط"
+    },
+    "actions": {
+      "edit": "تعديل",
+      "activate": "تفعيل",
+      "deactivate": "تعطيل"
+    },
+    "modals": {
+      "editTitle": "تعديل الباقة",
+      "editDescription": "تحديث أسعار الباقة ومميزاتها لجميع المستخدمين.",
+      "nameEn": "الاسم (بالإنجليزي)",
+      "nameAr": "الاسم (بالعربي)",
+      "description": "الوصف",
+      "price": "السعر (د.ك)",
+      "months": "المدة (بالشهور)",
+      "normalLimit": "حد الإعلانات العادية",
+      "premiumLimit": "حد الإعلانات المميزة",
+      "discount": "نسبة الخصم (%)",
+      "save": "حفظ التغييرات",
+      "saving": "جاري الحفظ...",
+      "cancel": "إلغاء",
+      "deactivateTitle": "تعطيل الباقة",
+      "deactivateDescription": "هل أنت متأكد أنك تريد تعطيل باقة \"{name}\"؟ لن يتمكن المستخدمون من شراء هذه الباقة.",
+      "activateTitle": "تفعيل الباقة",
+      "activateDescription": "هل أنت متأكد أنك تريد تفعيل باقة \"{name}\"؟ ستكون مرئية لجميع المستخدمين.",
+      "confirmDeactivate": "تعطيل",
+      "confirmActivate": "تفعيل"
+    },
+    "messages": {
+      "updateSuccess": "تم تحديث الباقة بنجاح",
+      "updateError": "فشل تحديث الباقة",
+      "statusSuccess": "تم تحديث حالة الباقة بنجاح",
+      "statusError": "فشل تحديث حالة الباقة",
+      "noPlans": "لم يتم العثور على باقات",
+      "loading": "جاري تحميل الباقات..."
+    }
+  }
+}

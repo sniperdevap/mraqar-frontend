@@ -1,0 +1,19 @@
+{
+  "officeAds": "Office Ads ({count})",
+  "searchFilter": "Search Filter",
+  "purpose": "Purpose",
+  "forSale": "For Sale",
+  "forRent": "For Rent",
+  "exchange": "Exchange",
+  "propertyType": "Property Type",
+  "selectArea": "Select Area",
+  "search": "Search",
+  "clearAllFilters": "Clear All Filters",
+  "noAdsFound": "No ads found for this office",
+  "linkCopied": "Link copied to clipboard",
+  "failedToLoad": "Failed to load office details",
+  "socialNotAvailable": "This office does not have a {platform} account",
+  "officesList": "Offices List",
+  "noOfficesFound": "No offices found",
+  "failedToLoadOffices": "Failed to load offices"
+}

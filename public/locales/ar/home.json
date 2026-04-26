@@ -1,0 +1,27 @@
+{
+  "hero": {
+    "title": "إبحث عن عقارك",
+    "subtitle": "ابحث عن عقارات للبيع أو الإيجار أو التبادل"
+  },
+  "search": {
+    "propertyType": "نوع العقار",
+    "propertyTypePlaceholder": "جميع أنواع العقارات",
+    "area": "المنطقة",
+    "areaPlaceholder": "اختر المناطق",
+    "all": "الكل",
+    "priceRange": "نطاق السعر (د.ك)",
+    "minPrice": "أقل سعر",
+    "maxPrice": "أعلى سعر"
+  },
+  "tabs": {
+    "sale": "للبيع ",
+    "rent": "للإيجار ",
+    "exchange": "للبدل"
+  },
+  "latestListings": {
+    "title": "أحدث الإعلانات",
+    "latestAds": "أحدث الإعلانات",
+    "propertyInKuwait": "{count, plural, =1 {عقار واحد في الكويت} =2 {عقاران في الكويت} other {# عقارات في الكويت}}",
+    "noAds": "لا توجد إعلانات متاحة في الوقت الحالي"
+  }
+}

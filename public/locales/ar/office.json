@@ -1,0 +1,19 @@
+{
+  "officeAds": "إعلانات المكتب ({count})",
+  "searchFilter": "فلتر البحث",
+  "purpose": "الغرض",
+  "forSale": "للبيع",
+  "forRent": "للإيجار",
+  "exchange": "للبدل",
+  "propertyType": "نوع العقار",
+  "selectArea": "اختر المنطقة",
+  "search": "بحث",
+  "clearAllFilters": "مسح جميع الفلاتر",
+  "noAdsFound": "لا توجد إعلانات لهذا المكتب",
+  "linkCopied": "تم نسخ الرابط",
+  "failedToLoad": "فشل تحميل تفاصيل المكتب",
+  "socialNotAvailable": "هذا المكتب ليس لديه حساب {platform}",
+  "officesList": "قائمة المكاتب",
+  "noOfficesFound": "لم يتم العثور على مكاتب",
+  "failedToLoadOffices": "فشل تحميل المكاتب"
+}

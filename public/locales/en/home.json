@@ -1,0 +1,27 @@
+{
+  "hero": {
+    "title": "Search for your property",
+    "subtitle": "Search for properties to buy, rent, or exchange"
+  },
+  "search": {
+    "propertyType": "Property Type",
+    "propertyTypePlaceholder": "All Property Types",
+    "area": "Area",
+    "areaPlaceholder": "Select Areas",
+    "all": "All",
+    "priceRange": "Price Range (KWD)",
+    "minPrice": "Min Price",
+    "maxPrice": "Max Price"
+  },
+  "tabs": {
+    "sale": "For Sale",
+    "rent": "For Rent",
+    "exchange": "Exchange"
+  },
+  "latestListings": {
+    "title": "Latest Listings",
+    "latestAds": "Latest Announcements",
+    "propertyInKuwait": "{count, plural, =1 {1 Property in Kuwait} other {# Properties in Kuwait}}",
+    "noAds": "No ads available at the moment"
+  }
+}

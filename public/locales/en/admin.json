@@ -1,0 +1,340 @@
+{
+  "dashboard": {
+    "title": "Dashboard",
+    "description": "Welcome back! Here's what's happening.",
+    "stats": {
+      "totalUsers": "Total Users",
+      "totalAds": "Total Ads",
+      "totalSubscriptions": "Total Subscriptions",
+      "active": "active"
+    },
+    "charts": {
+      "weeklyTitle": "Ads Posted This Week",
+      "weeklySubtitle": "Daily breakdown (Mon - Sun)",
+      "timeTitle": "Ads Posted Over Time",
+      "timeSubtitle": "Track ad posting trends",
+      "noData": "No data available for this period",
+      "adsPostedLabel": "Ads Posted"
+    },
+    "periods": {
+      "weekly": "Weekly",
+      "monthly": "Monthly",
+      "yearly": "Yearly"
+    }
+  },
+  "users": {
+    "title": "Users",
+    "description": "Manage all registered users",
+    "searchPlaceholder": "Search by name or phone...",
+    "filterAll": "All Status",
+    "filterActive": "Active",
+    "filterInactive": "Inactive",
+    "table": {
+      "user": "User",
+      "phone": "Phone",
+      "role": "Role",
+      "status": "Status",
+      "joined": "Joined",
+      "date": "Date",
+      "actions": "Actions"
+    },
+    "roles": {
+      "super_admin": "Super Admin",
+      "staff": "Staff",
+      "business_owner": "Business",
+      "user": "User"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "actions": {
+      "view": "View Details",
+      "delete": "Delete User",
+      "changePassword": "Change Password",
+      "deactivate": "Deactivate",
+      "activate": "Activate"
+    },
+    "modals": {
+      "deleteTitle": "Delete User",
+      "deleteDescription": "Are you sure you want to delete {name}? This action cannot be undone and will delete all associated ads and subscriptions.",
+      "deactivateTitle": "Deactivate User",
+      "deactivateDescription": "Are you sure you want to deactivate {name}?",
+      "activateTitle": "Activate User",
+      "activateDescription": "Are you sure you want to activate {name}?",
+      "passwordTitle": "Change Password",
+      "passwordDescription": "Enter a new password for {name}.",
+      "passwordLabel": "New Password",
+      "passwordPlaceholder": "Enter new password (min 6 chars)",
+      "cancel": "Cancel",
+      "save": "Save Password",
+      "saving": "Saving...",
+      "editTitle": "Edit User Details",
+      "editDescription": "Update profile information for {name}"
+    },
+    "messages": {
+      "statusSuccess": "{name} has been {status} successfully",
+      "deleteSuccess": "User {name} deleted successfully",
+      "passwordSuccess": "Password for {name} changed successfully",
+      "statusError": "Failed to update user status",
+      "deleteError": "Failed to delete user",
+      "passwordError": "Failed to change password",
+      "passwordMinLength": "Password must be at least 6 characters",
+      "notFound": "No users found",
+      "tryDifferentSearch": "Try a different search term",
+      "nameRequired": "Full name is required"
+    },
+    "pagination": {
+      "showing": "Showing {start} to {end} of {total}"
+    }
+  },
+  "userDetails": {
+    "back": "Back to Users",
+    "notFound": "User not found or an error occurred",
+    "joined": "Joined {date}",
+    "about": "About",
+    "stats": {
+      "adsPosted": "Ads Posted",
+      "totalViews": "Total Views"
+    },
+    "subscriptions": {
+      "title": "Subscription Plans",
+      "planDetails": "Plan Details",
+      "credits": "Credits",
+      "premium": "Premium",
+      "expiresOn": "Expires On",
+      "active": "Active",
+      "noSubscriptions": "No active subscriptions found"
+    },
+    "ads": {
+      "title": "User Ads",
+      "total": "{count} Total",
+      "noAds": "This user hasn't posted any ads yet.",
+      "viewMore": "View More Ads",
+      "loading": "Loading..."
+    }
+  },
+  "manageAds": {
+    "title": "Ads Management",
+    "description": "View and manage all advertisements across the platform",
+    "filters": {
+      "title": "Filters",
+      "purpose": "Purpose",
+      "propertyType": "Property Type",
+      "area": "Area",
+      "status": "Status",
+      "type": "Ad Type",
+      "premium": "Premium",
+      "normal": "Normal",
+      "all": "All",
+      "active": "Active",
+      "inactive": "Inactive",
+      "sold": "Sold",
+      "error": "Error",
+      "searchPlaceholder": "Search by user or description..."
+    },
+    "modals": {
+      "stopTitle": "Stop Advertising",
+      "stopDescription": "Are you sure you want to stop this advertisement? It will no longer be visible to users.",
+      "activateTitle": "Activate Advertising",
+      "activateDescription": "Are you sure you want to activate this advertisement? It will become visible to all users.",
+      "stopConfirm": "Stop Ad",
+      "activateConfirm": "Activate Ad"
+    },
+    "tabs": {
+      "ads": "Active Ads",
+      "failed": "Failed Ads"
+    },
+    "buttons": {
+      "convert": "Convert to Ad"
+    },
+    "messages": {
+      "notFound": "No ads found matching your criteria",
+      "noFailedFound": "No failed ads found",
+      "loading": "Loading ads...",
+      "deletedSuccessfully": "Failed ad deleted successfully",
+      "failedToDelete": "Failed to delete ad"
+    }
+  },
+  "layout": {
+    "title": "Mr aqar Admin",
+    "role": "Super Admin",
+    "sidebar": {
+      "dashboard": "Dashboard",
+      "users": "Users",
+      "ads": "Ads",
+      "coupons": "Coupons",
+      "subscriptions": "Subscriptions",
+      "plans": "Plans",
+      "logout": "Logout",
+      "logoutConfirmTitle": "Logout",
+      "logoutConfirmDescription": "Are you sure you want to log out?"
+    }
+  },
+  "coupons": {
+    "title": "Coupon Management",
+    "description": "Manage platform-wide discount codes and usage limits",
+    "addNew": "Add New Coupon",
+    "stats": {
+      "total": "Total Coupons",
+      "active": "Active",
+      "inactive": "Inactive/Expired"
+    },
+    "filters": {
+      "search": "Search by coupon code...",
+      "allStatus": "All Status",
+      "active": "Active",
+      "inactive": "Inactive/Expired"
+    },
+    "table": {
+      "code": "Coupon Code",
+      "discount": "Discount (%)",
+      "limit": "Usage Limit",
+      "used": "Used",
+      "expiry": "Expiry Date",
+      "status": "Status",
+      "actions": "Actions",
+      "unlimited": "Unlimited"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "expired": "Expired"
+    },
+    "actions": {
+      "activate": "Activate",
+      "deactivate": "Deactivate",
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "modals": {
+      "createTitle": "Create New Coupon",
+      "editTitle": "Edit Coupon",
+      "deleteTitle": "Delete Coupon",
+      "deleteDescription": "Are you sure you want to delete coupon \"{code}\"?",
+      "deactivateTitle": "Deactivate Coupon",
+      "deactivateDescription": "Are you sure you want to deactivate coupon \"{code}\"?",
+      "activateTitle": "Activate Coupon",
+      "activateDescription": "Are you sure you want to activate coupon \"{code}\"?",
+      "cancel": "Cancel",
+      "save": "Save Changes",
+      "create": "Create Coupon",
+      "loading": "Loading...",
+      "code": "Coupon Code",
+      "codeHint": "(Cannot change)",
+      "codePlaceholder": "E.g. SUMMER50",
+      "discount": "Discount Percentage (%)",
+      "limit": "Total Usage Limit (0 for unlimited)",
+      "expiry": "Expiry Date"
+    },
+    "messages": {
+      "noCoupons": "No coupons found",
+      "noCouponsSub": "Try adjusting your filters or create a new coupon code.",
+      "clearFilters": "Clear Filters",
+      "loading": "Loading coupons...",
+      "createSuccess": "Coupon created successfully",
+      "updateSuccess": "Coupon updated successfully",
+      "deleteSuccess": "Coupon deleted successfully",
+      "activateSuccess": "Coupon activated successfully",
+      "deactivateSuccess": "Coupon deactivated successfully",
+      "createError": "Failed to create coupon",
+      "updateError": "Failed to update coupon",
+      "deleteError": "Failed to delete coupon",
+      "toggleError": "Failed to toggle coupon status",
+      "expiryError": "Expiry date must be in the future"
+    }
+  },
+  "subscriptions": {
+    "title": "Subscription Management",
+    "description": "View and manage all user subscriptions across the platform",
+    "searchPlaceholder": "Search by name or phone...",
+    "table": {
+      "user": "User",
+      "phone": "Phone",
+      "plans": "Plans",
+      "view": "View",
+      "activeCount": "{count} Active",
+      "monthlyPlan": "Monthly Plan",
+      "officePlan": "Office Plan",
+      "actions": "Actions",
+      "noPlan": "No active plan",
+      "expires": "Expires",
+      "credits": "Credits",
+      "status": "Status"
+    },
+    "types": {
+      "month-plan": "Monthly Plan",
+      "office-plan": "Office Plan"
+    },
+    "status": {
+      "active": "Active",
+      "expired": "Expired",
+      "canceled": "Canceled"
+    },
+    "modals": {
+      "cancelTitle": "Cancel Subscription",
+      "cancelDescription": "Are you sure you want to cancel the {type} for {name}? This action cannot be undone.",
+      "cancelConfirm": "Cancel Subscription",
+      "cancelLoading": "Cancelling..."
+    },
+    "messages": {
+      "cancelSuccess": "Subscription cancelled successfully",
+      "cancelError": "Failed to cancel subscription",
+      "noSubscriptions": "No subscriptions found",
+      "loading": "Loading subscriptions..."
+    }
+  },
+  "plans": {
+    "title": "Subscription Plans",
+    "description": "Manage platform subscription packages and features",
+    "table": {
+      "name": "Plan Name",
+      "type": "Type",
+      "price": "Price",
+      "duration": "Duration (Months)",
+      "normal": "Normal Ads",
+      "premium": "Premium Ads",
+      "discount": "Discount (%)",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "actions": {
+      "edit": "Edit",
+      "activate": "Activate",
+      "deactivate": "Deactivate"
+    },
+    "modals": {
+      "editTitle": "Edit Plan",
+      "editDescription": "Update plan pricing and features for all users.",
+      "nameEn": "Name (EN)",
+      "nameAr": "Name (AR)",
+      "description": "Description",
+      "price": "Price (KWD)",
+      "months": "Duration (Months)",
+      "normalLimit": "Normal Ads Limit",
+      "premiumLimit": "Premium Ads Limit",
+      "discount": "Discount Percentage (%)",
+      "save": "Save Changes",
+      "saving": "Saving...",
+      "cancel": "Cancel",
+      "deactivateTitle": "Deactivate Plan",
+      "deactivateDescription": "Are you sure you want to deactivate \"{name}\"? Users will not be able to purchase this plan.",
+      "activateTitle": "Activate Plan",
+      "activateDescription": "Are you sure you want to activate \"{name}\"? It will be visible to all users.",
+      "confirmDeactivate": "Deactivate",
+      "confirmActivate": "Activate"
+    },
+    "messages": {
+      "updateSuccess": "Plan updated successfully",
+      "updateError": "Failed to update plan",
+      "statusSuccess": "Plan status updated successfully",
+      "statusError": "Failed to update plan status",
+      "noPlans": "No plans found",
+      "loading": "Loading plans..."
+    }
+  }
+}
