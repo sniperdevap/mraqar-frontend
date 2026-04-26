@@ -44,7 +44,7 @@ export function HomeAdCard({ ad, onClick }: HomeAdCardProps) {
   const firstMedia = ad.media?.[0];
   const displayUrl = firstMedia
     ? getMediaUrl(firstMedia)
-    : "/images/card-placeholder-1.jpeg";
+    : "/images/aqar-logo.png";
 
   const handleWhatsApp = (e: React.MouseEvent) => {
     e.stopPropagation();

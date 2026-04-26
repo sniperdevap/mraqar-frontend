@@ -386,7 +386,7 @@ ${window.location.href}`);
     ? currentMedia.type === "video"
       ? getThumbnailUrl(currentMedia)
       : getMediaUrl(currentMedia)
-    : "/images/card-placeholder-1.jpeg";
+    : "/images/aqar-logo.png";
 
   return (
     <div className="min-h-screen pb-28 bg-white" dir={direction}>
