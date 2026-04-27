@@ -84,7 +84,9 @@ export function Navbar() {
     pathname?.split("/").length === 3 &&
     pathname?.split("/")[2] !== "create";
   const isSearchPage = pathname === "/search";
+  const isAuthRoute = pathname?.startsWith("/auth");
   const showStandardNav = !isSpecialRoute;
+  const showTopNavbar = showStandardNav;
 
   // Favorite state for ad detail page heart button in mobile navbar
   const [adFavoriteState, setAdFavoriteState] = useState<{
@@ -155,84 +157,80 @@ export function Navbar() {
   return (
     <>
       {/* Desktop Navbar */}
-      <nav
-        className={cn(
-          "hidden lg:flex items-center px-12 py-2 bg-white  border-b border-gray-200 sticky top-0 z-50",
-          !showStandardNav && "lg:hidden",
-        )}
-      >
-        <div className="flex-shrink-0">
-          <Link href="/">
-            <Image
-              src="/images/aqar-logo.png"
-              alt="Mr aqar Logo"
-              width={100}
-              height={40}
-              className="h-16 w-auto"
-            />
-          </Link>
-        </div>
+      {showTopNavbar && (
+        <nav className="hidden lg:flex items-center px-12 py-2 bg-white  border-b border-gray-200 sticky top-0 z-50">
+          <div className="flex-shrink-0">
+            <Link href="/">
+              <Image
+                src="/images/aqar-logo.png"
+                alt="Mr aqar Logo"
+                width={100}
+                height={40}
+                className="h-16 w-auto"
+              />
+            </Link>
+          </div>
 
-        <div className="flex-1 flex justify-center items-center gap-8 text-[15px] font-medium">
-          <Link
-            href="/"
-            className="text-gray-900 hover:text-primary transition-colors px-2"
-          >
-            {t("nav.home")}
-          </Link>
-          <Link
-            href="/offices"
-            className="text-gray-900 hover:text-primary transition-colors px-2"
-          >
-            {t("nav.offices")}
-          </Link>
-          <Link
-            href="/plans"
-            className="text-gray-900 hover:text-primary transition-colors px-2"
-          >
-            {t("nav.plans")}
-          </Link>
-          <Link
-            href="/account"
-            className="text-gray-900 hover:text-primary transition-colors px-2"
-          >
-            {t("nav.account")}
-          </Link>
-          <LanguageSwitcher />
-
-          <Button
-            variant="outline"
-            className="border-gray-200 text-gray-900 hover:bg-gray-50 hover:text-primary rounded-xl px-6 py-2 h-10 text-sm font-semibold ml-4"
-            onClick={handleCreateAdClick}
-          >
-            + {t("nav.addFreeAd")}
-          </Button>
-        </div>
-
-        <div className="flex items-center gap-4">
-          {pathname === "/" && (
-            <button
-              onClick={() => router.push("/notifications")}
-              className="p-2 text-gray-900 hover:text-primary transition-colors relative cursor-pointer"
+          <div className="flex-1 flex justify-center items-center gap-8 text-[15px] font-medium">
+            <Link
+              href="/"
+              className="text-gray-900 hover:text-primary transition-colors px-2"
             >
-              <Bell size={24} strokeWidth={1.5} />
-              {unreadCount > 0 && (
-                <span className="absolute top-1 right-1 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1">
-                  {unreadCount > 99 ? "99+" : unreadCount}
-                </span>
-              )}
-            </button>
-          )}
-          {isAuthenticated && (
-            <button
-              onClick={handleLogout}
-              className="p-2 text-gray-600 hover:text-gray-900 transition-colors cursor-pointer"
-              title={t("nav.logout")}
+              {t("nav.home")}
+            </Link>
+            <Link
+              href="/offices"
+              className="text-gray-900 hover:text-primary transition-colors px-2"
             >
-              <LogOut size={24} strokeWidth={1.5} />
-            </button>
-          )}
-          {/* {pathname === '/' &&
+              {t("nav.offices")}
+            </Link>
+            <Link
+              href="/plans"
+              className="text-gray-900 hover:text-primary transition-colors px-2"
+            >
+              {t("nav.plans")}
+            </Link>
+            <Link
+              href="/account"
+              className="text-gray-900 hover:text-primary transition-colors px-2"
+            >
+              {t("nav.account")}
+            </Link>
+            <LanguageSwitcher />
+
+            <Button
+              variant="outline"
+              className="border-gray-200 text-gray-900 hover:bg-gray-50 hover:text-primary rounded-xl px-6 py-2 h-10 text-sm font-semibold ml-4"
+              onClick={handleCreateAdClick}
+            >
+              + {t("nav.addFreeAd")}
+            </Button>
+          </div>
+
+          <div className="flex items-center gap-4">
+            {pathname === "/" && (
+              <button
+                onClick={() => router.push("/notifications")}
+                className="p-2 text-gray-900 hover:text-primary transition-colors relative cursor-pointer"
+              >
+                <Bell size={24} strokeWidth={1.5} />
+                {unreadCount > 0 && (
+                  <span className="absolute top-1 right-1 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1">
+                    {unreadCount > 99 ? "99+" : unreadCount}
+                  </span>
+                )}
+              </button>
+            )}
+            {isAuthenticated && (
+              <button
+                onClick={handleLogout}
+                className="p-2 text-gray-600 hover:text-gray-900 transition-colors cursor-pointer"
+                title={t("nav.logout")}
+              >
+                <LogOut size={24} strokeWidth={1.5} />
+              </button>
+            )}
+            {/* {pathname === '/' &&
             (isAuthenticated ? (
               <button
                 onClick={() => {
@@ -249,11 +247,12 @@ export function Navbar() {
                 {t('nav.login')}
               </button>
             ))} */}
-        </div>
-      </nav>
+          </div>
+        </nav>
+      )}
 
       {/* Mobile Top Navbar */}
-      {showStandardNav && (
+      {showTopNavbar && (
         <nav className="lg:hidden flex items-center justify-between px-4 py-3 bg-white  border-b border-gray-200 sticky top-0 z-50 h-20">
           <div className="flex justify-between w-full" dir="ltr">
             {isAdDetailPage || isSearchPage ? (
@@ -264,17 +263,19 @@ export function Navbar() {
                 <ChevronLeft size={28} />
               </button>
             ) : null}
-            <div className="flex-shrink-0">
-              <Link href="/">
-                <Image
-                  src="/images/aqar-logo.png"
-                  alt="Mr aqar Logo"
-                  width={100}
-                  height={40}
-                  className="h-16 w-auto"
-                />
-              </Link>
-            </div>
+            {!isAuthRoute && (
+              <div className="flex-shrink-0">
+                <Link href="/">
+                  <Image
+                    src="/images/aqar-logo.png"
+                    alt="Mr aqar Logo"
+                    width={100}
+                    height={40}
+                    className="h-16 w-auto"
+                  />
+                </Link>
+              </div>
+            )}
           </div>
           <div className="flex items-center gap-3">
             {/* {isAuthenticated && isAdDetailPage && adFavoriteState && !adFavoriteState.isLoading && (
@@ -323,7 +324,7 @@ export function Navbar() {
                   </button>
                 ))}
             </> */}
-            {pathname.startsWith("/auth") && (
+            {isAuthRoute && (
               <Link
                 href="https://wa.me/96590078005"
                 target="_blank"

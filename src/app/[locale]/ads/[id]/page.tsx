@@ -47,7 +47,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         title,
         description,
         url: shareUrl,
-        siteName: "مسٹر عقار",
+        siteName: "مستر عقار",
         images: [
           {
             url: imageUrl,

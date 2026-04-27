@@ -31,8 +31,8 @@ import { useSearchAds } from "@/hooks/use-ads";
 import { useAdStore } from "@/lib/store/ad-store";
 import { GetAdsParams } from "@/types/ad";
 
-const SearchAdCard = dynamic(() =>
-  import("./search-ad-card").then((mod) => mod.SearchAdCard),
+const HomeAdCard = dynamic(() =>
+  import("../home/home-ad-card").then((mod) => mod.HomeAdCard),
 );
 const Loader = dynamic(() =>
   import("../common/loader").then((mod) => mod.Loader),
@@ -913,7 +913,7 @@ export function SearchPage() {
                       : undefined
                   }
                 >
-                  <SearchAdCard
+                  <HomeAdCard
                     ad={ad}
                     onClick={() => router.push(`/ads/${ad._id}`)}
                   />

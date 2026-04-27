@@ -17,16 +17,16 @@ const notoKufiArabic = Noto_Kufi_Arabic({
 
 export const metadata: Metadata = {
   title: {
-    default: "مسٹر عقار عقارات الكويت",
-    template: "%s | مسٹر عقار",
+    default: "مستر عقار عقارات الكويت",
+    template: "%s | مستر عقار",
   },
   description:
-    "منصة مسٹر عقار لعقارات الكويت - للبيع وشراء وتأجير العقارات بسهولة وأمان",
-  authors: [{ name: "مسٹر عقار" }],
+    "منصة مستر عقار لعقارات الكويت - للبيع وشراء وتأجير العقارات بسهولة وأمان",
+  authors: [{ name: "مستر عقار" }],
   openGraph: {
-    title: "مسٹر عقار عقارات الكويت",
+    title: "مستر عقار عقارات الكويت",
     description:
-      "منصة مسٹر عقار لعقارات الكويت - للبيع وشراء وتأجير العقارات بسهولة وأمان",
+      "منصة مستر عقار لعقارات الكويت - للبيع وشراء وتأجير العقارات بسهولة وأمان",
     locale: "ar_KW",
   },
   icons: {
@@ -67,7 +67,7 @@ export default async function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "Organization",
-              name: "مسٹر عقار عقارات الكويت",
+              name: "مستر عقار عقارات الكويت",
               alternateName: "Mr aqar Real Estate Kuwait",
               url: "https://aqar.com",
               logo: "https://aqar.com/images/aqar-logo.png",
