@@ -680,7 +680,7 @@ export function CreateAdForm({
         toast.error(
           getErrorMessage(
             error ||
-              t(`ads.failedTo${mode === "edit" ? "Update" : "Create"}Ad`),
+            t(`ads.failedTo${mode === "edit" ? "Update" : "Create"}Ad`),
           ),
         );
       }
@@ -725,7 +725,7 @@ export function CreateAdForm({
                   <div className="flex flex-col items-center justify-center pb-2">
                     <Upload
                       size={40}
-                      className="text-[#197aca]"
+                      className="text-[#9a090e]"
                       strokeWidth={1.5}
                     />
                   </div>

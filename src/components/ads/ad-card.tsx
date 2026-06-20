@@ -172,7 +172,7 @@ export function AdCard({
       >
         {isPremiumAd && (
           <div
-            className={`absolute top-0 z-20 bg-[#197aca] text-white px-2 py-0.5 text-[10px] sm:text-[11px] font-bold rounded-xs uppercase tracking-tight ${direction === "rtl" ? "right-0" : "left-0"}`}
+            className={`absolute top-0 z-20 bg-[#9a090e] text-white px-2 py-0.5 text-[10px] sm:text-[11px] font-bold rounded-xs uppercase tracking-tight ${direction === "rtl" ? "right-0" : "left-0"}`}
           >
             {t("premiumBadge")}
           </div>
@@ -216,7 +216,7 @@ export function AdCard({
                       fill="currentColor"
                       strokeWidth="0"
                       viewBox="0 0 24 24"
-                      className="text-[#197aca] shrink-0"
+                      className="text-[#9a090e] shrink-0"
                       height="14"
                       width="14"
                       xmlns="http://www.w3.org/2000/svg"
@@ -252,7 +252,7 @@ export function AdCard({
               </div>
 
               {/* Title */}
-              <h3 className="mt-2 text-[16px] sm:text-[15px] font-bold text-[#197aca] leading-snug line-clamp-2 mb-1">
+              <h3 className="mt-2 text-[16px] sm:text-[15px] font-bold text-[#9a090e] leading-snug line-clamp-2 mb-1">
                 {locale === "ar"
                   ? `${t(ad.purpose)} ${ad.propertyType?.labelAr || ad.propertyType?.label || "عقار"} في ${ad.area?.labelAr || ad.area?.label || "منطقة غير معروفة"}`
                   : `${t(ad.purpose)} ${ad.propertyType?.label || "Property"} in ${ad.area?.label || "Unknown Area"}`}
@@ -267,7 +267,7 @@ export function AdCard({
             <div className="mt-auto">
               {/* Time Row */}
               <div className="flex items-center justify-start gap-1 text-gray-500 mb-1.5 mt-6">
-                <Clock size={12} className="text-[#197aca]" />
+                <Clock size={12} className="text-[#9a090e]" />
                 <span className="text-[11px] font-medium">
                   {getTimeAgo(ad.createdAt)}
                 </span>

@@ -134,7 +134,7 @@ export function MultiSelect({ options, value, onChange, placeholder = 'Select it
                   onChange={e => setSearchTerm(e.target.value)}
                   onClick={e => e.stopPropagation()}
                   placeholder="Search..."
-                  className={cn('border-none outline-none bg-transparent flex-1 text-sm', dir === 'rtl' ? 'text-left' : 'text-left')}
+                  className={cn('border-none outline-none bg-transparent flex-1 text-[15px] font-medium text-gray-700 placeholder:text-gray-400', dir === 'rtl' ? 'text-left' : 'text-left')}
                   disabled={disabled}
                 />
               )}
@@ -150,11 +150,11 @@ export function MultiSelect({ options, value, onChange, placeholder = 'Select it
                   onChange={e => setSearchTerm(e.target.value)}
                   onClick={e => e.stopPropagation()}
                   placeholder={placeholder}
-                  className="border-none outline-none bg-transparent flex-1 text-sm min-w-[150px]"
+                  className="border-none outline-none bg-transparent flex-1 text-[15px] font-medium text-gray-700 placeholder:text-gray-400 min-w-[150px]"
                   disabled={disabled}
                 />
               )}
-              {!open && <span className={cn('text-muted-foreground text-sm', dir === 'rtl' ? 'text-left w-full' : 'text-left w-full')}>{placeholder}</span>}
+              {!open && <span className={cn('text-gray-400 text-[15px] font-medium', dir === 'rtl' ? 'text-left w-full' : 'text-left w-full')}>{placeholder}</span>}
             </>
           )}
         </div>
@@ -170,7 +170,9 @@ export function MultiSelect({ options, value, onChange, placeholder = 'Select it
           disabled={disabled}
           className="outline-none focus:outline-none"
         >
-          <ChevronDownIcon className="size-4 opacity-50 flex-shrink-0 cursor-pointer" />
+          <svg viewBox="0 0 386.257 386.257" className="size-3 fill-current text-muted-foreground opacity-70 flex-shrink-0 cursor-pointer">
+            <polygon points="0,96.879 193.129,289.379 386.257,96.879 "/>
+          </svg>
         </button>
       </div>
 

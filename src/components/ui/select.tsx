@@ -38,7 +38,9 @@ function SelectTrigger({
     >
       {children}
       <SelectPrimitive.Icon asChild>
-        <ChevronDownIcon className="size-4 opacity-50" />
+        <svg viewBox="0 0 386.257 386.257" className="size-3 fill-current opacity-70">
+          <polygon points="0,96.879 193.129,289.379 386.257,96.879 "/>
+        </svg>
       </SelectPrimitive.Icon>
     </SelectPrimitive.Trigger>
   );

@@ -172,7 +172,7 @@ export function SearchAdCard({ ad, onClick }: SearchAdCardProps) {
 
           <div className="flex items-center gap-4 flex-row">
             {ad.price ? (
-              <span className="text-base font-bold text-[#197aca]">{`${Number(ad.price).toLocaleString("en-US")}  د.ك`}</span>
+              <span className="text-base font-bold text-[#9a090e]">{`${Number(ad.price).toLocaleString("en-US")}  د.ك`}</span>
             ) : null}
             <div className="flex items-center gap-1.5 text-gray-500 font-medium">
               <Clock size={13} className="text-[#94a3b8]" />
