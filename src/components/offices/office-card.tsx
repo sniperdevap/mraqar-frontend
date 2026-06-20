@@ -21,7 +21,7 @@ export function OfficeCard({ office, onClick }: OfficeCardProps) {
     if (office.avatar) {
       return `${process.env.NEXT_PUBLIC_IMAGE_HOST}/${office.avatar}`;
     }
-    return "/images/aqar-logo.png";
+    return "/images/aqar-new-logo.png";
   };
 
   return (

@@ -45,7 +45,7 @@ export function GlobalTopHeader({ onMenuClick }: GlobalTopHeaderProps) {
           className="hidden lg:block touch-manipulation"
         >
           <Image
-            src="/images/aqar-logo.png"
+            src="/images/aqar-new-logo.png"
             alt="Auto Glass Logo"
             width={100}
             height={30}
@@ -59,7 +59,7 @@ export function GlobalTopHeader({ onMenuClick }: GlobalTopHeaderProps) {
         {/* Logo - visible on mobile/tablet only, positioned on right */}
         <Link href={dashboardRoute} className="lg:hidden touch-manipulation">
           <Image
-            src="/images/aqar-logo.png"
+            src="/images/aqar-new-logo.png"
             alt="Auto Glass Logo"
             width={100}
             height={30}

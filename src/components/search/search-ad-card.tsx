@@ -107,7 +107,7 @@ export function SearchAdCard({ ad, onClick }: SearchAdCardProps) {
             <div className="absolute inset-0 overflow-hidden rounded-sm border border-gray-200">
               <Image
                 fill
-                src={(displayUrl as string) || "/images/aqar-logo.png"}
+                src={(displayUrl as string) || "/images/aqar-new-logo.png"}
                 alt=""
                 className="object-cover group-hover:scale-110 transition-transform duration-500"
               />

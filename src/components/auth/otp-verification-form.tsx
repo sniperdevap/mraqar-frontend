@@ -121,7 +121,7 @@ export function OTPVerificationForm() {
       <div className="w-full max-w-lg md:space-y-8 space-y-3">
         <div className="flex flex-col items-center text-center">
           <Image
-            src="/images/aqar-logo.png"
+            src="/images/aqar-new-logo.png"
             alt="Mr aqar Logo"
             width={140}
             height={50}

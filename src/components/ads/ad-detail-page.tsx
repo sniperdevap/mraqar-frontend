@@ -386,7 +386,7 @@ ${window.location.href}`);
     ? currentMedia.type === "video"
       ? getThumbnailUrl(currentMedia)
       : getMediaUrl(currentMedia)
-    : "/images/aqar-logo.png";
+    : "/images/aqar-new-logo.png";
 
   return (
     <div className="min-h-screen pb-28 bg-white" dir={direction}>
@@ -443,8 +443,8 @@ ${window.location.href}`);
                 alt={
                   locale === "ar"
                     ? ad.propertyType?.labelAr ||
-                      ad.propertyType?.label ||
-                      "عقار"
+                    ad.propertyType?.label ||
+                    "عقار"
                     : ad.propertyType?.label || "Property"
                 }
                 className="w-full h-full object-cover"
@@ -567,7 +567,7 @@ ${window.location.href}`);
             <div className="shrink-0">
               <div className="w-24 h-24 flex items-center justify-center">
                 <img
-                  src="/images/aqar-logo.png"
+                  src="/images/aqar-new-logo.png"
                   alt="Company Logo"
                   className="w-full h-full object-contain"
                 />
@@ -685,7 +685,7 @@ ${window.location.href}`);
                       key={similarAd._id}
                       ref={
                         hasNextSimilarAdsPage &&
-                        index === similarAdsTriggerIndex
+                          index === similarAdsTriggerIndex
                           ? similarAdsPrefetchRef
                           : undefined
                       }

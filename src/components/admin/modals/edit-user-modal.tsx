@@ -141,7 +141,7 @@ export function EditUserModal({ isOpen, onClose, user }: EditUserModalProps) {
                 />
               ) : (
                 <Image
-                  src="/images/aqar-logo.png"
+                  src="/images/aqar-new-logo.png"
                   alt="Placeholder Avatar"
                   fill
                   className="object-cover"

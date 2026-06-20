@@ -187,7 +187,7 @@ export function AdminAdDetail({ adId }: AdminAdDetailProps) {
   };
 
   const getMediaUrl = (m: Media) => {
-    if (!m) return "/images/aqar-logo.png";
+    if (!m) return "/images/aqar-new-logo.png";
     if (m.url?.startsWith("http")) return m.url;
     return `${process.env.NEXT_PUBLIC_IMAGE_HOST || ""}/${m.url}`;
   };
@@ -199,7 +199,7 @@ export function AdminAdDetail({ adId }: AdminAdDetailProps) {
   };
 
   const getImageUrl = (imagePath: string) => {
-    if (!imagePath) return "/images/aqar-logo.png";
+    if (!imagePath) return "/images/aqar-new-logo.png";
     if (imagePath.startsWith("http")) return imagePath;
     return `${process.env.NEXT_PUBLIC_IMAGE_HOST || ""}/${imagePath}`;
   };
@@ -306,7 +306,7 @@ ${window.location.origin}/${locale}/ads/${ad._id}`);
     ? currentMedia.type === "video"
       ? getThumbnailUrl(currentMedia)
       : getMediaUrl(currentMedia)
-    : "/images/aqar-logo.png";
+    : "/images/aqar-new-logo.png";
 
   const isRTL = locale === "ar";
 
@@ -470,8 +470,8 @@ ${window.location.origin}/${locale}/ads/${ad._id}`);
                   alt={
                     locale === "ar"
                       ? ad.propertyType?.labelAr ||
-                        ad.propertyType?.label ||
-                        "عقار"
+                      ad.propertyType?.label ||
+                      "عقار"
                       : ad.propertyType?.label || "Property"
                   }
                   className="w-full h-full object-cover"
@@ -508,11 +508,10 @@ ${window.location.origin}/${locale}/ads/${ad._id}`);
                     <button
                       key={index}
                       onClick={() => setCurrentImageIndex(index)}
-                      className={`relative flex-shrink-0 w-20 h-20 md:w-24 md:h-24 rounded-xl overflow-hidden border-2 transition-all cursor-pointer snap-start ${
-                        currentImageIndex === index
-                          ? "border-primary ring-4 ring-primary/10"
-                          : "border-transparent hover:border-gray-200"
-                      }`}
+                      className={`relative flex-shrink-0 w-20 h-20 md:w-24 md:h-24 rounded-xl overflow-hidden border-2 transition-all cursor-pointer snap-start ${currentImageIndex === index
+                        ? "border-primary ring-4 ring-primary/10"
+                        : "border-transparent hover:border-gray-200"
+                        }`}
                     >
                       {isVideo ? (
                         <div className="relative w-full h-full">

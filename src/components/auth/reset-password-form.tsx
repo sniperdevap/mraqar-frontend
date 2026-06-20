@@ -108,7 +108,7 @@ export function ResetPasswordForm() {
         {/* Logo and Header */}
         <div className="flex flex-col items-center text-center">
           <Image
-            src="/images/aqar-logo.png"
+            src="/images/aqar-new-logo.png"
             alt="Mr aqar Logo"
             width={140}
             height={50}

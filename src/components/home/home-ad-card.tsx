@@ -44,7 +44,7 @@ export function HomeAdCard({ ad, onClick }: HomeAdCardProps) {
   const firstMedia = ad.media?.[0];
   const displayUrl = firstMedia
     ? getMediaUrl(firstMedia)
-    : "/images/aqar-logo.png";
+    : "/images/aqar-new-logo.png";
 
   const handleWhatsApp = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -76,7 +76,7 @@ export function HomeAdCard({ ad, onClick }: HomeAdCardProps) {
       {/* Brand Logo at the top of the card group */}
       <div className="flex justify-start mb-1">
         <Image
-          src="/images/aqar-logo.png"
+          src="/images/aqar-new-logo.png"
           alt="Logo"
           width={60}
           height={20}
@@ -89,9 +89,8 @@ export function HomeAdCard({ ad, onClick }: HomeAdCardProps) {
         {/* Premium Badge */}
         {(ad.isPremium || ad.premiumAd) && (
           <div
-            className={`absolute -top-2 z-20 bg-[#e11d48] text-white px-3 py-0.5 text-[10px] font-bold rounded-full shadow-md ${
-              direction === "rtl" ? "left-2" : "right-2"
-            }`}
+            className={`absolute -top-2 z-20 bg-[#e11d48] text-white px-3 py-0.5 text-[10px] font-bold rounded-full shadow-md ${direction === "rtl" ? "left-2" : "right-2"
+              }`}
           >
             {locale === "ar" ? "مميز" : "Premium"}
           </div>

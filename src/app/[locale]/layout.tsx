@@ -30,9 +30,9 @@ export const metadata: Metadata = {
     locale: "ar_KW",
   },
   icons: {
-    icon: "/images/aqar-logo.png",
-    shortcut: "/images/aqar-logo.png",
-    apple: "/images/aqar-logo.png",
+    icon: "/images/aqar-new-logo.png",
+    shortcut: "/images/aqar-new-logo.png",
+    apple: "/images/aqar-new-logo.png",
   },
 };
 
@@ -70,7 +70,7 @@ export default async function RootLayout({
               name: "مستر عقار عقارات الكويت",
               alternateName: "Mr aqar Real Estate Kuwait",
               url: "https://aqar.com",
-              logo: "https://aqar.com/images/aqar-logo.png",
+              logo: "https://aqar.com/images/aqar-new-logo.png",
             }),
           }}
         />

@@ -73,20 +73,19 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
 
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 ${isRTL ? "right-0" : "left-0"} z-50 w-72 bg-gray-900 text-white transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 ${
-          sidebarOpen
-            ? "translate-x-0"
-            : isRTL
-              ? "translate-x-full"
-              : "-translate-x-full"
-        }`}
+        className={`fixed inset-y-0 ${isRTL ? "right-0" : "left-0"} z-50 w-72 bg-gray-900 text-white transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 ${sidebarOpen
+          ? "translate-x-0"
+          : isRTL
+            ? "translate-x-full"
+            : "-translate-x-full"
+          }`}
       >
         <div className="flex flex-col h-full">
           {/* Logo */}
           <div className="flex items-center justify-between h-24 px-6 border-b border-gray-800">
             <Link href="/admin" className="flex items-center">
               <Image
-                src="/images/aqar-logo.png"
+                src="/images/aqar-new-logo.png"
                 alt="Mr aqar Logo"
                 width={80}
                 height={30}
@@ -113,11 +112,10 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
                   key={item.href}
                   href={item.href}
                   onClick={() => setSidebarOpen(false)}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
-                    isActive
-                      ? "bg-primary text-white shadow-lg shadow-primary/30"
-                      : "text-gray-400 hover:text-white hover:bg-gray-800"
-                  }`}
+                  className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${isActive
+                    ? "bg-primary text-white shadow-lg shadow-primary/30"
+                    : "text-gray-400 hover:text-white hover:bg-gray-800"
+                    }`}
                 >
                   <item.icon size={20} />
                   {item.label}

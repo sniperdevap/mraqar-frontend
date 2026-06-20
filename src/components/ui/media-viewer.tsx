@@ -78,7 +78,7 @@ export function MediaViewer({
   };
 
   const getMediaUrl = (m: Media) => {
-    if (!m) return "/images/aqar-logo.png";
+    if (!m) return "/images/aqar-new-logo.png";
     if (m.url.startsWith("http")) return m.url;
     return `${process.env.NEXT_PUBLIC_IMAGE_HOST || ""}/${m.url}`;
   };

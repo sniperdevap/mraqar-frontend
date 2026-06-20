@@ -131,7 +131,7 @@ export function OfficeDetailPage({ officeId }: OfficeDetailPageProps) {
     if (officeData?.office.avatar) {
       return `${process.env.NEXT_PUBLIC_IMAGE_HOST}/${officeData.office.avatar}`;
     }
-    return "/images/aqar-logo.png";
+    return "/images/aqar-new-logo.png";
   };
 
   if (isLoading) {

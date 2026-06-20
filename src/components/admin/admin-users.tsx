@@ -240,7 +240,7 @@ export function AdminUsers() {
                               />
                             ) : (
                               <Image
-                                src="/images/aqar-logo.png"
+                                src="/images/aqar-new-logo.png"
                                 alt="Placeholder Avatar"
                                 fill
                                 className="object-cover"
@@ -269,7 +269,7 @@ export function AdminUsers() {
                             <div className="flex items-center gap-3">
                               <Switch
                                 checked={user.isActive}
-                                onCheckedChange={() => {}}
+                                onCheckedChange={() => { }}
                               />
                               <span
                                 className={`text-sm font-medium ${user.isActive ? "text-green-600" : "text-gray-400"} whitespace-nowrap`}
@@ -415,7 +415,7 @@ export function AdminUsers() {
                           <div className="flex items-center gap-2">
                             <Switch
                               checked={user.isActive}
-                              onCheckedChange={() => {}}
+                              onCheckedChange={() => { }}
                             />
                           </div>
                         }

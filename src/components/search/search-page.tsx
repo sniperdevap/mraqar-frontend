@@ -318,10 +318,10 @@ export function SearchPage() {
 
   const hasActiveFilters = Boolean(
     filters.purpose ||
-      filters.propertyType ||
-      filters.area?.length ||
-      filters.minPrice !== undefined ||
-      filters.maxPrice !== undefined,
+    filters.propertyType ||
+    filters.area?.length ||
+    filters.minPrice !== undefined ||
+    filters.maxPrice !== undefined,
   );
 
   const applyFilters = (nextFilters: GetAdsParams, keepOpen = false) => {
@@ -481,7 +481,7 @@ export function SearchPage() {
                     />
                   </div>
 
-                  {/* <Image src="/images/aqar-logo.png" alt="User avatar" width={32} height={32} className="h-8 w-8 rounded-full border border-[#dbe6f3] object-cover shrink-0" /> */}
+                  {/* <Image src="/images/aqar-new-logo.png" alt="User avatar" width={32} height={32} className="h-8 w-8 rounded-full border border-[#dbe6f3] object-cover shrink-0" /> */}
                 </div>
               </div>
             </PopoverAnchor>

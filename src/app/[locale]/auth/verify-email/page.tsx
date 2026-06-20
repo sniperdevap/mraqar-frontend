@@ -61,7 +61,7 @@ export default function VerifyEmailPage() {
               <div className="mb-8">
                 <div className="flex items-center justify-center lg:justify-start mb-8">
                   <Image
-                    src="/images/aqar-logo.png"
+                    src="/images/aqar-new-logo.png"
                     alt="Auto Glass Logo"
                     width={160}
                     height={40}

@@ -184,7 +184,7 @@ export function AdCard({
               <div className="relative w-full h-full overflow-hidden">
                 <Image
                   fill
-                  src={(displayUrl as string) || "/images/aqar-logo.png"}
+                  src={(displayUrl as string) || "/images/aqar-new-logo.png"}
                   alt={
                     locale === "ar"
                       ? ad.propertyType?.labelAr || ad.propertyType?.label || ""

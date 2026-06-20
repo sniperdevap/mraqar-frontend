@@ -155,21 +155,19 @@ export function AdminAds() {
         <div className="flex p-1 bg-gray-100/80 rounded-xl border border-gray-200/50 backdrop-blur-sm">
           <button
             onClick={() => updateParams({ tab: "ads", page: "1" })}
-            className={`w-1/2 md:w-auto px-6 py-2.5 text-xs font-black uppercase tracking-widest rounded-lg transition-all duration-200 ${
-              activeTab === "ads"
-                ? "bg-white text-primary shadow-sm"
-                : "text-gray-500 hover:text-gray-700"
-            }`}
+            className={`w-1/2 md:w-auto px-6 py-2.5 text-xs font-black uppercase tracking-widest rounded-lg transition-all duration-200 ${activeTab === "ads"
+              ? "bg-white text-primary shadow-sm"
+              : "text-gray-500 hover:text-gray-700"
+              }`}
           >
             {t("manageAds.tabs.ads")}
           </button>
           <button
             onClick={() => updateParams({ tab: "failed", page: "1" })}
-            className={`w-1/2 md:w-auto px-6 py-2.5 text-xs font-black uppercase tracking-widest rounded-lg transition-all duration-200 ${
-              activeTab === "failed"
-                ? "bg-white text-primary shadow-sm"
-                : "text-gray-500 hover:text-gray-700"
-            }`}
+            className={`w-1/2 md:w-auto px-6 py-2.5 text-xs font-black uppercase tracking-widest rounded-lg transition-all duration-200 ${activeTab === "failed"
+              ? "bg-white text-primary shadow-sm"
+              : "text-gray-500 hover:text-gray-700"
+              }`}
           >
             {t("manageAds.tabs.failed")}
           </button>
@@ -359,7 +357,7 @@ export function AdminAds() {
                                     ? ad.media[0].thumbnail?.startsWith("http")
                                       ? ad.media[0].thumbnail
                                       : `${process.env.NEXT_PUBLIC_IMAGE_HOST}/${ad.media[0].thumbnail || ad.media[0].url}`
-                                    : "/images/aqar-logo.png"
+                                    : "/images/aqar-new-logo.png"
                                 }
                                 alt=""
                                 className="w-full h-full object-cover"
@@ -369,7 +367,7 @@ export function AdminAds() {
                                     Event
                                   >,
                                 ) => {
-                                  e.currentTarget.src = "/images/aqar-logo.png";
+                                  e.currentTarget.src = "/images/aqar-new-logo.png";
                                 }}
                               />
                               {ad.isPremium && (
@@ -388,7 +386,7 @@ export function AdminAds() {
                             <span className="text-sm text-gray-600">
                               {isRTL
                                 ? ad.propertyType?.labelAr ||
-                                  ad.propertyType?.label
+                                ad.propertyType?.label
                                 : ad.propertyType?.label}
                             </span>
                           </td>

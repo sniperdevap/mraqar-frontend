@@ -162,7 +162,7 @@ export function Navbar() {
           <div className="flex-shrink-0">
             <Link href="/">
               <Image
-                src="/images/aqar-logo.png"
+                src="/images/aqar-new-logo.png"
                 alt="Mr aqar Logo"
                 width={100}
                 height={40}
@@ -267,7 +267,7 @@ export function Navbar() {
               <div className="flex-shrink-0">
                 <Link href="/">
                   <Image
-                    src="/images/aqar-logo.png"
+                    src="/images/aqar-new-logo.png"
                     alt="Mr aqar Logo"
                     width={100}
                     height={40}

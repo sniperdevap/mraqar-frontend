@@ -141,7 +141,7 @@ export function HomePage() {
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Image
-                src="/images/aqar-logo.png"
+                src="/images/aqar-new-logo.png"
                 alt="Logo"
                 width={32}
                 height={32}
@@ -177,7 +177,7 @@ export function HomePage() {
           {/* Logo */}
           <div className="mb-2">
             <Image
-              src="/images/aqar-logo.png"
+              src="/images/aqar-new-logo.png"
               alt="Logo"
               width={180}
               height={180}
@@ -242,31 +242,28 @@ export function HomePage() {
             <div className="bg-white p-1 h-11 md:h-12 w-full rounded-full border border-gray-200 flex shadow-sm">
               <button
                 onClick={() => setActiveTab("rent")}
-                className={`flex-1 h-full font-bold rounded-full transition-all text-[13px] ${
-                  activeTab === "rent"
-                    ? "bg-[#eef4fb] text-[#197aca]"
-                    : "text-gray-500"
-                }`}
+                className={`flex-1 h-full font-bold rounded-full transition-all text-[13px] ${activeTab === "rent"
+                  ? "bg-[#eef4fb] text-[#197aca]"
+                  : "text-gray-500"
+                  }`}
               >
                 {t("tabs.rent")}
               </button>
               <button
                 onClick={() => setActiveTab("sale")}
-                className={`flex-1 h-full font-bold rounded-full transition-all text-[13px] ${
-                  activeTab === "sale"
-                    ? "bg-[#eef4fb] text-[#197aca]"
-                    : "text-gray-500"
-                }`}
+                className={`flex-1 h-full font-bold rounded-full transition-all text-[13px] ${activeTab === "sale"
+                  ? "bg-[#eef4fb] text-[#197aca]"
+                  : "text-gray-500"
+                  }`}
               >
                 {t("tabs.sale")}
               </button>
               <button
                 onClick={() => setActiveTab("exchange")}
-                className={`flex-1 h-full font-bold rounded-full transition-all text-[13px] ${
-                  activeTab === "exchange"
-                    ? "bg-[#eef4fb] text-[#197aca]"
-                    : "text-gray-500"
-                }`}
+                className={`flex-1 h-full font-bold rounded-full transition-all text-[13px] ${activeTab === "exchange"
+                  ? "bg-[#eef4fb] text-[#197aca]"
+                  : "text-gray-500"
+                  }`}
               >
                 {t("tabs.exchange")}
               </button>
