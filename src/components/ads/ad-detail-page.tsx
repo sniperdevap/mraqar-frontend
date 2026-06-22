@@ -44,6 +44,7 @@ import { useAdById, useInfiniteSearchAds } from "@/hooks/use-ads";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAdStore } from "@/lib/store/ad-store";
 import { DetailAd, GetAdsParams } from "@/types/ad";
+import Image from "next/image";
 
 interface AdDetailPageProps {
   adId: string;
@@ -262,7 +263,7 @@ export function AdDetailPage({ adId }: AdDetailPageProps) {
         locale: locale_obj,
       });
     } catch {
-      return "Recently";
+      return t("recently");
     }
   };
 
@@ -330,11 +331,10 @@ export function AdDetailPage({ adId }: AdDetailPageProps) {
 
     const propertyInfo =
       locale === "ar"
-        ? `${ad.propertyType?.labelAr || ad.propertyType?.label || "عقار"} - ${ad.area?.labelAr || ad.area?.label || "المنطقة"}`
-        : `${ad.propertyType?.label || "Property"} - ${ad.area?.label || "Area"}`;
+        ? `${ad.propertyType?.labelAr || ad.propertyType?.label || t("propertyFallback")} - ${ad.area?.labelAr || ad.area?.label || t("areaFallback")}`
+        : `${ad.propertyType?.label || t("propertyFallback")} - ${ad.area?.label || t("areaFallback")}`;
 
-    const message = encodeURIComponent(`السلام عليكم
-أنا مهتم بهذا الإعلان:
+    const message = encodeURIComponent(`${t("whatsappMessage")}
 ${propertyInfo}
 ${window.location.href}`);
 
@@ -392,33 +392,7 @@ ${window.location.href}`);
     <div className="min-h-screen pb-28 bg-white" dir={direction}>
       {/* Top Image Slider or Spacer */}
       {ad.media && ad.media.length > 0 ? (
-        <section className="relative max-w-4xl mx-auto  max-h-[30vh] overflow-hidden bg-gray-50 border-b border-gray-100">
-          {/* Top Header Controls - Fixed to top left side regardless of language */}
-          <div className="absolute top-6 left-4 z-30 pointer-events-none">
-            <div className="flex gap-2.5 pointer-events-auto">
-              {isAuthenticated && (
-                <button
-                  onClick={handleToggleFavorite}
-                  disabled={isFavoriteLoading}
-                  className="w-9 h-9 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30 hover:bg-white/40 transition-all active:scale-95"
-                >
-                  <Heart
-                    size={18}
-                    className={
-                      isFavorite ? "fill-red-500 text-red-500" : "text-black"
-                    }
-                    strokeWidth={isFavorite ? 0 : 2}
-                  />
-                </button>
-              )}
-              <button
-                onClick={handleShare}
-                className="w-9 h-9 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30 hover:bg-white/40 transition-all active:scale-95"
-              >
-                <Share2 size={18} className="text-black" />
-              </button>
-            </div>
-          </div>
+        <section className="relative max-w-4xl mx-auto h-[35vh] md:h-[45vh] overflow-hidden bg-neutral-900 border-b border-gray-100">
           {/* Main Media Slider */}
           <div
             className="w-full h-full cursor-pointer"
@@ -447,7 +421,7 @@ ${window.location.href}`);
                     "عقار"
                     : ad.propertyType?.label || "Property"
                 }
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain"
               />
             )}
           </div>
@@ -510,7 +484,7 @@ ${window.location.href}`);
       )}
 
       {/* Detail Content Section */}
-      <div className="max-w-4xl mx-auto px-4 pt-6 pb-10">
+      <div className="max-w-4xl mx-auto px-4 pt-3 pb-10">
         <div className="flex flex-col w-full mb-4">
           {/* Title */}
           <h1 className="text-xl md:text-2xl font-bold text-gray-900 text-center tracking-tight uppercase mb-4">
@@ -520,18 +494,11 @@ ${window.location.href}`);
           </h1>
 
           {/* Views & Phone Row */}
-          <div className="flex items-center justify-between w-full border-b border-gray-100 pb-3 mb-3">
-            {/* Views count on the left */}
-            <div className="bg-[#8b0000] text-white px-3 py-1 rounded-md text-[13px] font-bold flex items-center gap-1.5 shadow-sm">
-              <span>{ad.views || 193}</span>
-              <svg stroke="currentColor" fill="none" strokeWidth="2.5" viewBox="0 0 24 24" className="w-4 h-4" xmlns="http://www.w3.org/2000/svg">
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                <circle cx="12" cy="12" r="3"></circle>
-              </svg>
-            </div>
+          <div className="flex items-center justify-between w-full pb-3 mb-3">
+
 
             {/* Phone numbers on the right */}
-            <div className="flex items-center gap-2 text-[#00a86b] font-bold text-base sm:text-lg tracking-wide" dir="ltr">
+            <div className="flex items-center gap-2 text-[#029a9d] font-bold text-base sm:text-lg tracking-wide" dir="ltr">
               <button onClick={handlePhoneCall} className="hover:underline">
                 {formatDisplayPhone(ad.phoneNumber)}
               </button>
@@ -544,18 +511,20 @@ ${window.location.href}`);
                 </>
               )}
             </div>
+            {/* Views count on the left */}
+            <div className="bg-[#8b0000] text-white px-3 py-1 rounded-md text-[13px] font-bold flex items-center gap-1.5 shadow-sm">
+              <span>{ad.views || 193}</span>
+              <svg stroke="currentColor" fill="none" strokeWidth="2.5" viewBox="0 0 24 24" className="w-4 h-4" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+            </div>
           </div>
 
           {/* Price & Time Row */}
           <div className="flex items-center justify-between w-full mb-5">
-            {/* Price on the left */}
-            <div className="text-xl font-bold text-red-600">
-              {ad.price ? `${Number(ad.price).toLocaleString("en-US")} KD` : ""}
-            </div>
-
             {/* Time-ago on the right */}
             <div className="flex items-center gap-1.5 text-gray-500 text-xs font-semibold">
-              <span className="text-right">{getTimeAgo(ad.createdAt)}</span>
               <svg
                 viewBox="0 0 24 24"
                 fill="none"
@@ -567,19 +536,30 @@ ${window.location.href}`);
                 <circle cx="12" cy="12" r="10"></circle>
                 <polyline points="12 6 12 12 16 14"></polyline>
               </svg>
+              <span className="text-right">{getTimeAgo(ad.createdAt)}</span>
+
             </div>
+
+            {/* Price on the left */}
+            <div className="text-xl font-bold text-[#9a090e]">
+              {ad.price
+                ? `${Number(ad.price).toLocaleString("en-US")} ${locale === "ar" ? "د.ك" : "KD"}`
+                : ""}
+            </div>
+
+
           </div>
 
           {/* Publisher profile badge */}
           <div className="flex justify-center mb-6">
-            <div className="inline-flex items-center gap-3 bg-neutral-900 px-5 py-2 rounded-full shadow-sm text-white">
-              <div className="w-6 h-6 rounded-full bg-red-600 flex items-center justify-center shrink-0">
+            <div className="inline-flex items-center gap-2 bg-primary px-3 py-2 rounded-full shadow-sm text-white">
+              <div className="w-6 h-6 rounded-full bg-black flex items-center justify-center shrink-0">
                 <svg stroke="currentColor" fill="none" strokeWidth="2.5" viewBox="0 0 24 24" className="w-3.5 h-3.5 text-white" xmlns="http://www.w3.org/2000/svg">
                   <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                   <circle cx="12" cy="7" r="4"></circle>
                 </svg>
               </div>
-              <span className="text-sm font-bold tracking-wide">
+              <span className="text-sm text-white font-bold tracking-wide">
                 {ad.user?.name || "علي جمال أبو حمزة"}
               </span>
             </div>
@@ -587,22 +567,14 @@ ${window.location.href}`);
 
           {/* Description Section */}
           <div className="flex flex-col items-start w-full mt-4 text-right">
-            <h3 className="text-base font-bold text-gray-800 mb-2">Description:</h3>
+            <div className="mb-2 flex justify-between w-full items-center">
+              <h3 className="text-base font-bold text-gray-800">{t("description")}</h3>
+              <Image src={"/images/icons/share-icon.svg"} alt="Share" width={40} height={40} className="text-black cursor-pointer" onClick={handleShare} />
+            </div>
             <p className="text-gray-700 text-sm sm:text-base leading-relaxed text-right w-full whitespace-pre-wrap break-words">
               {ad.description}
             </p>
-            
-            {/* Share Button with Red Curved Arrow */}
-            <div className="w-full flex justify-center mt-8 border-b border-gray-50 pb-8">
-              <button onClick={handleShare} className="flex flex-col items-center gap-1 hover:opacity-85 transition-opacity active:scale-95">
-                <div className="w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center border border-gray-100 shadow-sm">
-                  <svg viewBox="0 0 24 24" className="w-6 h-6 text-red-600 fill-current" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M14 9V5l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11z" />
-                  </svg>
-                </div>
-                <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider mt-1">Share</span>
-              </button>
-            </div>
+
           </div>
         </div>
 
@@ -707,7 +679,7 @@ ${window.location.href}`);
             >
               <path d="M260.062 32C138.605 32 40.134 129.701 40.134 250.232c0 41.23 11.532 79.79 31.559 112.687L32 480l121.764-38.682c31.508 17.285 67.745 27.146 106.298 27.146C381.535 468.464 480 370.749 480 250.232 480 129.701 381.535 32 260.062 32zm109.362 301.11c-5.174 12.827-28.574 24.533-38.899 25.072-10.314.547-10.608 7.994-66.84-16.434-56.225-24.434-90.052-83.844-92.719-87.67-2.669-3.812-21.78-31.047-20.749-58.455 1.038-27.413 16.047-40.346 21.404-45.725 5.351-5.387 11.486-6.352 15.232-6.413 4.428-.072 7.296-.132 10.573-.011 3.274.124 8.192-.685 12.45 10.639 4.256 11.323 14.443 39.153 15.746 41.989 1.302 2.839 2.108 6.126.102 9.771-2.012 3.653-3.042 5.935-5.961 9.083-2.935 3.148-6.174 7.042-8.792 9.449-2.92 2.665-5.97 5.572-2.9 11.269 3.068 5.693 13.653 24.356 29.779 39.736 20.725 19.771 38.598 26.329 44.098 29.317 5.515 3.004 8.806 2.67 12.226-.929 3.404-3.599 14.639-15.746 18.596-21.169 3.955-5.438 7.661-4.373 12.742-2.329 5.078 2.052 32.157 16.556 37.673 19.551 5.51 2.989 9.193 4.529 10.51 6.9 1.317 2.38.901 13.531-4.271 26.359z"></path>
             </svg>
-            <span className="text-lg">تواصل مع المكتب</span>
+            <span className="text-lg">{t("contactOffice")}</span>
           </button>
           <button
             onClick={handlePhoneCall}
@@ -735,9 +707,10 @@ ${window.location.href}`);
           onClose={() => setIsShareOpen(false)}
           url={typeof window !== "undefined" ? window.location.href : ""}
           title={
-            locale === "ar"
-              ? `السلام عليكم\nأنا مهتم بهذا الإعلان:\n${ad.propertyType?.labelAr || ad.propertyType?.label || "عقار"} - ${ad.area?.labelAr || ad.area?.label || "المنطقة"}`
-              : `Hello\nI am interested in this ad:\n${ad.propertyType?.label || "Property"} - ${ad.area?.label || "Area"}`
+            `${t("whatsappMessage")}\n${locale === "ar"
+              ? `${ad.propertyType?.labelAr || ad.propertyType?.label || t("propertyFallback")} - ${ad.area?.labelAr || ad.area?.label || t("areaFallback")}`
+              : `${ad.propertyType?.label || t("propertyFallback")} - ${ad.area?.label || t("areaFallback")}`
+            }`
           }
         />
       )}

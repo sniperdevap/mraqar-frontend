@@ -13,18 +13,18 @@ export function AuthWrapperNew({ children }: AuthWrapperNewProps) {
       <div
         className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: `url('/images/auth/auth-bg.png')`,
+          backgroundImage: `url('/images/auth/auth-bg.svg')`,
         }}
       />
       <div className="relative z-10 w-full max-w-lg">
         <div className="bg-white rounded-3xl p-5 shadow-lg">
           <div className="flex justify-start mb-2">
             <OptimizedImage
-              src="/images/main-Mr aqar-logo.png"
-              alt="Nutrition Logo"
+              src="/images/aqar-new-logo.png"
+              alt="Mr aqar Logo"
               width={140}
               height={32}
-              fallbackSrc="/images/placeholder-logo.svg"
+              fallbackSrc="/images/aqar-new-logo.png"
               className="h-auto"
             />
           </div>

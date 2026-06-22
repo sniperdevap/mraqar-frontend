@@ -8,24 +8,19 @@ import { z } from "zod";
 import Image from "next/image";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
+import Cookies from "js-cookie";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { verifyOTP, resendOTP } from "@/lib/api/auth";
 import { useAuthStore } from "@/lib/store/auth-store";
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSeparator,
-} from "@/components/ui/input-otp";
+import { InputOTP } from "@/components/ui/input-otp";
 import { getErrorMessage } from "@/lib/utils/api";
 import { OTPInputContext } from "input-otp";
 import { cn } from "@/lib/utils";
@@ -85,6 +80,7 @@ export function OTPVerificationForm() {
 
   const handleSubmit = async (values: OTPFormValues) => {
     try {
+      setLoading(true);
       const response = await verifyOTP({
         phoneNumber,
         code: values.code,
@@ -95,14 +91,30 @@ export function OTPVerificationForm() {
       if (type === "password-reset") {
         router.push(`/auth/reset-password?token=${response.token}`);
       } else {
-        // Log user in automatically or redirect to login
-        toast.info("Please login with your new account.");
-        router.push("/auth/signin");
+        const userWithSubs = response.user;
+
+        Cookies.set("auth-token", response.token, { expires: 7 });
+        Cookies.set("auth-user", JSON.stringify(userWithSubs), { expires: 7 });
+        useAuthStore.setState({
+          user: userWithSubs,
+          isAuthenticated: true,
+          isLoading: false,
+        });
+
+        router.refresh();
+
+        if (userWithSubs.role === "super_admin") {
+          window.location.href = "/admin";
+        } else {
+          window.location.href = "/";
+        }
       }
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : "Verification failed",
       );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -117,7 +129,7 @@ export function OTPVerificationForm() {
   };
 
   return (
-    <div className="flex-1 flex flex-col items-center justify-center py-6 px-4 sm:px-6 lg:px-8">
+    <div className="flex-1 flex flex-col items-center justify-start md:justify-center pt-4 md:pt-6 pb-6 px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-lg md:space-y-8 space-y-3">
         <div className="flex flex-col items-center text-center">
           <Image

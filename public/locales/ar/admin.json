@@ -34,6 +34,7 @@
       "phone": "الهاتف",
       "role": "الدور",
       "status": "الحالة",
+      "verified": "تم التحقق",
       "joined": "انضم",
       "date": "التاريخ",
       "actions": "الإجراءات"
@@ -48,12 +49,20 @@
       "active": "نشط",
       "inactive": "غير نشط"
     },
+    "verified": {
+      "verified": "تم التحقق",
+      "unverified": "غير متحقق"
+    },
+    "statusLabel": "الحالة: {status}",
+    "verifiedLabel": "التحقق: {status}",
     "actions": {
       "view": "عرض التفاصيل",
       "delete": "حذف المستخدم",
       "changePassword": "تغيير كلمة المرور",
       "deactivate": "تعطيل",
-      "activate": "تفعيل"
+      "activate": "تفعيل",
+      "verify": "تحقق",
+      "unverify": "إلغاء التحقق"
     },
     "modals": {
       "deleteTitle": "حذف المستخدم",
@@ -62,6 +71,10 @@
       "deactivateDescription": "هل أنت متأكد أنك تريد تعطيل {name}؟",
       "activateTitle": "تفعيل المستخدم",
       "activateDescription": "هل أنت متأكد أنك تريد تفعيل {name}؟",
+      "verifyTitle": "التحقق من المستخدم",
+      "verifyDescription": "هل أنت متأكد أنك تريد التحقق من {name}؟",
+      "unverifyTitle": "إلغاء التحقق من المستخدم",
+      "unverifyDescription": "هل أنت متأكد أنك تريد إلغاء التحقق من {name}؟ لن يتمكن من تسجيل الدخول حتى يتم التحقق منه مرة أخرى.",
       "passwordTitle": "تغيير كلمة المرور",
       "passwordDescription": "أدخل كلمة مرور جديدة لـ {name}.",
       "passwordLabel": "كلمة المرور الجديدة",
@@ -74,9 +87,11 @@
     },
     "messages": {
       "statusSuccess": "تم {status} {name} بنجاح",
+      "verifiedSuccess": "تم {status} {name} بنجاح",
       "deleteSuccess": "تم حذف المستخدم {name} بنجاح",
       "passwordSuccess": "تم تغيير كلمة مرور {name} بنجاح",
       "statusError": "فشل تحديث حالة المستخدم",
+      "verifiedError": "فشل تحديث تحقق المستخدم",
       "deleteError": "فشل حذف المستخدم",
       "passwordError": "فشل تغيير كلمة المرور",
       "passwordMinLength": "يجب أن تكون كلمة المرور 6 أحرف على الأقل",

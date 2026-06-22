@@ -48,6 +48,11 @@ export interface ToggleStatusResponse {
   isActive: boolean;
 }
 
+export interface ToggleVerifiedResponse {
+  userId: string;
+  isVerified: boolean;
+}
+
 // API Functions
 export const getDashboardStats = async (): Promise<DashboardStats> => {
   const response = await axiosWrapper<DashboardStats>('get', API_ENDPOINTS.ADMIN.DASHBOARD);
@@ -105,6 +110,11 @@ export const deleteAdminUser = async (id: string): Promise<void> => {
 
 export const toggleUserStatus = async (id: string): Promise<ToggleStatusResponse> => {
   const response = await axiosWrapper<ToggleStatusResponse>('patch', API_ENDPOINTS.ADMIN.TOGGLE_USER_STATUS(id));
+  return response.data;
+};
+
+export const toggleUserVerified = async (id: string): Promise<ToggleVerifiedResponse> => {
+  const response = await axiosWrapper<ToggleVerifiedResponse>('patch', API_ENDPOINTS.ADMIN.TOGGLE_USER_VERIFIED(id));
   return response.data;
 };
 

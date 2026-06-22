@@ -10,7 +10,7 @@ import {
   Pencil,
 } from "lucide-react";
 import { useAdminUsers } from "@/hooks/use-admin";
-import { toggleUserStatus, deleteAdminUser, AdminUser } from "@/lib/api/admin";
+import { toggleUserStatus, toggleUserVerified, deleteAdminUser, AdminUser } from "@/lib/api/admin";
 import { ChangePasswordModal } from "./modals/change-password-modal";
 import { EditUserModal } from "./modals/edit-user-modal";
 import { useQueryClient } from "@tanstack/react-query";
@@ -72,7 +72,7 @@ export function AdminUsers() {
           ).toLowerCase(),
         }),
       );
-    } catch (error) {
+    } catch {
       toast.error(t("messages.statusError"));
     }
   };
@@ -83,8 +83,27 @@ export function AdminUsers() {
       queryClient.invalidateQueries({ queryKey: ["admin", "users"] });
       queryClient.invalidateQueries({ queryKey: ["admin", "dashboard-stats"] });
       toast.success(t("messages.deleteSuccess", { name: userName }));
-    } catch (error) {
+    } catch {
       toast.error(t("messages.deleteError"));
+    }
+  };
+
+  const handleToggleVerified = async (
+    userId: string,
+    userName: string,
+    currentVerified: boolean,
+  ) => {
+    try {
+      await toggleUserVerified(userId);
+      queryClient.invalidateQueries({ queryKey: ["admin", "users"] });
+      toast.success(
+        t("messages.verifiedSuccess", {
+          name: userName,
+          status: t(currentVerified ? "actions.unverify" : "actions.verify").toLowerCase(),
+        }),
+      );
+    } catch {
+      toast.error(t("messages.verifiedError"));
     }
   };
 
@@ -209,6 +228,9 @@ export function AdminUsers() {
                       {t("table.status")}
                     </th>
                     <th className="text-start py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                      {t("table.verified")}
+                    </th>
+                    <th className="text-start py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">
                       {t("table.joined")}
                     </th>
                     <th
@@ -312,6 +334,59 @@ export function AdminUsers() {
                               user._id,
                               user.name,
                               user.isActive,
+                            )
+                          }
+                        />
+                      </td>
+                      <td className="py-4 px-6 text-start">
+                        <ConfirmationDialog
+                          trigger={
+                            <div className="flex items-center gap-3">
+                              <Switch
+                                checked={user.isVerified}
+                                onCheckedChange={() => { }}
+                              />
+                              <span
+                                className={`text-sm font-medium ${user.isVerified ? "text-green-600" : "text-gray-400"} whitespace-nowrap`}
+                              >
+                                {user.isVerified
+                                  ? t("verified.verified")
+                                  : t("verified.unverified")}
+                              </span>
+                            </div>
+                          }
+                          icon={{
+                            src: user.isVerified
+                              ? "/images/icons/cancel.svg"
+                              : "/images/icons/verified.svg",
+                            alt: user.isVerified
+                              ? t("actions.unverify")
+                              : t("actions.verify"),
+                            bgColor: user.isVerified
+                              ? "bg-red-100"
+                              : "bg-green-100",
+                          }}
+                          title={
+                            user.isVerified
+                              ? t("modals.unverifyTitle")
+                              : t("modals.verifyTitle")
+                          }
+                          description={t(
+                            user.isVerified
+                              ? "modals.unverifyDescription"
+                              : "modals.verifyDescription",
+                            { name: user.name },
+                          )}
+                          confirmButtonText={
+                            user.isVerified
+                              ? t("actions.unverify")
+                              : t("actions.verify")
+                          }
+                          onConfirm={() =>
+                            handleToggleVerified(
+                              user._id,
+                              user.name,
+                              user.isVerified,
                             )
                           }
                         />
@@ -450,19 +525,73 @@ export function AdminUsers() {
                           handleToggleStatus(user._id, user.name, user.isActive)
                         }
                       />
+                      <ConfirmationDialog
+                        trigger={
+                          <div className="flex items-center gap-2">
+                            <Switch
+                              checked={user.isVerified}
+                              onCheckedChange={() => { }}
+                            />
+                          </div>
+                        }
+                        icon={{
+                          src: user.isVerified
+                            ? "/images/icons/cancel.svg"
+                            : "/images/icons/verified.svg",
+                          alt: user.isVerified
+                            ? t("actions.unverify")
+                            : t("actions.verify"),
+                          bgColor: user.isVerified
+                            ? "bg-red-100"
+                            : "bg-green-100",
+                        }}
+                        title={
+                          user.isVerified
+                            ? t("modals.unverifyTitle")
+                            : t("modals.verifyTitle")
+                        }
+                        description={t(
+                          user.isVerified
+                            ? "modals.unverifyDescription"
+                            : "modals.verifyDescription",
+                          { name: user.name },
+                        )}
+                        confirmButtonText={
+                          user.isVerified
+                            ? t("actions.unverify")
+                            : t("actions.verify")
+                        }
+                        onConfirm={() =>
+                          handleToggleVerified(user._id, user.name, user.isVerified)
+                        }
+                      />
                     </div>
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2 text-start">
-                      {getRoleBadge(user.role)}
-                      <span className="text-xs text-gray-400">
-                        {new Date(user.createdAt).toLocaleDateString(locale, {
-                          month: "short",
-                          day: "numeric",
-                          year: "numeric",
-                        })}
-                      </span>
+                      <div className="flex flex-col items-start gap-1">
+                        {getRoleBadge(user.role)}
+                        <div className="flex items-center gap-2 text-xs">
+                          <span className={user.isActive ? "text-green-600" : "text-gray-400"}>
+                            {t("statusLabel", {
+                              status: user.isActive ? t("status.active") : t("status.inactive"),
+                            })}
+                          </span>
+                          <span className={user.isVerified ? "text-green-600" : "text-gray-400"}>
+                            {t("verifiedLabel", {
+                              status: user.isVerified ? t("verified.verified") : t("verified.unverified"),
+                            })}
+                          </span>
+                        </div>
+                      </div>
                     </div>
+                    <span className="text-xs text-gray-400">
+                      {new Date(user.createdAt).toLocaleDateString(locale, {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      })}
+                    </span>
                     <div className="flex items-center gap-2">
                       <Button
                         variant="outline"

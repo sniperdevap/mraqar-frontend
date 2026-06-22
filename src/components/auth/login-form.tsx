@@ -2,18 +2,17 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Phone } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 
 import { useAuthStore } from "@/lib/store/auth-store";
 import { resendOTP } from "@/lib/api/auth";
 import { getErrorMessage, getErrorCode } from "@/lib/utils/api";
+import { AuthTabs } from "@/components/auth/auth-tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -125,17 +124,10 @@ export function LoginForm() {
   };
 
   return (
-    <div className="flex-1 flex flex-col items-center justify-center py-8 px-4">
+    <div className="flex-1 flex flex-col items-center justify-start md:justify-center pt-4 md:pt-8 pb-6 px-4">
       <div className="w-full max-w-sm space-y-6">
         {/* Compact Header */}
         <div className="flex flex-col items-center text-center">
-          <Image
-            src="/images/aqar-new-logo.png"
-            alt="Mr aqar Logo"
-            width={100}
-            height={40}
-            className="h-16 w-auto mb-4"
-          />
           <h2 className="text-xl font-bold text-gray-900 tracking-tight">
             {t("title")}
           </h2>
@@ -144,6 +136,9 @@ export function LoginForm() {
 
         {/* Clean Login Card */}
         <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5 md:p-6">
+          <div className="-mt-5 md:-mt-6 -mx-5 md:-mx-6 mb-4">
+            <AuthTabs />
+          </div>
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(handleSubmit)}
@@ -159,13 +154,18 @@ export function LoginForm() {
                       {tSignup("phone")}
                     </FormLabel>
                     <FormControl>
-                      <Input
-                        dir="ltr"
-                        type="text"
-                        placeholder={tSignup("phonePlaceholder")}
-                        className="bg-gray-50 border-gray-100 rounded-lg h-10.5 text-sm focus:ring-primary/20 focus:border-primary transition-all"
-                        {...field}
-                      />
+                      <div className="relative">
+                        <Input
+                          dir="ltr"
+                          type="text"
+                          placeholder={tSignup("phonePlaceholder")}
+                          className={`bg-gray-50 border-gray-100 rounded-lg h-10.5 text-sm focus:ring-primary/20 focus:border-primary transition-all ${locale === "ar" ? "pl-10" : "pr-10"}`}
+                          {...field}
+                        />
+                        <div className={`absolute top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none ${locale === "ar" ? "left-3" : "right-3"}`}>
+                          <Phone size={18} />
+                        </div>
+                      </div>
                     </FormControl>
                     <FormMessage className="text-[11px]" />
                   </FormItem>
@@ -178,24 +178,15 @@ export function LoginForm() {
                 name="password"
                 render={({ field }) => (
                   <FormItem className="space-y-1.5">
-                    <div className="flex items-center justify-between">
-                      <FormLabel className="text-gray-700 font-medium text-xs uppercase tracking-wider">
-                        {tSignup("password")}
-                      </FormLabel>
-                      <Link
-                        href="/auth/forgot-password"
-                        title={t("forgotPassword")}
-                        className="text-primary hover:underline text-[11px] font-semibold"
-                      >
-                        {t("forgotPassword")}
-                      </Link>
-                    </div>
+                    <FormLabel className="text-gray-700 font-medium text-xs uppercase tracking-wider">
+                      {tSignup("password")}
+                    </FormLabel>
                     <FormControl>
                       <div className="relative">
                         <Input
                           type={showPassword ? "text" : "password"}
                           placeholder={tSignup("passwordPlaceholder")}
-                          className="bg-gray-50 border-gray-100 rounded-lg h-10.5 text-sm focus:ring-primary/20 focus:border-primary pr-10 transition-all"
+                          className={`bg-gray-50 border-gray-100 rounded-lg h-10.5 text-sm focus:ring-primary/20 focus:border-primary transition-all ${locale === "ar" ? "pl-10" : "pr-10"}`}
                           {...field}
                         />
                         <button
@@ -230,19 +221,6 @@ export function LoginForm() {
               </div>
             </form>
           </Form>
-
-          {/* Footer Link */}
-          <div className="mt-6 text-center border-t border-gray-50 pt-4">
-            <p className="text-gray-500 text-xs">
-              {t("noAccount") || "Don't have an account?"}{" "}
-              <Link
-                href="/auth/signup"
-                className="text-primary font-bold hover:underline"
-              >
-                {t("createAccount")}
-              </Link>
-            </p>
-          </div>
         </div>
       </div>
     </div>

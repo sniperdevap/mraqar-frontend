@@ -14,6 +14,7 @@ export const signupValidationSchema = z.object({
   name: z.string().min(1, 'Name is required').trim(),
   phoneNumber: z.string().min(1, 'Phone number is required').trim(),
   password: passwordSchema,
+  avatar: z.string().min(1, 'Profile photo is required'),
 });
 
 // Forgot password validation schema

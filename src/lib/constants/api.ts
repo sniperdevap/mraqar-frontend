@@ -146,6 +146,7 @@ export const API_ENDPOINTS = {
     USER_DETAILS: (id: string) => `/admin/users/${id}`,
     DELETE_USER: (id: string) => `/admin/users/${id}`,
     TOGGLE_USER_STATUS: (id: string) => `/admin/users/${id}/toggle-status`,
+    TOGGLE_USER_VERIFIED: (id: string) => `/admin/users/${id}/toggle-verified`,
     CHANGE_USER_PASSWORD: (id: string) => `/admin/users/${id}/password`,
     ADS: '/admin/ads',
     FAILED_ADS: '/admin/failed-ads',
