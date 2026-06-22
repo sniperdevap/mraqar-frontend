@@ -133,6 +133,7 @@
     "failedToLoadAdDetails": "Failed to load ad details",
     "failedToCreateAd": "Failed to create ad. Please try again.",
     "failedToUpdateAd": "Failed to update ad. Please try again.",
+    "loginRequired": "Please sign in to create an ad.",
     "subscriptionRequired": "You need an active subscription with credits to create an ad.",
     "insufficientPremiumCredits": "You don't have Prem ad you can continue uploading with your Normal Ad.",
     "insufficientNormalCredits": "You don't have normal ad credits. Please switch to a premium ad or renew your plan.",

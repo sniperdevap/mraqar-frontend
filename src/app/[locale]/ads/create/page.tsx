@@ -1,6 +1,4 @@
-import dynamic from 'next/dynamic';
-
-const CreateAdForm = dynamic(() => import('@/components/ads/create-ad-form').then(mod => mod.CreateAdForm));
+import { CreateAdForm } from '@/components/ads/create-ad-form';
 
 export default function CreateAdPage() {
   return (
