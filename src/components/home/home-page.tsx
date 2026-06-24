@@ -300,7 +300,7 @@ export function HomePage() {
         <div className="flex flex-col items-center gap-6 w-full bg-white p-6 rounded-[24px] border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.03)]">
           {/* Title */}
           <h1 className="text-xl md:text-2xl font-bold text-[#1f2937] text-center">
-            Find Your Perfect Property
+            {t("hero.title")}
           </h1>
 
           {/* Search Form */}
@@ -318,9 +318,7 @@ export function HomePage() {
                 onChange={(val) => {
                   setSelectedAreas(val);
                 }}
-                placeholder={
-                  locale === "ar" ? "اختر المنطقة" : "Select Region"
-                }
+                placeholder={t("search.areaPlaceholder")}
                 className="w-full min-h-11 md:min-h-14 h-auto py-1.5 bg-white border border-gray-200 rounded-md flex items-center px-4 text-gray-700  transition-all focus-within:border-[#9a090e] text-[15px] font-medium"
                 disabled={isLoading}
                 enableGrouping={true}
@@ -339,7 +337,7 @@ export function HomePage() {
             >
               <SelectTrigger className="w-full !h-11 md:!h-14 bg-white border border-gray-200 rounded-md text-gray-700 data-[placeholder]:!text-gray-400 transition-all focus:border-[#9a090e] text-[15px] font-medium px-4">
                 <SelectValue
-                  placeholder={locale === "ar" ? "اختر نوع العقار" : "Select Property Type"}
+                  placeholder={t("search.propertyTypePlaceholder")}
                 />
               </SelectTrigger>
               <SelectContent className="rounded-xl">
@@ -366,7 +364,7 @@ export function HomePage() {
                   : "text-gray-500 hover:text-gray-700"
                   } ${direction === "rtl" ? "rounded-r-md border-l" : "rounded-l-md border-r"}`}
               >
-                {locale === "ar" ? "للبدل" : "Exchange"}
+                {t("tabs.exchange")}
               </button>
               <button
                 onClick={() => {
@@ -377,7 +375,7 @@ export function HomePage() {
                   : "text-gray-500 hover:text-gray-700"
                   } ${direction === "rtl" ? "border-l" : "border-r"}`}
               >
-                {locale === "ar" ? "للايجار" : "Rent"}
+                {t("tabs.rent")}
               </button>
               <button
                 onClick={() => {
@@ -388,7 +386,7 @@ export function HomePage() {
                   : "text-gray-500 hover:text-gray-700"
                   } ${direction === "rtl" ? "rounded-l-md" : "rounded-r-md"}`}
               >
-                {locale === "ar" ? "للبيع" : "Sale"}
+                {t("tabs.sale")}
               </button>
             </div>
 
@@ -397,7 +395,7 @@ export function HomePage() {
               onClick={handleSearch}
               className="rounded-md h-11 md:!h-14 w-full bg-[#9a090e] hover:bg-[#9a090e]/95 text-white font-medium text-[15px] transition-all active:scale-[0.98]"
             >
-              {locale === "ar" ? "بحث" : "Search"}
+              {tCommon("buttons.search")}
             </Button>
           </div>
         </div>
@@ -417,7 +415,7 @@ export function HomePage() {
                   $
                 </div>
                 <h2 className="text-xl font-bold text-black tracking-tight hover:text-emerald-700 transition-colors">
-                  Latest Listings
+                  {t("latestListings.title")}
                 </h2>
               </div>
               <div className="flex flex-col gap-2">
@@ -462,7 +460,7 @@ export function HomePage() {
         <DialogContent className="w-[calc(100%-2rem)] !max-w-[calc(100%-2rem)] sm:!max-w-sm rounded-[24px] bg-white !px-6 !py-6 md:!px-8 md:!py-6 border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.08)]" dir={direction}>
           <DialogHeader>
             <DialogTitle className="text-lg font-bold text-center text-[#1f2937] mb-2">
-              {locale === "ar" ? "اختر نطاق السعر" : "Select Price Range"}
+              {t("search.selectPriceRange")}
             </DialogTitle>
           </DialogHeader>
 
@@ -470,7 +468,7 @@ export function HomePage() {
             {/* Price Header */}
             <div>
               <p className="text-[11px] font-bold text-[#8a97ab] uppercase tracking-wider mb-1">
-                {locale === "ar" ? "نطاق السعر" : "Price Range"}
+                {t("search.priceRangeLabel")}
               </p>
               <div className="flex items-baseline gap-1 text-primary">
                 <span className="text-lg font-bold">
@@ -478,7 +476,7 @@ export function HomePage() {
                 </span>
                 <span className="text-sm font-semibold opacity-60">
                   {" "}
-                  {locale === "ar" ? "د.ك" : "KD"}
+                  {tCommon("currency")}
                 </span>
                 <span className="mx-2 text-[#d1d5db]">―</span>
                 <span className="text-lg font-bold">
@@ -486,7 +484,7 @@ export function HomePage() {
                 </span>
                 <span className="text-sm font-semibold opacity-60">
                   {" "}
-                  {locale === "ar" ? "د.ك" : "KD"}
+                  {tCommon("currency")}
                 </span>
               </div>
             </div>
@@ -534,7 +532,7 @@ export function HomePage() {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5 text-start">
                 <label className="text-[11px] font-bold text-[#8a97ab] uppercase ms-1">
-                  {locale === "ar" ? "الحد الأدنى" : "Min Price"}
+                  {t("search.minPriceLabel")}
                 </label>
                 <Input
                   type="number"
@@ -548,7 +546,7 @@ export function HomePage() {
 
               <div className="space-y-1.5 text-start">
                 <label className="text-[11px] font-bold text-[#8a97ab] uppercase ms-1">
-                  {locale === "ar" ? "الحد الأقصى" : "Max Price"}
+                  {t("search.maxPriceLabel")}
                 </label>
                 <Input
                   type="number"
@@ -573,14 +571,14 @@ export function HomePage() {
                 }}
                 className="text-sm font-bold text-[#94a3b8] transition-colors hover:text-[#ef4444]"
               >
-                {locale === "ar" ? "إعادة تعيين" : "Reset"}
+                {t("search.reset")}
               </button>
 
               <Button
                 onClick={handlePriceSearch}
                 className="h-11 rounded-lg bg-primary px-8 text-sm font-bold text-white hover:bg-primary/90 shadow-sm transition-all active:scale-95"
               >
-                {locale === "ar" ? "بحث" : "Search"}
+                {tCommon("buttons.search")}
               </Button>
             </div>
           </div>

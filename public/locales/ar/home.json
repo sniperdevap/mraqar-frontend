@@ -1,17 +1,22 @@
 {
   "hero": {
-    "title": "إبحث عن عقارك",
+    "title": "ابحث عن عقارك بكل سهولة",
     "subtitle": "ابحث عن عقارات للبيع أو الإيجار أو التبادل"
   },
   "search": {
     "propertyType": "نوع العقار",
-    "propertyTypePlaceholder": "جميع أنواع العقارات",
+    "propertyTypePlaceholder": "اختر نوع العقار",
     "area": "المنطقة",
-    "areaPlaceholder": "اختر المناطق",
+    "areaPlaceholder": "اختر المنطقة",
     "all": "الكل",
     "priceRange": "نطاق السعر (د.ك)",
+    "priceRangeLabel": "نطاق السعر",
+    "selectPriceRange": "اختر نطاق السعر",
     "minPrice": "أقل سعر",
-    "maxPrice": "أعلى سعر"
+    "maxPrice": "أعلى سعر",
+    "minPriceLabel": "الحد الأدنى",
+    "maxPriceLabel": "الحد الأقصى",
+    "reset": "إعادة تعيين"
   },
   "tabs": {
     "sale": "للبيع ",

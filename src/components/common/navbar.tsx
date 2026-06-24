@@ -407,22 +407,20 @@ export function Navbar() {
               return (
                 <div
                   key="central"
-                  className="flex items-center justify-center -translate-y-[3px]"
+                  className="relative flex items-center justify-center w-16 h-full"
                 >
                   <motion.button
                     onClick={handleCreateAdClick}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.92 }}
-                    className="focus:outline-none group"
+                    whileHover={{ scale: 1.08 }}
+                    whileTap={{ scale: 0.90 }}
+                    className="absolute -top-[34px] focus:outline-none z-50"
                   >
-                    <div className="flex items-center justify-center w-[44px] h-[44px] rounded-full border border-primary/50 bg-primary/10 cursor-pointer transition-all duration-300">
-                      <div className="flex items-center justify-center w-[36px] h-[36px] bg-white rounded-full shadow-sm">
-                        <Plus
-                          size={24}
-                          strokeWidth={2}
-                          className="text-gray-900"
-                        />
-                      </div>
+                    <div className="flex items-center justify-center w-[50px] h-[50px] rounded-full bg-primary shadow-[0_8px_16px_rgba(154,9,14,0.3)] cursor-pointer transition-all duration-300 hover:shadow-[0_8px_20px_rgba(154,9,14,0.45)]">
+                      <Plus
+                        size={26}
+                        strokeWidth={3.5}
+                        className="text-white"
+                      />
                     </div>
                   </motion.button>
                 </div>

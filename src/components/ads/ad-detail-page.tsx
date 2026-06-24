@@ -666,7 +666,7 @@ ${window.location.href}`);
         <div className="max-w-4xl mx-auto flex items-center gap-3">
           <button
             onClick={handleWhatsApp}
-            className="cursor-pointer flex-1 bg-[#15803d] hover:bg-[#166534] text-white h-14 rounded-2xl flex items-center justify-center gap-3 text-xl font-bold transition-all active:scale-[0.98] shadow-md"
+            className="cursor-pointer flex-1 bg-[#15803d] hover:bg-[#166534] text-white h-12 rounded-xl flex items-center justify-center gap-3 text-xl font-bold transition-all active:scale-[0.98] shadow-md"
           >
             <svg
               stroke="currentColor"
@@ -683,7 +683,7 @@ ${window.location.href}`);
           </button>
           <button
             onClick={handlePhoneCall}
-            className="cursor-pointer flex items-center justify-center bg-[#111] text-white w-14 h-14 rounded-2xl hover:bg-black transition-all active:scale-90"
+            className="cursor-pointer flex items-center justify-center bg-[#111] text-white w-14 h-12 rounded-xl hover:bg-black transition-all active:scale-90"
           >
             <Phone size={24} fill="currentColor" />
           </button>

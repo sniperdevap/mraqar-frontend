@@ -102,7 +102,7 @@ export function MultiSelect({ options, value, onChange, placeholder = 'Select it
   return (
     <div ref={containerRef} className="relative w-full">
       <div
-        dir={dir}
+        dir="ltr"
         onClick={() => !disabled && setOpen(true)}
         className={cn(
           'border-secondary data-[placeholder]:text-muted-foreground flex w-full items-center justify-between gap-2 rounded-md border bg-white px-3 text-sm shadow-xs transition-[color,box-shadow] outline-none disabled:cursor-not-allowed disabled:opacity-50 cursor-text overflow-hidden',
@@ -110,7 +110,7 @@ export function MultiSelect({ options, value, onChange, placeholder = 'Select it
           disabled && 'opacity-50 cursor-not-allowed'
         )}
       >
-        <div className={cn('flex flex-wrap gap-2 flex-1 items-center min-w-0 py-1 overflow-hidden')}>
+        <div className={cn('flex flex-wrap gap-2 flex-1 items-center min-w-0 py-1 overflow-hidden', dir === 'rtl' ? 'justify-end' : 'justify-start')}>
           {' '}
           {selectedOptions.length > 0 ? (
             <>
@@ -134,7 +134,7 @@ export function MultiSelect({ options, value, onChange, placeholder = 'Select it
                   onChange={e => setSearchTerm(e.target.value)}
                   onClick={e => e.stopPropagation()}
                   placeholder="Search..."
-                  className={cn('border-none outline-none bg-transparent flex-1 text-[15px] font-medium text-gray-700 placeholder:text-gray-400', dir === 'rtl' ? 'text-left' : 'text-left')}
+                  className="border-none outline-none bg-transparent flex-1 text-[15px] font-medium text-gray-700 placeholder:text-gray-400 text-left"
                   disabled={disabled}
                 />
               )}
@@ -150,11 +150,11 @@ export function MultiSelect({ options, value, onChange, placeholder = 'Select it
                   onChange={e => setSearchTerm(e.target.value)}
                   onClick={e => e.stopPropagation()}
                   placeholder={placeholder}
-                  className="border-none outline-none bg-transparent flex-1 text-[15px] font-medium text-gray-700 placeholder:text-gray-400 min-w-[150px]"
+                  className="border-none outline-none bg-transparent flex-1 text-[15px] font-medium text-gray-700 placeholder:text-gray-400 min-w-[150px] text-left"
                   disabled={disabled}
                 />
               )}
-              {!open && <span className={cn('text-gray-400 text-[15px] font-medium', dir === 'rtl' ? 'text-left w-full' : 'text-left w-full')}>{placeholder}</span>}
+              {!open && <span className="text-gray-400 text-[15px] font-medium block w-full text-left">{placeholder}</span>}
             </>
           )}
         </div>
@@ -184,16 +184,16 @@ export function MultiSelect({ options, value, onChange, placeholder = 'Select it
                 {Object.entries(groupedOptions).map(([group, opts]) => (
                   <div key={group}>
                     {enableGrouping && group !== 'default' && (
-                      <div className={`px-4  py-2 text-xs font-bold text-gray-400 uppercase tracking-wider bg-gray-50/50 top-0 z-10 ${dir === 'rtl' ? 'text-left' : 'text-left'}`}>{group}</div>
+                      <div className="px-4 py-2 text-xs font-bold text-gray-400 uppercase tracking-wider bg-gray-50/50 top-0 z-10 text-left">{group}</div>
                     )}
                     <div className="space-y-0.5">
                       {opts.map(option => (
                         <div
                           key={option.value}
                           onClick={() => handleToggle(option.value)}
-                          className={cn('flex items-center gap-2 px-4 py-3 text-sm cursor-pointer  transition-all hover:bg-primary/10 ', dir === 'rtl' ? 'text-left' : 'text-left')}
+                          className="flex items-center gap-2 px-4 py-3 text-sm cursor-pointer transition-all hover:bg-primary/10 text-left"
                         >
-                          <span className={`flex-1 ${dir === 'rtl' ? 'text-left' : 'text-left'}`}>{option.label}</span>
+                          <span className="flex-1 text-left">{option.label}</span>
                         </div>
                       ))}
                     </div>

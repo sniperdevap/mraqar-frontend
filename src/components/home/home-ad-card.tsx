@@ -114,15 +114,15 @@ export function HomeAdCard({ ad, onClick }: HomeAdCardProps) {
               <span className="font-bold text-[#197aca] text-sm">
                 {formatPrice(ad.price)}
               </span>
-              <div className="flex items-center gap-1 text-gray-400">
-                <Clock size={12} className="text-gray-400" />
-                <span className="text-[10px] font-medium">{getTimeAgo(ad.createdAt)}</span>
+              <div className="flex items-center gap-1 text-gray-500 font-semibold">
+                <Clock size={12} className="text-gray-500" />
+                <span className="text-[10px] font-semibold">{getTimeAgo(ad.createdAt)}</span>
               </div>
 
             </div>
 
             {/* Description */}
-            <p className="text-[11px] text-gray-500 line-clamp-2 leading-relaxed font-normal">
+            <p className="text-[13px] text-gray-500 line-clamp-2 leading-relaxed font-normal">
               {ad.description}
             </p>
           </div>
