@@ -107,13 +107,6 @@ export function ResetPasswordForm() {
       <div className="w-full max-w-lg md:space-y-8 space-y-4">
         {/* Logo and Header */}
         <div className="flex flex-col items-center text-center">
-          <Image
-            src="/images/aqar-new-logo.png"
-            alt="Mr aqar Logo"
-            width={140}
-            height={50}
-            className="h-28 w-auto"
-          />
           <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mt-4">
             {t("title")}
           </h2>

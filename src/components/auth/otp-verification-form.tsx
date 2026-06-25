@@ -132,13 +132,6 @@ export function OTPVerificationForm() {
     <div className="flex-1 flex flex-col items-center justify-start md:justify-center pt-4 md:pt-6 pb-6 px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-lg md:space-y-8 space-y-3">
         <div className="flex flex-col items-center text-center">
-          <Image
-            src="/images/aqar-new-logo.png"
-            alt="Mr aqar Logo"
-            width={140}
-            height={50}
-            className="h-24 w-auto"
-          />
           <h2 className="md:text-3xl text-2xl font-bold mt-4 text-primary">
             {t("title")}
           </h2>

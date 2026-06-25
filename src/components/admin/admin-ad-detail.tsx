@@ -15,7 +15,6 @@ import {
 import { updateAd, deleteAd } from "@/lib/api/ad";
 import { Media } from "@/types/ad";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { formatDistanceToNowStrict } from "date-fns";
 import { ar, enUS } from "date-fns/locale";

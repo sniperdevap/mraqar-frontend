@@ -343,19 +343,17 @@ export function Navbar() {
                     <ChevronLeft size={28} />
                   </button>
                 ) : null}
-                {!isAuthRoute && (
-                  <div className="flex-shrink-0">
-                    <Link href="/">
-                      <Image
-                        src="/images/aqar-new-logo.png"
-                        alt="Mr aqar Logo"
-                        width={100}
-                        height={40}
-                        className="h-16 w-auto"
-                      />
-                    </Link>
-                  </div>
-                )}
+                <div className="flex-shrink-0 flex items-center justify-center w-full">
+                  <Link href="/">
+                    <Image
+                      src="/images/aqar-new-logo.png"
+                      alt="Mr aqar Logo"
+                      width={100}
+                      height={40}
+                      className="h-16 w-auto"
+                    />
+                  </Link>
+                </div>
               </div>
               <div className="flex items-center gap-3">
                 {isAuthenticated && (
