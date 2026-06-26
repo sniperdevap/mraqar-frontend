@@ -1,6 +1,4 @@
-import dynamic from 'next/dynamic';
-
-const AccountPage = dynamic(() => import('@/components/account/account-page').then(mod => mod.AccountPage));
+import { AccountPage } from '@/components/account/account-page';
 
 export default function Account() {
   return <AccountPage />;

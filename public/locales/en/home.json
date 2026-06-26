@@ -5,13 +5,18 @@
   },
   "search": {
     "propertyType": "Property Type",
-    "propertyTypePlaceholder": "All Property Types",
+    "propertyTypePlaceholder": "Select Property Type",
     "area": "Area",
-    "areaPlaceholder": "Select Areas",
+    "areaPlaceholder": "Select Region",
     "all": "All",
     "priceRange": "Price Range (KWD)",
+    "priceRangeLabel": "Price Range",
+    "selectPriceRange": "Select Price Range",
     "minPrice": "Min Price",
-    "maxPrice": "Max Price"
+    "maxPrice": "Max Price",
+    "minPriceLabel": "Min Price",
+    "maxPriceLabel": "Max Price",
+    "reset": "Reset"
   },
   "tabs": {
     "sale": "For Sale",

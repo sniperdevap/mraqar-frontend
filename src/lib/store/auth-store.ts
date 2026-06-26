@@ -5,7 +5,7 @@ import { persist } from 'zustand/middleware';
 import Cookies from 'js-cookie';
 import { AuthState } from '@/types/auth';
 import { login as loginAPI, signup as signupAPI } from '@/lib/api/auth';
-import { getMySubscriptions, UserSubscription } from '@/lib/api/subscription-plan';
+import { getMySubscriptions } from '@/lib/api/subscription-plan';
 
 export const useAuthStore = create<AuthState>()(
   persist(
@@ -42,7 +42,7 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
-      signup: async (payload: { name: string; phoneNumber: string; password: string }): Promise<boolean> => {
+      signup: async (payload: { name: string; phoneNumber: string; password: string; avatar: string }): Promise<boolean> => {
         set({ isLoading: true });
 
         try {
@@ -50,6 +50,7 @@ export const useAuthStore = create<AuthState>()(
             name: payload.name,
             phoneNumber: payload.phoneNumber,
             password: payload.password,
+            avatar: payload.avatar,
           });
           set({ isLoading: false });
           return true;

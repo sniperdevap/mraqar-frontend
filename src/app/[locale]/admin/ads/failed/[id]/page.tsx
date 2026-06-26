@@ -58,6 +58,7 @@ export default function AdminConvertFailedAdPage() {
         <CreateAdForm
           initialData={adContext}
           mode="create"
+          requireCreditsForCreate={false}
           onSuccess={async () => {
             // After successfully creating the real ad, delete the failed record
             try {

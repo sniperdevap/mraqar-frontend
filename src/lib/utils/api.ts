@@ -82,6 +82,17 @@ export const getErrorCode = (error: unknown): string | undefined => {
   return undefined;
 };
 
+export const getErrorData = <T = unknown>(error: unknown): T | undefined => {
+  if (error && typeof error === 'object' && 'data' in error) {
+    return (error as { data?: T }).data;
+  }
+  if (error && typeof error === 'object' && 'response' in error) {
+    const axiosError = error as AxiosError<ApiResponse<T>>;
+    return axiosError.response?.data?.data;
+  }
+  return undefined;
+};
+
 const isSubscriptionError = (status: number | undefined, errorMessage: string): boolean => {
   if (status !== 403) return false;
   return SUBSCRIPTION_ERROR_KEYWORDS.some(keyword => errorMessage.toLowerCase().includes(keyword));
@@ -191,6 +202,7 @@ const axiosWrapper = async <T = unknown>(
       if (errorData.code) {
         (error as Error & { code?: string }).code = errorData.code;
       }
+      (error as Error & { data?: unknown }).data = errorData.data;
       throw error;
     }
 

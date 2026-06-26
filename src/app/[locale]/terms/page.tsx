@@ -1,12 +1,11 @@
-"use client";
-
 import React from "react";
-import { useTranslations, useLocale } from "@/hooks/use-locale";
 import { Mail, Phone, MapPin, Instagram } from "lucide-react";
+import { getLocale, getTranslations } from "next-intl/server";
 
-export default function TermsPage() {
-  const t = useTranslations("common.terms");
-  const { direction } = useLocale();
+export default async function TermsPage() {
+  const t = await getTranslations("common.terms");
+  const locale = await getLocale();
+  const direction = locale === "ar" ? "rtl" : "ltr";
 
   return (
     <div className="min-h-screen flex flex-col bg-[#f0f5f4]" dir={direction}>

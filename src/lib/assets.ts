@@ -1,6 +1,6 @@
 export const ASSETS = {
   images: {
-    mainLogo: "/images/main-Mr aqar-logo.png",
+    mainLogo: "/images/aqar-new-logo.png",
     logoIcon: "/images/icons/logo-icon.svg",
     default: "/images/avatars.png",
     notifications: {
@@ -79,7 +79,7 @@ export const ASSETS = {
       logout: "/images/icons/logout.svg",
     },
     backgrounds: {
-      auth: "/images/auth/auth-bg.png",
+      auth: "/images/auth/auth-bg.svg",
     },
   },
 

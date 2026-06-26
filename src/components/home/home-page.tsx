@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import { Slider } from "@/components/ui/slider";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,6 +14,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import dynamic from "next/dynamic";
 import { useTranslations, useLocale } from "@/hooks/use-locale";
 import { Loader } from "../common/loader";
@@ -20,7 +27,7 @@ import { usePropertyTypes, useAreas } from "@/hooks/use-metadata";
 import { useSearchAds } from "@/hooks/use-ads";
 import { useAdStore } from "@/lib/store/ad-store";
 import { useInView } from "react-intersection-observer";
-import { Search, X, RotateCcw } from "lucide-react";
+import { Search, X, RotateCcw, DollarSign } from "lucide-react";
 
 const MultiSelect = dynamic(() =>
   import("@/components/ui/multi-select").then((mod) => mod.MultiSelect),
@@ -39,6 +46,7 @@ export function HomePage() {
   const { locale, direction } = useLocale();
 
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [isPriceFilterOpen, setIsPriceFilterOpen] = useState(false);
   const [showStickySearchBar, setShowStickySearchBar] = useState(false);
 
   const [propertyType, setPropertyType] = useState("");
@@ -46,6 +54,11 @@ export function HomePage() {
   const [activeTab, setActiveTab] = useState("");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
+
+  const [priceMinDraft, setPriceMinDraft] = useState("");
+  const [priceMaxDraft, setPriceMaxDraft] = useState("");
+  const [minSliderValue, setMinSliderValue] = useState(0);
+  const [maxSliderValue, setMaxSliderValue] = useState(1000);
 
   const adsPerPage = 10;
 
@@ -108,19 +121,119 @@ export function HomePage() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleSearch = () => {
-    const params = new URLSearchParams();
+  const clamp = (value: number, min: number, max: number) =>
+    Math.min(Math.max(value, min), max);
 
-    if (activeTab) params.set("purpose", activeTab);
-    if (propertyType && propertyType !== "all")
-      params.set("propertyType", propertyType);
-    selectedAreas.forEach((area) => params.append("area", area));
-    if (minPrice) params.set("minPrice", minPrice);
-    if (maxPrice) params.set("maxPrice", maxPrice);
+  const getRoundedSliderMax = (value: number) => {
+    if (value <= 1000) return 1000;
+    if (value <= 5000) return Math.ceil(value / 250) * 250;
+    if (value <= 50000) return Math.ceil(value / 1000) * 1000;
+    return Math.ceil(value / 10000) * 10000;
+  };
+
+  const sliderMax = useMemo(() => {
+    const knownMaxPrice = ads.reduce(
+      (maxPrice, ad) => Math.max(maxPrice, ad.price || 0),
+      0,
+    );
+    const parsedMax = maxPrice ? Number(maxPrice) : 0;
+    return getRoundedSliderMax(
+      Math.max(knownMaxPrice, parsedMax, 1000),
+    );
+  }, [ads, maxPrice]);
+
+  useEffect(() => {
+    const parsedMin = minPrice ? Number(minPrice) : 0;
+    const parsedMax = maxPrice ? Number(maxPrice) : sliderMax;
+    const clampedMin = clamp(
+      Number.isFinite(parsedMin) ? parsedMin : 0,
+      0,
+      sliderMax,
+    );
+    const clampedMax = clamp(
+      Number.isFinite(parsedMax) ? parsedMax : sliderMax,
+      0,
+      sliderMax,
+    );
+    const nextMin = Math.min(clampedMin, clampedMax);
+    const nextMax = Math.max(clampedMin, clampedMax);
+
+    setPriceMinDraft(minPrice || "");
+    setPriceMaxDraft(maxPrice || "");
+    setMinSliderValue(nextMin);
+    setMaxSliderValue(nextMax);
+  }, [minPrice, maxPrice, sliderMax]);
+
+  useEffect(() => {
+    if (!isPriceFilterOpen) {
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      const rawMin = priceMinDraft.trim();
+      const rawMax = priceMaxDraft.trim();
+      const parsedMin = rawMin === "" ? 0 : Number(rawMin);
+      const parsedMax = rawMax === "" ? sliderMax : Number(rawMax);
+
+      if (
+        (rawMin !== "" && Number.isNaN(parsedMin)) ||
+        (rawMax !== "" && Number.isNaN(parsedMax))
+      ) {
+        return;
+      }
+
+      const clampedMin = clamp(parsedMin, 0, sliderMax);
+      const clampedMax = clamp(parsedMax, 0, sliderMax);
+      setMinSliderValue(Math.min(clampedMin, clampedMax));
+      setMaxSliderValue(Math.max(clampedMin, clampedMax));
+    }, 350);
+
+    return () => clearTimeout(timer);
+  }, [priceMinDraft, priceMaxDraft, sliderMax, isPriceFilterOpen]);
+
+  const handlePriceSearch = () => {
+    const rawMin = priceMinDraft.trim();
+    const rawMax = priceMaxDraft.trim();
+    const nextMinPrice = rawMin === "" ? "" : rawMin;
+    const nextMaxPrice = rawMax === "" ? "" : rawMax;
+
+    setMinPrice(nextMinPrice);
+    setMaxPrice(nextMaxPrice);
+    setIsPriceFilterOpen(false);
+
+    handleFilterAndRedirect({
+      minPrice: nextMinPrice,
+      maxPrice: nextMaxPrice,
+    });
+  };
+
+  const handleFilterAndRedirect = (updates: {
+    purpose?: string;
+    propertyType?: string;
+    areas?: string[];
+    minPrice?: string;
+    maxPrice?: string;
+  }) => {
+    const finalPurpose = updates.purpose !== undefined ? updates.purpose : activeTab;
+    const finalPropType = updates.propertyType !== undefined ? updates.propertyType : propertyType;
+    const finalAreas = updates.areas !== undefined ? updates.areas : selectedAreas;
+    const finalMinPrice = updates.minPrice !== undefined ? updates.minPrice : minPrice;
+    const finalMaxPrice = updates.maxPrice !== undefined ? updates.maxPrice : maxPrice;
+
+    const params = new URLSearchParams();
+    if (finalPurpose) params.set("purpose", finalPurpose);
+    if (finalPropType && finalPropType !== "all" && finalPropType !== "")
+      params.set("propertyType", finalPropType);
+    finalAreas.forEach((area) => params.append("area", area));
+    if (finalMinPrice) params.set("minPrice", finalMinPrice);
+    if (finalMaxPrice) params.set("maxPrice", finalMaxPrice);
 
     const query = params.toString();
     router.push(query ? `/search?${query}` : "/search", { scroll: false });
-    setIsFilterOpen(false);
+  };
+
+  const handleSearch = () => {
+    handleFilterAndRedirect({});
   };
 
   const handleReset = () => {
@@ -141,7 +254,7 @@ export function HomePage() {
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Image
-                src="/images/aqar-logo.png"
+                src="/images/aqar-new-logo.png"
                 alt="Logo"
                 width={32}
                 height={32}
@@ -173,21 +286,21 @@ export function HomePage() {
         className="w-full pt-4 md:pt-4 px-4 sm:px-6 lg:px-8 max-w-lg mx-auto mb-4 relative z-10"
         dir={direction}
       >
-        <div className="flex flex-col items-center gap-6 w-full">
-          {/* Logo */}
-          <div className="mb-2">
-            <Image
-              src="/images/aqar-logo.png"
-              alt="Logo"
-              width={180}
-              height={180}
-              className="h-24 md:h-28 w-auto object-contain"
-            />
-          </div>
+        {/* Logo */}
+        <div className="flex justify-center mb-4">
+          <Image
+            src="/images/aqar-new-logo.png"
+            alt="Logo"
+            width={180}
+            height={180}
+            className="h-20 md:h-24 w-auto object-contain"
+          />
+        </div>
 
+        <div className="flex flex-col items-center gap-6 w-full bg-white p-6 rounded-[24px] border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.03)]">
           {/* Title */}
-          <h1 className="text-2xl md:text-3xl font-bold text-[#333] text-center">
-            {locale === "ar" ? "إبحث عن عقارك" : "Find Your Property"}
+          <h1 className="text-xl md:text-2xl font-bold text-[#1f2937] text-center">
+            {t("hero.title")}
           </h1>
 
           {/* Search Form */}
@@ -202,11 +315,11 @@ export function HomePage() {
                     locale === "ar" ? a.governorateAr : a.governorate,
                 }))}
                 value={selectedAreas}
-                onChange={setSelectedAreas}
-                placeholder={
-                  locale === "ar" ? "اكتب المنطقة للبحث" : "Type Area to Search"
-                }
-                className="!h-11 md:!h-12 bg-white border border-gray-200 rounded-full flex items-center px-4 text-gray-700 shadow-sm"
+                onChange={(val) => {
+                  setSelectedAreas(val);
+                }}
+                placeholder={t("search.areaPlaceholder")}
+                className="w-full min-h-11 md:min-h-14 h-auto py-1.5 bg-white border border-gray-200 rounded-md flex items-center px-4 text-gray-700  transition-all focus-within:border-[#9a090e] text-[15px] font-medium"
                 disabled={isLoading}
                 enableGrouping={true}
                 dir={direction}
@@ -216,13 +329,15 @@ export function HomePage() {
             {/* Property Type */}
             <Select
               value={propertyType}
-              onValueChange={setPropertyType}
+              onValueChange={(val) => {
+                setPropertyType(val);
+              }}
               disabled={isLoading}
               dir={direction}
             >
-              <SelectTrigger className="!h-11 md:!h-12 bg-white border border-gray-200 rounded-full text-gray-700 shadow-sm">
+              <SelectTrigger className="w-full !h-11 md:!h-14 bg-white border border-gray-200 rounded-md text-gray-700 data-[placeholder]:!text-gray-400 transition-all focus:border-[#9a090e] text-[15px] font-medium px-4">
                 <SelectValue
-                  placeholder={locale === "ar" ? "نوع العقار" : "Property Type"}
+                  placeholder={t("search.propertyTypePlaceholder")}
                 />
               </SelectTrigger>
               <SelectContent className="rounded-xl">
@@ -230,7 +345,7 @@ export function HomePage() {
                   <SelectItem
                     key={type._id}
                     value={type._id}
-                    className="cursor-pointer font-semibold uppercase text-[12px]"
+                    className="cursor-pointer font-normal text-sm text-gray-800"
                   >
                     {locale === "ar" ? type.labelAr || type.label : type.label}
                   </SelectItem>
@@ -239,43 +354,46 @@ export function HomePage() {
             </Select>
 
             {/* Purpose Tabs (Pills) */}
-            <div className="bg-white p-1 h-11 md:h-12 w-full rounded-full border border-gray-200 flex shadow-sm">
+            <div className="bg-white !h-11 md:!h-14 w-full rounded-md border border-gray-200 flex  items-center divide-x divide-gray-100" dir={direction}>
               <button
-                onClick={() => setActiveTab("rent")}
-                className={`flex-1 h-full font-bold rounded-full transition-all text-[13px] ${
-                  activeTab === "rent"
-                    ? "bg-[#eef4fb] text-[#197aca]"
-                    : "text-gray-500"
-                }`}
+                onClick={() => {
+                  setActiveTab("exchange");
+                }}
+                className={`flex-1 h-full font-medium  transition-all text-[15px] ${activeTab === "exchange"
+                  ? "bg-primary text-white"
+                  : "text-gray-500 hover:text-gray-700"
+                  } ${direction === "rtl" ? "rounded-r-md border-l" : "rounded-l-md border-r"}`}
+              >
+                {t("tabs.exchange")}
+              </button>
+              <button
+                onClick={() => {
+                  setActiveTab("rent");
+                }}
+                className={`flex-1 h-full font-medium  transition-all text-[15px] ${activeTab === "rent"
+                  ? "bg-primary text-white"
+                  : "text-gray-500 hover:text-gray-700"
+                  } ${direction === "rtl" ? "border-l" : "border-r"}`}
               >
                 {t("tabs.rent")}
               </button>
               <button
-                onClick={() => setActiveTab("sale")}
-                className={`flex-1 h-full font-bold rounded-full transition-all text-[13px] ${
-                  activeTab === "sale"
-                    ? "bg-[#eef4fb] text-[#197aca]"
-                    : "text-gray-500"
-                }`}
+                onClick={() => {
+                  setActiveTab("sale");
+                }}
+                className={`flex-1 h-full font-medium transition-all text-[15px] ${activeTab === "sale"
+                  ? "bg-primary text-white"
+                  : "text-gray-500 hover:text-gray-700"
+                  } ${direction === "rtl" ? "rounded-l-md" : "rounded-r-md"}`}
               >
                 {t("tabs.sale")}
-              </button>
-              <button
-                onClick={() => setActiveTab("exchange")}
-                className={`flex-1 h-full font-bold rounded-full transition-all text-[13px] ${
-                  activeTab === "exchange"
-                    ? "bg-[#eef4fb] text-[#197aca]"
-                    : "text-gray-500"
-                }`}
-              >
-                {t("tabs.exchange")}
               </button>
             </div>
 
             {/* Search Button */}
             <Button
               onClick={handleSearch}
-              className="rounded-full h-11 md:h-12 w-full bg-[#197aca] hover:bg-[#1565a8] text-white font-bold text-[16px] shadow-md transition-all active:scale-95"
+              className="rounded-md h-11 md:!h-14 w-full bg-[#9a090e] hover:bg-[#9a090e]/95 text-white font-medium text-[15px] transition-all active:scale-[0.98]"
             >
               {tCommon("buttons.search")}
             </Button>
@@ -292,9 +410,12 @@ export function HomePage() {
             </div>
           ) : ads.length > 0 ? (
             <>
-              <div className="mb-4">
-                <h2 className="text-xl text-center md:text-xl font-bold text-black">
-                  {t("latestListings.latestAds")}
+              <div className="mb-6 flex items-center justify-center gap-2 cursor-pointer select-none" onClick={() => setIsPriceFilterOpen(true)}>
+                <div className="w-8 h-8 rounded-full border-2 border-[#029a9d] bg-[#029a9d]/10 text-[#029a9d] flex items-center justify-center font-bold text-base shadow-sm hover:scale-105 active:scale-95 transition-all">
+                  $
+                </div>
+                <h2 className="text-xl font-bold text-black tracking-tight hover:text-emerald-700 transition-colors">
+                  {t("latestListings.title")}
                 </h2>
               </div>
               <div className="flex flex-col gap-2">
@@ -334,6 +455,135 @@ export function HomePage() {
           )}
         </div>
       </section>
+
+      <Dialog open={isPriceFilterOpen} onOpenChange={setIsPriceFilterOpen}>
+        <DialogContent className="w-[calc(100%-2rem)] !max-w-[calc(100%-2rem)] sm:!max-w-sm rounded-[24px] bg-white !px-6 !py-6 md:!px-8 md:!py-6 border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.08)]" dir={direction}>
+          <DialogHeader>
+            <DialogTitle className="text-lg font-bold text-center text-[#1f2937] mb-2">
+              {t("search.selectPriceRange")}
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-4 mt-2">
+            {/* Price Header */}
+            <div>
+              <p className="text-[11px] font-bold text-[#8a97ab] uppercase tracking-wider mb-1">
+                {t("search.priceRangeLabel")}
+              </p>
+              <div className="flex items-baseline gap-1 text-primary">
+                <span className="text-lg font-bold">
+                  {minSliderValue.toLocaleString(locale)}
+                </span>
+                <span className="text-sm font-semibold opacity-60">
+                  {" "}
+                  {tCommon("currency")}
+                </span>
+                <span className="mx-2 text-[#d1d5db]">―</span>
+                <span className="text-lg font-bold">
+                  {maxSliderValue.toLocaleString(locale)}
+                </span>
+                <span className="text-sm font-semibold opacity-60">
+                  {" "}
+                  {tCommon("currency")}
+                </span>
+              </div>
+            </div>
+
+            {/* Slider Area */}
+            <div className="relative h-10 mb-2 flex items-center">
+              <Slider
+                min={0}
+                max={sliderMax}
+                step={1}
+                value={[minSliderValue, maxSliderValue]}
+                onValueChange={([nextMinRaw, nextMaxRaw]) => {
+                  const nextMin = Math.min(
+                    nextMinRaw ?? 0,
+                    nextMaxRaw ?? sliderMax,
+                  );
+                  const nextMax = Math.max(
+                    nextMaxRaw ?? sliderMax,
+                    nextMinRaw ?? 0,
+                  );
+                  setMinSliderValue(nextMin);
+                  setMaxSliderValue(nextMax);
+                  setPriceMinDraft(String(nextMin));
+                  setPriceMaxDraft(String(nextMax));
+                }}
+                onValueCommit={([nextMinRaw, nextMaxRaw]) => {
+                  const nextMin = Math.min(
+                    nextMinRaw ?? 0,
+                    nextMaxRaw ?? sliderMax,
+                  );
+                  const nextMax = Math.max(
+                    nextMaxRaw ?? sliderMax,
+                    nextMinRaw ?? 0,
+                  );
+                  setMinSliderValue(nextMin);
+                  setMaxSliderValue(nextMax);
+                  setPriceMinDraft(String(nextMin));
+                  setPriceMaxDraft(String(nextMax));
+                }}
+                aria-label="Price range"
+              />
+            </div>
+
+            {/* Manual Inputs */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1.5 text-start">
+                <label className="text-[11px] font-bold text-[#8a97ab] uppercase ms-1">
+                  {t("search.minPriceLabel")}
+                </label>
+                <Input
+                  type="number"
+                  min="0"
+                  value={priceMinDraft}
+                  onChange={(e) => setPriceMinDraft(e.target.value)}
+                  placeholder="0"
+                  className="h-11 rounded-md border shadow-none border-gray-200 bg-transparent px-4 text-base font-bold text-primary placeholder:text-[#cbd5e1] "
+                />
+              </div>
+
+              <div className="space-y-1.5 text-start">
+                <label className="text-[11px] font-bold text-[#8a97ab] uppercase ms-1">
+                  {t("search.maxPriceLabel")}
+                </label>
+                <Input
+                  type="number"
+                  min="0"
+                  value={priceMaxDraft}
+                  onChange={(e) => setPriceMaxDraft(e.target.value)}
+                  placeholder={sliderMax.toString()}
+                  className="h-11 rounded-md border border-gray-200 bg-transparent shadow-none px-4 text-base font-bold text-primary placeholder:text-[#cbd5e1] "
+                />
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="flex items-center justify-between border-t border-[#f1f5f9] pt-4 mt-6">
+              <button
+                type="button"
+                onClick={() => {
+                  setPriceMinDraft("");
+                  setPriceMaxDraft("");
+                  setMinSliderValue(0);
+                  setMaxSliderValue(sliderMax);
+                }}
+                className="text-sm font-bold text-[#94a3b8] transition-colors hover:text-[#ef4444]"
+              >
+                {t("search.reset")}
+              </button>
+
+              <Button
+                onClick={handlePriceSearch}
+                className="h-11 rounded-lg bg-primary px-8 text-sm font-bold text-white hover:bg-primary/90 shadow-sm transition-all active:scale-95"
+              >
+                {tCommon("buttons.search")}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

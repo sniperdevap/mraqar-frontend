@@ -9,14 +9,11 @@ import { useTranslations } from "next-intl";
 import { AuthInfoSection } from "@/components/auth/auth-info-section";
 import { AuthFooter } from "@/components/dashboard/auth-footer";
 import { Button } from "@/components/ui/button";
-import Cookies from "js-cookie";
-import { useAuthStore } from "@/lib/store/auth-store";
 
 export default function VerifyEmailPage() {
   const t = useTranslations("auth.verifyEmail");
   const tInfo = useTranslations("auth.info");
   const tSignin = useTranslations("auth.signin");
-  const tFooter = useTranslations("auth.footer");
 
   const [status, setStatus] = useState<"loading" | "success" | "error">(
     "loading",
@@ -61,8 +58,8 @@ export default function VerifyEmailPage() {
               <div className="mb-8">
                 <div className="flex items-center justify-center lg:justify-start mb-8">
                   <Image
-                    src="/images/aqar-logo.png"
-                    alt="Auto Glass Logo"
+                    src="/images/aqar-new-logo.png"
+                    alt="Mr aqar Logo"
                     width={160}
                     height={40}
                     className="h-24 w-auto"

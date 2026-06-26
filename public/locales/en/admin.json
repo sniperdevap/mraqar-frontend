@@ -34,6 +34,7 @@
       "phone": "Phone",
       "role": "Role",
       "status": "Status",
+      "verified": "Verified",
       "joined": "Joined",
       "date": "Date",
       "actions": "Actions"
@@ -48,12 +49,21 @@
       "active": "Active",
       "inactive": "Inactive"
     },
+    "verified": {
+      "verified": "Verified",
+      "unverified": "Unverified"
+    },
+    "statusLabel": "Status: {status}",
+    "verifiedLabel": "Verified: {status}",
     "actions": {
+      "create": "Create User",
       "view": "View Details",
       "delete": "Delete User",
       "changePassword": "Change Password",
       "deactivate": "Deactivate",
-      "activate": "Activate"
+      "activate": "Activate",
+      "verify": "Verify",
+      "unverify": "Unverify"
     },
     "modals": {
       "deleteTitle": "Delete User",
@@ -62,6 +72,10 @@
       "deactivateDescription": "Are you sure you want to deactivate {name}?",
       "activateTitle": "Activate User",
       "activateDescription": "Are you sure you want to activate {name}?",
+      "verifyTitle": "Verify User",
+      "verifyDescription": "Are you sure you want to verify {name}?",
+      "unverifyTitle": "Unverify User",
+      "unverifyDescription": "Are you sure you want to unverify {name}? They will not be able to sign in until verified again.",
       "passwordTitle": "Change Password",
       "passwordDescription": "Enter a new password for {name}.",
       "passwordLabel": "New Password",
@@ -74,15 +88,41 @@
     },
     "messages": {
       "statusSuccess": "{name} has been {status} successfully",
+      "verifiedSuccess": "{name} has been {status} successfully",
       "deleteSuccess": "User {name} deleted successfully",
       "passwordSuccess": "Password for {name} changed successfully",
       "statusError": "Failed to update user status",
+      "verifiedError": "Failed to update user verification",
       "deleteError": "Failed to delete user",
       "passwordError": "Failed to change password",
       "passwordMinLength": "Password must be at least 6 characters",
       "notFound": "No users found",
       "tryDifferentSearch": "Try a different search term",
       "nameRequired": "Full name is required"
+    },
+    "create": {
+      "title": "Create User",
+      "description": "Register a verified user account from the admin panel",
+      "back": "Back to Users",
+      "addProfilePhoto": "Add profile photo",
+      "profilePhotoAlt": "Profile photo preview",
+      "profilePhotoRequired": "Profile photo is required",
+      "profilePhotoTypeError": "Please upload an image file",
+      "profilePhotoSizeError": "Image size must be less than 5MB",
+      "fullName": "Full Name",
+      "fullNamePlaceholder": "Enter full name",
+      "phone": "Phone Number",
+      "phonePlaceholder": "Enter phone number",
+      "password": "Password",
+      "passwordPlaceholder": "Enter password",
+      "submit": "Create User",
+      "saving": "Creating...",
+      "success": "User created successfully",
+      "error": "Failed to create user",
+      "duplicateUnverified": "This phone number is already registered but not verified.",
+      "verifyAction": "Verify User",
+      "verifySuccess": "User verified successfully",
+      "verifyError": "Failed to verify user"
     },
     "pagination": {
       "showing": "Showing {start} to {end} of {total}"

@@ -34,6 +34,7 @@
       "phone": "الهاتف",
       "role": "الدور",
       "status": "الحالة",
+      "verified": "تم التحقق",
       "joined": "انضم",
       "date": "التاريخ",
       "actions": "الإجراءات"
@@ -48,12 +49,21 @@
       "active": "نشط",
       "inactive": "غير نشط"
     },
+    "verified": {
+      "verified": "تم التحقق",
+      "unverified": "غير متحقق"
+    },
+    "statusLabel": "الحالة: {status}",
+    "verifiedLabel": "التحقق: {status}",
     "actions": {
+      "create": "إنشاء مستخدم",
       "view": "عرض التفاصيل",
       "delete": "حذف المستخدم",
       "changePassword": "تغيير كلمة المرور",
       "deactivate": "تعطيل",
-      "activate": "تفعيل"
+      "activate": "تفعيل",
+      "verify": "تحقق",
+      "unverify": "إلغاء التحقق"
     },
     "modals": {
       "deleteTitle": "حذف المستخدم",
@@ -62,6 +72,10 @@
       "deactivateDescription": "هل أنت متأكد أنك تريد تعطيل {name}؟",
       "activateTitle": "تفعيل المستخدم",
       "activateDescription": "هل أنت متأكد أنك تريد تفعيل {name}؟",
+      "verifyTitle": "التحقق من المستخدم",
+      "verifyDescription": "هل أنت متأكد أنك تريد التحقق من {name}؟",
+      "unverifyTitle": "إلغاء التحقق من المستخدم",
+      "unverifyDescription": "هل أنت متأكد أنك تريد إلغاء التحقق من {name}؟ لن يتمكن من تسجيل الدخول حتى يتم التحقق منه مرة أخرى.",
       "passwordTitle": "تغيير كلمة المرور",
       "passwordDescription": "أدخل كلمة مرور جديدة لـ {name}.",
       "passwordLabel": "كلمة المرور الجديدة",
@@ -74,15 +88,41 @@
     },
     "messages": {
       "statusSuccess": "تم {status} {name} بنجاح",
+      "verifiedSuccess": "تم {status} {name} بنجاح",
       "deleteSuccess": "تم حذف المستخدم {name} بنجاح",
       "passwordSuccess": "تم تغيير كلمة مرور {name} بنجاح",
       "statusError": "فشل تحديث حالة المستخدم",
+      "verifiedError": "فشل تحديث تحقق المستخدم",
       "deleteError": "فشل حذف المستخدم",
       "passwordError": "فشل تغيير كلمة المرور",
       "passwordMinLength": "يجب أن تكون كلمة المرور 6 أحرف على الأقل",
       "notFound": "لم يتم العثور على مستخدمين",
       "tryDifferentSearch": "جرب مصطلح بحث مختلف",
       "nameRequired": "الاسم الكامل مطلوب"
+    },
+    "create": {
+      "title": "إنشاء مستخدم",
+      "description": "تسجيل حساب مستخدم موثق من لوحة الإدارة",
+      "back": "العودة إلى المستخدمين",
+      "addProfilePhoto": "إضافة صورة الملف الشخصي",
+      "profilePhotoAlt": "معاينة صورة الملف الشخصي",
+      "profilePhotoRequired": "صورة الملف الشخصي مطلوبة",
+      "profilePhotoTypeError": "يرجى رفع ملف صورة",
+      "profilePhotoSizeError": "يجب أن يكون حجم الصورة أقل من 5 ميجابايت",
+      "fullName": "الاسم الكامل",
+      "fullNamePlaceholder": "أدخل الاسم الكامل",
+      "phone": "رقم الهاتف",
+      "phonePlaceholder": "أدخل رقم الهاتف",
+      "password": "كلمة المرور",
+      "passwordPlaceholder": "أدخل كلمة المرور",
+      "submit": "إنشاء المستخدم",
+      "saving": "جاري الإنشاء...",
+      "success": "تم إنشاء المستخدم بنجاح",
+      "error": "فشل إنشاء المستخدم",
+      "duplicateUnverified": "رقم الهاتف هذا مسجل بالفعل ولكنه غير موثق.",
+      "verifyAction": "توثيق المستخدم",
+      "verifySuccess": "تم توثيق المستخدم بنجاح",
+      "verifyError": "فشل توثيق المستخدم"
     },
     "pagination": {
       "showing": "عرض {start} إلى {end} من أصل {total}"
@@ -157,7 +197,7 @@
     }
   },
   "layout": {
-    "title": "أدمن مسٹر عقار",
+    "title": "أدمن مستر عقار",
     "role": "مدير عام",
     "sidebar": {
       "dashboard": "لوحة القيادة",

@@ -40,22 +40,22 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
       {/* Sidebar */}
       <div
         className={cn(
-          'fixed inset-y-0 left-0 z-50 w-72 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 sidebar-ios-fix',
+          'fixed inset-y-0 left-0 z-50 w-72 bg-primary shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 sidebar-ios-fix',
           isOpen ? 'translate-x-0' : '-translate-x-full'
         )}
       >
         <div className="flex flex-col h-full ">
           {/* Mobile/Tablet: Profile Info and Close Button */}
-          <div className="lg:hidden border-b border-gray-200">
+          <div className="lg:hidden border-b border-white/10">
             <div className="flex items-center justify-between px-4 py-6">
               {/* Profile Info */}
               <div className="flex-1">
-                <div className="text-lg font-semibold text-gray-900">{user?.name || 'User'}</div>
-                <div className="text-sm text-gray-500 capitalize">{user?.role?.replace('_', ' ') || 'Role'}</div>
+                <div className="text-lg font-semibold text-white">{user?.name || 'User'}</div>
+                <div className="text-sm text-white/70 capitalize">{user?.role?.replace('_', ' ') || 'Role'}</div>
               </div>
               {/* Close Button */}
-              <button onClick={onClose} className="rounded-md hover:bg-gray-100 p-2">
-                <X size={20} className="text-gray-500" />
+              <button onClick={onClose} className="rounded-md hover:bg-white/10 p-2">
+                <X size={20} className="text-white" />
               </button>
             </div>
           </div>
@@ -82,15 +82,17 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
               // Render icon helper
               const renderIcon = () => {
                 if (isSvgIcon) {
-                  // For SVG: primary blue when inactive, white when active
+                  // For SVG: white when inactive, primary color when active
                   return (
                     <div
-                      className={cn('mr-3 flex items-center', isActive ? 'text-white' : 'text-primary')}
+                      className={cn('mr-3 flex items-center', isActive ? 'text-primary-blue' : 'text-white')}
                       style={
                         isActive
-                          ? { filter: 'brightness(0) invert(1)' }
+                          ? {
+                              filter: 'brightness(0) saturate(100%) invert(11%) sepia(91%) saturate(5432%) hue-rotate(349deg) brightness(85%) contrast(98%)',
+                            }
                           : {
-                              filter: 'brightness(0) saturate(100%) invert(36%) sepia(91%) saturate(423%) hue-rotate(188deg) brightness(95%) contrast(89%)',
+                              filter: 'brightness(0) invert(1)',
                             }
                       }
                     >
@@ -98,9 +100,9 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                     </div>
                   );
                 } else {
-                  // For Lucide icons: primary blue when inactive, white when active
+                  // For Lucide icons: white when inactive, primary color when active
                   const Icon = item.icon as React.ComponentType<{ size?: number; className?: string }>;
-                  return <Icon size={20} className={cn('mr-3', isActive ? 'text-white' : 'text-primary-blue')} />;
+                  return <Icon size={20} className={cn('mr-3', isActive ? 'text-primary-blue' : 'text-white')} />;
                 }
               };
 
@@ -111,7 +113,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                     key={item.name}
                     trigger={
                       <button
-                        className={cn('w-full flex items-center px-5 py-5 text-sm font-medium rounded-sm transition-colors cursor-pointer', 'text-[#787878] hover:bg-gray-100 hover:text-gray-900')}
+                        className={cn('w-full flex items-center px-5 py-5 text-sm font-medium rounded-sm transition-colors cursor-pointer', 'text-white/80 hover:bg-white/10 hover:text-white')}
                       >
                         {renderIcon()}
                         {item.name}
@@ -120,7 +122,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                     icon={{
                       src: '/images/icons/logout.svg',
                       alt: 'Logout',
-                      bgColor: 'bg-blue-primary',
+                      bgColor: 'bg-primary',
                     }}
                     title="Are you sure you want to Logout?"
                     description="You'll be logged out from your account and will need to log in again to continue."
@@ -139,7 +141,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                   onClick={onClose}
                   className={cn(
                     'flex items-center px-5 py-5 text-sm font-medium rounded-sm transition-colors',
-                    isActive ? 'bg-blue-primary text-white' : 'text-[#787878] hover:bg-gray-100 hover:text-gray-900'
+                    isActive ? 'bg-white text-primary-blue font-semibold' : 'text-white/80 hover:bg-white/10 hover:text-white'
                   )}
                 >
                   {renderIcon()}

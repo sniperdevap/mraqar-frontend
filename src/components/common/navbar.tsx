@@ -23,9 +23,6 @@ import { useAuthStore } from "@/lib/store/auth-store";
 import { useTranslations, useLocale } from "@/hooks/use-locale";
 import { LanguageSwitcher } from "@/components/common/language-switcher";
 import { cn } from "@/lib/utils";
-import { toast } from "sonner";
-import { UserSubscription } from "@/lib/api/subscription-plan";
-import { User } from "@/types/auth";
 import { getUnreadNotificationCount } from "@/lib/api/account";
 
 export function Navbar() {
@@ -84,7 +81,9 @@ export function Navbar() {
     pathname?.split("/").length === 3 &&
     pathname?.split("/")[2] !== "create";
   const isSearchPage = pathname === "/search";
+  const isAuthRoute = pathname?.startsWith("/auth");
   const showStandardNav = !isSpecialRoute;
+  const showTopNavbar = showStandardNav;
 
   // Favorite state for ad detail page heart button in mobile navbar
   const [adFavoriteState, setAdFavoriteState] = useState<{
@@ -119,32 +118,11 @@ export function Navbar() {
     return "";
   };
 
-  const handleCreateAdClick = async (e: React.MouseEvent) => {
+  const getCreateAdHref = () => (isAuthenticated ? "/ads/create" : "/auth/signin");
+
+  const handleCreateAdClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    if (!isAuthenticated) {
-      router.push("/auth/signin");
-      return;
-    }
-
-    try {
-      await useAuthStore.getState().refreshSubscriptions();
-
-      const latestUser = useAuthStore.getState().user;
-      console.log("Latest user data after refresh:", latestUser);
-      const subs = (latestUser as User)?.subscriptions || [];
-      const hasActiveSubWithCredits = subs.some(
-        (sub: UserSubscription) => sub.credits > 0,
-      );
-
-      if (hasActiveSubWithCredits) {
-        router.push("/ads/create");
-      } else {
-        toast.info(t("ads.subscriptionRequired"));
-        router.push("/plans");
-      }
-    } catch (error) {
-      toast.error(t("messages.error"));
-    }
+    router.push(getCreateAdHref());
   };
 
   const handleLogout = () => {
@@ -155,84 +133,82 @@ export function Navbar() {
   return (
     <>
       {/* Desktop Navbar */}
-      <nav
-        className={cn(
-          "hidden lg:flex items-center px-12 py-2 bg-white  border-b border-gray-200 sticky top-0 z-50",
-          !showStandardNav && "lg:hidden",
-        )}
-      >
-        <div className="flex-shrink-0">
-          <Link href="/">
-            <Image
-              src="/images/aqar-logo.png"
-              alt="Mr aqar Logo"
-              width={100}
-              height={40}
-              className="h-16 w-auto"
-            />
-          </Link>
-        </div>
+      {showTopNavbar && (
+        <nav className="hidden lg:flex items-center px-12 py-2 bg-white  border-b border-gray-200 sticky top-0 z-50">
+          <div className="flex-shrink-0">
+            <Link href="/">
+              <Image
+                src="/images/aqar-new-logo.png"
+                alt="Mr aqar Logo"
+                width={100}
+                height={40}
+                className="h-16 w-auto"
+              />
+            </Link>
+          </div>
 
-        <div className="flex-1 flex justify-center items-center gap-8 text-[15px] font-medium">
-          <Link
-            href="/"
-            className="text-gray-900 hover:text-primary transition-colors px-2"
-          >
-            {t("nav.home")}
-          </Link>
-          <Link
-            href="/offices"
-            className="text-gray-900 hover:text-primary transition-colors px-2"
-          >
-            {t("nav.offices")}
-          </Link>
-          <Link
-            href="/plans"
-            className="text-gray-900 hover:text-primary transition-colors px-2"
-          >
-            {t("nav.plans")}
-          </Link>
-          <Link
-            href="/account"
-            className="text-gray-900 hover:text-primary transition-colors px-2"
-          >
-            {t("nav.account")}
-          </Link>
-          <LanguageSwitcher />
-
-          <Button
-            variant="outline"
-            className="border-gray-200 text-gray-900 hover:bg-gray-50 hover:text-primary rounded-xl px-6 py-2 h-10 text-sm font-semibold ml-4"
-            onClick={handleCreateAdClick}
-          >
-            + {t("nav.addFreeAd")}
-          </Button>
-        </div>
-
-        <div className="flex items-center gap-4">
-          {pathname === "/" && (
-            <button
-              onClick={() => router.push("/notifications")}
-              className="p-2 text-gray-900 hover:text-primary transition-colors relative cursor-pointer"
+          <div className="flex-1 flex justify-center items-center gap-8 text-[15px] font-medium">
+            <Link
+              href="/"
+              className="text-gray-900 hover:text-primary transition-colors px-2"
             >
-              <Bell size={24} strokeWidth={1.5} />
-              {unreadCount > 0 && (
-                <span className="absolute top-1 right-1 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1">
-                  {unreadCount > 99 ? "99+" : unreadCount}
-                </span>
-              )}
-            </button>
-          )}
-          {isAuthenticated && (
-            <button
-              onClick={handleLogout}
-              className="p-2 text-gray-600 hover:text-gray-900 transition-colors cursor-pointer"
-              title={t("nav.logout")}
+              {t("nav.home")}
+            </Link>
+            <Link
+              href="/offices"
+              className="text-gray-900 hover:text-primary transition-colors px-2"
             >
-              <LogOut size={24} strokeWidth={1.5} />
-            </button>
-          )}
-          {/* {pathname === '/' &&
+              {t("nav.offices")}
+            </Link>
+            <Link
+              href="/plans"
+              className="text-gray-900 hover:text-primary transition-colors px-2"
+            >
+              {t("nav.plans")}
+            </Link>
+            <Link
+              href="/account"
+              className="text-gray-900 hover:text-primary transition-colors px-2"
+            >
+              {t("nav.account")}
+            </Link>
+            <LanguageSwitcher />
+
+            <Link href={getCreateAdHref()} prefetch className="ml-4">
+              <Button
+                variant="outline"
+                className="border-gray-200 text-gray-900 hover:bg-gray-50 hover:text-primary rounded-xl px-6 py-2 h-10 text-sm font-semibold"
+                onClick={handleCreateAdClick}
+              >
+                + {t("nav.addFreeAd")}
+              </Button>
+            </Link>
+          </div>
+
+          <div className="flex items-center gap-4">
+            {pathname === "/" && (
+              <button
+                onClick={() => router.push("/notifications")}
+                className="p-2 text-gray-900 hover:text-primary transition-colors relative cursor-pointer"
+              >
+                <Bell size={24} strokeWidth={1.5} />
+                {unreadCount > 0 && (
+                  <span className="absolute top-1 right-1 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1">
+                    {unreadCount > 99 ? "99+" : unreadCount}
+                  </span>
+                )}
+              </button>
+            )}
+            {isAuthenticated && (
+              <button
+                onClick={handleLogout}
+                className="p-2 text-gray-600 hover:text-gray-900 transition-colors cursor-pointer"
+                title={t("nav.logout")}
+              >
+                <LogOut size={24} strokeWidth={1.5} />
+              </button>
+            )}
+            {/* {pathname === '/' &&
             (isAuthenticated ? (
               <button
                 onClick={() => {
@@ -249,104 +225,127 @@ export function Navbar() {
                 {t('nav.login')}
               </button>
             ))} */}
-        </div>
-      </nav>
+          </div>
+        </nav>
+      )}
 
       {/* Mobile Top Navbar */}
-      {showStandardNav && (
-        <nav className="lg:hidden flex items-center justify-between px-4 py-3 bg-white  border-b border-gray-200 sticky top-0 z-50 h-20">
-          <div className="flex justify-between w-full" dir="ltr">
-            {isAdDetailPage || isSearchPage ? (
+      {showTopNavbar && (
+        <nav className="lg:hidden flex items-center justify-between px-4 py-3 bg-white border-b border-gray-200 sticky top-0 z-50 h-20">
+          {(pathname === '/' || pathname?.replace(/^\/(en|ar)/, '') === '/' || pathname?.replace(/^\/(en|ar)/, '') === '') ? (
+            <div className="flex items-center justify-between w-full h-full" dir="ltr">
+              {/* Left: Logo */}
+              <div className="flex-shrink-0">
+                <Link href="/">
+                  <Image
+                    src="/images/aqar-new-logo.png"
+                    alt="Mr aqar Logo"
+                    width={100}
+                    height={40}
+                    className="h-16 w-auto object-contain"
+                  />
+                </Link>
+              </div>
+
+              {/* Right side items: Favorites and Notification Bell */}
+              <div className="flex items-center gap-6">
+                {/* Favorites button */}
+                <Link
+                  href="/account?tab=favourites"
+                  className="flex flex-col items-center justify-center text-[#555] hover:text-primary transition-colors cursor-pointer"
+                >
+                  <Heart size={22} className="text-gray-900" strokeWidth={1.8} />
+                  <span className="text-[10px] font-bold mt-1 text-[#333]">Favorites</span>
+                </Link>
+
+                {/* Bell Icon */}
+                <button
+                  onClick={() => router.push("/notifications")}
+                  className="p-2 text-gray-900 hover:text-primary transition-colors relative cursor-pointer flex items-center justify-center"
+                >
+                  <Bell size={24} strokeWidth={1.8} />
+                  {unreadCount > 0 && (
+                    <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1">
+                      {unreadCount > 99 ? "99+" : unreadCount}
+                    </span>
+                  )}
+                </button>
+              </div>
+            </div>
+          ) : isAdDetailPage ? (
+            <div className="flex items-center justify-between w-full h-full" dir="ltr">
+              {/* Left: Red Back Arrow */}
               <button
                 onClick={() => router.push("/")}
-                className="p-2 text-gray-700 hover:text-primary transition-colors cursor-pointer"
+                className="p-2 text-[#9a090e] hover:text-[#7f070b] transition-colors cursor-pointer flex items-center justify-center"
               >
-                <ChevronLeft size={28} />
+                <ChevronLeft size={32} strokeWidth={2.5} />
               </button>
-            ) : null}
-            <div className="flex-shrink-0">
-              <Link href="/">
-                <Image
-                  src="/images/aqar-logo.png"
-                  alt="Mr aqar Logo"
-                  width={100}
-                  height={40}
-                  className="h-16 w-auto"
-                />
-              </Link>
+
+              {/* Middle: Logo */}
+              <div className="flex-shrink-0">
+                <Link href="/">
+                  <Image
+                    src="/images/aqar-new-logo.png"
+                    alt="Mr aqar Logo"
+                    width={100}
+                    height={40}
+                    className="h-16 w-auto object-contain"
+                  />
+                </Link>
+              </div>
+
+              {/* Right: Heart (Toggle Favorites) */}
+              <div className="flex items-center justify-center w-12 h-12">
+                <button
+                  onClick={handleMobileFavoriteToggle}
+                  disabled={adFavoriteState?.isFavoriteLoading}
+                  className="p-2 text-gray-900 hover:text-red-500 transition-colors cursor-pointer"
+                >
+                  <Heart
+                    size={26}
+                    strokeWidth={1.8}
+                    className={adFavoriteState?.isFavorite ? "fill-[#9a090e] text-[#9a090e]" : "text-gray-900"}
+                  />
+                </button>
+              </div>
             </div>
-          </div>
-          <div className="flex items-center gap-3">
-            {/* {isAuthenticated && isAdDetailPage && adFavoriteState && !adFavoriteState.isLoading && (
-              <button onClick={handleMobileFavoriteToggle} disabled={adFavoriteState.isFavoriteLoading} className="p-2 transition-colors cursor-pointer">
-                <Heart size={24} strokeWidth={1.5} className={adFavoriteState.isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-900'} />
-              </button>
-            )} */}
-            {pathname === "/" && (
-              <button
-                onClick={() => router.push("/notifications")}
-                className="p-2 text-gray-900 transition-colors relative cursor-pointer"
-              >
-                <Bell size={24} strokeWidth={1.5} />
-                {unreadCount > 0 && (
-                  <span className="absolute top-1 right-1 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1">
-                    {unreadCount > 99 ? "99+" : unreadCount}
-                  </span>
-                )}
-              </button>
-            )}
-            {isAuthenticated && (
-              <button
-                onClick={handleLogout}
-                className="hidden md:flex lg:hidden p-2 text-gray-600 hover:text-gray-900 transition-colors cursor-pointer"
-                title={t("nav.logout")}
-              >
-                <LogOut size={24} strokeWidth={1.5} />
-              </button>
-            )}
-            {/* <>
-              {pathname === '/' &&
-                (isAuthenticated ? (
+          ) : (
+            <>
+              <div className="flex justify-between w-full" dir="ltr">
+                {isSearchPage ? (
                   <button
-                    onClick={() => {
-                      logout();
-                      window.location.href = '/';
-                    }}
-                    className="p-2 text-gray-600 hover:text-gray-900 transition-colors cursor-pointer"
-                    title={t('nav.logout')}
+                    onClick={() => router.push("/")}
+                    className="p-2 text-gray-700 hover:text-primary transition-colors cursor-pointer"
+                  >
+                    <ChevronLeft size={28} />
+                  </button>
+                ) : null}
+                <div className="flex-shrink-0 flex items-center justify-center w-full">
+                  <Link href="/">
+                    <Image
+                      src="/images/aqar-new-logo.png"
+                      alt="Mr aqar Logo"
+                      width={100}
+                      height={40}
+                      className="h-16 w-auto"
+                    />
+                  </Link>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                {isAuthenticated && (
+                  <button
+                    onClick={handleLogout}
+                    className="hidden md:flex lg:hidden p-2 text-gray-600 hover:text-gray-900 transition-colors cursor-pointer"
+                    title={t("nav.logout")}
                   >
                     <LogOut size={24} strokeWidth={1.5} />
                   </button>
-                ) : (
-                  <button onClick={() => router.push('/auth/signin')} className="p-2 text-gray-900 transition-colors cursor-pointer" title={t('nav.login')}>
-                    <LogIn size={24} strokeWidth={1.5} />
-                  </button>
-                ))}
-            </> */}
-            {pathname.startsWith("/auth") && (
-              <Link
-                href="https://wa.me/96590078005"
-                target="_blank"
-                className="flex flex-col items-center gap-3 hover:opacity-80 transition-opacity"
-              >
-                <div className="">
-                  <svg
-                    viewBox="0 0 24 24"
-                    width="24"
-                    height="24"
-                    fill="#25D366"
-                  >
-                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
-                  </svg>
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-gray-500 text-xs sm:text-sm">
-                    {t("plan.forHelpContactUs")}
-                  </span>
-                </div>
-              </Link>
-            )}
-          </div>
+                )}
+              </div>
+            </>
+          )}
         </nav>
       )}
 
@@ -384,22 +383,20 @@ export function Navbar() {
               return (
                 <div
                   key="central"
-                  className="flex items-center justify-center -translate-y-[3px]"
+                  className="relative flex items-center justify-center w-16 h-full"
                 >
                   <motion.button
                     onClick={handleCreateAdClick}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.92 }}
-                    className="focus:outline-none group"
+                    whileHover={{ scale: 1.08 }}
+                    whileTap={{ scale: 0.90 }}
+                    className="absolute -top-[34px] focus:outline-none z-50"
                   >
-                    <div className="flex items-center justify-center w-[44px] h-[44px] rounded-full border border-primary/50 bg-primary/10 cursor-pointer transition-all duration-300">
-                      <div className="flex items-center justify-center w-[36px] h-[36px] bg-white rounded-full shadow-sm">
-                        <Plus
-                          size={24}
-                          strokeWidth={2}
-                          className="text-gray-900"
-                        />
-                      </div>
+                    <div className="flex items-center justify-center w-[50px] h-[50px] rounded-full bg-primary shadow-[0_8px_16px_rgba(154,9,14,0.3)] cursor-pointer transition-all duration-300 hover:shadow-[0_8px_20px_rgba(154,9,14,0.45)]">
+                      <Plus
+                        size={26}
+                        strokeWidth={3.5}
+                        className="text-white"
+                      />
                     </div>
                   </motion.button>
                 </div>

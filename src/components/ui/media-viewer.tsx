@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight, Play } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -17,16 +18,24 @@ interface MediaViewerProps {
 export function MediaViewer({ media, initialIndex = 0, isOpen, onClose }: MediaViewerProps) {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [direction, setDirection] = useState(0);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    if (isOpen) {
-      setCurrentIndex(initialIndex);
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    setCurrentIndex(initialIndex);
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    document.body.setAttribute('data-media-viewer-open', 'true');
+
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = previousOverflow;
+      document.body.removeAttribute('data-media-viewer-open');
     };
   }, [isOpen, initialIndex]);
 
@@ -73,30 +82,30 @@ export function MediaViewer({ media, initialIndex = 0, isOpen, onClose }: MediaV
   };
 
   const getMediaUrl = (m: Media) => {
-    if (!m) return '/images/card-placeholder-1.jpeg';
+    if (!m) return '/images/aqar-new-logo.png';
     if (m.url.startsWith('http')) return m.url;
     return `${process.env.NEXT_PUBLIC_IMAGE_HOST || ''}/${m.url}`;
   };
 
-  const getThumbnailUrl = (m: Media) => {
-    if (!m.thumbnail) return getMediaUrl(m);
+  const getVideoThumbnailOnly = (m: Media) => {
+    if (!m?.thumbnail) return '/images/aqar-new-logo.png';
     if (m.thumbnail.startsWith('http')) return m.thumbnail;
     return `${process.env.NEXT_PUBLIC_IMAGE_HOST || ''}/${m.thumbnail}`;
   };
 
-  if (!isOpen) return null;
+  if (!isOpen || !isMounted) return null;
 
   const currentMedia = media[currentIndex];
   const currentMediaUrl = getMediaUrl(currentMedia);
   const isVideo = currentMedia.type === 'video';
 
-  return (
+  return createPortal(
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       onClick={onClose}
-      className="fixed inset-0 z-[100] bg-black/95 flex flex-col justify-center items-center backdrop-blur-sm"
+      className="fixed inset-0 z-[200] h-[100dvh] bg-black/95 flex flex-col justify-center items-center backdrop-blur-sm"
     >
       {/* Close Button */}
       <button
@@ -104,7 +113,7 @@ export function MediaViewer({ media, initialIndex = 0, isOpen, onClose }: MediaV
           e.stopPropagation();
           onClose();
         }}
-        className="absolute top-4 right-4 md:top-6 md:right-6 z-50 p-2 bg-black/50 hover:bg-white/20 rounded-full text-white transition-colors"
+        className="absolute top-4 right-4 md:top-6 md:right-6 z-50 p-2 bg-black/50 hover:bg-white/20 rounded-full text-white transition-colors touch-manipulation"
         aria-label="Close"
       >
         <X size={24} />
@@ -116,7 +125,7 @@ export function MediaViewer({ media, initialIndex = 0, isOpen, onClose }: MediaV
       </div>
 
       {/* Main Content Area */}
-      <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
+      <div className="relative w-full h-full flex items-center justify-center overflow-hidden pb-24 pt-14">
         <AnimatePresence initial={false} custom={direction}>
           <motion.div
             key={currentIndex}
@@ -184,11 +193,11 @@ export function MediaViewer({ media, initialIndex = 0, isOpen, onClose }: MediaV
       )}
 
       {/* Thumbnail Strip (Optional, can be added if needed later) */}
-      <div className="absolute bottom-4 left-0 right-0 p-4 overflow-x-auto" onClick={e => e.stopPropagation()}>
+      <div className="absolute bottom-0 left-0 right-0 p-4 pb-[max(1rem,env(safe-area-inset-bottom))] overflow-x-auto overscroll-contain" onClick={e => e.stopPropagation()}>
         <div className="flex justify-center gap-2 min-w-max px-4">
           {media.map((item, index) => {
             const isVid = item.type === 'video';
-            const url = isVid ? getThumbnailUrl(item) : getMediaUrl(item);
+            const url = isVid ? getVideoThumbnailOnly(item) : getMediaUrl(item);
             return (
               <button
                 key={index}
@@ -216,6 +225,7 @@ export function MediaViewer({ media, initialIndex = 0, isOpen, onClose }: MediaV
           })}
         </div>
       </div>
-    </motion.div>
+    </motion.div>,
+    document.body
   );
 }

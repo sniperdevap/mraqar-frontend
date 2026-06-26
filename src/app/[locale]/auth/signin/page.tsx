@@ -2,8 +2,8 @@ import { LoginForm } from '@/components/auth/login-form';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Login - Auto Glass Quoting Platform',
-  description: 'Login to your Auto Glass Quoting Platform account',
+  title: 'Login - Mr aqar',
+  description: 'Login to your Mr aqar account',
 };
 
 export default function SignIn() {
