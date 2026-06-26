@@ -56,6 +56,7 @@
     "statusLabel": "الحالة: {status}",
     "verifiedLabel": "التحقق: {status}",
     "actions": {
+      "create": "إنشاء مستخدم",
       "view": "عرض التفاصيل",
       "delete": "حذف المستخدم",
       "changePassword": "تغيير كلمة المرور",
@@ -98,6 +99,30 @@
       "notFound": "لم يتم العثور على مستخدمين",
       "tryDifferentSearch": "جرب مصطلح بحث مختلف",
       "nameRequired": "الاسم الكامل مطلوب"
+    },
+    "create": {
+      "title": "إنشاء مستخدم",
+      "description": "تسجيل حساب مستخدم موثق من لوحة الإدارة",
+      "back": "العودة إلى المستخدمين",
+      "addProfilePhoto": "إضافة صورة الملف الشخصي",
+      "profilePhotoAlt": "معاينة صورة الملف الشخصي",
+      "profilePhotoRequired": "صورة الملف الشخصي مطلوبة",
+      "profilePhotoTypeError": "يرجى رفع ملف صورة",
+      "profilePhotoSizeError": "يجب أن يكون حجم الصورة أقل من 5 ميجابايت",
+      "fullName": "الاسم الكامل",
+      "fullNamePlaceholder": "أدخل الاسم الكامل",
+      "phone": "رقم الهاتف",
+      "phonePlaceholder": "أدخل رقم الهاتف",
+      "password": "كلمة المرور",
+      "passwordPlaceholder": "أدخل كلمة المرور",
+      "submit": "إنشاء المستخدم",
+      "saving": "جاري الإنشاء...",
+      "success": "تم إنشاء المستخدم بنجاح",
+      "error": "فشل إنشاء المستخدم",
+      "duplicateUnverified": "رقم الهاتف هذا مسجل بالفعل ولكنه غير موثق.",
+      "verifyAction": "توثيق المستخدم",
+      "verifySuccess": "تم توثيق المستخدم بنجاح",
+      "verifyError": "فشل توثيق المستخدم"
     },
     "pagination": {
       "showing": "عرض {start} إلى {end} من أصل {total}"

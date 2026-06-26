@@ -53,6 +53,13 @@ export interface ToggleVerifiedResponse {
   isVerified: boolean;
 }
 
+export interface CreateAdminUserRequest {
+  name: string;
+  phoneNumber: string;
+  password: string;
+  avatar: string;
+}
+
 // API Functions
 export const getDashboardStats = async (): Promise<DashboardStats> => {
   const response = await axiosWrapper<DashboardStats>('get', API_ENDPOINTS.ADMIN.DASHBOARD);
@@ -104,6 +111,11 @@ export const getAdminUserDetails = async (id: string, page: number = 1, limit: n
   return response.data;
 };
 
+export const createAdminUser = async (data: CreateAdminUserRequest): Promise<AdminUser> => {
+  const response = await axiosWrapper<AdminUser>('post', API_ENDPOINTS.ADMIN.CREATE_USER, data);
+  return response.data;
+};
+
 export const deleteAdminUser = async (id: string): Promise<void> => {
   await axiosWrapper<void>('delete', API_ENDPOINTS.ADMIN.DELETE_USER(id));
 };
@@ -115,6 +127,11 @@ export const toggleUserStatus = async (id: string): Promise<ToggleStatusResponse
 
 export const toggleUserVerified = async (id: string): Promise<ToggleVerifiedResponse> => {
   const response = await axiosWrapper<ToggleVerifiedResponse>('patch', API_ENDPOINTS.ADMIN.TOGGLE_USER_VERIFIED(id));
+  return response.data;
+};
+
+export const verifyAdminUser = async (id: string): Promise<ToggleVerifiedResponse> => {
+  const response = await axiosWrapper<ToggleVerifiedResponse>('patch', API_ENDPOINTS.ADMIN.VERIFY_USER(id));
   return response.data;
 };
 

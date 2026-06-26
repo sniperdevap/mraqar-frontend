@@ -8,6 +8,7 @@ import {
   Trash2,
   Lock,
   Pencil,
+  Plus,
 } from "lucide-react";
 import { useAdminUsers } from "@/hooks/use-admin";
 import { toggleUserStatus, toggleUserVerified, deleteAdminUser, AdminUser } from "@/lib/api/admin";
@@ -149,13 +150,21 @@ export function AdminUsers() {
   return (
     <div className="space-y-6 py-4 lg:py-8" dir={isRTL ? "rtl" : "ltr"}>
       {/* Page header */}
-      <div className="text-start">
-        <h1 className="text-xl lg:text-3xl font-bold text-gray-900">
-          {t("title")}
-        </h1>
-        <p className="text-gray-500 text-sm md:text-md mt-1">
-          {t("description")}
-        </p>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="text-start">
+          <h1 className="text-xl lg:text-3xl font-bold text-gray-900">
+            {t("title")}
+          </h1>
+          <p className="text-gray-500 text-sm md:text-md mt-1">
+            {t("description")}
+          </p>
+        </div>
+        <Button asChild className="w-full sm:w-auto">
+          <Link href={`/${locale}/admin/users/create`}>
+            <Plus size={16} />
+            {t("actions.create")}
+          </Link>
+        </Button>
       </div>
 
       {/* Filters */}
@@ -225,14 +234,15 @@ export function AdminUsers() {
                       {t("table.role")}
                     </th>
                     <th className="text-start py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                      {t("table.joined")}
+                    </th>
+                    <th className="text-start py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">
                       {t("table.status")}
                     </th>
                     <th className="text-start py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">
                       {t("table.verified")}
                     </th>
-                    <th className="text-start py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                      {t("table.joined")}
-                    </th>
+
                     <th
                       className={`${isRTL ? "text-start" : "text-end"} py-4 px-6 text-xs font-semibold text-gray-500 uppercase tracking-wider`}
                     >
@@ -284,6 +294,13 @@ export function AdminUsers() {
                       </td>
                       <td className="py-4 px-6 text-start">
                         {getRoleBadge(user.role)}
+                      </td>
+                      <td className="py-4 px-6 text-sm text-gray-500 text-start">
+                        {new Date(user.createdAt).toLocaleDateString(locale, {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                        })}
                       </td>
                       <td className="py-4 px-6 text-start">
                         <ConfirmationDialog
@@ -391,13 +408,7 @@ export function AdminUsers() {
                           }
                         />
                       </td>
-                      <td className="py-4 px-6 text-sm text-gray-500 text-start">
-                        {new Date(user.createdAt).toLocaleDateString(locale, {
-                          month: "short",
-                          day: "numeric",
-                          year: "numeric",
-                        })}
-                      </td>
+
                       <td className="py-4 px-6 text-start">
                         <div
                           className={`flex items-center ${isRTL ? "justify-start" : "justify-end"} gap-2`}

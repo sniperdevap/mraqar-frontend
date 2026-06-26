@@ -56,6 +56,7 @@
     "statusLabel": "Status: {status}",
     "verifiedLabel": "Verified: {status}",
     "actions": {
+      "create": "Create User",
       "view": "View Details",
       "delete": "Delete User",
       "changePassword": "Change Password",
@@ -98,6 +99,30 @@
       "notFound": "No users found",
       "tryDifferentSearch": "Try a different search term",
       "nameRequired": "Full name is required"
+    },
+    "create": {
+      "title": "Create User",
+      "description": "Register a verified user account from the admin panel",
+      "back": "Back to Users",
+      "addProfilePhoto": "Add profile photo",
+      "profilePhotoAlt": "Profile photo preview",
+      "profilePhotoRequired": "Profile photo is required",
+      "profilePhotoTypeError": "Please upload an image file",
+      "profilePhotoSizeError": "Image size must be less than 5MB",
+      "fullName": "Full Name",
+      "fullNamePlaceholder": "Enter full name",
+      "phone": "Phone Number",
+      "phonePlaceholder": "Enter phone number",
+      "password": "Password",
+      "passwordPlaceholder": "Enter password",
+      "submit": "Create User",
+      "saving": "Creating...",
+      "success": "User created successfully",
+      "error": "Failed to create user",
+      "duplicateUnverified": "This phone number is already registered but not verified.",
+      "verifyAction": "Verify User",
+      "verifySuccess": "User verified successfully",
+      "verifyError": "Failed to verify user"
     },
     "pagination": {
       "showing": "Showing {start} to {end} of {total}"
