@@ -1,10 +1,13 @@
-import dynamic from "next/dynamic";
-
-const AdDetailPage = dynamic(() =>
-  import("@/components/ads/ad-detail-page").then((mod) => mod.AdDetailPage),
-);
-import { getAdById } from "@/lib/api/ad";
+import { AdDetailPage } from "@/components/ads/ad-detail-page";
 import { Metadata } from "next";
+import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
+import { getLocale } from "next-intl/server";
+import {
+  createServerQueryClient,
+  prefetchAdDetail,
+  prefetchInfiniteSearchAds,
+} from "@/lib/query-prefetch";
+import { getServerAdById } from "@/lib/api/server";
 
 type Props = {
   params: Promise<{ id: string; locale: string }>;
@@ -13,7 +16,7 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id, locale } = await params;
   try {
-    const ad = await getAdById(id);
+    const ad = await getServerAdById(id, locale);
     if (!ad) return {};
 
     const title = `${ad.purpose === "sale" ? "للبيع" : ad.purpose === "rent" ? "للايجار" : "للبدل"} ${ad.propertyType?.labelAr || ad.propertyType?.label || "عقار"} في ${ad.area?.labelAr || ad.area?.label || "المنطقة"}`;
@@ -72,7 +75,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         ],
       },
     };
-  } catch (error) {
+  } catch {
     return {
       title: "Ad Detail",
     };
@@ -81,5 +84,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function AdDetail({ params }: Props) {
   const { id } = await params;
-  return <AdDetailPage adId={id} />;
+  const locale = await getLocale();
+  const queryClient = createServerQueryClient();
+
+  await Promise.all([
+    prefetchAdDetail(queryClient, id, locale),
+    prefetchInfiniteSearchAds(queryClient, {}, 10, locale),
+  ]);
+
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <AdDetailPage adId={id} />
+    </HydrationBoundary>
+  );
 }

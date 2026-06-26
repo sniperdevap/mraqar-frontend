@@ -23,9 +23,6 @@ import { useAuthStore } from "@/lib/store/auth-store";
 import { useTranslations, useLocale } from "@/hooks/use-locale";
 import { LanguageSwitcher } from "@/components/common/language-switcher";
 import { cn } from "@/lib/utils";
-import { toast } from "sonner";
-import { UserSubscription } from "@/lib/api/subscription-plan";
-import { User } from "@/types/auth";
 import { getUnreadNotificationCount } from "@/lib/api/account";
 
 export function Navbar() {
@@ -121,32 +118,11 @@ export function Navbar() {
     return "";
   };
 
-  const handleCreateAdClick = async (e: React.MouseEvent) => {
+  const getCreateAdHref = () => (isAuthenticated ? "/ads/create" : "/auth/signin");
+
+  const handleCreateAdClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    if (!isAuthenticated) {
-      router.push("/auth/signin");
-      return;
-    }
-
-    try {
-      await useAuthStore.getState().refreshSubscriptions();
-
-      const latestUser = useAuthStore.getState().user;
-      console.log("Latest user data after refresh:", latestUser);
-      const subs = (latestUser as User)?.subscriptions || [];
-      const hasActiveSubWithCredits = subs.some(
-        (sub: UserSubscription) => sub.credits > 0,
-      );
-
-      if (hasActiveSubWithCredits) {
-        router.push("/ads/create");
-      } else {
-        toast.info(t("ads.subscriptionRequired"));
-        router.push("/plans");
-      }
-    } catch (error) {
-      toast.error(t("messages.error"));
-    }
+    router.push(getCreateAdHref());
   };
 
   const handleLogout = () => {
@@ -198,13 +174,15 @@ export function Navbar() {
             </Link>
             <LanguageSwitcher />
 
-            <Button
-              variant="outline"
-              className="border-gray-200 text-gray-900 hover:bg-gray-50 hover:text-primary rounded-xl px-6 py-2 h-10 text-sm font-semibold ml-4"
-              onClick={handleCreateAdClick}
-            >
-              + {t("nav.addFreeAd")}
-            </Button>
+            <Link href={getCreateAdHref()} prefetch className="ml-4">
+              <Button
+                variant="outline"
+                className="border-gray-200 text-gray-900 hover:bg-gray-50 hover:text-primary rounded-xl px-6 py-2 h-10 text-sm font-semibold"
+                onClick={handleCreateAdClick}
+              >
+                + {t("nav.addFreeAd")}
+              </Button>
+            </Link>
           </div>
 
           <div className="flex items-center gap-4">

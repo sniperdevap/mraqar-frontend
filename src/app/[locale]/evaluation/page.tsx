@@ -1,33 +1,15 @@
-'use client';
-
 import React from 'react';
-import { useTranslations, useLocale } from '@/hooks/use-locale';
-import { FileText, Award, Users, Zap, ShieldCheck, CheckCircle2, MessageSquare } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import Image from 'next/image';
+import { FileText, Award, Users, Zap, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { getLocale, getTranslations } from 'next-intl/server';
+import { EvaluationWhatsAppButton } from './evaluation-whatsapp-button';
 
-export default function EvaluationPage() {
-  const t = useTranslations('common.evaluation');
-  const { direction, locale } = useLocale();
+export default async function EvaluationPage() {
+  const t = await getTranslations('common.evaluation');
+  const locale = await getLocale();
+  const direction = locale === 'ar' ? 'rtl' : 'ltr';
 
   const indicativeFeatures = t.raw('indicative.features') as string[];
   const certifiedFeatures = t.raw('certified.features') as string[];
-
-  const handleWhatsAppRequest = (type: string) => {
-    const phoneNumber = '96590078005';
-    const isAr = locale === 'ar';
-    const message =
-      type === 'indicative'
-        ? isAr
-          ? 'مرحباً، أود طلب تقييم استرشادي لعقاري.'
-          : 'Hello, I would like to request an Indicative Evaluation for my property.'
-        : isAr
-          ? 'مرحباً، أود طلب تقييم معتمد لعقاري.'
-          : 'Hello, I would like to request a Certified Evaluation for my property.';
-
-    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, '_blank');
-  };
 
   return (
     <div className="min-h-screen bg-[#f8fafc]/50 py-12 px-4 sm:px-6 lg:px-8" dir={direction}>
@@ -63,13 +45,12 @@ export default function EvaluationPage() {
                   </li>
                 ))}
               </ul>
-              <Button
-                onClick={() => handleWhatsAppRequest('indicative')}
+              <EvaluationWhatsAppButton
+                type="indicative"
+                locale={locale}
+                label={t('indicative.button')}
                 className="w-full h-16 bg-[#3b82f6] hover:bg-[#2563eb] text-white rounded-2xl font-bold text-lg flex items-center justify-center gap-3 transition-all active:scale-[0.98] shadow-lg shadow-blue-500/20"
-              >
-                <Image src="/images/icons/whatsapp-white-icon.svg" alt="WhatsApp" width={24} height={24} className="text-white w-5 h-5 md:w-6 md:h-6" />
-                {t('indicative.button')}
-              </Button>
+              />
             </div>
           </div>
 
@@ -103,14 +84,12 @@ export default function EvaluationPage() {
                   </li>
                 ))}
               </ul>
-              <Button
-                onClick={() => handleWhatsAppRequest('certified')}
+              <EvaluationWhatsAppButton
+                type="certified"
+                locale={locale}
+                label={t('certified.button')}
                 className="w-full h-16 bg-[#10b981] hover:bg-[#059669] text-white rounded-2xl font-bold text-lg flex items-center justify-center gap-3 transition-all active:scale-[0.98] shadow-lg shadow-green-500/20"
-              >
-                <Image src="/images/icons/whatsapp-white-icon.svg" alt="WhatsApp" width={24} height={24} className="text-white w-5 h-5 md:w-6 md:h-6" />
-
-                {t('certified.button')}
-              </Button>
+              />
             </div>
           </div>
         </div>

@@ -1,11 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useAuthStore } from '@/lib/store/auth-store';
 import Cookies from 'js-cookie';
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  const [isHydrated, setIsHydrated] = useState(false);
   const { logout, isAuthenticated } = useAuthStore();
 
   useEffect(() => {
@@ -15,13 +14,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     if (!token && isAuthenticated) {
       logout();
     }
-
-    setIsHydrated(true);
   }, [isAuthenticated, logout]);
-
-  if (!isHydrated) {
-    return null; // Prevent hydration mismatch
-  }
 
   return <>{children}</>;
 }
