@@ -135,8 +135,23 @@ export function CreateAdForm({ initialData, mode = 'create', onSuccess, requireC
   const { refreshSubscriptions, user } = useAuthStore();
   const { data: propertyTypesData, isLoading: propertyTypesLoading } = usePropertyTypes();
   const { data: areasData, isLoading: areasLoading } = useAreas();
-  const propertyTypes = propertyTypesData || [];
-  const areas = areasData || [];
+  const propertyTypeOptions = useMemo(
+    () =>
+      (propertyTypesData || []).map(type => ({
+        label: locale === 'ar' ? type.labelAr || type.label : type.label,
+        value: String(type.id),
+      })),
+    [locale, propertyTypesData]
+  );
+  const areaOptions = useMemo(
+    () =>
+      (areasData || []).map(area => ({
+        label: locale === 'ar' ? area.labelAr || area.label : area.label,
+        value: String(area.id),
+        governorate: locale === 'ar' ? area.governorateAr || area.governorate : area.governorate,
+      })),
+    [areasData, locale]
+  );
   const isLoadingMetadata = propertyTypesLoading || areasLoading;
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<Record<number, number>>({});
@@ -777,27 +792,31 @@ export function CreateAdForm({ initialData, mode = 'create', onSuccess, requireC
                   <FormField
                     control={form.control}
                     name="propertyType"
-                    render={({ field, fieldState }) => (
-                      <FormItem className="flex flex-col">
-                        <FormLabel className="font-medium">{t('ads.propertyType')}</FormLabel>
+                    render={({ field, fieldState }) => {
+                      const selectedPropertyType = propertyTypeOptions.find(option => option.value === field.value);
 
-                        <Select onValueChange={field.onChange} value={field.value} disabled={isLoadingMetadata}>
-                          <FormControl>
-                            <SelectTrigger className={`bg-white border-gray-200 !h-10 sm:!h-12 ${locale === 'ar' ? 'text-right [&>span]:w-full [&>span]:text-right' : ''}`} size="sm">
-                              <SelectValue placeholder={t('ads.selectType')} />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {propertyTypes.map(type => (
-                              <SelectItem key={type.id} value={String(type.id)} className="text-base" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
-                                {locale === 'ar' ? type.labelAr || type.label : type.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        {fieldState.error?.message && <ErrorSlot message={fieldState.error?.message} />}
-                      </FormItem>
-                    )}
+                      return (
+                        <FormItem className="flex flex-col">
+                          <FormLabel className="font-medium">{t('ads.propertyType')}</FormLabel>
+
+                          <Select onValueChange={field.onChange} value={field.value} disabled={isLoadingMetadata}>
+                            <FormControl>
+                              <SelectTrigger className={`bg-white border-gray-200 !h-10 sm:!h-12 ${locale === 'ar' ? 'text-right [&>span]:w-full [&>span]:text-right' : ''}`} size="sm">
+                                <SelectValue placeholder={t('ads.selectType')}>{selectedPropertyType?.label}</SelectValue>
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {propertyTypeOptions.map(option => (
+                                <SelectItem key={option.value} value={option.value} className="text-base" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
+                                  {option.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          {fieldState.error?.message && <ErrorSlot message={fieldState.error?.message} />}
+                        </FormItem>
+                      );
+                    }}
                   />
 
                   <FormField
@@ -808,11 +827,7 @@ export function CreateAdForm({ initialData, mode = 'create', onSuccess, requireC
                         <FormLabel className="font-medium">{t('ads.area')}</FormLabel>
 
                         <MultiSelect
-                          options={areas.map(a => ({
-                            label: locale === 'ar' ? a.labelAr || a.label : a.label,
-                            value: String(a.id),
-                            governorate: locale === 'ar' ? a.governorateAr || a.governorate : a.governorate,
-                          }))}
+                          options={areaOptions}
                           value={field.value ? [field.value] : []}
                           onChange={val => field.onChange(val[0] || '')}
                           placeholder={t('ads.selectArea')}
