@@ -102,7 +102,7 @@ export function PlanViewPage({ planId }: PlanViewPageProps) {
       <div className="max-w-lg mx-auto px-6 pt-4 sm:pt-8">
         {/* Plan Header */}
         <div className="mb-6 border-b border-gray-100 pb-6">
-          <div className="text-[10px] font-bold text-primary/60 uppercase tracking-widest mb-1 text-center">{plan.planType === PlanType.OFFICE ? t('plan.officesPlan') : t('plan.premiumAdPlan')}</div>
+          <div className="text-[10px] font-bold text-primary/60 uppercase tracking-widest mb-1 text-center">{t('plan.officesPlan')}</div>
           <h1 className="text-lg text-center sm:text-xl font-semibold text-primary-dark mb-1 leading-tight">{locale === 'ar' ? plan.nameAr : plan.name}</h1>
         </div>
 

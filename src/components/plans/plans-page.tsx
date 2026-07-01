@@ -1,10 +1,8 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Crown, Tag } from 'lucide-react';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { useTranslations, useLocale } from '@/hooks/use-locale';
 import { useSubscriptionPlans } from '@/hooks/use-plans';
@@ -13,35 +11,13 @@ export function PlansPage() {
   const router = useRouter();
   const t = useTranslations('common');
   const { locale } = useLocale();
-  const tabsListRef = useRef<HTMLDivElement>(null);
-  const [activeTab, setActiveTab] = useState('all');
-
   const { data: plans = [], isLoading } = useSubscriptionPlans();
-
-  // Handle auto-scrolling to active tab on mobile
-  useEffect(() => {
-    if (tabsListRef.current) {
-      const activeElement = tabsListRef.current.querySelector('[data-state="active"]');
-      if (activeElement) {
-        activeElement.scrollIntoView({
-          behavior: 'smooth',
-          block: 'nearest',
-          inline: 'center',
-        });
-      }
-    }
-  }, [activeTab]);
 
   const handlePlanClick = (planId: string) => {
     router.push(`/plans/${planId}`);
   };
 
-  const filteredPlans = plans.filter(plan => {
-    if (activeTab === 'all') return true;
-    if (activeTab === 'premium') return plan.planType === 'month-plan';
-    if (activeTab === 'offices') return plan.planType === 'office-plan';
-    return true;
-  });
+  const officePlans = plans.filter(plan => plan.planType === 'office-plan');
 
   if (isLoading) {
     return (
@@ -98,23 +74,6 @@ export function PlansPage() {
           </Button>
         </div>
 
-        {/* Tabs Filter */}
-        <div className="mb-3 overflow-hidden">
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
-            <TabsList ref={tabsListRef} className="w-full bg-gray-200/50 p-1 rounded-xl h-auto no-scrollbar overflow-x-auto justify-start sm:justify-center">
-              <TabsTrigger value="all" className="min-w-[80px] rounded-lg data-[state=active]:bg-primary data-[state=active]:text-white transition-all py-2 px-6 font-bold text-gray-500 text-sm">
-                {t('plan.all')}
-              </TabsTrigger>
-              <TabsTrigger value="premium" className="min-w-[150px] rounded-lg data-[state=active]:bg-primary data-[state=active]:text-white transition-all py-2 px-6 font-bold text-gray-500 text-sm">
-                {t('plan.premiumAdPlan')}
-              </TabsTrigger>
-              <TabsTrigger value="offices" className="min-w-[120px] rounded-lg data-[state=active]:bg-primary data-[state=active]:text-white transition-all py-2 px-6 font-bold text-gray-500 text-sm">
-                {t('plan.officesPlan')}
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
-        </div>
-
         {/* Promotional Banner */}
         <div className="w-full sm:w-fit bg-primary/5 border border-primary/10 rounded-xl p-2 mb-3 flex items-center gap-3 animate-in fade-in slide-in-from-top-4 duration-500">
           <div className="bg-primary/10 p-2 rounded-lg shrink-0">
@@ -127,7 +86,7 @@ export function PlansPage() {
 
         {/* Plan Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-          {filteredPlans.map((plan, index) => (
+          {officePlans.map((plan, index) => (
             <div
               key={plan._id}
               onClick={() => handlePlanClick(plan._id)}
