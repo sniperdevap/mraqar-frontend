@@ -2,6 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Share2, Clock, Phone, MessageCircle } from "lucide-react";
 import { Ad, Media } from "@/types/ad";
 import { Card } from "@/components/ui/card";
@@ -38,12 +39,29 @@ export function HomeAdCard({ ad, onClick }: HomeAdCardProps) {
   const getMediaUrl = (media: Media) => {
     if (!media) return null;
     if (media.url?.startsWith("http")) return media.url;
-    return `${process.env.NEXT_PUBLIC_IMAGE_HOST}/${media.url}`;
+    const imageHost = (process.env.NEXT_PUBLIC_IMAGE_HOST || "").replace(
+      /\/+$/,
+      "",
+    );
+    const mediaPath = media.url?.replace(/^\/+/, "");
+    return mediaPath ? `${imageHost}/${mediaPath}` : null;
+  };
+
+  const getThumbnailUrl = (media: Media) => {
+    if (!media.thumbnail) return "/images/aqar-new-logo.png";
+    if (media.thumbnail.startsWith("http")) return media.thumbnail;
+    const imageHost = (process.env.NEXT_PUBLIC_IMAGE_HOST || "").replace(
+      /\/+$/,
+      "",
+    );
+    return `${imageHost}/${media.thumbnail.replace(/^\/+/, "")}`;
   };
 
   const firstMedia = ad.media?.[0];
   const displayUrl = firstMedia
-    ? getMediaUrl(firstMedia)
+    ? firstMedia.type === "video"
+      ? getThumbnailUrl(firstMedia)
+      : getMediaUrl(firstMedia) || "/images/aqar-new-logo.png"
     : "/images/aqar-new-logo.png";
 
   const handleWhatsApp = (e: React.MouseEvent) => {
@@ -68,8 +86,9 @@ export function HomeAdCard({ ad, onClick }: HomeAdCardProps) {
   };
 
   return (
-    <div
-      className="w-full bg-[#f9eef2] border border-gray-200 rounded-lg overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.01)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.03)] transition-all h-[104px] cursor-pointer mb-3 p-2.5"
+    <Link
+      href={`/ads/${ad.id}`}
+      className="block w-full bg-[#f9eef2] border border-gray-200 rounded-lg overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.01)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.03)] transition-all h-[104px] cursor-pointer mb-3 p-2.5"
       onClick={onClick}
       dir={direction}
     >
@@ -77,10 +96,10 @@ export function HomeAdCard({ ad, onClick }: HomeAdCardProps) {
         {/* Image Section (Left in LTR / Right in RTL) */}
         <div className="py-0.5 relative w-[60px] shrink-0 h-[60px] overflow-visible">
           <div className="relative w-full h-full rounded-md overflow-hidden">
-            <img
+            <Image
               src={displayUrl as string}
               alt={ad.description}
-              // fill
+              fill
               className="object-cover"
               sizes="100px"
             />
@@ -131,6 +150,6 @@ export function HomeAdCard({ ad, onClick }: HomeAdCardProps) {
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }

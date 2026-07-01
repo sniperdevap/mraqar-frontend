@@ -913,10 +913,7 @@ export function SearchPage() {
                       : undefined
                   }
                 >
-                  <HomeAdCard
-                    ad={ad}
-                    onClick={() => router.push(`/ads/${ad.id}`)}
-                  />
+                  <HomeAdCard ad={ad} />
                 </div>
               ))}
             </div>
