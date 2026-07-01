@@ -253,8 +253,8 @@ export function CreateAdForm({ initialData, mode = 'create', onSuccess, requireC
       isPhoneHidden: initialData?.isPhoneHidden || false,
       premiumAd: initialData?.premiumAd || initialData?.isPremium || false,
       media: initialData?.media?.map(m => m._id) || [],
-      propertyType: initialData?.propertyType?._id || '',
-      area: initialData?.area?._id || '',
+      propertyType: initialData?.propertyType?.id ? String(initialData.propertyType.id) : '',
+      area: initialData?.area?.id ? String(initialData.area.id) : '',
       phoneNumber: formatDisplayPhone(initialData?.phoneNumber) || formatDisplayPhone(user?.phoneNumber) || '',
       price: initialData?.price || 0,
       description: initialData?.description || '',
@@ -568,13 +568,15 @@ export function CreateAdForm({ initialData, mode = 'create', onSuccess, requireC
 
       const adData = {
         ...cleanedValues,
+        propertyType: Number(values.propertyType),
+        area: Number(values.area),
         phoneNumber: normalizeKuwaitPhone(values.phoneNumber),
         alternativePhoneNumber: values.alternativePhoneNumber ? normalizeKuwaitPhone(values.alternativePhoneNumber) : '',
         media: finalMediaIds.filter((id): id is string => Boolean(id)),
       };
 
       if (mode === 'edit' && initialData) {
-        await updateAd(initialData._id, adData, user?.role === 'super_admin' ? initialData.user?._id : undefined);
+        await updateAd(initialData.id, adData, user?.role === 'super_admin' ? initialData.user?._id : undefined);
         await refreshSubscriptions();
         queryClient.invalidateQueries({ queryKey: ['ads'] });
         queryClient.invalidateQueries({ queryKey: ['ad'] });
@@ -787,7 +789,7 @@ export function CreateAdForm({ initialData, mode = 'create', onSuccess, requireC
                           </FormControl>
                           <SelectContent>
                             {propertyTypes.map(type => (
-                              <SelectItem key={type._id} value={type._id} className="text-base" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
+                              <SelectItem key={type.id} value={String(type.id)} className="text-base" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
                                 {locale === 'ar' ? type.labelAr || type.label : type.label}
                               </SelectItem>
                             ))}
@@ -808,7 +810,7 @@ export function CreateAdForm({ initialData, mode = 'create', onSuccess, requireC
                         <MultiSelect
                           options={areas.map(a => ({
                             label: locale === 'ar' ? a.labelAr || a.label : a.label,
-                            value: a._id,
+                            value: String(a.id),
                             governorate: locale === 'ar' ? a.governorateAr || a.governorate : a.governorate,
                           }))}
                           value={field.value ? [field.value] : []}

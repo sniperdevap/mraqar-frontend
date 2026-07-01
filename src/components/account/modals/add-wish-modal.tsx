@@ -126,7 +126,7 @@ export function AddWishModal({ open, onOpenChange, onSuccess }: AddWishModalProp
               <SelectContent>
                 <SelectItem value="all">{t('allTypes')}</SelectItem>
                 {propertyTypes.map(type => (
-                  <SelectItem key={type._id} value={type._id}>
+                  <SelectItem key={type.id} value={String(type.id)}>
                     {locale === 'ar' ? type.labelAr || type.label : type.label}
                   </SelectItem>
                 ))}
@@ -144,7 +144,7 @@ export function AddWishModal({ open, onOpenChange, onSuccess }: AddWishModalProp
               <SelectContent>
                 <SelectItem value="all">{t('allAreas')}</SelectItem>
                 {areas.map(area => (
-                  <SelectItem key={area._id} value={area._id}>
+                  <SelectItem key={area.id} value={String(area.id)}>
                     {locale === 'ar' ? area.labelAr || area.label : area.label}
                   </SelectItem>
                 ))}

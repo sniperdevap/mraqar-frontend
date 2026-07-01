@@ -153,11 +153,11 @@ export function AdDetailPage({ adId }: AdDetailPageProps) {
     setIsFavoriteLoading(true);
     try {
       if (isFavorite) {
-        await removeFavorite(ad._id);
+        await removeFavorite(ad.id);
         setIsFavorite(false);
         toast.success(t("removedFromFavorites"));
       } else {
-        await addFavorite(ad._id);
+        await addFavorite(ad.id);
         setIsFavorite(true);
         toast.success(t("addedToFavorites"));
       }
@@ -185,14 +185,14 @@ export function AdDetailPage({ adId }: AdDetailPageProps) {
   const similarAdsFilters = useMemo<GetAdsParams>(
     () => ({
       purpose: ad?.purpose,
-      propertyType: ad?.propertyType?._id,
-      area: ad?.area?._id,
+      propertyType: ad?.propertyType?.id ? String(ad.propertyType.id) : undefined,
+      area: ad?.area?.id ? String(ad.area.id) : undefined,
     }),
-    [ad?.purpose, ad?.propertyType?._id, ad?.area?._id],
+    [ad?.purpose, ad?.propertyType?.id, ad?.area?.id],
   );
 
   const shouldFetchSimilarAds = Boolean(
-    ad?.purpose && ad?.propertyType?._id && ad?.area?._id,
+    ad?.purpose && ad?.propertyType?.id && ad?.area?.id,
   );
 
   const {
@@ -211,7 +211,7 @@ export function AdDetailPage({ adId }: AdDetailPageProps) {
     if (!similarAdsData?.pages) return [];
     return similarAdsData.pages
       .flatMap((page) => page.ads)
-      .filter((similarAd) => similarAd._id !== adId);
+      .filter((similarAd) => String(similarAd.id) !== adId);
   }, [similarAdsData?.pages, adId]);
 
   const similarAdsTriggerIndex = Math.max(
@@ -287,14 +287,14 @@ export function AdDetailPage({ adId }: AdDetailPageProps) {
 
   const handleEdit = () => {
     if (!ad) return;
-    router.push(`/ads/edit/${ad._id}`);
+    router.push(`/ads/edit/${ad.id}`);
   };
 
   const handleToggleStatus = async () => {
     if (!ad) return;
     try {
       const newStatus = ad.status === "active" ? "inactive" : "active";
-      await updateAd(ad._id, { status: newStatus });
+      await updateAd(ad.id, { status: newStatus });
       queryClient.invalidateQueries({ queryKey: ["ad", adId] });
       queryClient.invalidateQueries({ queryKey: ["ads"] });
       queryClient.invalidateQueries({ queryKey: ["my-ads"] });
@@ -307,7 +307,7 @@ export function AdDetailPage({ adId }: AdDetailPageProps) {
   const handleDelete = async () => {
     if (!ad) return;
     try {
-      await deleteAd(ad._id);
+      await deleteAd(ad.id);
       queryClient.invalidateQueries({ queryKey: ["ads"] });
       queryClient.invalidateQueries({ queryKey: ["my-ads"] });
       toast.success(t("deletedSuccessfully"));
@@ -628,7 +628,7 @@ ${window.location.href}`);
                 <div className="grid grid-cols-1 gap-0">
                   {similarAds.map((similarAd, index) => (
                     <div
-                      key={similarAd._id}
+                      key={similarAd.id}
                       ref={
                         hasNextSimilarAdsPage &&
                           index === similarAdsTriggerIndex
@@ -638,7 +638,7 @@ ${window.location.href}`);
                     >
                       <SearchAdCard
                         ad={similarAd}
-                        onClick={() => router.push(`/ads/${similarAd._id}`)}
+                        onClick={() => router.push(`/ads/${similarAd.id}`)}
                       />
                     </div>
                   ))}

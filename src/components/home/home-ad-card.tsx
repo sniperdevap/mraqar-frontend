@@ -62,7 +62,7 @@ export function HomeAdCard({ ad, onClick }: HomeAdCardProps) {
     if (navigator.share) {
       navigator.share({
         title: ad.description,
-        url: window.location.origin + `/ads/${ad._id}`,
+        url: window.location.origin + `/ads/${ad.id}`,
       });
     }
   };
@@ -77,21 +77,23 @@ export function HomeAdCard({ ad, onClick }: HomeAdCardProps) {
         {/* Image Section (Left in LTR / Right in RTL) */}
         <div className="py-0.5 relative w-[60px] shrink-0 h-[60px] overflow-visible">
           <div className="relative w-full h-full rounded-md overflow-hidden">
-            <Image
+            <img
               src={displayUrl as string}
               alt={ad.description}
-              fill
+              // fill
               className="object-cover"
               sizes="100px"
             />
           </div>
           {/* Featured Badge */}
           {(ad.isPremium || ad.premiumAd) && (
-            <div className={`absolute -top-1.5 z-10 bg-[#d91d24] text-white px-1.5 py-0.5 text-[9px] font-bold shadow-sm
+            <div
+              className={`absolute -top-1.5 z-10 bg-[#d91d24] text-white px-1.5 py-0.5 text-[9px] font-bold shadow-sm
               after:content-[''] after:absolute after:top-full after:border-t-[3px] after:border-t-[#800a0e]
-              ${direction === "rtl"
-                ? "right-[-3px] rounded-l-[3px] after:right-0 after:border-r-[3px] after:border-r-transparent"
-                : "left-[-3px] rounded-r-[3px] after:left-0 after:border-l-[3px] after:border-l-transparent"
+              ${
+                direction === "rtl"
+                  ? "right-[-3px] rounded-l-[3px] after:right-0 after:border-r-[3px] after:border-r-transparent"
+                  : "left-[-3px] rounded-r-[3px] after:left-0 after:border-l-[3px] after:border-l-transparent"
               }`}
             >
               {locale === "ar" ? "مميز" : "Featured"}
@@ -116,9 +118,10 @@ export function HomeAdCard({ ad, onClick }: HomeAdCardProps) {
               </span>
               <div className="flex items-center gap-1 text-gray-500 font-semibold">
                 <Clock size={12} className="text-gray-500" />
-                <span className="text-[10px] font-semibold">{getTimeAgo(ad.createdAt)}</span>
+                <span className="text-[10px] font-semibold">
+                  {getTimeAgo(ad.createdAt)}
+                </span>
               </div>
-
             </div>
 
             {/* Description */}
@@ -130,5 +133,4 @@ export function HomeAdCard({ ad, onClick }: HomeAdCardProps) {
       </div>
     </div>
   );
-
 }

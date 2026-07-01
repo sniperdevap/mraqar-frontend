@@ -146,7 +146,7 @@ export function WishlistTab() {
                 {wish.matchedAd && (
                   <div className="pt-4 border-t border-gray-200">
                     <p className="text-sm text-gray-600 mb-2">{t('matchedAd')}</p>
-                    <AdCard ad={wish.matchedAd} onClick={() => router.push(`/ads/${wish.matchedAd?._id}`)} />
+                    <AdCard ad={wish.matchedAd} onClick={() => router.push(`/ads/${wish.matchedAd?.id}`)} />
                   </div>
                 )}
               </div>

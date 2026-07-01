@@ -60,11 +60,11 @@ export function AdCard({
     setIsLoadingFav(true);
     try {
       if (isFavorite) {
-        await removeFavorite(ad._id);
+        await removeFavorite(ad.id);
         setIsFavorite(false);
         toast.success(t("removedFromFavorites") || "Removed from favorites");
       } else {
-        await addFavorite(ad._id);
+        await addFavorite(ad.id);
         setIsFavorite(true);
         toast.success(t("addedToFavorites") || "Added to favorites");
       }
@@ -81,7 +81,7 @@ export function AdCard({
 
   const handleDelete = async () => {
     try {
-      await deleteAd(ad._id);
+      await deleteAd(ad.id);
       query.invalidateQueries({ queryKey: ["ads"] });
       toast.success(t("deletedSuccessfully"));
       if (onAction) onAction("refresh", ad);
@@ -93,7 +93,7 @@ export function AdCard({
 
   const handlePremium = async () => {
     try {
-      await updateAd(ad._id, { isPremium: true });
+      await updateAd(ad.id, { isPremium: true });
       toast.success(t("premiumSuccessfully"));
       query.invalidateQueries({ queryKey: ["ads"] });
       if (onAction) onAction("refresh", ad);
@@ -107,7 +107,7 @@ export function AdCard({
     e.stopPropagation();
     const newStatus = ad.status === "active" ? "inactive" : "active";
     try {
-      await updateAd(ad._id, { status: newStatus });
+      await updateAd(ad.id, { status: newStatus });
       toast.success(newStatus === "active" ? t("activated") : t("stopped"));
       query.invalidateQueries({ queryKey: ["ads"] });
       if (onAction) onAction("refresh", ad);

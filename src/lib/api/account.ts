@@ -67,7 +67,12 @@ export const getMyAds = async (status?: string, page: number = 1, limit: number 
 
 // Wishlist
 export const createWishlist = async (data: CreateWishlistRequest): Promise<Wishlist> => {
-  const response = await axiosWrapper<Wishlist>('post', API_ENDPOINTS.ACCOUNT.WISHLIST.CREATE, data);
+  const payload = {
+    ...data,
+    ...(data.propertyType ? { propertyType: Number(data.propertyType) } : {}),
+    ...(data.area ? { area: Number(data.area) } : {}),
+  };
+  const response = await axiosWrapper<Wishlist>('post', API_ENDPOINTS.ACCOUNT.WISHLIST.CREATE, payload);
   return response.data;
 };
 
@@ -78,7 +83,12 @@ export const getWishlists = async (status?: string): Promise<Wishlist[]> => {
 };
 
 export const updateWishlist = async (id: string, data: Partial<CreateWishlistRequest & { status?: string }>): Promise<Wishlist> => {
-  const response = await axiosWrapper<Wishlist>('put', API_ENDPOINTS.ACCOUNT.WISHLIST.UPDATE(id), data);
+  const payload = {
+    ...data,
+    ...(data.propertyType ? { propertyType: Number(data.propertyType) } : {}),
+    ...(data.area ? { area: Number(data.area) } : {}),
+  };
+  const response = await axiosWrapper<Wishlist>('put', API_ENDPOINTS.ACCOUNT.WISHLIST.UPDATE(id), payload);
   return response.data;
 };
 
@@ -87,11 +97,11 @@ export const deleteWishlist = async (id: string): Promise<void> => {
 };
 
 // Favorites
-export const addFavorite = async (adId: string): Promise<void> => {
+export const addFavorite = async (adId: number): Promise<void> => {
   await axiosWrapper('post', API_ENDPOINTS.ACCOUNT.FAVORITES.ADD, { adId });
 };
 
-export const removeFavorite = async (adId: string): Promise<void> => {
+export const removeFavorite = async (adId: number): Promise<void> => {
   await axiosWrapper('delete', API_ENDPOINTS.ACCOUNT.FAVORITES.REMOVE(adId));
 };
 
@@ -106,7 +116,7 @@ export const getFavorites = async (page: number = 1, limit: number = 12): Promis
   };
 };
 
-export const checkIsFavorite = async (adId: string): Promise<boolean> => {
+export const checkIsFavorite = async (adId: number): Promise<boolean> => {
   const response = await axiosWrapper<{ isFavorite: boolean }>('get', API_ENDPOINTS.ACCOUNT.FAVORITES.CHECK(adId));
   return response.data.isFavorite;
 };
@@ -135,7 +145,7 @@ export interface Notification {
   title: { en: string; ar: string };
   message: { en: string; ar: string };
   redirectUrl?: string;
-  relatedAd?: string;
+  relatedAd?: Ad;
   relatedWishlist?: string;
   isRead: boolean;
   createdAt: string;

@@ -285,7 +285,7 @@ export function OfficeDetailPage({ officeId }: OfficeDetailPageProps) {
                   <MultiSelect
                     options={areas.map((a) => ({
                       label: locale === "ar" ? a.labelAr || a.label : a.label,
-                      value: a._id,
+                      value: String(a.id),
                       governorate:
                         locale === "ar"
                           ? a.governorateAr || a.governorate
@@ -319,8 +319,8 @@ export function OfficeDetailPage({ officeId }: OfficeDetailPageProps) {
                     <SelectContent className="rounded-xl">
                       {propertyTypes.map((type) => (
                         <SelectItem
-                          key={type._id}
-                          value={type._id}
+                          key={type.id}
+                          value={String(type.id)}
                           className="cursor-pointer font-medium uppercase text-[11px]"
                         >
                           {locale === "ar"
@@ -363,9 +363,9 @@ export function OfficeDetailPage({ officeId }: OfficeDetailPageProps) {
         <div className="grid grid-cols-1 gap-4 md:gap-6 mb-8">
           {ads.map((ad) => (
             <AdCard
-              key={ad._id}
+              key={ad.id}
               ad={ad}
-              onClick={() => router.push(`/ads/${ad._id}`)}
+              onClick={() => router.push(`/ads/${ad.id}`)}
               mode={ad.isPremium ? "dark" : "light"}
             />
           ))}
