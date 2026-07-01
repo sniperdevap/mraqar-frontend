@@ -167,14 +167,14 @@ export default async function AboutPage() {
                 </span>
               </a>
               <a
-                href="https://www.instagram.com/Mr aqar.aqar?igsh=MTN1bmoydXVqZmF6dQ=="
+                href="https://www.instagram.com/mr_aqar"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-start md:justify-center gap-2 text-gray-700 hover:text-primary transition-colors"
               >
                 <Instagram className="text-primary" size={20} />
                 <span className="font-medium">Instagram:</span>
-                <span className="hover:underline">@Mr aqar.aqar</span>
+                <span className="hover:underline">@mr_aqar</span>
               </a>
               <div className="flex items-start justify-center gap-2 text-gray-700">
                 <MapPin

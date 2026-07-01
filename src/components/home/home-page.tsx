@@ -310,7 +310,7 @@ export function HomePage() {
               <MultiSelect
                 options={areas.map((a) => ({
                   label: locale === "ar" ? a.labelAr : a.label,
-                  value: a._id,
+                  value: String(a.id),
                   governorate:
                     locale === "ar" ? a.governorateAr : a.governorate,
                 }))}
@@ -343,8 +343,8 @@ export function HomePage() {
               <SelectContent className="rounded-xl">
                 {propertyTypes.map((type) => (
                   <SelectItem
-                    key={type._id}
-                    value={type._id}
+                    key={type.id}
+                    value={String(type.id)}
                     className="cursor-pointer font-normal text-sm text-gray-800"
                   >
                     {locale === "ar" ? type.labelAr || type.label : type.label}
@@ -421,17 +421,14 @@ export function HomePage() {
               <div className="flex flex-col gap-2">
                 {ads.map((ad, index) => (
                   <div
-                    key={ad._id}
+                    key={ad.id}
                     ref={
                       hasNextPage && index === prefetchTriggerIndex
                         ? prefetchRef
                         : undefined
                     }
                   >
-                    <HomeAdCard
-                      ad={ad}
-                      onClick={() => router.push(`/ads/${ad._id}`)}
-                    />
+                    <HomeAdCard ad={ad} />
                   </div>
                 ))}
               </div>

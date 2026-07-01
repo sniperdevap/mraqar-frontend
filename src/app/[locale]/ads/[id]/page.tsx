@@ -8,6 +8,7 @@ import {
   prefetchInfiniteSearchAds,
 } from "@/lib/query-prefetch";
 import { getServerAdById } from "@/lib/api/server";
+import { permanentRedirect } from "next/navigation";
 
 type Props = {
   params: Promise<{ id: string; locale: string }>;
@@ -83,8 +84,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function AdDetail({ params }: Props) {
-  const { id } = await params;
+  const { id, locale: routeLocale } = await params;
   const locale = await getLocale();
+  const canonicalAd = await getServerAdById(id, locale);
+  if (String(canonicalAd.id) !== id) {
+    permanentRedirect(`/${routeLocale}/ads/${canonicalAd.id}`);
+  }
   const queryClient = createServerQueryClient();
 
   await Promise.all([

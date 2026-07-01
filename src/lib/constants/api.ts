@@ -21,8 +21,8 @@ export const API_ENDPOINTS = {
     GET_ALL: '/ads',
     GET_BY_ID: (id: string) => `/ads/${id}`,
     MY_ADS: '/ads/my-ads',
-    UPDATE: (id: string) => `/ads/${id}`,
-    DELETE: (id: string) => `/ads/${id}`,
+    UPDATE: (id: number) => `/ads/${id}`,
+    DELETE: (id: number) => `/ads/${id}`,
   },
   // Subscription endpoints
   SUBSCRIPTION: {
@@ -122,9 +122,9 @@ export const API_ENDPOINTS = {
     },
     FAVORITES: {
       ADD: '/account/favorites',
-      REMOVE: (adId: string) => `/account/favorites/${adId}`,
+      REMOVE: (adId: number) => `/account/favorites/${adId}`,
       GET_ALL: '/account/favorites',
-      CHECK: (adId: string) => `/account/favorites/check/${adId}`,
+      CHECK: (adId: number) => `/account/favorites/check/${adId}`,
     },
     DELETE_ACCOUNT: '/account/delete-account',
     NOTIFICATIONS: {

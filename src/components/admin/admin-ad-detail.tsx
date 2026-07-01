@@ -139,11 +139,11 @@ export function AdminAdDetail({ adId }: AdminAdDetailProps) {
     setIsFavoriteLoading(true);
     try {
       if (isFavorite) {
-        await removeFavorite(ad._id);
+        await removeFavorite(ad.id);
         setIsFavorite(false);
         toast.success(t("removedFromFavorites"));
       } else {
-        await addFavorite(ad._id);
+        await addFavorite(ad.id);
         setIsFavorite(true);
         toast.success(t("addedToFavorites"));
       }
@@ -205,14 +205,14 @@ export function AdminAdDetail({ adId }: AdminAdDetailProps) {
 
   const handleEdit = () => {
     if (!ad) return;
-    router.push(`/admin/ads/edit/${ad._id}`);
+    router.push(`/admin/ads/edit/${ad.id}`);
   };
 
   const handleToggleStatus = async () => {
     if (!ad) return;
     try {
       const newStatus = ad.status === "active" ? "inactive" : "active";
-      await updateAd(ad._id, { status: newStatus });
+      await updateAd(ad.id, { status: newStatus });
       queryClient.invalidateQueries({ queryKey: ["ad", adId] });
       queryClient.invalidateQueries({ queryKey: ["ads"] });
       queryClient.invalidateQueries({ queryKey: ["my-ads"] });
@@ -225,7 +225,7 @@ export function AdminAdDetail({ adId }: AdminAdDetailProps) {
   const handleDelete = async () => {
     if (!ad) return;
     try {
-      await deleteAd(ad._id);
+      await deleteAd(ad.id);
       queryClient.invalidateQueries({ queryKey: ["ads"] });
       queryClient.invalidateQueries({ queryKey: ["my-ads"] });
       toast.success(t("deletedSuccessfully"));
@@ -255,7 +255,7 @@ export function AdminAdDetail({ adId }: AdminAdDetailProps) {
     const message = encodeURIComponent(`السلام عليكم
 أنا مهتم بهذا الإعلان:
 ${propertyInfo}
-${window.location.origin}/${locale}/ads/${ad._id}`);
+${window.location.origin}/${locale}/ads/${ad.id}`);
 
     let phoneParam = phoneNumber.replace(/[^0-9]/g, "");
     // If it doesn't start with 965, add it
@@ -633,7 +633,7 @@ ${window.location.origin}/${locale}/ads/${ad._id}`);
           onClose={() => setIsShareOpen(false)}
           url={
             typeof window !== "undefined"
-              ? `${window.location.origin}/${locale}/ads/${ad._id}`
+              ? `${window.location.origin}/${locale}/ads/${ad.id}`
               : ""
           }
           title={

@@ -17,7 +17,6 @@ import { Button } from '@/components/ui/button';
 
 interface GroupedSubscription {
   user: AdminSubscription['user'];
-  monthly: AdminSubscription | null;
   office: AdminSubscription | null;
 }
 
@@ -59,12 +58,10 @@ export function AdminSubscriptions() {
       if (!acc[userId]) {
         acc[userId] = {
           user: sub.user,
-          monthly: null,
           office: null,
         };
       }
-      if (sub.planType === 'month-plan') acc[userId].monthly = sub;
-      else if (sub.planType === 'office-plan') acc[userId].office = sub;
+      if (sub.planType === 'office-plan') acc[userId].office = sub;
       return acc;
     }, {})
   );
@@ -104,8 +101,8 @@ export function AdminSubscriptions() {
     }
   };
 
-  const renderPlanCard = (sub: AdminSubscription | null, type: 'month-plan' | 'office-plan', userName: string) => {
-    const title = type === 'month-plan' ? t('subscriptions.table.monthlyPlan') : t('subscriptions.table.officePlan');
+  const renderPlanCard = (sub: AdminSubscription | null, userName: string) => {
+    const title = t('subscriptions.table.officePlan');
     const isActive = sub && sub.isActive;
 
     return (
@@ -181,10 +178,7 @@ export function AdminSubscriptions() {
   };
 
   const getActiveCount = (group: GroupedSubscription) => {
-    let count = 0;
-    if (group.monthly?.isActive) count++;
-    if (group.office?.isActive) count++;
-    return count;
+    return group.office?.isActive ? 1 : 0;
   };
 
   return (
@@ -282,9 +276,8 @@ export function AdminSubscriptions() {
                                   <div className="absolute -left-1.5 -top-1.5 h-3 w-3 rounded-full bg-blue-100 border-2 border-white shadow-sm" />
                                 </div>
 
-                                <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-6 animate-in slide-in-from-top-4 duration-500">
-                                  {renderPlanCard(group.monthly, 'month-plan', group.user.name)}
-                                  {renderPlanCard(group.office, 'office-plan', group.user.name)}
+                                <div className="flex-1 grid grid-cols-1 gap-6 animate-in slide-in-from-top-4 duration-500">
+                                  {renderPlanCard(group.office, group.user.name)}
                                 </div>
                               </div>
                             </div>
@@ -326,39 +319,6 @@ export function AdminSubscriptions() {
                   </div>
 
                   <div className="space-y-4">
-                    <div className="space-y-2.5">
-                      <p className="text-[10px] text-gray-400 uppercase font-black tracking-widest ml-1">{t('subscriptions.table.monthlyPlan')}</p>
-                      {group.monthly && group.monthly.isActive ? (
-                        <div className="bg-white p-4 rounded-xl border border-blue-100 shadow-sm">
-                          <div className="flex items-center justify-between mb-3">
-                            <span className="text-[10px] font-bold text-green-700 bg-green-50 px-2 py-1 rounded-md border border-green-100 uppercase">{t('subscriptions.status.active')}</span>
-                            <ConfirmationDialog
-                              trigger={<button className="text-[10px] text-red-500 font-black uppercase tracking-widest underline px-0">{t('subscriptions.modals.cancelConfirm')}</button>}
-                              icon={{ src: '/images/icons/delete.svg', alt: 'Cancel', bgColor: 'bg-red-100' }}
-                              title={t('subscriptions.modals.cancelTitle')}
-                              description={t('subscriptions.modals.cancelDescription', { type: t('subscriptions.table.monthlyPlan'), name: group.user.name })}
-                              confirmButtonText={t('subscriptions.modals.cancelConfirm')}
-                              onConfirm={() => handleCancelSubscription(group.monthly!._id)}
-                            />
-                          </div>
-                          <div className="grid grid-cols-2 gap-3">
-                            <div>
-                              <p className="text-[9px] text-gray-400 uppercase font-bold tracking-tight mb-0.5">{t('subscriptions.table.credits')}</p>
-                              <p className="text-xs font-bold text-gray-900">
-                                {group.monthly.credits} <span className="text-[10px] text-gray-400 font-normal">/ {group.monthly.credits}</span>
-                              </p>
-                            </div>
-                            <div>
-                              <p className="text-[9px] text-gray-400 uppercase font-bold tracking-tight mb-0.5">{t('subscriptions.table.expires')}</p>
-                              <p className="text-xs font-bold text-gray-900">{new Date(group.monthly.endDate).toLocaleDateString()}</p>
-                            </div>
-                          </div>
-                        </div>
-                      ) : (
-                        <p className="text-xs text-gray-400 italic pl-1">{t('subscriptions.table.noPlan')}</p>
-                      )}
-                    </div>
-
                     <div className="space-y-2.5">
                       <p className="text-[10px] text-gray-400 uppercase font-black tracking-widest ml-1">{t('subscriptions.table.officePlan')}</p>
                       {group.office && group.office.isActive ? (

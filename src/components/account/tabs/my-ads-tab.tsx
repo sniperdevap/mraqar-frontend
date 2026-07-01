@@ -46,9 +46,9 @@ export function MyAdsTab() {
       queryClient.invalidateQueries({ queryKey: ['my-ads'] });
       queryClient.invalidateQueries({ queryKey: ['ads'] });
     } else if (action === 'edit') {
-      router.push(`/ads/edit/${ad._id}`);
+      router.push(`/ads/edit/${ad.id}`);
     } else if (action === 'view') {
-      router.push(`/ads/${ad._id}`);
+      router.push(`/ads/${ad.id}`);
     }
   };
 
@@ -82,7 +82,7 @@ export function MyAdsTab() {
       ) : filteredAds.length > 0 ? (
         <div className="flex flex-col gap-4">
           {filteredAds.map(ad => (
-            <AdCard key={ad._id} ad={ad} onClick={() => router.push(`/ads/${ad._id}`)} variant="my-ad" onAction={handleAction} />
+            <AdCard key={ad.id} ad={ad} onClick={() => router.push(`/ads/${ad.id}`)} variant="my-ad" onAction={handleAction} />
           ))}
         </div>
       ) : (

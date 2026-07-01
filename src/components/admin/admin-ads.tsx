@@ -96,15 +96,15 @@ export function AdminAds() {
 
   const handleAction = (action: "edit" | "refresh" | "view", ad: Ad) => {
     if (action === "view") {
-      router.push(`/admin/user-ad-detail/${ad._id}`);
+      router.push(`/admin/user-ad-detail/${ad.id}`);
     } else if (action === "edit") {
-      router.push(`/admin/ads/edit/${ad._id}`);
+      router.push(`/admin/ads/edit/${ad.id}`);
     } else if (action === "refresh") {
       queryClient.invalidateQueries({ queryKey: ["admin", "ads"] });
     }
   };
 
-  const handleToggleStatus = async (adId: string, currentStatus: string) => {
+  const handleToggleStatus = async (adId: number, currentStatus: string) => {
     try {
       const newStatus = currentStatus === "active" ? "inactive" : "active";
       await updateAd(adId, { status: newStatus });
@@ -117,7 +117,7 @@ export function AdminAds() {
     }
   };
 
-  const handleDeleteAd = async (adId: string) => {
+  const handleDeleteAd = async (adId: number) => {
     try {
       await deleteAd(adId);
       queryClient.invalidateQueries({ queryKey: ["admin", "ads"] });
@@ -129,12 +129,12 @@ export function AdminAds() {
 
   const propertyTypeOptions = propertyTypes.map((pt) => ({
     label: isRTL ? pt.labelAr : pt.label,
-    value: pt._id,
+    value: String(pt.id),
   }));
 
   const areaOptions = areas.map((a) => ({
     label: isRTL ? a.labelAr : a.label,
-    value: a._id,
+    value: String(a.id),
     governorate: isRTL ? a.governorateAr : a.governorate,
   }));
 
@@ -346,7 +346,7 @@ export function AdminAds() {
                     <tbody className="divide-y divide-gray-50">
                       {data.ads.map((ad) => (
                         <tr
-                          key={ad._id}
+                          key={ad.id}
                           className="hover:bg-gray-50/50 transition-colors"
                         >
                           <td className="py-4 px-6">
@@ -487,7 +487,7 @@ export function AdminAds() {
                                     : t("manageAds.modals.activateConfirm")
                                 }
                                 onConfirm={() =>
-                                  handleToggleStatus(ad._id, ad.status)
+                                  handleToggleStatus(ad.id, ad.status)
                                 }
                               />
                               <ConfirmationDialog
@@ -509,7 +509,7 @@ export function AdminAds() {
                                 title={tCommon("ads.deleteAd")}
                                 description={tCommon("ads.deleteAdConfirm")}
                                 confirmButtonText={tCommon("ads.deleteAd")}
-                                onConfirm={() => handleDeleteAd(ad._id)}
+                                onConfirm={() => handleDeleteAd(ad.id)}
                               />
                             </div>
                           </td>
@@ -524,7 +524,7 @@ export function AdminAds() {
               <div className="grid grid-cols-1 gap-6 md:hidden">
                 {data.ads.map((ad) => (
                   <AdCard
-                    key={ad._id}
+                    key={ad.id}
                     ad={ad}
                     variant="admin"
                     onAction={handleAction}

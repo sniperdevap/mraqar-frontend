@@ -29,7 +29,7 @@ export function AdminUserDetails({ id }: { id: string }) {
         setAllAds(data.ads);
       } else if (data.pagination.page === page) {
         setAllAds(prev => {
-          const newAds = data.ads.filter(ad => !prev.some(p => p._id === ad._id));
+          const newAds = data.ads.filter(ad => !prev.some(p => p.id === ad.id));
           return [...prev, ...newAds];
         });
       }
@@ -248,8 +248,8 @@ export function AdminUserDetails({ id }: { id: string }) {
               <div className="space-y-6">
                 <div className="grid grid-cols-1 gap-6">
                   {allAds.map((ad: Ad) => (
-                    <div key={ad._id} className="transform hover:scale-[1.01] transition-transform duration-300 text-start">
-                      <AdCard ad={ad} onClick={() => router.push(`/${locale}/admin/user-ad-detail/${ad._id}`)} />
+                    <div key={ad.id} className="transform hover:scale-[1.01] transition-transform duration-300 text-start">
+                      <AdCard ad={ad} onClick={() => router.push(`/${locale}/admin/user-ad-detail/${ad.id}`)} />
                     </div>
                   ))}
                 </div>

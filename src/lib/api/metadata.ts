@@ -2,6 +2,7 @@ import axiosWrapper from '../utils/api';
 import { API_ENDPOINTS } from '../constants/api';
 
 export interface PropertyType {
+  id: number;
   _id: string;
   label: string;
   labelAr: string;
@@ -10,6 +11,7 @@ export interface PropertyType {
 }
 
 export interface Area {
+  id: number;
   _id: string;
   label: string;
   labelAr: string;

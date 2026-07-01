@@ -241,7 +241,7 @@ export default async function TermsPage() {
                     <span dir="ltr">+965 90078005</span>
                   </a>
                   <a
-                    href="https://www.instagram.com/Mr aqar.aqar?igsh=MTN1bmoydXVqZmF6dQ=="
+                    href="https://www.instagram.com/mr_aqar"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-2 text-gray-700 hover:text-primary transition-colors"
@@ -250,7 +250,7 @@ export default async function TermsPage() {
                       className="text-primary flex-shrink-0"
                       size={20}
                     />
-                    <p>@Mr aqar.aqar</p>
+                    <p>@mr_aqar</p>
                   </a>
                   <div className="flex items-start gap-2 text-gray-700">
                     <MapPin

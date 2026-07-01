@@ -39,11 +39,11 @@ export function SearchAdCard({ ad, onClick }: SearchAdCardProps) {
     setIsLoadingFav(true);
     try {
       if (isFavorite) {
-        await removeFavorite(ad._id);
+        await removeFavorite(ad.id);
         setIsFavorite(false);
         toast.success(t("removedFromFavorites") || "Removed from favorites");
       } else {
-        await addFavorite(ad._id);
+        await addFavorite(ad.id);
         setIsFavorite(true);
         toast.success(t("addedToFavorites") || "Added to favorites");
       }

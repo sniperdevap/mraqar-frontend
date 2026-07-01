@@ -287,12 +287,12 @@ export function SearchPage() {
 
   const selectedAreas = useMemo(() => {
     return (filters.area || [])
-      .map((id) => areas.find((a) => a._id === id))
+      .map((id) => areas.find((a) => String(a.id) === id))
       .filter(Boolean);
   }, [filters.area, areas]);
 
   const selectedPropertyType = filters.propertyType
-    ? propertyTypes.find((type) => type._id === filters.propertyType)
+    ? propertyTypes.find((type) => String(type.id) === filters.propertyType)
     : undefined;
 
   const areaLabel = locale === "ar" ? "ابحث عن منطقة" : "Type Area to Search";
@@ -449,7 +449,7 @@ export function SearchPage() {
                           : area.label;
                       return (
                         <div
-                          key={area._id}
+                          key={area.id}
                           className="flex items-center gap-1.5 rounded-lg bg-primary/10 px-2 py-1 text-xs font-bold text-primary border border-primary/20"
                           onClick={(e) => e.stopPropagation()}
                         >
@@ -458,7 +458,7 @@ export function SearchPage() {
                             type="button"
                             onClick={(e) => {
                               e.stopPropagation();
-                              handleAreaSelect(area._id);
+                              handleAreaSelect(String(area.id));
                             }}
                             className="rounded-full p-0.5 hover:bg-[#dbeafe] transition-colors"
                           >
@@ -510,7 +510,7 @@ export function SearchPage() {
                             <div className="divide-y divide-[#f1f5f9]">
                               {opts.map((area) => {
                                 const isSelected = filters.area?.includes(
-                                  area._id,
+                                  String(area.id),
                                 );
                                 const label =
                                   locale === "ar"
@@ -519,9 +519,9 @@ export function SearchPage() {
 
                                 return (
                                   <button
-                                    key={area._id}
+                                    key={area.id}
                                     type="button"
-                                    onClick={() => handleAreaSelect(area._id)}
+                                    onClick={() => handleAreaSelect(String(area.id))}
                                     className={cn(
                                       "flex w-full items-center justify-between px-4 py-3 text-sm transition-all hover:bg-primary/5",
                                       isSelected
@@ -666,7 +666,7 @@ export function SearchPage() {
                 <div className="mx-4 sm:mx-0 p-1 sm:p-2 bg-white rounded-xl border border-[#dce7f4] sm:border-none shadow-[0_22px_60px_rgba(31,64,114,0.18)] sm:shadow-none">
                   <div className="max-h-80 space-y-0 overflow-y-auto">
                     {propertyTypes.map((type) => {
-                      const isSelected = filters.propertyType === type._id;
+                      const isSelected = filters.propertyType === String(type.id);
                       const label =
                         locale === "ar"
                           ? type.labelAr || type.label
@@ -674,9 +674,9 @@ export function SearchPage() {
 
                       return (
                         <button
-                          key={type._id}
+                          key={type.id}
                           type="button"
-                          onClick={() => handlePropertyTypeSelect(type._id)}
+                          onClick={() => handlePropertyTypeSelect(String(type.id))}
                           className={cn(
                             "flex w-full items-center gap-3 rounded-xl px-4 py-3 text-start transition-all",
                             isSelected
@@ -906,17 +906,14 @@ export function SearchPage() {
             <div className="grid grid-cols-1 gap-0 mb-8">
               {ads.map((ad, index) => (
                 <div
-                  key={ad._id}
+                  key={ad.id}
                   ref={
                     hasNextPage && index === prefetchTriggerIndex
                       ? prefetchRef
                       : undefined
                   }
                 >
-                  <HomeAdCard
-                    ad={ad}
-                    onClick={() => router.push(`/ads/${ad._id}`)}
-                  />
+                  <HomeAdCard ad={ad} />
                 </div>
               ))}
             </div>

@@ -17,10 +17,10 @@ export const useAdStore = create<AdStore>((set, get) => ({
         // If we already have a DetailAd and the new one is just an Ad, don't overwrite
         // detail fields (like isOffice, isFav) unless we are specifically updating from detail page.
         // For simplicity, we just merge.
-        if (newAds[ad._id]) {
-          newAds[ad._id] = { ...newAds[ad._id], ...ad };
+        if (newAds[String(ad.id)]) {
+          newAds[String(ad.id)] = { ...newAds[String(ad.id)], ...ad };
         } else {
-          newAds[ad._id] = ad;
+          newAds[String(ad.id)] = ad;
         }
       });
       return { ads: newAds };
@@ -30,7 +30,7 @@ export const useAdStore = create<AdStore>((set, get) => ({
     set(state => ({
       ads: {
         ...state.ads,
-        [ad._id]: { ...(state.ads[ad._id] || {}), ...ad },
+        [String(ad.id)]: { ...(state.ads[String(ad.id)] || {}), ...ad },
       },
     }));
   },

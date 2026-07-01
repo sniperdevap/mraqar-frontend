@@ -10,6 +10,7 @@ export interface Media {
 }
 
 export interface Ad {
+  id: number;
   _id: string;
   user: {
     _id: string;
@@ -19,12 +20,14 @@ export interface Ad {
   };
   purpose: 'sale' | 'rent' | 'exchange';
   propertyType: {
+    id: number;
     _id: string;
     label: string;
     labelAr: string;
     value: string;
   };
   area: {
+    id: number;
     _id: string;
     label: string;
     labelAr: string;

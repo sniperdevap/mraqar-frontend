@@ -68,9 +68,7 @@ export function AdminPlans() {
               <div className={`px-3 md:px-8 py-6 flex items-start justify-between border-b ${!plan.isActive ? 'bg-red-50/30 border-red-50' : 'bg-gray-50/30 border-gray-50'}`}>
                 <div className="flex items-center gap-4">
                   <div
-                    className={`md:w-14 md:h-14 w-12 h-12 rounded-2xl flex items-center justify-center border shadow-sm ${
-                      plan.planType === 'office-plan' ? 'bg-purple-50 text-purple-600 border-purple-100' : 'bg-blue-50 text-blue-600 border-blue-100'
-                    }`}
+                    className="md:w-14 md:h-14 w-12 h-12 rounded-2xl flex items-center justify-center border shadow-sm bg-purple-50 text-purple-600 border-purple-100"
                   >
                     <CreditCard size={28} />
                   </div>

@@ -146,7 +146,7 @@ export function FilterModal({ open, onOpenChange, onApply, initialFilters }: Fil
               </SelectTrigger>
               <SelectContent>
                 {propertyTypes.map(type => (
-                  <SelectItem key={type._id} value={type._id} className={`cursor-pointer text-base ${locale === 'ar' ? 'text-right pr-2 pl-8 [&>span]:left-2 [&>span]:right-auto' : ''}`}>
+                  <SelectItem key={type.id} value={String(type.id)} className={`cursor-pointer text-base ${locale === 'ar' ? 'text-right pr-2 pl-8 [&>span]:left-2 [&>span]:right-auto' : ''}`}>
                     {locale === 'ar' ? type.labelAr || type.label : type.label}
                   </SelectItem>
                 ))}
@@ -160,7 +160,7 @@ export function FilterModal({ open, onOpenChange, onApply, initialFilters }: Fil
             <MultiSelect
               options={areas.map(a => ({
                 label: locale === 'ar' ? a.labelAr || a.label : a.label,
-                value: a._id,
+                value: String(a.id),
                 governorate: locale === 'ar' ? a.governorateAr || a.governorate : a.governorate,
               }))}
               value={selectedAreas}

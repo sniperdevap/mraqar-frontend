@@ -2,6 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Share2, Clock, Phone, MessageCircle } from "lucide-react";
 import { Ad, Media } from "@/types/ad";
 import { Card } from "@/components/ui/card";
@@ -38,12 +39,29 @@ export function HomeAdCard({ ad, onClick }: HomeAdCardProps) {
   const getMediaUrl = (media: Media) => {
     if (!media) return null;
     if (media.url?.startsWith("http")) return media.url;
-    return `${process.env.NEXT_PUBLIC_IMAGE_HOST}/${media.url}`;
+    const imageHost = (process.env.NEXT_PUBLIC_IMAGE_HOST || "").replace(
+      /\/+$/,
+      "",
+    );
+    const mediaPath = media.url?.replace(/^\/+/, "");
+    return mediaPath ? `${imageHost}/${mediaPath}` : null;
+  };
+
+  const getThumbnailUrl = (media: Media) => {
+    if (!media.thumbnail) return "/images/aqar-new-logo.png";
+    if (media.thumbnail.startsWith("http")) return media.thumbnail;
+    const imageHost = (process.env.NEXT_PUBLIC_IMAGE_HOST || "").replace(
+      /\/+$/,
+      "",
+    );
+    return `${imageHost}/${media.thumbnail.replace(/^\/+/, "")}`;
   };
 
   const firstMedia = ad.media?.[0];
   const displayUrl = firstMedia
-    ? getMediaUrl(firstMedia)
+    ? firstMedia.type === "video"
+      ? getThumbnailUrl(firstMedia)
+      : getMediaUrl(firstMedia) || "/images/aqar-new-logo.png"
     : "/images/aqar-new-logo.png";
 
   const handleWhatsApp = (e: React.MouseEvent) => {
@@ -62,14 +80,15 @@ export function HomeAdCard({ ad, onClick }: HomeAdCardProps) {
     if (navigator.share) {
       navigator.share({
         title: ad.description,
-        url: window.location.origin + `/ads/${ad._id}`,
+        url: window.location.origin + `/ads/${ad.id}`,
       });
     }
   };
 
   return (
-    <div
-      className="w-full bg-[#f9eef2] border border-gray-200 rounded-lg overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.01)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.03)] transition-all h-[104px] cursor-pointer mb-3 p-2.5"
+    <Link
+      href={`/ads/${ad.id}`}
+      className="block w-full bg-[#f9eef2] border border-gray-200 rounded-lg overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.01)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.03)] transition-all h-[104px] cursor-pointer mb-3 p-2.5"
       onClick={onClick}
       dir={direction}
     >
@@ -87,11 +106,13 @@ export function HomeAdCard({ ad, onClick }: HomeAdCardProps) {
           </div>
           {/* Featured Badge */}
           {(ad.isPremium || ad.premiumAd) && (
-            <div className={`absolute -top-1.5 z-10 bg-[#d91d24] text-white px-1.5 py-0.5 text-[9px] font-bold shadow-sm
+            <div
+              className={`absolute -top-1.5 z-10 bg-[#d91d24] text-white px-1.5 py-0.5 text-[9px] font-bold shadow-sm
               after:content-[''] after:absolute after:top-full after:border-t-[3px] after:border-t-[#800a0e]
-              ${direction === "rtl"
-                ? "right-[-3px] rounded-l-[3px] after:right-0 after:border-r-[3px] after:border-r-transparent"
-                : "left-[-3px] rounded-r-[3px] after:left-0 after:border-l-[3px] after:border-l-transparent"
+              ${
+                direction === "rtl"
+                  ? "right-[-3px] rounded-l-[3px] after:right-0 after:border-r-[3px] after:border-r-transparent"
+                  : "left-[-3px] rounded-r-[3px] after:left-0 after:border-l-[3px] after:border-l-transparent"
               }`}
             >
               {locale === "ar" ? "مميز" : "Featured"}
@@ -116,9 +137,10 @@ export function HomeAdCard({ ad, onClick }: HomeAdCardProps) {
               </span>
               <div className="flex items-center gap-1 text-gray-500 font-semibold">
                 <Clock size={12} className="text-gray-500" />
-                <span className="text-[10px] font-semibold">{getTimeAgo(ad.createdAt)}</span>
+                <span className="text-[10px] font-semibold">
+                  {getTimeAgo(ad.createdAt)}
+                </span>
               </div>
-
             </div>
 
             {/* Description */}
@@ -128,7 +150,6 @@ export function HomeAdCard({ ad, onClick }: HomeAdCardProps) {
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
-
 }

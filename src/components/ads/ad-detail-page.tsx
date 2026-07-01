@@ -153,11 +153,11 @@ export function AdDetailPage({ adId }: AdDetailPageProps) {
     setIsFavoriteLoading(true);
     try {
       if (isFavorite) {
-        await removeFavorite(ad._id);
+        await removeFavorite(ad.id);
         setIsFavorite(false);
         toast.success(t("removedFromFavorites"));
       } else {
-        await addFavorite(ad._id);
+        await addFavorite(ad.id);
         setIsFavorite(true);
         toast.success(t("addedToFavorites"));
       }
@@ -185,14 +185,16 @@ export function AdDetailPage({ adId }: AdDetailPageProps) {
   const similarAdsFilters = useMemo<GetAdsParams>(
     () => ({
       purpose: ad?.purpose,
-      propertyType: ad?.propertyType?._id,
-      area: ad?.area?._id,
+      propertyType: ad?.propertyType?.id
+        ? String(ad.propertyType.id)
+        : undefined,
+      area: ad?.area?.id ? String(ad.area.id) : undefined,
     }),
-    [ad?.purpose, ad?.propertyType?._id, ad?.area?._id],
+    [ad?.purpose, ad?.propertyType?.id, ad?.area?.id],
   );
 
   const shouldFetchSimilarAds = Boolean(
-    ad?.purpose && ad?.propertyType?._id && ad?.area?._id,
+    ad?.purpose && ad?.propertyType?.id && ad?.area?.id,
   );
 
   const {
@@ -211,7 +213,7 @@ export function AdDetailPage({ adId }: AdDetailPageProps) {
     if (!similarAdsData?.pages) return [];
     return similarAdsData.pages
       .flatMap((page) => page.ads)
-      .filter((similarAd) => similarAd._id !== adId);
+      .filter((similarAd) => String(similarAd.id) !== adId);
   }, [similarAdsData?.pages, adId]);
 
   const similarAdsTriggerIndex = Math.max(
@@ -287,14 +289,14 @@ export function AdDetailPage({ adId }: AdDetailPageProps) {
 
   const handleEdit = () => {
     if (!ad) return;
-    router.push(`/ads/edit/${ad._id}`);
+    router.push(`/ads/edit/${ad.id}`);
   };
 
   const handleToggleStatus = async () => {
     if (!ad) return;
     try {
       const newStatus = ad.status === "active" ? "inactive" : "active";
-      await updateAd(ad._id, { status: newStatus });
+      await updateAd(ad.id, { status: newStatus });
       queryClient.invalidateQueries({ queryKey: ["ad", adId] });
       queryClient.invalidateQueries({ queryKey: ["ads"] });
       queryClient.invalidateQueries({ queryKey: ["my-ads"] });
@@ -307,7 +309,7 @@ export function AdDetailPage({ adId }: AdDetailPageProps) {
   const handleDelete = async () => {
     if (!ad) return;
     try {
-      await deleteAd(ad._id);
+      await deleteAd(ad.id);
       queryClient.invalidateQueries({ queryKey: ["ads"] });
       queryClient.invalidateQueries({ queryKey: ["my-ads"] });
       toast.success(t("deletedSuccessfully"));
@@ -403,7 +405,7 @@ ${window.location.href}`);
                 <img
                   src={getThumbnailUrl(currentMedia)}
                   alt="Video thumbnail"
-                  className="w-full h-full object-contain"
+                  className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 flex items-center justify-center bg-black/10">
                   <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/30 shadow-2xl">
@@ -417,11 +419,11 @@ ${window.location.href}`);
                 alt={
                   locale === "ar"
                     ? ad.propertyType?.labelAr ||
-                    ad.propertyType?.label ||
-                    "عقار"
+                      ad.propertyType?.label ||
+                      "عقار"
                     : ad.propertyType?.label || "Property"
                 }
-                className="w-full h-full object-contain"
+                className="w-full h-full object-cover"
               />
             )}
           </div>
@@ -495,17 +497,23 @@ ${window.location.href}`);
 
           {/* Views & Phone Row */}
           <div className="flex items-center justify-between w-full pb-3 mb-3">
-
-
             {/* Phone numbers on the right */}
-            <div className="flex items-center gap-2 text-[#029a9d] font-bold text-base sm:text-lg tracking-wide" dir="ltr">
+            <div
+              className="flex items-center gap-2 text-[#029a9d] font-bold text-base sm:text-lg tracking-wide"
+              dir="ltr"
+            >
               <button onClick={handlePhoneCall} className="hover:underline">
                 {formatDisplayPhone(ad.phoneNumber)}
               </button>
               {ad.alternativePhoneNumber && (
                 <>
                   <span>-</span>
-                  <button onClick={() => window.location.href = `tel:${ad.alternativePhoneNumber}`} className="hover:underline">
+                  <button
+                    onClick={() =>
+                      (window.location.href = `tel:${ad.alternativePhoneNumber}`)
+                    }
+                    className="hover:underline"
+                  >
                     {formatDisplayPhone(ad.alternativePhoneNumber)}
                   </button>
                 </>
@@ -514,7 +522,14 @@ ${window.location.href}`);
             {/* Views count on the left */}
             <div className="bg-[#8b0000] text-white px-3 py-1 rounded-md text-[13px] font-bold flex items-center gap-1.5 shadow-sm">
               <span>{ad.views || 193}</span>
-              <svg stroke="currentColor" fill="none" strokeWidth="2.5" viewBox="0 0 24 24" className="w-4 h-4" xmlns="http://www.w3.org/2000/svg">
+              <svg
+                stroke="currentColor"
+                fill="none"
+                strokeWidth="2.5"
+                viewBox="0 0 24 24"
+                className="w-4 h-4"
+                xmlns="http://www.w3.org/2000/svg"
+              >
                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                 <circle cx="12" cy="12" r="3"></circle>
               </svg>
@@ -537,7 +552,6 @@ ${window.location.href}`);
                 <polyline points="12 6 12 12 16 14"></polyline>
               </svg>
               <span className="text-right">{getTimeAgo(ad.createdAt)}</span>
-
             </div>
 
             {/* Price on the left */}
@@ -546,15 +560,20 @@ ${window.location.href}`);
                 ? `${Number(ad.price).toLocaleString("en-US")} ${locale === "ar" ? "د.ك" : "KD"}`
                 : ""}
             </div>
-
-
           </div>
 
           {/* Publisher profile badge */}
           <div className="flex justify-center mb-6">
             <div className="inline-flex items-center gap-2 bg-primary px-3 py-2 rounded-full shadow-sm text-white">
               <div className="w-6 h-6 rounded-full bg-black flex items-center justify-center shrink-0">
-                <svg stroke="currentColor" fill="none" strokeWidth="2.5" viewBox="0 0 24 24" className="w-3.5 h-3.5 text-white" xmlns="http://www.w3.org/2000/svg">
+                <svg
+                  stroke="currentColor"
+                  fill="none"
+                  strokeWidth="2.5"
+                  viewBox="0 0 24 24"
+                  className="w-3.5 h-3.5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
                   <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                   <circle cx="12" cy="7" r="4"></circle>
                 </svg>
@@ -568,13 +587,21 @@ ${window.location.href}`);
           {/* Description Section */}
           <div className="flex flex-col items-start w-full mt-4 text-right">
             <div className="mb-2 flex justify-between w-full items-center">
-              <h3 className="text-base font-bold text-gray-800">{t("description")}</h3>
-              <Image src={"/images/icons/share-icon.svg"} alt="Share" width={40} height={40} className="text-black cursor-pointer" onClick={handleShare} />
+              <h3 className="text-base font-bold text-gray-800">
+                {t("description")}
+              </h3>
+              <Image
+                src={"/images/icons/share-icon.svg"}
+                alt="Share"
+                width={40}
+                height={40}
+                className="text-black cursor-pointer"
+                onClick={handleShare}
+              />
             </div>
             <p className="text-gray-700 text-sm sm:text-base leading-relaxed text-right w-full whitespace-pre-wrap break-words">
               {ad.description}
             </p>
-
           </div>
         </div>
 
@@ -628,17 +655,17 @@ ${window.location.href}`);
                 <div className="grid grid-cols-1 gap-0">
                   {similarAds.map((similarAd, index) => (
                     <div
-                      key={similarAd._id}
+                      key={similarAd.id}
                       ref={
                         hasNextSimilarAdsPage &&
-                          index === similarAdsTriggerIndex
+                        index === similarAdsTriggerIndex
                           ? similarAdsPrefetchRef
                           : undefined
                       }
                     >
                       <SearchAdCard
                         ad={similarAd}
-                        onClick={() => router.push(`/ads/${similarAd._id}`)}
+                        onClick={() => router.push(`/ads/${similarAd.id}`)}
                       />
                     </div>
                   ))}
@@ -706,12 +733,11 @@ ${window.location.href}`);
           isOpen={isShareOpen}
           onClose={() => setIsShareOpen(false)}
           url={typeof window !== "undefined" ? window.location.href : ""}
-          title={
-            `${t("whatsappMessage")}\n${locale === "ar"
+          title={`${t("whatsappMessage")}\n${
+            locale === "ar"
               ? `${ad.propertyType?.labelAr || ad.propertyType?.label || t("propertyFallback")} - ${ad.area?.labelAr || ad.area?.label || t("areaFallback")}`
               : `${ad.propertyType?.label || t("propertyFallback")} - ${ad.area?.label || t("areaFallback")}`
-            }`
-          }
+          }`}
         />
       )}
     </div>

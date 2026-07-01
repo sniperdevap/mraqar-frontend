@@ -34,7 +34,7 @@ export function FavouritesTab() {
         <>
           <div className="flex flex-col gap-4">
             {adsData.ads.map(ad => (
-              <AdCard key={ad._id} ad={ad} onClick={() => router.push(`/ads/${ad._id}`)} />
+              <AdCard key={ad.id} ad={ad} onClick={() => router.push(`/ads/${ad.id}`)} />
             ))}
           </div>
 
