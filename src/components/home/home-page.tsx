@@ -418,7 +418,7 @@ export function HomePage() {
                 aria-label={t("search.selectPriceRange")}
                 className="group mb-6 flex items-center justify-center gap-2 select-none mx-auto"
               >
-                <span className="w-8 h-8 rounded-full border-2 border-[#169899] bg-[#169899]/10 text-[#169899] flex items-center justify-center font-bold text-base shadow-sm group-hover:bg-[#169899]/20 group-hover:shadow-md group-hover:scale-105 group-active:scale-95 transition-all duration-200">
+                <span className="w-7 h-7 rounded-full border-2 border-[#169899] bg-[#169899]/10 text-[#169899] flex items-center justify-center font-bold text-base shadow-sm group-hover:bg-[#169899]/20 group-hover:shadow-md group-hover:scale-105 group-active:scale-95 transition-all duration-200">
                   $
                 </span>
                 <h2 className="text-xl font-bold text-black tracking-tight group-hover:text-[#169899] transition-colors">

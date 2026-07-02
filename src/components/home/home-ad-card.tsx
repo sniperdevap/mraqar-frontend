@@ -160,7 +160,7 @@ export function HomeAdCard({
 
           {/* Title + Price/Time (constrained beside the image) */}
           <div className="flex-1 flex flex-col min-w-0">
-            <h3 className="text-base font-extrabold text-gray-900 line-clamp-1 leading-snug">
+            <h3 className="text-[0.9375rem] font-extrabold text-gray-900 line-clamp-1 leading-snug">
               {locale === "ar"
                 ? `${t(ad.purpose)} ${ad.propertyType?.labelAr || ad.propertyType?.label} في ${ad.area?.labelAr || ad.area?.label}`
                 : `${t(ad.purpose)} ${ad.propertyType?.label} in ${ad.area?.label}`}
@@ -177,7 +177,7 @@ export function HomeAdCard({
               </div>
               <div className="flex items-center gap-1 text-gray-500">
                 <Clock size={14} className="text-gray-500" />
-                <span className="text-[14px] font-medium">
+                <span className="text-[13px] font-medium">
                   {getTimeAgo(ad.createdAt)}
                 </span>
               </div>
