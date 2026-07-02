@@ -8,15 +8,28 @@ import { Ad, Media } from "@/types/ad";
 import { useLocale, useTranslations } from "@/hooks/use-locale";
 import { formatDistanceToNow } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
+import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
+import { deleteAd, updateAd } from "@/lib/api/ad";
+import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 interface HomeAdCardProps {
   ad: Ad;
   onClick?: () => void;
+  variant?: "default" | "my-ad";
+  onAction?: (action: "edit" | "refresh" | "view", ad: Ad) => void;
 }
 
-export function HomeAdCard({ ad, onClick }: HomeAdCardProps) {
+export function HomeAdCard({
+  ad,
+  onClick,
+  variant = "default",
+  onAction,
+}: HomeAdCardProps) {
   const { locale, direction } = useLocale();
   const t = useTranslations("common.ads");
+  const tButtons = useTranslations("common.buttons");
+  const queryClient = useQueryClient();
 
   const formatPrice = (price: number) => {
     return `${Number(price).toLocaleString("en-US")} ${locale === "ar" ? "دك" : "KD"}`;
@@ -63,24 +76,40 @@ export function HomeAdCard({ ad, onClick }: HomeAdCardProps) {
       : getMediaUrl(firstMedia) || "/images/aqar-new-logo.png"
     : "/images/aqar-new-logo.png";
 
-  const handleWhatsApp = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    const phone = ad.phoneNumber.replace(/\s/g, "");
-    window.open(`https://wa.me/${phone}`, "_blank");
+  const handleDelete = async () => {
+    try {
+      await deleteAd(ad.id);
+      queryClient.invalidateQueries({ queryKey: ["ads"] });
+      toast.success(t("deletedSuccessfully"));
+      onAction?.("refresh", ad);
+    } catch (error) {
+      console.error("Delete failed:", error);
+      toast.error(t("failedToDelete"));
+    }
   };
 
-  const handleCall = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    window.location.href = `tel:${ad.phoneNumber}`;
+  const handlePremium = async () => {
+    try {
+      await updateAd(ad.id, { isPremium: true });
+      toast.success(t("premiumSuccessfully"));
+      queryClient.invalidateQueries({ queryKey: ["ads"] });
+      onAction?.("refresh", ad);
+    } catch (error) {
+      console.error("Premium upgrade failed:", error);
+      toast.error(t("failedToPremium"));
+    }
   };
 
-  const handleShare = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (navigator.share) {
-      navigator.share({
-        title: ad.description,
-        url: window.location.origin + `/ads/${ad.id}`,
-      });
+  const handleToggleStatus = async () => {
+    const newStatus = ad.status === "active" ? "inactive" : "active";
+    try {
+      await updateAd(ad.id, { status: newStatus });
+      toast.success(newStatus === "active" ? t("activated") : t("stopped"));
+      queryClient.invalidateQueries({ queryKey: ["ads"] });
+      onAction?.("refresh", ad);
+    } catch (error) {
+      console.error("Status update failed:", error);
+      toast.error(t("failedToUpdate"));
     }
   };
 
@@ -158,6 +187,99 @@ export function HomeAdCard({ ad, onClick }: HomeAdCardProps) {
           {ad.description}
         </p>
       </div>
-    </Link>
+    </div>
+  );
+
+  const cardClasses =
+    "block w-full bg-[#f9eef2] border border-gray-200 rounded-lg overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.01)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.03)] transition-all cursor-pointer mb-3";
+
+  if (variant === "default") {
+    return (
+      <Link
+        href={`/ads/${ad.id}`}
+        className={cardClasses}
+        onClick={onClick}
+        dir={direction}
+      >
+        {cardContent}
+      </Link>
+    );
+  }
+
+  const isPremiumAd = ad.isPremium ?? ad.premiumAd;
+
+  return (
+    <div className={cardClasses} dir={direction}>
+      <Link href={`/ads/${ad.id}`} onClick={onClick} className="block">
+        {cardContent}
+      </Link>
+      <div
+        className="flex items-center justify-end gap-1.5 border-t border-gray-200/80 px-2.5 py-2"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <button
+          type="button"
+          title={ad.status === "active" ? t("stopAd") : t("activateAd")}
+          className="w-7 h-7 rounded-full bg-white border border-gray-200 text-[#4fd1ed] hover:bg-gray-50 flex items-center justify-center transition-all active:scale-95"
+          onClick={handleToggleStatus}
+        >
+          {ad.status === "active" ? <Play size={13} /> : <RotateCw size={13} />}
+        </button>
+
+        {!isPremiumAd && (
+          <ConfirmationDialog
+            trigger={
+              <button
+                type="button"
+                title={t("featureAdTitle")}
+                className="w-7 h-7 rounded-full bg-white border border-gray-200 text-amber-500 hover:bg-gray-50 flex items-center justify-center transition-all active:scale-95"
+              >
+                <Pin size={13} />
+              </button>
+            }
+            icon={{
+              src: "/images/icons/star.svg",
+              alt: "Premium",
+              bgColor: "bg-yellow-100",
+            }}
+            title={t("featureAdTitle")}
+            description={t("featureAdDescription")}
+            confirmButtonText={t("featureConfirm")}
+            onConfirm={handlePremium}
+          />
+        )}
+
+        <button
+          type="button"
+          title={t("editAd")}
+          className="w-7 h-7 rounded-full bg-white border border-gray-200 text-slate-600 hover:bg-gray-50 flex items-center justify-center transition-all active:scale-95"
+          onClick={() => onAction?.("edit", ad)}
+        >
+          <Pencil size={13} />
+        </button>
+
+        <ConfirmationDialog
+          trigger={
+            <button
+              type="button"
+              title={t("deleteAd")}
+              className="w-7 h-7 rounded-full bg-white border border-gray-200 text-red-500 hover:bg-gray-50 flex items-center justify-center transition-all active:scale-95"
+            >
+              <Trash size={13} />
+            </button>
+          }
+          icon={{
+            src: "/images/icons/delete.svg",
+            alt: "Delete",
+            bgColor: "bg-red-100",
+          }}
+          title={t("deleteAd")}
+          description={t("cancelNote")}
+          confirmButtonText={t("deleteAd")}
+          cancelButtonText={tButtons("cancel")}
+          onConfirm={handleDelete}
+        />
+      </div>
+    </div>
   );
 }

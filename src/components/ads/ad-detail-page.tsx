@@ -564,7 +564,30 @@ ${window.location.href}`);
 
           {/* Publisher profile badge */}
           <div className="flex justify-center mb-6">
-            <div className="inline-flex items-center gap-2 bg-primary px-3 py-2 rounded-full shadow-sm text-white">
+            <div
+              className={`inline-flex items-center gap-2 bg-primary px-3 py-2 rounded-full shadow-sm text-white ${
+                ad.isOffice
+                  ? "cursor-pointer transition-opacity hover:opacity-90"
+                  : ""
+              }`}
+              role={ad.isOffice ? "link" : undefined}
+              tabIndex={ad.isOffice ? 0 : undefined}
+              onClick={() => {
+                if (ad.isOffice && ad.user?._id) {
+                  router.push(`/offices/${ad.user._id}`);
+                }
+              }}
+              onKeyDown={(event) => {
+                if (
+                  ad.isOffice &&
+                  ad.user?._id &&
+                  (event.key === "Enter" || event.key === " ")
+                ) {
+                  event.preventDefault();
+                  router.push(`/offices/${ad.user._id}`);
+                }
+              }}
+            >
               <div className="w-6 h-6 rounded-full bg-black flex items-center justify-center shrink-0">
                 <svg
                   stroke="currentColor"
@@ -585,7 +608,14 @@ ${window.location.href}`);
           </div>
 
           {/* Description Section */}
-          <div className="flex flex-col items-start w-full mt-4 text-right">
+          <div
+            className={`flex flex-col w-full mt-4 ${
+              locale === "ar"
+                ? "items-start text-right"
+                : "items-start text-left"
+            }`}
+            dir={locale === "ar" ? "rtl" : "ltr"}
+          >
             <div className="mb-2 flex justify-between w-full items-center">
               <h3 className="text-base font-bold text-gray-800">
                 {t("description")}
@@ -599,7 +629,12 @@ ${window.location.href}`);
                 onClick={handleShare}
               />
             </div>
-            <p className="text-gray-700 text-sm sm:text-base leading-relaxed text-right w-full whitespace-pre-wrap break-words">
+            <p
+              className={`text-gray-700 text-sm sm:text-base leading-relaxed w-full whitespace-pre-wrap break-words ${
+                locale === "ar" ? "text-right" : "text-left"
+              }`}
+              dir={locale === "ar" ? "rtl" : "ltr"}
+            >
               {ad.description}
             </p>
           </div>

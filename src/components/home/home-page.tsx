@@ -45,7 +45,6 @@ export function HomePage() {
   const tCommon = useTranslations("common");
   const { locale, direction } = useLocale();
 
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isPriceFilterOpen, setIsPriceFilterOpen] = useState(false);
   const [showStickySearchBar, setShowStickySearchBar] = useState(false);
 
@@ -137,9 +136,7 @@ export function HomePage() {
       0,
     );
     const parsedMax = maxPrice ? Number(maxPrice) : 0;
-    return getRoundedSliderMax(
-      Math.max(knownMaxPrice, parsedMax, 1000),
-    );
+    return getRoundedSliderMax(Math.max(knownMaxPrice, parsedMax, 1000));
   }, [ads, maxPrice]);
 
   useEffect(() => {
@@ -214,11 +211,16 @@ export function HomePage() {
     minPrice?: string;
     maxPrice?: string;
   }) => {
-    const finalPurpose = updates.purpose !== undefined ? updates.purpose : activeTab;
-    const finalPropType = updates.propertyType !== undefined ? updates.propertyType : propertyType;
-    const finalAreas = updates.areas !== undefined ? updates.areas : selectedAreas;
-    const finalMinPrice = updates.minPrice !== undefined ? updates.minPrice : minPrice;
-    const finalMaxPrice = updates.maxPrice !== undefined ? updates.maxPrice : maxPrice;
+    const finalPurpose =
+      updates.purpose !== undefined ? updates.purpose : activeTab;
+    const finalPropType =
+      updates.propertyType !== undefined ? updates.propertyType : propertyType;
+    const finalAreas =
+      updates.areas !== undefined ? updates.areas : selectedAreas;
+    const finalMinPrice =
+      updates.minPrice !== undefined ? updates.minPrice : minPrice;
+    const finalMaxPrice =
+      updates.maxPrice !== undefined ? updates.maxPrice : maxPrice;
 
     const params = new URLSearchParams();
     if (finalPurpose) params.set("purpose", finalPurpose);
@@ -270,7 +272,7 @@ export function HomePage() {
 
             <button
               className="flex flex-col items-center justify-center text-black hover:text-gray-600 transition-transform active:scale-95"
-              onClick={() => setIsFilterOpen(true)}
+              onClick={() => router.push("/search")}
             >
               <Search size={20} className="mb-0.5 stroke-[2.5]" />
               <span className="text-[10px] font-bold uppercase tracking-wider">
@@ -459,7 +461,10 @@ export function HomePage() {
       </section>
 
       <Dialog open={isPriceFilterOpen} onOpenChange={setIsPriceFilterOpen}>
-        <DialogContent className="w-[calc(100%-2rem)] !max-w-[calc(100%-2rem)] sm:!max-w-sm rounded-[24px] bg-white !px-6 !py-6 md:!px-8 md:!py-6 border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.08)]" dir={direction}>
+        <DialogContent
+          className="w-[calc(100%-2rem)] !max-w-[calc(100%-2rem)] sm:!max-w-sm rounded-[24px] bg-white !px-6 !py-6 md:!px-8 md:!py-6 border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.08)]"
+          dir={direction}
+        >
           <DialogHeader>
             <DialogTitle className="text-lg font-bold text-center text-[#1f2937] mb-2">
               {t("search.selectPriceRange")}
