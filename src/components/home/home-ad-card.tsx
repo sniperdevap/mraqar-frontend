@@ -160,7 +160,7 @@ export function HomeAdCard({
 
           {/* Title + Price/Time (constrained beside the image) */}
           <div className="flex-1 flex flex-col min-w-0">
-            <h3 className="text-[0.9375rem] font-extrabold text-gray-900 line-clamp-1 leading-snug">
+            <h3 className="text-sm font-extrabold text-gray-900 line-clamp-1 leading-snug">
               {locale === "ar"
                 ? `${t(ad.purpose)} ${ad.propertyType?.labelAr || ad.propertyType?.label} في ${ad.area?.labelAr || ad.area?.label}`
                 : `${t(ad.purpose)} ${ad.propertyType?.label} in ${ad.area?.label}`}
@@ -171,7 +171,7 @@ export function HomeAdCard({
                 <span className="flex items-center justify-center w-5 h-5 rounded-full bg-[#169899]/10 text-[#169899] shrink-0">
                   <DollarSign size={12} strokeWidth={2.5} />
                 </span>
-                <span className="font-bold text-[#169899] text-base">
+                <span className="font-bold text-[#169899] text-[13px]">
                   {formatPrice(ad.price)}
                 </span>
               </div>
