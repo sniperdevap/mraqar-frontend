@@ -401,7 +401,7 @@ ${window.location.href}`);
             onClick={() => setIsMediaViewerOpen(true)}
           >
             {currentMedia?.type === "video" ? (
-              <div className="relative w-full h-full flex items-center justify-center bg-black">
+              <div className="relative w-full h-full flex items-center justify-center bg-white/5">
                 <img
                   src={getThumbnailUrl(currentMedia)}
                   alt="Video thumbnail"
@@ -499,7 +499,7 @@ ${window.location.href}`);
           <div className="flex items-center justify-between w-full pb-3 mb-3">
             {/* Phone numbers on the right */}
             <div
-              className="flex items-center gap-2 text-[#029a9d] font-bold text-base sm:text-lg tracking-wide"
+              className="flex items-center gap-2 text-[#169899] font-bold text-base sm:text-lg tracking-wide"
               dir="ltr"
             >
               <button onClick={handlePhoneCall} className="hover:underline">

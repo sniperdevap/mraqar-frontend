@@ -102,7 +102,7 @@ export function MultiSelect({ options, value, onChange, placeholder = 'Select it
   return (
     <div ref={containerRef} className="relative w-full">
       <div
-        dir="ltr"
+        dir={dir}
         onClick={() => !disabled && setOpen(true)}
         className={cn(
           'border-secondary data-[placeholder]:text-muted-foreground flex w-full items-center justify-between gap-2 rounded-md border bg-white px-3 text-sm shadow-xs transition-[color,box-shadow] outline-none disabled:cursor-not-allowed disabled:opacity-50 cursor-text overflow-hidden',
@@ -110,18 +110,22 @@ export function MultiSelect({ options, value, onChange, placeholder = 'Select it
           disabled && 'opacity-50 cursor-not-allowed'
         )}
       >
-        <div className={cn('flex flex-wrap gap-2 flex-1 items-center min-w-0 py-1 overflow-hidden', dir === 'rtl' ? 'justify-end' : 'justify-start')}>
+        <div className="flex flex-wrap gap-2 flex-1 items-center min-w-0 py-1 overflow-hidden justify-start">
           {' '}
           {selectedOptions.length > 0 ? (
             <>
               {selectedOptions.map(option => (
                 <div
                   key={option.value}
-                  className="inline-flex items-center gap-1 px-2 py-0.5 bg-gray-100 border border-secondary rounded-full text-xs text-primary transition-all hover:border-primary/30 max-w-full min-w-0"
+                  className="inline-flex items-center gap-1.5 ps-2.5 pe-1.5 py-1 bg-[#f7eff1] border border-[#f7eff1] rounded-md text-sm font-medium text-gray-700 transition-all hover:bg-[#efdee2] max-w-full min-w-0"
                 >
                   <span className="truncate">{option.label}</span>
-                  <button onClick={e => handleRemove(e, option.value)} className="hover:bg-gray-100 rounded-full p-0.5 transition-colors" aria-label={`Remove ${option.label}`}>
-                    <X className="w-3.5 h-3.5" />
+                  <button
+                    onClick={e => handleRemove(e, option.value)}
+                    className="flex items-center justify-center size-4 rounded-full text-gray-500 hover:bg-[#9a090e]/10 hover:text-[#9a090e] transition-colors shrink-0"
+                    aria-label={`Remove ${option.label}`}
+                  >
+                    <X className="w-3 h-3" />
                   </button>
                 </div>
               ))}
@@ -134,7 +138,10 @@ export function MultiSelect({ options, value, onChange, placeholder = 'Select it
                   onChange={e => setSearchTerm(e.target.value)}
                   onClick={e => e.stopPropagation()}
                   placeholder="Search..."
-                  className="border-none outline-none bg-transparent flex-1 text-[15px] font-medium text-gray-700 placeholder:text-gray-400 text-left"
+                  className={cn(
+                    'border-none outline-none bg-transparent flex-1 text-[15px] font-medium text-gray-700 placeholder:text-gray-400',
+                    'text-start'
+                  )}
                   disabled={disabled}
                 />
               )}
@@ -150,11 +157,18 @@ export function MultiSelect({ options, value, onChange, placeholder = 'Select it
                   onChange={e => setSearchTerm(e.target.value)}
                   onClick={e => e.stopPropagation()}
                   placeholder={placeholder}
-                  className="border-none outline-none bg-transparent flex-1 text-[15px] font-medium text-gray-700 placeholder:text-gray-400 min-w-[150px] text-left"
+                  className={cn(
+                    'border-none outline-none bg-transparent flex-1 text-[15px] font-medium text-gray-700 placeholder:text-gray-400 min-w-[150px]',
+                    'text-start'
+                  )}
                   disabled={disabled}
                 />
               )}
-              {!open && <span className="text-gray-400 text-[15px] font-medium block w-full text-left">{placeholder}</span>}
+              {!open && (
+                <span className={cn('text-gray-400 text-[15px] font-medium block w-full', 'text-start')}>
+                  {placeholder}
+                </span>
+              )}
             </>
           )}
         </div>
@@ -168,11 +182,14 @@ export function MultiSelect({ options, value, onChange, placeholder = 'Select it
             }
           }}
           disabled={disabled}
-          className="outline-none focus:outline-none"
+          className="outline-none focus:outline-none flex-shrink-0"
         >
-          <svg viewBox="0 0 386.257 386.257" className="size-3 fill-current text-muted-foreground opacity-70 flex-shrink-0 cursor-pointer">
-            <polygon points="0,96.879 193.129,289.379 386.257,96.879 "/>
-          </svg>
+          <ChevronDownIcon
+            className={cn(
+              'size-4 text-gray-600 cursor-pointer transition-transform',
+              open && 'rotate-180'
+            )}
+          />
         </button>
       </div>
 
@@ -184,16 +201,16 @@ export function MultiSelect({ options, value, onChange, placeholder = 'Select it
                 {Object.entries(groupedOptions).map(([group, opts]) => (
                   <div key={group}>
                     {enableGrouping && group !== 'default' && (
-                      <div className="px-4 py-2 text-xs font-bold text-gray-400 uppercase tracking-wider bg-gray-50/50 top-0 z-10 text-left">{group}</div>
+                      <div className={cn('px-4 py-2 text-xs font-bold text-gray-400 uppercase tracking-wider bg-gray-50/50 top-0 z-10', 'text-start')}>{group}</div>
                     )}
                     <div className="space-y-0.5">
                       {opts.map(option => (
                         <div
                           key={option.value}
                           onClick={() => handleToggle(option.value)}
-                          className="flex items-center gap-2 px-4 py-3 text-sm cursor-pointer transition-all hover:bg-primary/10 text-left"
+                          className={cn('flex items-center gap-2 px-4 py-3 text-sm cursor-pointer transition-all hover:bg-primary/10', 'text-start')}
                         >
-                          <span className="flex-1 text-left">{option.label}</span>
+                          <span className={cn('flex-1', 'text-start')}>{option.label}</span>
                         </div>
                       ))}
                     </div>

@@ -283,7 +283,7 @@ export function HomePage() {
 
       {/* Hero Header Section */}
       <section
-        className="w-full pt-4 md:pt-4 px-4 sm:px-6 lg:px-8 max-w-lg mx-auto mb-4 relative z-10"
+        className="w-full pt-4 md:pt-4 px-4 sm:px-6 lg:px-8 max-w-xl mx-auto mb-4 relative z-10"
         dir={direction}
       >
         {/* Logo */}
@@ -293,7 +293,7 @@ export function HomePage() {
             alt="Logo"
             width={180}
             height={180}
-            className="h-20 md:h-24 w-auto object-contain"
+            className="h-28 md:h-32 w-auto object-contain"
           />
         </div>
 
@@ -319,7 +319,7 @@ export function HomePage() {
                   setSelectedAreas(val);
                 }}
                 placeholder={t("search.areaPlaceholder")}
-                className="w-full min-h-11 md:min-h-14 h-auto py-1.5 bg-white border border-gray-200 rounded-md flex items-center px-4 text-gray-700  transition-all focus-within:border-[#9a090e] text-[15px] font-medium"
+                className="w-full min-h-10 md:min-h-11 h-auto py-1 bg-white border border-gray-300 rounded-md flex items-center px-3 text-gray-700  transition-all focus-within:border-[#9a090e] text-sm font-medium"
                 disabled={isLoading}
                 enableGrouping={true}
                 dir={direction}
@@ -335,7 +335,7 @@ export function HomePage() {
               disabled={isLoading}
               dir={direction}
             >
-              <SelectTrigger className="w-full !h-11 md:!h-14 bg-white border border-gray-200 rounded-md text-gray-700 data-[placeholder]:!text-gray-400 transition-all focus:border-[#9a090e] text-[15px] font-medium px-4">
+              <SelectTrigger className="w-full !h-10 md:!h-11 bg-white border border-gray-300 rounded-md text-gray-700 data-[placeholder]:!text-gray-400 transition-all focus:border-[#9a090e] text-sm font-medium px-3">
                 <SelectValue
                   placeholder={t("search.propertyTypePlaceholder")}
                 />
@@ -354,12 +354,12 @@ export function HomePage() {
             </Select>
 
             {/* Purpose Tabs (Pills) */}
-            <div className="bg-white !h-11 md:!h-14 w-full rounded-md border border-gray-200 flex  items-center divide-x divide-gray-100" dir={direction}>
+            <div className="bg-white !h-10 md:!h-11 w-full rounded-md border border-gray-300 flex  items-center divide-x divide-gray-100" dir={direction}>
               <button
                 onClick={() => {
                   setActiveTab("exchange");
                 }}
-                className={`flex-1 h-full font-medium  transition-all text-[15px] ${activeTab === "exchange"
+                className={`flex-1 h-full font-medium  transition-all text-sm ${activeTab === "exchange"
                   ? "bg-primary text-white"
                   : "text-gray-500 hover:text-gray-700"
                   } ${direction === "rtl" ? "rounded-r-md border-l" : "rounded-l-md border-r"}`}
@@ -370,7 +370,7 @@ export function HomePage() {
                 onClick={() => {
                   setActiveTab("rent");
                 }}
-                className={`flex-1 h-full font-medium  transition-all text-[15px] ${activeTab === "rent"
+                className={`flex-1 h-full font-medium  transition-all text-sm ${activeTab === "rent"
                   ? "bg-primary text-white"
                   : "text-gray-500 hover:text-gray-700"
                   } ${direction === "rtl" ? "border-l" : "border-r"}`}
@@ -381,7 +381,7 @@ export function HomePage() {
                 onClick={() => {
                   setActiveTab("sale");
                 }}
-                className={`flex-1 h-full font-medium transition-all text-[15px] ${activeTab === "sale"
+                className={`flex-1 h-full font-medium transition-all text-sm ${activeTab === "sale"
                   ? "bg-primary text-white"
                   : "text-gray-500 hover:text-gray-700"
                   } ${direction === "rtl" ? "rounded-l-md" : "rounded-r-md"}`}
@@ -393,7 +393,7 @@ export function HomePage() {
             {/* Search Button */}
             <Button
               onClick={handleSearch}
-              className="rounded-md h-11 md:!h-14 w-full bg-[#9a090e] hover:bg-[#9a090e]/95 text-white font-medium text-[15px] transition-all active:scale-[0.98]"
+              className="rounded-xl !h-10 md:!h-11 w-full mt-2 bg-[#9a090e] hover:bg-[#9a090e]/95 border-none text-white font-medium text-sm shadow-[0_2px_4px_rgba(154,9,14,0.2)] transition-all active:scale-[0.98]"
             >
               {tCommon("buttons.search")}
             </Button>
@@ -403,22 +403,27 @@ export function HomePage() {
 
       {/* Latest Ads Section */}
       <section className="mt-0 w-full pb-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-2xl mx-auto">
           {adsLoading ? (
             <div className="flex w-full items-center justify-center mt-10">
               <Loader />
             </div>
           ) : ads.length > 0 ? (
             <>
-              <div className="mb-6 flex items-center justify-center gap-2 cursor-pointer select-none" onClick={() => setIsPriceFilterOpen(true)}>
-                <div className="w-8 h-8 rounded-full border-2 border-[#029a9d] bg-[#029a9d]/10 text-[#029a9d] flex items-center justify-center font-bold text-base shadow-sm hover:scale-105 active:scale-95 transition-all">
+              <button
+                type="button"
+                onClick={() => setIsPriceFilterOpen(true)}
+                aria-label={t("search.selectPriceRange")}
+                className="group mb-6 flex items-center justify-center gap-2 select-none mx-auto"
+              >
+                <span className="w-8 h-8 rounded-full border-2 border-[#169899] bg-[#169899]/10 text-[#169899] flex items-center justify-center font-bold text-base shadow-sm group-hover:bg-[#169899]/20 group-hover:shadow-md group-hover:scale-105 group-active:scale-95 transition-all duration-200">
                   $
-                </div>
-                <h2 className="text-xl font-bold text-black tracking-tight hover:text-emerald-700 transition-colors">
+                </span>
+                <h2 className="text-xl font-bold text-black tracking-tight group-hover:text-[#169899] transition-colors">
                   {t("latestListings.title")}
                 </h2>
-              </div>
-              <div className="flex flex-col gap-2">
+              </button>
+              <div className="flex flex-col gap-2.5">
                 {ads.map((ad, index) => (
                   <div
                     key={ad.id}
