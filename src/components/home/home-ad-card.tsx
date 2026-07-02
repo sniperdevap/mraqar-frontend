@@ -3,7 +3,15 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Share2, Clock, Phone, MessageCircle, Play, DollarSign } from "lucide-react";
+import {
+  Clock,
+  DollarSign,
+  Pencil,
+  Pin,
+  Play,
+  RotateCw,
+  Trash,
+} from "lucide-react";
 import { Ad, Media } from "@/types/ad";
 import { useLocale, useTranslations } from "@/hooks/use-locale";
 import { formatDistanceToNow } from "date-fns";
@@ -117,13 +125,8 @@ export function HomeAdCard({
   const isFeatured = ad.isPremium || ad.premiumAd;
   const isVideo = firstMedia?.type === "video";
 
-  return (
-    <Link
-      href={`/ads/${ad.id}`}
-      className="relative block w-full cursor-pointer"
-      onClick={onClick}
-      dir={direction}
-    >
+  const cardContent = (
+    <>
       {/* Featured Badge - corner ribbon */}
       {isFeatured && (
         <span
@@ -187,11 +190,11 @@ export function HomeAdCard({
           {ad.description}
         </p>
       </div>
-    </div>
+    </>
   );
 
   const cardClasses =
-    "block w-full bg-[#f9eef2] border border-gray-200 rounded-lg overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.01)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.03)] transition-all cursor-pointer mb-3";
+    "relative block w-full cursor-pointer mb-3 hover:opacity-95 transition-opacity";
 
   if (variant === "default") {
     return (
@@ -209,8 +212,12 @@ export function HomeAdCard({
   const isPremiumAd = ad.isPremium ?? ad.premiumAd;
 
   return (
-    <div className={cardClasses} dir={direction}>
-      <Link href={`/ads/${ad.id}`} onClick={onClick} className="block">
+    <div className="relative block w-full mb-3" dir={direction}>
+      <Link
+        href={`/ads/${ad.id}`}
+        onClick={onClick}
+        className="block relative"
+      >
         {cardContent}
       </Link>
       <div
