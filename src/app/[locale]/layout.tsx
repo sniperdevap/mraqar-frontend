@@ -7,6 +7,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages, getLocale } from "next-intl/server";
 import { ReactQueryProvider } from "@/components/react-query-provider";
 import { ConditionalLayout } from "@/components/common/conditional-layout";
+import { BRAND_ICON_URL, SITE_URL } from "@/lib/seo";
 
 const notoKufiArabic = Noto_Kufi_Arabic({
   subsets: ["arabic", "latin"],
@@ -16,6 +17,7 @@ const notoKufiArabic = Noto_Kufi_Arabic({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "مستر عقار عقارات الكويت",
     template: "%s | مستر عقار",
@@ -23,16 +25,33 @@ export const metadata: Metadata = {
   description:
     "منصة مستر عقار لعقارات الكويت - للبيع وشراء وتأجير العقارات بسهولة وأمان",
   authors: [{ name: "مستر عقار" }],
+  alternates: {
+    canonical: "/",
+  },
+  manifest: "/manifest.webmanifest",
   openGraph: {
     title: "مستر عقار عقارات الكويت",
     description:
       "منصة مستر عقار لعقارات الكويت - للبيع وشراء وتأجير العقارات بسهولة وأمان",
     locale: "ar_KW",
+    url: "/",
+    siteName: "مستر عقار",
   },
   icons: {
-    icon: "/images/aqar-new-logo.png",
-    shortcut: "/images/aqar-new-logo.png",
-    apple: "/images/aqar-new-logo.png",
+    icon: [
+      { url: "/favicon.ico", type: "image/x-icon" },
+      { url: "/favicon-48.png", type: "image/png", sizes: "48x48" },
+      { url: "/icon-192.png", type: "image/png", sizes: "192x192" },
+      { url: "/icon-512.png", type: "image/png", sizes: "512x512" },
+    ],
+    shortcut: [{ url: "/favicon.ico", type: "image/x-icon" }],
+    apple: [
+      {
+        url: "/apple-touch-icon.png",
+        type: "image/png",
+        sizes: "180x180",
+      },
+    ],
   },
 };
 
@@ -69,8 +88,14 @@ export default async function RootLayout({
               "@type": "Organization",
               name: "مستر عقار عقارات الكويت",
               alternateName: "Mr aqar Real Estate Kuwait",
-              url: "https://aqar.com",
-              logo: "https://aqar.com/images/aqar-new-logo.png",
+              url: SITE_URL,
+              logo: {
+                "@type": "ImageObject",
+                url: BRAND_ICON_URL,
+                contentUrl: BRAND_ICON_URL,
+                width: 512,
+                height: 512,
+              },
             }),
           }}
         />

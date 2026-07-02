@@ -200,6 +200,8 @@ export function EditProfileModal({
               {t("phoneNumber")}
             </label>
             <Input
+              type="tel"
+              dir="ltr"
               value={formData.phoneNumber || ""}
               onChange={(e) =>
                 setFormData((prev) => ({
@@ -210,6 +212,7 @@ export function EditProfileModal({
               placeholder={t("enterPhoneNumber")}
               required
               disabled={isLoading}
+              className="text-left"
             />
           </div>
 

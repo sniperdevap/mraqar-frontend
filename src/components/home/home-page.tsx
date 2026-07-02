@@ -45,7 +45,6 @@ export function HomePage() {
   const tCommon = useTranslations("common");
   const { locale, direction } = useLocale();
 
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isPriceFilterOpen, setIsPriceFilterOpen] = useState(false);
   const [showStickySearchBar, setShowStickySearchBar] = useState(false);
 
@@ -137,9 +136,7 @@ export function HomePage() {
       0,
     );
     const parsedMax = maxPrice ? Number(maxPrice) : 0;
-    return getRoundedSliderMax(
-      Math.max(knownMaxPrice, parsedMax, 1000),
-    );
+    return getRoundedSliderMax(Math.max(knownMaxPrice, parsedMax, 1000));
   }, [ads, maxPrice]);
 
   useEffect(() => {
@@ -214,11 +211,16 @@ export function HomePage() {
     minPrice?: string;
     maxPrice?: string;
   }) => {
-    const finalPurpose = updates.purpose !== undefined ? updates.purpose : activeTab;
-    const finalPropType = updates.propertyType !== undefined ? updates.propertyType : propertyType;
-    const finalAreas = updates.areas !== undefined ? updates.areas : selectedAreas;
-    const finalMinPrice = updates.minPrice !== undefined ? updates.minPrice : minPrice;
-    const finalMaxPrice = updates.maxPrice !== undefined ? updates.maxPrice : maxPrice;
+    const finalPurpose =
+      updates.purpose !== undefined ? updates.purpose : activeTab;
+    const finalPropType =
+      updates.propertyType !== undefined ? updates.propertyType : propertyType;
+    const finalAreas =
+      updates.areas !== undefined ? updates.areas : selectedAreas;
+    const finalMinPrice =
+      updates.minPrice !== undefined ? updates.minPrice : minPrice;
+    const finalMaxPrice =
+      updates.maxPrice !== undefined ? updates.maxPrice : maxPrice;
 
     const params = new URLSearchParams();
     if (finalPurpose) params.set("purpose", finalPurpose);
@@ -270,7 +272,7 @@ export function HomePage() {
 
             <button
               className="flex flex-col items-center justify-center text-black hover:text-gray-600 transition-transform active:scale-95"
-              onClick={() => setIsFilterOpen(true)}
+              onClick={() => router.push("/search")}
             >
               <Search size={20} className="mb-0.5 stroke-[2.5]" />
               <span className="text-[10px] font-bold uppercase tracking-wider">
@@ -354,15 +356,19 @@ export function HomePage() {
             </Select>
 
             {/* Purpose Tabs (Pills) */}
-            <div className="bg-white !h-11 md:!h-14 w-full rounded-md border border-gray-200 flex  items-center divide-x divide-gray-100" dir={direction}>
+            <div
+              className="bg-white !h-11 md:!h-14 w-full rounded-md border border-gray-200 flex  items-center divide-x divide-gray-100"
+              dir={direction}
+            >
               <button
                 onClick={() => {
                   setActiveTab("exchange");
                 }}
-                className={`flex-1 h-full font-medium  transition-all text-[15px] ${activeTab === "exchange"
-                  ? "bg-primary text-white"
-                  : "text-gray-500 hover:text-gray-700"
-                  } ${direction === "rtl" ? "rounded-r-md border-l" : "rounded-l-md border-r"}`}
+                className={`flex-1 h-full font-medium  transition-all text-[15px] ${
+                  activeTab === "exchange"
+                    ? "bg-primary text-white"
+                    : "text-gray-500 hover:text-gray-700"
+                } ${direction === "rtl" ? "rounded-r-md border-l" : "rounded-l-md border-r"}`}
               >
                 {t("tabs.exchange")}
               </button>
@@ -370,10 +376,11 @@ export function HomePage() {
                 onClick={() => {
                   setActiveTab("rent");
                 }}
-                className={`flex-1 h-full font-medium  transition-all text-[15px] ${activeTab === "rent"
-                  ? "bg-primary text-white"
-                  : "text-gray-500 hover:text-gray-700"
-                  } ${direction === "rtl" ? "border-l" : "border-r"}`}
+                className={`flex-1 h-full font-medium  transition-all text-[15px] ${
+                  activeTab === "rent"
+                    ? "bg-primary text-white"
+                    : "text-gray-500 hover:text-gray-700"
+                } ${direction === "rtl" ? "border-l" : "border-r"}`}
               >
                 {t("tabs.rent")}
               </button>
@@ -381,10 +388,11 @@ export function HomePage() {
                 onClick={() => {
                   setActiveTab("sale");
                 }}
-                className={`flex-1 h-full font-medium transition-all text-[15px] ${activeTab === "sale"
-                  ? "bg-primary text-white"
-                  : "text-gray-500 hover:text-gray-700"
-                  } ${direction === "rtl" ? "rounded-l-md" : "rounded-r-md"}`}
+                className={`flex-1 h-full font-medium transition-all text-[15px] ${
+                  activeTab === "sale"
+                    ? "bg-primary text-white"
+                    : "text-gray-500 hover:text-gray-700"
+                } ${direction === "rtl" ? "rounded-l-md" : "rounded-r-md"}`}
               >
                 {t("tabs.sale")}
               </button>
@@ -410,7 +418,10 @@ export function HomePage() {
             </div>
           ) : ads.length > 0 ? (
             <>
-              <div className="mb-6 flex items-center justify-center gap-2 cursor-pointer select-none" onClick={() => setIsPriceFilterOpen(true)}>
+              <div
+                className="mb-6 flex items-center justify-center gap-2 cursor-pointer select-none"
+                onClick={() => setIsPriceFilterOpen(true)}
+              >
                 <div className="w-8 h-8 rounded-full border-2 border-[#029a9d] bg-[#029a9d]/10 text-[#029a9d] flex items-center justify-center font-bold text-base shadow-sm hover:scale-105 active:scale-95 transition-all">
                   $
                 </div>
@@ -454,7 +465,10 @@ export function HomePage() {
       </section>
 
       <Dialog open={isPriceFilterOpen} onOpenChange={setIsPriceFilterOpen}>
-        <DialogContent className="w-[calc(100%-2rem)] !max-w-[calc(100%-2rem)] sm:!max-w-sm rounded-[24px] bg-white !px-6 !py-6 md:!px-8 md:!py-6 border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.08)]" dir={direction}>
+        <DialogContent
+          className="w-[calc(100%-2rem)] !max-w-[calc(100%-2rem)] sm:!max-w-sm rounded-[24px] bg-white !px-6 !py-6 md:!px-8 md:!py-6 border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.08)]"
+          dir={direction}
+        >
           <DialogHeader>
             <DialogTitle className="text-lg font-bold text-center text-[#1f2937] mb-2">
               {t("search.selectPriceRange")}

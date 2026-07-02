@@ -9,6 +9,7 @@ import {
 } from "@/lib/query-prefetch";
 import { getServerAdById } from "@/lib/api/server";
 import { permanentRedirect } from "next/navigation";
+import { SITE_URL } from "@/lib/seo";
 
 type Props = {
   params: Promise<{ id: string; locale: string }>;
@@ -24,7 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
     const imageHost = (process.env.NEXT_PUBLIC_IMAGE_HOST || "").trim();
     const firstMedia = ad.media && ad.media.length > 0 ? ad.media[0] : null;
-    let imageUrl = `${process.env.NEXT_PUBLIC_BASE_URL || ""}/images/no-image.png`;
+    let imageUrl = `${SITE_URL}/images/aqar-new-logo.png`;
 
     if (firstMedia) {
       const mediaPath =
@@ -39,7 +40,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const description = ad.description
       ? ad.description.substring(0, 160)
       : title;
-    const shareUrl = `${process.env.NEXT_PUBLIC_BASE_URL || ""}/ads/${id}`;
+    const shareUrl = `${SITE_URL}/ads/${id}`;
 
     return {
       title,
