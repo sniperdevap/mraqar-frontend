@@ -5,7 +5,7 @@ import { routing } from './i18n/routing';
 
 // Configuration for public and auth routes
 // Routes accessible by everyone (authenticated and unauthenticated)
-const PUBLIC_ROUTES = ['/', '/search', '/ads', '/offices', '/menu', '/contact', '/evaluation', '/privacy', '/terms', '/about'];
+const PUBLIC_ROUTES = ['/', '/search', '/ads', '/offices', '/menu', '/contact', '/evaluation', '/privacy', '/terms', '/copyright', '/about'];
 
 // Routes accessible only by unauthenticated users (guests)
 const GUEST_ROUTES = ['/auth/signin', '/auth/signup', '/auth/forgot-password', '/auth/reset-password', '/auth/verify'];

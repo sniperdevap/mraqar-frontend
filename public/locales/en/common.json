@@ -191,7 +191,8 @@
     "appStore": "App Store",
     "playStore": "Google Play",
     "downloadOn": "Download on",
-    "getItOn": "Get it on"
+    "getItOn": "Get it on",
+    "copyrightNotice": "Copyright"
   },
   "language": {
     "english": "English",
@@ -320,7 +321,6 @@
       }
     }
   },
-
   "terms": {
     "title": "Terms of Use",
     "subtitle": "Please review these terms before using our platform",
@@ -662,5 +662,44 @@
     "seats": "{count} seats",
     "duration": "{months} months",
     "total": "Amount Due"
+  },
+  "copyright": {
+    "title": "Copyright Notice",
+    "subtitle": "Please review our copyright policy",
+    "cardHeader": "Copyright Notice",
+    "lastUpdated": "Last updated: July 2, 2026",
+    "sections": {
+      "notice": {
+        "content": "© 2026 MR AQAR. All Rights Reserved."
+      },
+      "ownership": {
+        "title": "1. Ownership of Content",
+        "content": "The content, design, layout, graphics, logos, trademarks, photographs, text, software, databases, and all other materials available on the MR AQAR website and mobile applications are the exclusive property of MR AQAR or its licensors and are protected by applicable copyright, trademark, and intellectual property laws."
+      },
+      "restrictions": {
+        "title": "2. Restrictions on Use",
+        "content": "No part of this website or its content may be copied, reproduced, modified, republished, uploaded, posted, transmitted, distributed, sold, licensed, or exploited in any form or by any means without the prior written consent of MR AQAR, except where expressly permitted by applicable law."
+      },
+      "permittedUse": {
+        "title": "3. Permitted Use",
+        "content": "Users may access and use this website solely for lawful personal and commercial real estate purposes in accordance with our Terms of Use. Any unauthorized use, including data scraping, automated data collection, reverse engineering, duplication of listings, misuse of trademarks, or infringement of intellectual property rights, is strictly prohibited and may result in legal action."
+      },
+      "rights": {
+        "title": "4. Reservation of Rights",
+        "content": "MR AQAR reserves the right to update, modify, suspend, or remove any content or functionality at any time without prior notice. All third-party trademarks, logos, and property listings remain the property of their respective owners."
+      },
+      "acknowledgment": {
+        "title": "5. Acknowledgment",
+        "content": "By accessing or using the MR AQAR website or mobile applications, you acknowledge and agree to respect all applicable intellectual property rights and comply with all relevant laws and regulations."
+      },
+      "contact": {
+        "title": "6. Copyright Inquiries",
+        "description": "For copyright inquiries, licensing requests, or reports of intellectual property infringement, please contact MR AQAR through the official contact information provided on this website.",
+        "email": "Email: contact@aqar.com",
+        "address": "Address",
+        "addressLine1": "Kuwait / Abu Hasaniya, Block 10, Block 85",
+        "addressLine2": "Alarbeed Building 4, Office 7"
+      }
+    }
   }
 }
