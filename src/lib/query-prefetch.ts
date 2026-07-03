@@ -91,9 +91,9 @@ export const prefetchAdDetail = (
   locale?: string,
 ) =>
   queryClient.prefetchQuery({
-    queryKey: ["ad", id, true],
-    queryFn: () => getServerAdById(id, locale, true),
-    staleTime: 0,
+    queryKey: ["ad", id],
+    queryFn: () => getServerAdById(id, locale),
+    staleTime: 60 * 1000,
   });
 
 export const prefetchSubscriptionPlans = (

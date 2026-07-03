@@ -1,5 +1,5 @@
-import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
-import { getAds, getAdById } from '@/lib/api/ad';
+import { useQuery, useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { getAds, getAdById, countAdView } from '@/lib/api/ad';
 import { GetAdsParams, GetAdsResult, DetailAd } from '@/types/ad';
 
 export const useAds = (params: GetAdsParams) => {
@@ -52,12 +52,24 @@ export const useInfiniteSearchAds = (params: GetAdsParams, limit: number, enable
   });
 };
 
-export const useAdById = (id: string, initialData?: DetailAd, shouldIncrement: boolean = false) => {
+export const useAdById = (id: string, initialData?: DetailAd) => {
   return useQuery<DetailAd>({
-    queryKey: ['ad', id, shouldIncrement],
-    queryFn: () => getAdById(id, shouldIncrement),
+    queryKey: ['ad', id],
+    queryFn: () => getAdById(id),
     enabled: !!id,
-    staleTime: 0, // Always refetch to get updated view count
     initialData: initialData,
+  });
+};
+
+export const useCountAdView = (id: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => countAdView(id),
+    onSuccess: ({ views }) => {
+      queryClient.setQueryData<DetailAd>(['ad', id], (current) =>
+        current ? { ...current, views } : current,
+      );
+    },
   });
 };

@@ -53,8 +53,8 @@ export function ShareDialog({ isOpen, onClose, url, title }: ShareDialogProps) {
             <span className="text-xs">LinkedIn</span>
           </div>
 
-          <div className="flex flex-col items-center gap-2">
-            <EmailShareButton url={url} subject={title} body={url} onClick={onClose}>
+          <div className="flex flex-col items-center gap-2" onClick={onClose}>
+            <EmailShareButton url={url} subject={title} body={url}>
               <EmailIcon size={48} round />
             </EmailShareButton>
             <span className="text-xs">Email</span>

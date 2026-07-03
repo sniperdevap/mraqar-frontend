@@ -40,7 +40,7 @@ const SearchAdCard = dynamic(() =>
   import("@/components/search/search-ad-card").then((mod) => mod.SearchAdCard),
 );
 import { formatDisplayPhone } from "@/lib/utils";
-import { useAdById, useInfiniteSearchAds } from "@/hooks/use-ads";
+import { useAdById, useCountAdView, useInfiniteSearchAds } from "@/hooks/use-ads";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAdStore } from "@/lib/store/ad-store";
 import { DetailAd, GetAdsParams } from "@/types/ad";
@@ -62,7 +62,8 @@ export function AdDetailPage({ adId }: AdDetailPageProps) {
   // Try to load initial data from Zustand store
   const cachedAd = getAd(adId) as DetailAd | undefined;
 
-  const { data: ad, isLoading: queryLoading } = useAdById(adId, cachedAd, true);
+  const { data: ad, isLoading: queryLoading } = useAdById(adId, cachedAd);
+  const { mutate: countView } = useCountAdView(adId);
 
   // We only show loader if we have NO cached ad and query is still loading
   const isLoading = queryLoading && !cachedAd;
@@ -90,6 +91,13 @@ export function AdDetailPage({ adId }: AdDetailPageProps) {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  useEffect(() => {
+    if (adId) {
+      countView();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [adId]);
 
   useEffect(() => {
     const checkScrollable = () => {

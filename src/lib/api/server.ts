@@ -91,19 +91,11 @@ export const getServerAds = (params?: GetAdsParams, locale?: string) =>
     revalidate: 60,
   });
 
-export const getServerAdById = (
-  id: string,
-  locale?: string,
-  increment = false,
-) =>
-  serverApiGet<DetailAd>(
-    API_ENDPOINTS.AD.GET_BY_ID(id),
-    increment ? { increment: true } : undefined,
-    {
-      locale,
-      revalidate: increment ? 0 : 60,
-    },
-  );
+export const getServerAdById = (id: string, locale?: string) =>
+  serverApiGet<DetailAd>(API_ENDPOINTS.AD.GET_BY_ID(id), undefined, {
+    locale,
+    revalidate: 60,
+  });
 
 export const getServerOffices = (params?: GetOfficesParams, locale?: string) =>
   serverApiGet<GetOfficesResult>(API_ENDPOINTS.OFFICE.GET_ALL, params, {
