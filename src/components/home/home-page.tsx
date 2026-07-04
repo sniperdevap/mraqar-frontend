@@ -335,7 +335,7 @@ export function HomePage() {
             >
               <SelectTrigger
                 aria-label={t("search.propertyTypePlaceholder")}
-                className="w-full !h-10 md:!h-11 bg-white border border-gray-300 rounded-md text-gray-700 data-[placeholder]:!text-gray-400 transition-all focus:border-[#9a090e] text-sm font-medium px-3"
+                className="w-full !h-10 md:!h-11 bg-white border border-gray-300 rounded-md text-gray-700 data-[placeholder]:!text-gray-500 transition-all focus:border-[#9a090e] text-sm font-medium px-3"
               >
                 <SelectValue
                   placeholder={t("search.propertyTypePlaceholder")}
@@ -431,7 +431,7 @@ export function HomePage() {
               <button
                 type="button"
                 onClick={() => setIsPriceFilterOpen(true)}
-                aria-label={t("search.selectPriceRange")}
+                aria-label={`${t("latestListings.title")}: ${t("search.selectPriceRange")}`}
                 className="group mb-6 flex items-center justify-center gap-2 select-none mx-auto"
               >
                 <span className="w-7 h-7 rounded-full border-2 border-[#169899] bg-[#169899]/10 text-[#169899] flex items-center justify-center font-bold text-base shadow-sm group-hover:bg-[#169899]/20 group-hover:shadow-md group-hover:scale-105 group-active:scale-95 transition-all duration-200">

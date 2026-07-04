@@ -33,6 +33,14 @@ export function Navbar() {
   const { direction } = useLocale();
   const [unreadCount, setUnreadCount] = useState(0);
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
+  // Avoid auth-store persist mismatch between SSR HTML and client hydration.
+  const [hasMounted, setHasMounted] = useState(false);
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
+  const showAuthUi = hasMounted && isAuthenticated;
 
   useEffect(() => {
     const viewport = window.visualViewport;
@@ -54,14 +62,14 @@ export function Navbar() {
   }, []);
 
   const fetchUnreadCount = useCallback(async () => {
-    if (!isAuthenticated) return;
+    if (!showAuthUi) return;
     try {
       const count = await getUnreadNotificationCount();
       setUnreadCount(count);
     } catch {
       // silently fail
     }
-  }, [isAuthenticated]);
+  }, [showAuthUi]);
 
   useEffect(() => {
     fetchUnreadCount();
@@ -197,7 +205,7 @@ export function Navbar() {
                 )}
               </button>
             )}
-            {isAuthenticated && (
+            {showAuthUi && (
               <button
                 onClick={handleLogout}
                 className="p-2 text-gray-600 hover:text-gray-900 transition-colors cursor-pointer"
@@ -251,6 +259,7 @@ export function Navbar() {
                 {/* Favorites button */}
                 <Link
                   href="/account?tab=favourites"
+                  prefetch={false}
                   className="flex flex-col items-center justify-center text-[#555] hover:text-primary transition-colors cursor-pointer"
                 >
                   <Heart size={22} className="text-gray-900" strokeWidth={1.8} />
@@ -340,7 +349,7 @@ export function Navbar() {
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                {isAuthenticated && (
+                {showAuthUi && (
                   <button
                     onClick={handleLogout}
                     className="hidden md:flex lg:hidden p-2 text-gray-600 hover:text-gray-900 transition-colors cursor-pointer"
@@ -420,7 +429,7 @@ export function Navbar() {
               <Link
                 key={item.href || "menu"}
                 href={item.href || "/menu"}
-                prefetch={true}
+                prefetch={false}
                 className={cn(
                   "relative flex flex-col items-center gap-1.5 py-1 px-3 rounded-2xl transition-all duration-300",
                   isActive

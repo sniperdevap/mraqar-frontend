@@ -165,7 +165,7 @@ export function MultiSelect({ options, value, onChange, placeholder = 'Select it
                 />
               )}
               {!open && (
-                <span className={cn('text-gray-400 text-[15px] font-medium block w-full', 'text-start')}>
+                <span className={cn('text-gray-500 text-[15px] font-medium block w-full', 'text-start')}>
                   {placeholder}
                 </span>
               )}

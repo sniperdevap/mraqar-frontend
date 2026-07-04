@@ -124,7 +124,10 @@ export function HomeAdCard({
               </div>
               <div className="flex items-center gap-1 text-gray-700">
                 <Clock size={14} className="text-gray-700" aria-hidden="true" />
-                <span className="text-[13px] font-medium leading-5">
+                <span
+                  className="text-[13px] font-medium leading-5"
+                  suppressHydrationWarning
+                >
                   {getTimeAgo(ad.createdAt)}
                 </span>
               </div>
@@ -146,6 +149,7 @@ export function HomeAdCard({
     return (
       <Link
         href={`/ads/${ad.id}`}
+        prefetch={false}
         className={cardClasses}
         onClick={onClick}
         dir={direction}
@@ -159,6 +163,7 @@ export function HomeAdCard({
     <div className="relative block w-full mb-3" dir={direction}>
       <Link
         href={`/ads/${ad.id}`}
+        prefetch={false}
         onClick={onClick}
         className="block relative"
       >

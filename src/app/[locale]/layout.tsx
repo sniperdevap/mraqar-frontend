@@ -90,12 +90,26 @@ export default async function RootLayout({
   const messages = await getMessages();
   const direction = locale === "ar" ? "rtl" : "ltr";
 
+  let apiOrigin: string | null = null;
+  try {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    if (apiUrl) apiOrigin = new URL(apiUrl).origin;
+  } catch {
+    apiOrigin = null;
+  }
+
   return (
     <html
       lang={locale}
       dir={direction}
       className={`${notoKufiArabic.variable} overflow-x-hidden`}
     >
+      {apiOrigin ? (
+        <>
+          <link rel="preconnect" href={apiOrigin} />
+          <link rel="dns-prefetch" href={apiOrigin} />
+        </>
+      ) : null}
       <body className="antialiased min-h-screen flex flex-col overflow-x-hidden">
         <script
           type="application/ld+json"
