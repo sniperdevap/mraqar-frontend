@@ -91,9 +91,8 @@
   --color-input: var(--color-cloud);
   --color-ring: var(--color-primary-blue);
 
-  /* Typography — system stack first; Noto applied after idle via .fonts-loaded */
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Tahoma,
-    Arial, sans-serif;
+  /* Typography — Noto via next/font className on body (metric-adjusted fallback) */
+  --font-sans: var(--font-noto-kufi), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono);
 
   /* Border Radius */
@@ -152,10 +151,6 @@ body {
   font-family: var(--font-sans);
 }
 
-/* Swap in Noto only after idle — keeps WOFF2 off the critical path. */
-html.fonts-loaded {
-  --font-sans: var(--font-noto-kufi);
-}
 /* Global Color Classes */
 .bg-light-grayish-cyan {
   background-color: var(--color-light-grayish-cyan);

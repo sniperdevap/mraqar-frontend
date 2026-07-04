@@ -20,10 +20,7 @@ import { useAdStore } from "@/lib/store/ad-store";
 import { useInView } from "react-intersection-observer";
 import { Search } from "lucide-react";
 import { HomeAdCard } from "./home-ad-card";
-
-const MultiSelect = dynamic(() =>
-  import("@/components/ui/multi-select").then((mod) => mod.MultiSelect),
-);
+import { MultiSelect } from "@/components/ui/multi-select";
 
 const PriceFilterDialog = dynamic(
   () =>
@@ -252,8 +249,9 @@ export function HomePage() {
                 alt="Mr aqar Logo"
                 width={84}
                 height={56}
-                unoptimized
+                priority
                 className="h-14 w-[84px] object-contain"
+                style={{ width: 84, height: 56 }}
               />
               {/* <div className="flex flex-col">
                 <span className="text-[11px] md:text-[13px] font-bold text-black uppercase leading-tight">{tCommon('buttons.search')}</span>
@@ -281,8 +279,11 @@ export function HomePage() {
         className="w-full pt-4 md:pt-4 px-4 sm:px-6 lg:px-8 max-w-xl mx-auto mb-4 relative z-10"
         dir={direction}
       >
-        {/* LCP image: native img + preload in page.tsx for earliest discovery */}
-        <div className="flex justify-center mb-4 h-28 w-[168px] md:h-32 md:w-48 mx-auto">
+        {/* LCP image: fixed box reserves space before decode (avoids CLS). */}
+        <div
+          className="flex justify-center mb-4 mx-auto"
+          style={{ width: 168, height: 112 }}
+        >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/images/aqar-new-logo-hero.webp"
@@ -291,7 +292,8 @@ export function HomePage() {
             height={112}
             fetchPriority="high"
             decoding="async"
-            className="h-full w-full object-contain"
+            className="object-contain"
+            style={{ width: 168, height: 112 }}
           />
         </div>
 
@@ -405,8 +407,23 @@ export function HomePage() {
       {/* Latest Ads Section */}
       <section className="mt-0 w-full pb-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl mx-auto">
+          {/* Header always rendered so it does not pop in after ads load (CLS). */}
+          <button
+            type="button"
+            onClick={() => setIsPriceFilterOpen(true)}
+            aria-label={`${t("latestListings.title")}: ${t("search.selectPriceRange")}`}
+            className="group mb-6 flex items-center justify-center gap-2 select-none mx-auto min-h-7"
+          >
+            <span className="w-7 h-7 rounded-full border-2 border-[#169899] bg-[#169899]/10 text-[#169899] flex items-center justify-center font-bold text-base shadow-sm group-hover:bg-[#169899]/20 group-hover:shadow-md group-hover:scale-105 group-active:scale-95 transition-all duration-200">
+              $
+            </span>
+            <h2 className="text-xl font-bold text-black tracking-tight group-hover:text-[#169899] transition-colors">
+              {t("latestListings.title")}
+            </h2>
+          </button>
+
           {adsLoading ? (
-            <div className="flex flex-col gap-2.5 mt-6" aria-busy="true" aria-label="Loading">
+            <div className="flex flex-col gap-2.5" aria-busy="true" aria-label="Loading">
               {Array.from({ length: 4 }).map((_, i) => (
                 <div
                   key={i}
@@ -428,19 +445,6 @@ export function HomePage() {
             </div>
           ) : ads.length > 0 ? (
             <>
-              <button
-                type="button"
-                onClick={() => setIsPriceFilterOpen(true)}
-                aria-label={`${t("latestListings.title")}: ${t("search.selectPriceRange")}`}
-                className="group mb-6 flex items-center justify-center gap-2 select-none mx-auto"
-              >
-                <span className="w-7 h-7 rounded-full border-2 border-[#169899] bg-[#169899]/10 text-[#169899] flex items-center justify-center font-bold text-base shadow-sm group-hover:bg-[#169899]/20 group-hover:shadow-md group-hover:scale-105 group-active:scale-95 transition-all duration-200">
-                  $
-                </span>
-                <h2 className="text-xl font-bold text-black tracking-tight group-hover:text-[#169899] transition-colors">
-                  {t("latestListings.title")}
-                </h2>
-              </button>
               <div className="flex flex-col gap-2.5">
                 {ads.map((ad, index) => (
                   <div
@@ -458,11 +462,7 @@ export function HomePage() {
 
               {isFetchingNextPage && (
                 <div className="flex justify-center mt-8 py-2">
-                  {isFetchingNextPage ? (
-                    <Loader size="sm" />
-                  ) : (
-                    <div className="h-8" />
-                  )}
+                  <Loader size="sm" />
                 </div>
               )}
             </>

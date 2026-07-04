@@ -9,26 +9,18 @@ export function Footer() {
   const t = useTranslations("common.footer");
   const pathname = usePathname();
 
-  const [showAppButtons, setShowAppButtons] = useState(false);
+  // Default true so SSR/first paint reserve footer height; hide only in webviews.
+  const [showAppButtons, setShowAppButtons] = useState(true);
   const [isFooterVisible, setIsFooterVisible] = useState(false);
   const footerRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
-    const checkVisibility = () => {
-      if (typeof window === "undefined") return;
-      const ua = window.navigator.userAgent;
-
-      // Standard detection for webviews
-      const isIOSWebView = /iPhone|iPad|iPod/.test(ua) && !/Safari/.test(ua);
-      const isAndroidWebView = /Android/.test(ua) && /wv/.test(ua);
-
-      // Also check for common app-specific markers if any
-      const isWebView = isIOSWebView || isAndroidWebView;
-
-      setShowAppButtons(!isWebView);
-    };
-
-    checkVisibility();
+    const ua = window.navigator.userAgent;
+    const isIOSWebView = /iPhone|iPad|iPod/.test(ua) && !/Safari/.test(ua);
+    const isAndroidWebView = /Android/.test(ua) && /wv/.test(ua);
+    if (isIOSWebView || isAndroidWebView) {
+      setShowAppButtons(false);
+    }
   }, []);
 
   useEffect(() => {

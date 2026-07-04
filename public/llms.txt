@@ -1,0 +1,19 @@
+# Mr Aqar (مستر عقار)
+
+> Kuwait real estate platform for buying, selling, and renting properties.
+
+## Site
+
+- [Home](https://mr-aqar.com/): Browse latest property listings
+- [Search](https://mr-aqar.com/search): Search properties by area, type, and price
+- [Offices](https://mr-aqar.com/offices): Real estate offices directory
+- [Plans](https://mr-aqar.com/plans): Subscription plans for advertisers
+- [About](https://mr-aqar.com/about): About Mr Aqar
+- [Contact](https://mr-aqar.com/contact): Contact support
+- [Terms](https://mr-aqar.com/terms): Terms and conditions
+- [Privacy](https://mr-aqar.com/privacy): Privacy policy
+
+## Optional
+
+- [Sitemap](https://mr-aqar.com/sitemap.xml)
+- [Robots](https://mr-aqar.com/robots.txt)

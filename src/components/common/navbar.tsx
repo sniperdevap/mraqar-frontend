@@ -140,9 +140,9 @@ export function Navbar() {
     <>
       {/* Desktop Navbar */}
       {showTopNavbar && (
-        <nav className="hidden lg:flex items-center px-12 py-2 bg-white  border-b border-gray-200 sticky top-0 z-50">
-          <div className="flex-shrink-0">
-            <Link href="/">
+        <nav className="hidden lg:flex items-center px-12 py-2 bg-white border-b border-gray-200 sticky top-0 z-50 min-h-20">
+          <div className="flex-shrink-0 w-24 h-16">
+            <Link href="/" className="block w-24 h-16">
               <Image
                 src="/images/aqar-new-logo-nav.webp"
                 alt="Mr aqar Logo"
@@ -150,7 +150,8 @@ export function Navbar() {
                 height={64}
                 priority
                 unoptimized
-                className="h-16 w-24 object-contain"
+                className="object-contain"
+                style={{ width: 96, height: 64 }}
               />
             </Link>
           </div>
@@ -194,10 +195,12 @@ export function Navbar() {
           <div className="flex items-center gap-4">
             {pathname === "/" && (
               <button
+                type="button"
                 onClick={() => router.push("/notifications")}
+                aria-label={t("notifications.title")}
                 className="p-2 text-gray-900 hover:text-primary transition-colors relative cursor-pointer"
               >
-                <Bell size={24} strokeWidth={1.5} />
+                <Bell size={24} strokeWidth={1.5} aria-hidden="true" />
                 {unreadCount > 0 && (
                   <span className="absolute top-1 right-1 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1">
                     {unreadCount > 99 ? "99+" : unreadCount}
@@ -207,11 +210,13 @@ export function Navbar() {
             )}
             {showAuthUi && (
               <button
+                type="button"
                 onClick={handleLogout}
                 className="p-2 text-gray-600 hover:text-gray-900 transition-colors cursor-pointer"
+                aria-label={t("nav.logout")}
                 title={t("nav.logout")}
               >
-                <LogOut size={24} strokeWidth={1.5} />
+                <LogOut size={24} strokeWidth={1.5} aria-hidden="true" />
               </button>
             )}
             {/* {pathname === '/' &&
@@ -241,15 +246,17 @@ export function Navbar() {
           {(pathname === '/' || pathname?.replace(/^\/(en|ar)/, '') === '/' || pathname?.replace(/^\/(en|ar)/, '') === '') ? (
             <div className="flex items-center justify-between w-full h-full" dir="ltr">
               {/* Left: Logo */}
-              <div className="flex-shrink-0">
-                <Link href="/">
+              <div className="flex-shrink-0 w-24 h-16">
+                <Link href="/" className="block w-24 h-16">
                   <Image
                     src="/images/aqar-new-logo-nav.webp"
                     alt="Mr aqar Logo"
                     width={96}
                     height={64}
+                    priority
                     unoptimized
-                    className="h-16 w-24 object-contain"
+                    className="object-contain"
+                    style={{ width: 96, height: 64 }}
                   />
                 </Link>
               </div>
@@ -293,15 +300,16 @@ export function Navbar() {
               </button>
 
               {/* Middle: Logo */}
-              <div className="flex-shrink-0">
-                <Link href="/">
+              <div className="flex-shrink-0 w-24 h-16">
+                <Link href="/" className="block w-24 h-16">
                   <Image
                     src="/images/aqar-new-logo-nav.webp"
                     alt="Mr aqar Logo"
                     width={96}
                     height={64}
                     unoptimized
-                    className="h-16 w-24 object-contain"
+                    className="object-contain"
+                    style={{ width: 96, height: 64 }}
                   />
                 </Link>
               </div>
@@ -336,14 +344,15 @@ export function Navbar() {
                   </button>
                 ) : null}
                 <div className="flex-shrink-0 flex items-center justify-center w-full">
-                  <Link href="/">
+                  <Link href="/" className="block w-24 h-16">
                     <Image
                       src="/images/aqar-new-logo-nav.webp"
                       alt="Mr aqar Logo"
                       width={96}
                       height={64}
                       unoptimized
-                      className="h-16 w-24 object-contain"
+                      className="object-contain"
+                      style={{ width: 96, height: 64 }}
                     />
                   </Link>
                 </div>
