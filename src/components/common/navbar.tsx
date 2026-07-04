@@ -150,7 +150,7 @@ export function Navbar() {
                 height={64}
                 priority
                 unoptimized
-                className="h-16 w-auto object-contain"
+                className="h-16 w-24 object-contain"
               />
             </Link>
           </div>
@@ -249,7 +249,7 @@ export function Navbar() {
                     width={96}
                     height={64}
                     unoptimized
-                    className="h-16 w-auto object-contain"
+                    className="h-16 w-24 object-contain"
                   />
                 </Link>
               </div>
@@ -301,7 +301,7 @@ export function Navbar() {
                     width={96}
                     height={64}
                     unoptimized
-                    className="h-16 w-auto object-contain"
+                    className="h-16 w-24 object-contain"
                   />
                 </Link>
               </div>
@@ -343,7 +343,7 @@ export function Navbar() {
                       width={96}
                       height={64}
                       unoptimized
-                      className="h-16 w-auto object-contain"
+                      className="h-16 w-24 object-contain"
                     />
                   </Link>
                 </div>

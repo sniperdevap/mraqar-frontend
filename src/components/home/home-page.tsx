@@ -253,7 +253,7 @@ export function HomePage() {
                 width={84}
                 height={56}
                 unoptimized
-                className="h-14 w-auto object-contain"
+                className="h-14 w-[84px] object-contain"
               />
               {/* <div className="flex flex-col">
                 <span className="text-[11px] md:text-[13px] font-bold text-black uppercase leading-tight">{tCommon('buttons.search')}</span>
@@ -282,7 +282,7 @@ export function HomePage() {
         dir={direction}
       >
         {/* LCP image: native img + preload in page.tsx for earliest discovery */}
-        <div className="flex justify-center mb-4 h-28 md:h-32">
+        <div className="flex justify-center mb-4 h-28 w-[168px] md:h-32 md:w-48 mx-auto">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/images/aqar-new-logo-hero.webp"
@@ -291,7 +291,7 @@ export function HomePage() {
             height={112}
             fetchPriority="high"
             decoding="async"
-            className="h-28 md:h-32 w-auto object-contain"
+            className="h-full w-full object-contain"
           />
         </div>
 
