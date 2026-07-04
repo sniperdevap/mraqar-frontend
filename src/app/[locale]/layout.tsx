@@ -5,15 +5,14 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import "../globals.css";
 import { Providers } from "@/components/providers";
-import { DeferredFont } from "@/components/common/deferred-font";
 import { DeferredToaster } from "@/components/common/deferred-toaster";
 import { ReactQueryProvider } from "@/components/react-query-provider";
 import { ConditionalLayout } from "@/components/common/conditional-layout";
 import { BRAND_ICON_URL, SITE_URL } from "@/lib/seo";
 import { routing } from "@/i18n/routing";
 
-// Self-hosted variable WOFF2. No preload; font-family applied after idle
-// (DeferredFont) so WOFF2 stays off the critical request chain.
+// Size-adjusted fallback (adjustFontFallback) keeps metrics stable across swap,
+// so applying the font on first paint avoids the DeferredFont class-toggle CLS.
 const notoKufiArabic = Noto_Kufi_Arabic({
   subsets: ["arabic", "latin"],
   variable: "--font-noto-kufi",
@@ -110,7 +109,9 @@ export default async function RootLayout({
           <link rel="dns-prefetch" href={apiOrigin} />
         </>
       ) : null}
-      <body className="antialiased min-h-screen flex flex-col overflow-x-hidden">
+      <body
+        className={`${notoKufiArabic.className} antialiased min-h-screen flex flex-col overflow-x-hidden`}
+      >
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -134,7 +135,6 @@ export default async function RootLayout({
           <ReactQueryProvider>
             <Providers>
               <ConditionalLayout>{children}</ConditionalLayout>
-              <DeferredFont />
               <DeferredToaster />
             </Providers>
           </ReactQueryProvider>
