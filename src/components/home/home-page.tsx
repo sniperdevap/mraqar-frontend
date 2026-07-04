@@ -2,11 +2,8 @@
 
 import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { Slider } from "@/components/ui/slider";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Select,
   SelectContent,
@@ -14,12 +11,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import dynamic from "next/dynamic";
 import { useTranslations, useLocale } from "@/hooks/use-locale";
 import { Loader } from "../common/loader";
@@ -27,11 +18,17 @@ import { usePropertyTypes, useAreas } from "@/hooks/use-metadata";
 import { useSearchAds } from "@/hooks/use-ads";
 import { useAdStore } from "@/lib/store/ad-store";
 import { useInView } from "react-intersection-observer";
-import { Search, X, RotateCcw, DollarSign } from "lucide-react";
+import { Search } from "lucide-react";
 import { HomeAdCard } from "./home-ad-card";
 
 const MultiSelect = dynamic(() =>
   import("@/components/ui/multi-select").then((mod) => mod.MultiSelect),
+);
+
+const PriceFilterDialog = dynamic(
+  () =>
+    import("./price-filter-dialog").then((mod) => mod.PriceFilterDialog),
+  { ssr: false },
 );
 
 export function HomePage() {
@@ -479,137 +476,39 @@ export function HomePage() {
         </div>
       </section>
 
-      <Dialog open={isPriceFilterOpen} onOpenChange={setIsPriceFilterOpen}>
-        <DialogContent
-          className="w-[calc(100%-2rem)] !max-w-[calc(100%-2rem)] sm:!max-w-sm rounded-[24px] bg-white !px-6 !py-6 md:!px-8 md:!py-6 border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.08)]"
-          dir={direction}
-        >
-          <DialogHeader>
-            <DialogTitle className="text-lg font-bold text-center text-[#1f2937] mb-2">
-              {t("search.selectPriceRange")}
-            </DialogTitle>
-          </DialogHeader>
-
-          <div className="space-y-4 mt-2">
-            {/* Price Header */}
-            <div>
-              <p className="text-[11px] font-bold text-[#8a97ab] uppercase tracking-wider mb-1">
-                {t("search.priceRangeLabel")}
-              </p>
-              <div className="flex items-baseline gap-1 text-primary">
-                <span className="text-lg font-bold">
-                  {minSliderValue.toLocaleString(locale)}
-                </span>
-                <span className="text-sm font-semibold opacity-60">
-                  {" "}
-                  {tCommon("currency")}
-                </span>
-                <span className="mx-2 text-[#d1d5db]">―</span>
-                <span className="text-lg font-bold">
-                  {maxSliderValue.toLocaleString(locale)}
-                </span>
-                <span className="text-sm font-semibold opacity-60">
-                  {" "}
-                  {tCommon("currency")}
-                </span>
-              </div>
-            </div>
-
-            {/* Slider Area */}
-            <div className="relative h-10 mb-2 flex items-center">
-              <Slider
-                min={0}
-                max={sliderMax}
-                step={1}
-                value={[minSliderValue, maxSliderValue]}
-                onValueChange={([nextMinRaw, nextMaxRaw]) => {
-                  const nextMin = Math.min(
-                    nextMinRaw ?? 0,
-                    nextMaxRaw ?? sliderMax,
-                  );
-                  const nextMax = Math.max(
-                    nextMaxRaw ?? sliderMax,
-                    nextMinRaw ?? 0,
-                  );
-                  setMinSliderValue(nextMin);
-                  setMaxSliderValue(nextMax);
-                  setPriceMinDraft(String(nextMin));
-                  setPriceMaxDraft(String(nextMax));
-                }}
-                onValueCommit={([nextMinRaw, nextMaxRaw]) => {
-                  const nextMin = Math.min(
-                    nextMinRaw ?? 0,
-                    nextMaxRaw ?? sliderMax,
-                  );
-                  const nextMax = Math.max(
-                    nextMaxRaw ?? sliderMax,
-                    nextMinRaw ?? 0,
-                  );
-                  setMinSliderValue(nextMin);
-                  setMaxSliderValue(nextMax);
-                  setPriceMinDraft(String(nextMin));
-                  setPriceMaxDraft(String(nextMax));
-                }}
-                aria-label="Price range"
-              />
-            </div>
-
-            {/* Manual Inputs */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-1.5 text-start">
-                <label className="text-[11px] font-bold text-[#8a97ab] uppercase ms-1">
-                  {t("search.minPriceLabel")}
-                </label>
-                <Input
-                  type="number"
-                  min="0"
-                  value={priceMinDraft}
-                  onChange={(e) => setPriceMinDraft(e.target.value)}
-                  placeholder="0"
-                  className="h-11 rounded-md border shadow-none border-gray-200 bg-transparent px-4 text-base font-bold text-primary placeholder:text-[#cbd5e1] "
-                />
-              </div>
-
-              <div className="space-y-1.5 text-start">
-                <label className="text-[11px] font-bold text-[#8a97ab] uppercase ms-1">
-                  {t("search.maxPriceLabel")}
-                </label>
-                <Input
-                  type="number"
-                  min="0"
-                  value={priceMaxDraft}
-                  onChange={(e) => setPriceMaxDraft(e.target.value)}
-                  placeholder={sliderMax.toString()}
-                  className="h-11 rounded-md border border-gray-200 bg-transparent shadow-none px-4 text-base font-bold text-primary placeholder:text-[#cbd5e1] "
-                />
-              </div>
-            </div>
-
-            {/* Actions */}
-            <div className="flex items-center justify-between border-t border-[#f1f5f9] pt-4 mt-6">
-              <button
-                type="button"
-                onClick={() => {
-                  setPriceMinDraft("");
-                  setPriceMaxDraft("");
-                  setMinSliderValue(0);
-                  setMaxSliderValue(sliderMax);
-                }}
-                className="text-sm font-bold text-[#94a3b8] transition-colors hover:text-[#ef4444]"
-              >
-                {t("search.reset")}
-              </button>
-
-              <Button
-                onClick={handlePriceSearch}
-                className="h-11 rounded-lg bg-primary px-8 text-sm font-bold text-white hover:bg-primary/90 shadow-sm transition-all active:scale-95"
-              >
-                {tCommon("buttons.search")}
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+      {isPriceFilterOpen && (
+        <PriceFilterDialog
+          open={isPriceFilterOpen}
+          onOpenChange={setIsPriceFilterOpen}
+          direction={direction}
+          locale={locale}
+          sliderMax={sliderMax}
+          minSliderValue={minSliderValue}
+          maxSliderValue={maxSliderValue}
+          priceMinDraft={priceMinDraft}
+          priceMaxDraft={priceMaxDraft}
+          onMinSliderChange={setMinSliderValue}
+          onMaxSliderChange={setMaxSliderValue}
+          onPriceMinDraftChange={setPriceMinDraft}
+          onPriceMaxDraftChange={setPriceMaxDraft}
+          onReset={() => {
+            setPriceMinDraft("");
+            setPriceMaxDraft("");
+            setMinSliderValue(0);
+            setMaxSliderValue(sliderMax);
+          }}
+          onSearch={handlePriceSearch}
+          labels={{
+            title: t("search.selectPriceRange"),
+            priceRangeLabel: t("search.priceRangeLabel"),
+            currency: tCommon("currency"),
+            minPriceLabel: t("search.minPriceLabel"),
+            maxPriceLabel: t("search.maxPriceLabel"),
+            reset: t("search.reset"),
+            search: tCommon("buttons.search"),
+          }}
+        />
+      )}
     </div>
   );
 }

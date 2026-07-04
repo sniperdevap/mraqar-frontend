@@ -8,6 +8,37 @@ export function formatFileSize(bytes: number): string {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
 
+/** Lightweight relative time (avoids date-fns on critical paths). */
+export function formatDistanceToNow(
+  date: string | Date,
+  locale: string = "en",
+): string {
+  const then = typeof date === "string" ? new Date(date) : date;
+  const seconds = Math.round((then.getTime() - Date.now()) / 1000);
+  const abs = Math.abs(seconds);
+  const rtf = new Intl.RelativeTimeFormat(locale === "ar" ? "ar" : "en", {
+    numeric: "auto",
+  });
+
+  const divisions: [Intl.RelativeTimeFormatUnit, number][] = [
+    ["year", 60 * 60 * 24 * 365],
+    ["month", 60 * 60 * 24 * 30],
+    ["week", 60 * 60 * 24 * 7],
+    ["day", 60 * 60 * 24],
+    ["hour", 60 * 60],
+    ["minute", 60],
+    ["second", 1],
+  ];
+
+  for (const [unit, secondsInUnit] of divisions) {
+    if (abs >= secondsInUnit || unit === "second") {
+      return rtf.format(Math.round(seconds / secondsInUnit), unit);
+    }
+  }
+
+  return rtf.format(0, "second");
+}
+
 /**
  * Normalizes a phone number to include the Kuwait country code (+965).
  * Handle cases:

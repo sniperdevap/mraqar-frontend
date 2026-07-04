@@ -165,7 +165,7 @@ export function Footer() {
               {t("copyrightNotice")}
             </Link>
             <span>|</span>
-            <Link href="/contact" className="hover:underline">
+            <Link href="/contact" prefetch={false} className="hover:underline">
               {t("contactUs")}
             </Link>
           </div>

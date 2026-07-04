@@ -4,7 +4,6 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "framer-motion";
 import {
   Home,
   MapPin,
@@ -120,8 +119,7 @@ export function Navbar() {
 
   const getCreateAdHref = () => (isAuthenticated ? "/ads/create" : "/auth/signin");
 
-  const handleCreateAdClick = (e: React.MouseEvent) => {
-    e.preventDefault();
+  const handleCreateAdClick = () => {
     router.push(getCreateAdHref());
   };
 
@@ -176,15 +174,13 @@ export function Navbar() {
             </Link>
             <LanguageSwitcher />
 
-            <Link href={getCreateAdHref()} prefetch className="ml-4">
-              <Button
-                variant="outline"
-                className="border-gray-200 text-gray-900 hover:bg-gray-50 hover:text-primary rounded-xl px-6 py-2 h-10 text-sm font-semibold"
-                onClick={handleCreateAdClick}
-              >
-                + {t("nav.addFreeAd")}
-              </Button>
-            </Link>
+            <Button
+              variant="outline"
+              className="ml-4 border-gray-200 text-gray-900 hover:bg-gray-50 hover:text-primary rounded-xl px-6 py-2 h-10 text-sm font-semibold"
+              onClick={handleCreateAdClick}
+            >
+              + {t("nav.addFreeAd")}
+            </Button>
           </div>
 
           <div className="flex items-center gap-4">
@@ -398,12 +394,11 @@ export function Navbar() {
                   key="central"
                   className="relative flex items-center justify-center w-16 h-full"
                 >
-                  <motion.button
+                  <button
+                    type="button"
                     onClick={handleCreateAdClick}
                     aria-label={t("nav.addFreeAd")}
-                    whileHover={{ scale: 1.08 }}
-                    whileTap={{ scale: 0.90 }}
-                    className="absolute -top-[34px] focus:outline-none z-50"
+                    className="absolute -top-[34px] focus:outline-none z-50 transition-transform duration-200 hover:scale-[1.08] active:scale-90"
                   >
                     <div className="flex items-center justify-center w-[50px] h-[50px] rounded-full bg-primary shadow-[0_8px_16px_rgba(154,9,14,0.3)] cursor-pointer transition-all duration-300 hover:shadow-[0_8px_20px_rgba(154,9,14,0.45)]">
                       <Plus
@@ -413,7 +408,7 @@ export function Navbar() {
                         aria-hidden="true"
                       />
                     </div>
-                  </motion.button>
+                  </button>
                 </div>
               );
             }
@@ -433,25 +428,16 @@ export function Navbar() {
                     : "text-[#555555] hover:text-[#555555]",
                 )}
               >
-                {isActive && (
-                  <motion.div
-                    layoutId="active-pill"
-                    className="absolute inset-0 "
-                    transition={{ type: "spring", stiffness: 350, damping: 25 }}
-                  />
-                )}
-                <motion.div
-                  animate={
-                    isActive ? { scale: 1.1, y: -2 } : { scale: 1, y: 0 }
-                  }
-                  whileTap={{ scale: 0.9 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 15 }}
-                  className="z-10"
+                <div
+                  className={cn(
+                    "z-10 transition-transform duration-200 active:scale-90",
+                    isActive && "scale-110 -translate-y-0.5",
+                  )}
                 >
                   {Icon ? (
                     <Icon size={22} strokeWidth={isActive ? 2.5 : 2} />
                   ) : null}
-                </motion.div>
+                </div>
                 <span
                   className={cn(
                     "text-[10px] z-10 font-bold transition-all duration-300",

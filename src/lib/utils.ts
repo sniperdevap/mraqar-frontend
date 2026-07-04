@@ -1,9 +1,13 @@
 import { clsx, type ClassValue } from 'clsx';
-import { toast } from 'sonner';
 import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
+}
+
+async function notify(type: 'success' | 'error', message: string) {
+  const { toast } = await import('sonner');
+  toast[type](message);
 }
 
 export async function copyToClipboard(text: string): Promise<boolean> {
@@ -11,7 +15,7 @@ export async function copyToClipboard(text: string): Promise<boolean> {
     // Modern clipboard API first (works on HTTPS/localhost)
     if (navigator.clipboard && window.isSecureContext) {
       await navigator.clipboard.writeText(text);
-      toast.success('Link copied to clipboard');
+      void notify('success', 'Link copied to clipboard');
       return true;
     }
 
@@ -29,11 +33,11 @@ export async function copyToClipboard(text: string): Promise<boolean> {
     try {
       return document.execCommand('copy');
     } finally {
-      toast.success('Link copied to clipboard');
+      void notify('success', 'Link copied to clipboard');
       document.body.removeChild(textArea);
     }
   } catch {
-    toast.error('Failed to copy link');
+    void notify('error', 'Failed to copy link');
     return false;
   }
 }

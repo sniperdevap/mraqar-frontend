@@ -5,17 +5,20 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import "../globals.css";
 import { Providers } from "@/components/providers";
-import { Toaster } from "sonner";
+import { DeferredFont } from "@/components/common/deferred-font";
+import { DeferredToaster } from "@/components/common/deferred-toaster";
 import { ReactQueryProvider } from "@/components/react-query-provider";
 import { ConditionalLayout } from "@/components/common/conditional-layout";
 import { BRAND_ICON_URL, SITE_URL } from "@/lib/seo";
 import { routing } from "@/i18n/routing";
 
+// Self-hosted variable WOFF2. No preload; font-family applied after idle
+// (DeferredFont) so WOFF2 stays off the critical request chain.
 const notoKufiArabic = Noto_Kufi_Arabic({
   subsets: ["arabic", "latin"],
   variable: "--font-noto-kufi",
-  weight: ["400", "700"],
-  display: "optional",
+  weight: "variable",
+  display: "swap",
   adjustFontFallback: true,
   preload: false,
 });
@@ -93,9 +96,7 @@ export default async function RootLayout({
       dir={direction}
       className={`${notoKufiArabic.variable} overflow-x-hidden`}
     >
-      <body
-        className={`${notoKufiArabic.className} antialiased min-h-screen flex flex-col overflow-x-hidden`}
-      >
+      <body className="antialiased min-h-screen flex flex-col overflow-x-hidden">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -119,7 +120,8 @@ export default async function RootLayout({
           <ReactQueryProvider>
             <Providers>
               <ConditionalLayout>{children}</ConditionalLayout>
-              <Toaster richColors position="top-right" closeButton expand />
+              <DeferredFont />
+              <DeferredToaster />
             </Providers>
           </ReactQueryProvider>
         </NextIntlClientProvider>

@@ -51,7 +51,7 @@ export function MenuAuthItems() {
   return (
     <Link
       href="/auth/signin"
-      prefetch={true}
+      prefetch={false}
       className="bg-white rounded-2xl border border-gray-100 p-4 flex flex-col items-center justify-center gap-3 hover:shadow-md transition-all active:scale-[0.98]"
     >
       <div className="text-primary bg-primary/5 p-3 rounded-full">
