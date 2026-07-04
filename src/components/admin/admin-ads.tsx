@@ -357,7 +357,7 @@ export function AdminAds() {
                                     ? ad.media[0].thumbnail?.startsWith("http")
                                       ? ad.media[0].thumbnail
                                       : `${process.env.NEXT_PUBLIC_IMAGE_HOST}/${ad.media[0].thumbnail || ad.media[0].url}`
-                                    : "/images/aqar-new-logo.png"
+                                    : "/images/DefaultAdImage.jpeg"
                                 }
                                 alt=""
                                 className="w-full h-full object-cover"
@@ -367,7 +367,7 @@ export function AdminAds() {
                                     Event
                                   >,
                                 ) => {
-                                  e.currentTarget.src = "/images/aqar-new-logo.png";
+                                  e.currentTarget.src = "/images/DefaultAdImage.jpeg";
                                 }}
                               />
                               {ad.isPremium && (

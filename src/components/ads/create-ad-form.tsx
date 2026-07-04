@@ -175,7 +175,7 @@ export function CreateAdForm({ initialData, mode = 'create', onSuccess, requireC
       }),
     premiumAd: z.boolean().default(false),
     description: z.string().min(1, t('ads.descriptionRequired')),
-    media: z.array(z.string()).min(1, t('ads.atLeastOneImage')),
+    media: z.array(z.string()),
   });
 
   type CreateAdValues = z.infer<typeof createAdSchema>;
@@ -504,13 +504,6 @@ export function CreateAdForm({ initialData, mode = 'create', onSuccess, requireC
   };
 
   const onSubmit = async (values: CreateAdValues) => {
-    const hasMedia = mediaItems.length > 0;
-    if (!hasMedia) {
-      form.setError('media', { type: 'manual', message: t('ads.atLeastOneImage') });
-      toast.error(t('ads.atLeastOneImage'));
-      return;
-    }
-
     setIsUploading(true);
     setUploadProgress({});
 
@@ -671,7 +664,6 @@ export function CreateAdForm({ initialData, mode = 'create', onSuccess, requireC
                       </SortableContext>
                     </DndContext>
                   )}
-                  <FormMessage>{form.formState.errors.media?.message}</FormMessage>
                 </div>
 
                 {/* Contact Info */}
@@ -873,8 +865,6 @@ export function CreateAdForm({ initialData, mode = 'create', onSuccess, requireC
                   )}
                 />
               </fieldset>
-
-              {form.formState.errors.media?.message && <p className="text-sm font-semibold text-red-500 text-center">{form.formState.errors.media.message}</p>}
 
               <div className="pt-4 md:pt-6 flex justify-center items-center">
                 <Button
