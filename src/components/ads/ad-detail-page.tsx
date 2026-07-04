@@ -278,7 +278,7 @@ export function AdDetailPage({ adId }: AdDetailPageProps) {
   };
 
   const getMediaUrl = (m: Media) => {
-    if (!m) return "/images/placeholder-avatar.jpg";
+    if (!m) return "/images/DefaultAdImage.jpeg";
     if (m.url?.startsWith("http")) return m.url;
     return `${process.env.NEXT_PUBLIC_IMAGE_HOST || ""}/${m.url}`;
   };
@@ -396,7 +396,7 @@ ${window.location.href}`);
     ? currentMedia.type === "video"
       ? getThumbnailUrl(currentMedia)
       : getMediaUrl(currentMedia)
-    : "/images/aqar-new-logo.png";
+    : "/images/DefaultAdImage.jpeg";
 
   return (
     <div className="min-h-screen pb-28 bg-white" dir={direction}>
@@ -490,7 +490,17 @@ ${window.location.href}`);
           </div>
         </section>
       ) : (
-        <div className="h-16 w-full" />
+        <section className="relative max-w-4xl mx-auto h-[35vh] md:h-[45vh] overflow-hidden bg-gray-50 border-b border-gray-100">
+          <img
+            src="/images/DefaultAdImage.jpeg"
+            alt={
+              locale === "ar"
+                ? ad.propertyType?.labelAr || ad.propertyType?.label || "عقار"
+                : ad.propertyType?.label || "Property"
+            }
+            className="w-full h-full object-contain"
+          />
+        </section>
       )}
 
       {/* Detail Content Section */}
