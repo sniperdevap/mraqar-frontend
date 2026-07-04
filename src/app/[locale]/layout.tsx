@@ -11,13 +11,14 @@ import { ConditionalLayout } from "@/components/common/conditional-layout";
 import { BRAND_ICON_URL, SITE_URL } from "@/lib/seo";
 import { routing } from "@/i18n/routing";
 
-// Size-adjusted fallback (adjustFontFallback) keeps metrics stable across swap,
-// so applying the font on first paint avoids the DeferredFont class-toggle CLS.
+// display:"optional" gives the web font one short block window, then locks in
+// whatever is showing for the rest of the load — no swap, so zero font-driven
+// CLS. adjustFontFallback size-matches the fallback so first paint metrics match.
 const notoKufiArabic = Noto_Kufi_Arabic({
   subsets: ["arabic", "latin"],
   variable: "--font-noto-kufi",
   weight: "variable",
-  display: "swap",
+  display: "optional",
   adjustFontFallback: true,
   preload: false,
 });
