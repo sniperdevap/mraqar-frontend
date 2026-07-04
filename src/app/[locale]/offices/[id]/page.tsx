@@ -5,6 +5,7 @@ import {
   createServerQueryClient,
   prefetchOfficeDetail,
   prefetchPublicMetadata,
+  prefetchWithinBudget,
 } from '@/lib/query-prefetch';
 import type { GetAdsParams } from '@/types/ad';
 
@@ -28,10 +29,13 @@ export default async function OfficeDetail({ params, searchParams }: OfficeDetai
     maxPrice: typeof rawSearchParams.maxPrice === 'string' ? Number(rawSearchParams.maxPrice) : undefined,
   };
 
-  await Promise.all([
-    prefetchPublicMetadata(queryClient, locale),
-    prefetchOfficeDetail(queryClient, id, filters, locale),
-  ]);
+  await prefetchWithinBudget(
+    [
+      prefetchPublicMetadata(queryClient, locale),
+      prefetchOfficeDetail(queryClient, id, filters, locale),
+    ],
+    400,
+  );
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

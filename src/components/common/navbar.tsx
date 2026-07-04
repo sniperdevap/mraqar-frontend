@@ -138,11 +138,13 @@ export function Navbar() {
           <div className="flex-shrink-0">
             <Link href="/">
               <Image
-                src="/images/aqar-new-logo.png"
+                src="/images/aqar-new-logo-nav.webp"
                 alt="Mr aqar Logo"
-                width={100}
-                height={40}
-                className="h-16 w-auto"
+                width={96}
+                height={64}
+                priority
+                unoptimized
+                className="h-16 w-auto object-contain"
               />
             </Link>
           </div>
@@ -238,10 +240,11 @@ export function Navbar() {
               <div className="flex-shrink-0">
                 <Link href="/">
                   <Image
-                    src="/images/aqar-new-logo.png"
+                    src="/images/aqar-new-logo-nav.webp"
                     alt="Mr aqar Logo"
-                    width={100}
-                    height={40}
+                    width={96}
+                    height={64}
+                    unoptimized
                     className="h-16 w-auto object-contain"
                   />
                 </Link>
@@ -261,9 +264,10 @@ export function Navbar() {
                 {/* Bell Icon */}
                 <button
                   onClick={() => router.push("/notifications")}
+                  aria-label={t("notifications.title")}
                   className="p-2 text-gray-900 hover:text-primary transition-colors relative cursor-pointer flex items-center justify-center"
                 >
-                  <Bell size={24} strokeWidth={1.8} />
+                  <Bell size={24} strokeWidth={1.8} aria-hidden="true" />
                   {unreadCount > 0 && (
                     <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1">
                       {unreadCount > 99 ? "99+" : unreadCount}
@@ -277,19 +281,21 @@ export function Navbar() {
               {/* Left: Red Back Arrow */}
               <button
                 onClick={() => router.push("/")}
+                aria-label={t("buttons.back")}
                 className="p-2 text-[#9a090e] hover:text-[#7f070b] transition-colors cursor-pointer flex items-center justify-center"
               >
-                <ChevronLeft size={32} strokeWidth={2.5} />
+                <ChevronLeft size={32} strokeWidth={2.5} aria-hidden="true" />
               </button>
 
               {/* Middle: Logo */}
               <div className="flex-shrink-0">
                 <Link href="/">
                   <Image
-                    src="/images/aqar-new-logo.png"
+                    src="/images/aqar-new-logo-nav.webp"
                     alt="Mr aqar Logo"
-                    width={100}
-                    height={40}
+                    width={96}
+                    height={64}
+                    unoptimized
                     className="h-16 w-auto object-contain"
                   />
                 </Link>
@@ -300,11 +306,13 @@ export function Navbar() {
                 <button
                   onClick={handleMobileFavoriteToggle}
                   disabled={adFavoriteState?.isFavoriteLoading}
+                  aria-label={adFavoriteState?.isFavorite ? t("ads.ariaRemoveFromFavorites") : t("ads.ariaAddToFavorites")}
                   className="p-2 text-gray-900 hover:text-red-500 transition-colors cursor-pointer"
                 >
                   <Heart
                     size={26}
                     strokeWidth={1.8}
+                    aria-hidden="true"
                     className={adFavoriteState?.isFavorite ? "fill-[#9a090e] text-[#9a090e]" : "text-gray-900"}
                   />
                 </button>
@@ -316,19 +324,21 @@ export function Navbar() {
                 {isSearchPage ? (
                   <button
                     onClick={() => router.push("/")}
+                    aria-label={t("buttons.back")}
                     className="p-2 text-gray-700 hover:text-primary transition-colors cursor-pointer"
                   >
-                    <ChevronLeft size={28} />
+                    <ChevronLeft size={28} aria-hidden="true" />
                   </button>
                 ) : null}
                 <div className="flex-shrink-0 flex items-center justify-center w-full">
                   <Link href="/">
                     <Image
-                      src="/images/aqar-new-logo.png"
+                      src="/images/aqar-new-logo-nav.webp"
                       alt="Mr aqar Logo"
-                      width={100}
-                      height={40}
-                      className="h-16 w-auto"
+                      width={96}
+                      height={64}
+                      unoptimized
+                      className="h-16 w-auto object-contain"
                     />
                   </Link>
                 </div>
@@ -338,9 +348,10 @@ export function Navbar() {
                   <button
                     onClick={handleLogout}
                     className="hidden md:flex lg:hidden p-2 text-gray-600 hover:text-gray-900 transition-colors cursor-pointer"
+                    aria-label={t("nav.logout")}
                     title={t("nav.logout")}
                   >
-                    <LogOut size={24} strokeWidth={1.5} />
+                    <LogOut size={24} strokeWidth={1.5} aria-hidden="true" />
                   </button>
                 )}
               </div>
@@ -354,10 +365,12 @@ export function Navbar() {
         <nav className=" flex items-center px-4 py-3 bg-white border-b border-gray-100 sticky top-0 z-50 h-16">
           <button
             onClick={() => router.back()}
+            aria-label={t("buttons.back")}
             className="p-2 -ml-2 text-gray-700 hover:text-primary transition-colors cursor-pointer"
           >
             <ChevronLeft
               size={28}
+              aria-hidden="true"
               className={direction === "rtl" ? "rotate-180" : ""}
             />
           </button>
@@ -387,6 +400,7 @@ export function Navbar() {
                 >
                   <motion.button
                     onClick={handleCreateAdClick}
+                    aria-label={t("nav.addFreeAd")}
                     whileHover={{ scale: 1.08 }}
                     whileTap={{ scale: 0.90 }}
                     className="absolute -top-[34px] focus:outline-none z-50"
@@ -396,6 +410,7 @@ export function Navbar() {
                         size={26}
                         strokeWidth={3.5}
                         className="text-white"
+                        aria-hidden="true"
                       />
                     </div>
                   </motion.button>

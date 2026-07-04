@@ -24,6 +24,28 @@ export const createServerQueryClient = () =>
     },
   });
 
+/**
+ * Run SSR prefetches without blocking the HTML document for long.
+ * If the budget elapses, dehydrate whatever is already in the cache and
+ * let the client finish loading — keeps TTFB low when the API is slow.
+ */
+export async function prefetchWithinBudget(
+  tasks: Promise<unknown>[],
+  budgetMs = 400,
+): Promise<void> {
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
+  try {
+    await Promise.race([
+      Promise.allSettled(tasks),
+      new Promise<void>((resolve) => {
+        timeoutId = setTimeout(resolve, budgetMs);
+      }),
+    ]);
+  } finally {
+    if (timeoutId) clearTimeout(timeoutId);
+  }
+}
+
 export const prefetchPublicMetadata = (queryClient: QueryClient, locale?: string) =>
   Promise.all([
     queryClient.prefetchQuery({

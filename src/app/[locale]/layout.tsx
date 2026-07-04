@@ -1,20 +1,28 @@
 import type { Metadata, Viewport } from "next";
 import { Noto_Kufi_Arabic } from "next/font/google";
+import { notFound } from "next/navigation";
+import { NextIntlClientProvider } from "next-intl";
+import { getMessages, setRequestLocale } from "next-intl/server";
 import "../globals.css";
 import { Providers } from "@/components/providers";
 import { Toaster } from "sonner";
-import { NextIntlClientProvider } from "next-intl";
-import { getMessages, getLocale } from "next-intl/server";
 import { ReactQueryProvider } from "@/components/react-query-provider";
 import { ConditionalLayout } from "@/components/common/conditional-layout";
 import { BRAND_ICON_URL, SITE_URL } from "@/lib/seo";
+import { routing } from "@/i18n/routing";
 
 const notoKufiArabic = Noto_Kufi_Arabic({
   subsets: ["arabic", "latin"],
   variable: "--font-noto-kufi",
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
-  display: "swap",
+  weight: ["400", "700"],
+  display: "optional",
+  adjustFontFallback: true,
+  preload: false,
 });
+
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -58,16 +66,24 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
 };
 
 export default async function RootLayout({
   children,
+  params,
 }: Readonly<{
   children: React.ReactNode;
+  params: Promise<{ locale: string }>;
 }>) {
-  const locale = await getLocale();
+  const { locale } = await params;
+
+  if (!routing.locales.includes(locale as "en" | "ar")) {
+    notFound();
+  }
+
+  // Enables static rendering for this locale (avoids Cache-Control: no-store).
+  setRequestLocale(locale);
+
   const messages = await getMessages();
   const direction = locale === "ar" ? "rtl" : "ltr";
 

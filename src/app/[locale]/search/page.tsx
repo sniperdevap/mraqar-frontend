@@ -5,6 +5,7 @@ import {
   createServerQueryClient,
   prefetchPublicMetadata,
   prefetchSearchAds,
+  prefetchWithinBudget,
 } from '@/lib/query-prefetch';
 import type { GetAdsParams } from '@/types/ad';
 
@@ -25,10 +26,13 @@ export default async function Search({ searchParams }: SearchProps) {
     maxPrice: typeof rawSearchParams.maxPrice === 'string' ? Number(rawSearchParams.maxPrice) : undefined,
   };
 
-  await Promise.all([
-    prefetchPublicMetadata(queryClient, locale),
-    prefetchSearchAds(queryClient, filters, 10, locale),
-  ]);
+  await prefetchWithinBudget(
+    [
+      prefetchPublicMetadata(queryClient, locale),
+      prefetchSearchAds(queryClient, filters, 10, locale),
+    ],
+    400,
+  );
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

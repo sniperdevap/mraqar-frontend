@@ -4,8 +4,8 @@ import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { getLocale } from "next-intl/server";
 import {
   createServerQueryClient,
-  prefetchAdDetail,
   prefetchInfiniteSearchAds,
+  prefetchWithinBudget,
 } from "@/lib/query-prefetch";
 import { getServerAdById } from "@/lib/api/server";
 import { permanentRedirect } from "next/navigation";
@@ -87,16 +87,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function AdDetail({ params }: Props) {
   const { id, locale: routeLocale } = await params;
   const locale = await getLocale();
-  const canonicalAd = await getServerAdById(id, locale);
-  if (String(canonicalAd.id) !== id) {
-    permanentRedirect(`/${routeLocale}/ads/${canonicalAd.id}`);
-  }
   const queryClient = createServerQueryClient();
 
-  await Promise.all([
-    prefetchAdDetail(queryClient, id, locale),
-    prefetchInfiniteSearchAds(queryClient, {}, 10, locale),
-  ]);
+  try {
+    const canonicalAd = await getServerAdById(id, locale);
+    if (String(canonicalAd.id) !== id) {
+      permanentRedirect(`/${routeLocale}/ads/${canonicalAd.id}`);
+    }
+    queryClient.setQueryData(["ad", id], canonicalAd);
+  } catch {
+    // API slow/unavailable — client will load the ad; do not block HTML.
+  }
+
+  await prefetchWithinBudget(
+    [prefetchInfiniteSearchAds(queryClient, {}, 10, locale)],
+    400,
+  );
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

@@ -28,15 +28,10 @@ import { useSearchAds } from "@/hooks/use-ads";
 import { useAdStore } from "@/lib/store/ad-store";
 import { useInView } from "react-intersection-observer";
 import { Search, X, RotateCcw, DollarSign } from "lucide-react";
+import { HomeAdCard } from "./home-ad-card";
 
 const MultiSelect = dynamic(() =>
   import("@/components/ui/multi-select").then((mod) => mod.MultiSelect),
-);
-const AdCard = dynamic(() =>
-  import("@/components/ads/ad-card").then((mod) => mod.AdCard),
-);
-const HomeAdCard = dynamic(() =>
-  import("./home-ad-card").then((mod) => mod.HomeAdCard),
 );
 
 export function HomePage() {
@@ -256,10 +251,11 @@ export function HomePage() {
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Image
-                src="/images/aqar-new-logo.png"
-                alt="Logo"
-                width={32}
-                height={32}
+                src="/images/aqar-new-logo-sm.webp"
+                alt="Mr aqar Logo"
+                width={84}
+                height={56}
+                unoptimized
                 className="h-14 w-auto object-contain"
               />
               {/* <div className="flex flex-col">
@@ -288,13 +284,16 @@ export function HomePage() {
         className="w-full pt-4 md:pt-4 px-4 sm:px-6 lg:px-8 max-w-xl mx-auto mb-4 relative z-10"
         dir={direction}
       >
-        {/* Logo */}
-        <div className="flex justify-center mb-4">
-          <Image
-            src="/images/aqar-new-logo.png"
-            alt="Logo"
-            width={180}
-            height={180}
+        {/* LCP image: native img + preload in page.tsx for earliest discovery */}
+        <div className="flex justify-center mb-4 h-28 md:h-32">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/images/aqar-new-logo-hero.webp"
+            alt="Mr aqar Logo"
+            width={168}
+            height={112}
+            fetchPriority="high"
+            decoding="async"
             className="h-28 md:h-32 w-auto object-contain"
           />
         </div>
@@ -337,7 +336,10 @@ export function HomePage() {
               disabled={isLoading}
               dir={direction}
             >
-              <SelectTrigger className="w-full !h-10 md:!h-11 bg-white border border-gray-300 rounded-md text-gray-700 data-[placeholder]:!text-gray-400 transition-all focus:border-[#9a090e] text-sm font-medium px-3">
+              <SelectTrigger
+                aria-label={t("search.propertyTypePlaceholder")}
+                className="w-full !h-10 md:!h-11 bg-white border border-gray-300 rounded-md text-gray-700 data-[placeholder]:!text-gray-400 transition-all focus:border-[#9a090e] text-sm font-medium px-3"
+              >
                 <SelectValue
                   placeholder={t("search.propertyTypePlaceholder")}
                 />
@@ -407,8 +409,25 @@ export function HomePage() {
       <section className="mt-0 w-full pb-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl mx-auto">
           {adsLoading ? (
-            <div className="flex w-full items-center justify-center mt-10">
-              <Loader />
+            <div className="flex flex-col gap-2.5 mt-6" aria-busy="true" aria-label="Loading">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="w-full bg-[#f7eff1] border border-[#f3d9de] rounded-2xl overflow-hidden p-2.5 animate-pulse"
+                >
+                  <div className="flex flex-row w-full items-start gap-2.5">
+                    <div className="w-[64px] h-[64px] shrink-0 rounded-lg bg-[#efdee2]" />
+                    <div className="flex-1 flex flex-col min-w-0 min-h-[64px] justify-center gap-2">
+                      <div className="h-5 w-3/4 rounded bg-[#efdee2]" />
+                      <div className="h-5 w-1/2 rounded bg-[#efdee2]" />
+                    </div>
+                  </div>
+                  <div className="mt-1 space-y-1.5">
+                    <div className="h-5 w-full rounded bg-[#efdee2]" />
+                    <div className="h-5 w-5/6 rounded bg-[#efdee2]" />
+                  </div>
+                </div>
+              ))}
             </div>
           ) : ads.length > 0 ? (
             <>

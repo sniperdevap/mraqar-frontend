@@ -1,24 +1,32 @@
-import { HomePage } from '@/components/home/home-page';
-import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
-import { getLocale } from 'next-intl/server';
-import {
-  createServerQueryClient,
-  prefetchPublicMetadata,
-  prefetchSearchAds,
-} from '@/lib/query-prefetch';
+import type { Metadata } from "next";
+import { setRequestLocale } from "next-intl/server";
+import { HomePage } from "@/components/home/home-page";
 
-export default async function Home() {
-  const locale = await getLocale();
-  const queryClient = createServerQueryClient();
+const HERO_LOGO = "/images/aqar-new-logo-hero.webp";
 
-  await Promise.all([
-    prefetchPublicMetadata(queryClient, locale),
-    prefetchSearchAds(queryClient, {}, 10, locale),
-  ]);
+export const metadata: Metadata = {
+  title: "مستر عقار عقارات الكويت",
+  description:
+    "منصة مستر عقار لعقارات الكويت - للبيع وشراء وتأجير العقارات بسهولة وأمان",
+};
+
+type Props = {
+  params: Promise<{ locale: string }>;
+};
+
+export default async function Home({ params }: Props) {
+  const { locale } = await params;
+  setRequestLocale(locale);
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+    <>
+      <link
+        rel="preload"
+        as="image"
+        href={HERO_LOGO}
+        fetchPriority="high"
+      />
       <HomePage />
-    </HydrationBoundary>
+    </>
   );
 }

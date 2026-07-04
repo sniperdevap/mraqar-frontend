@@ -1,6 +1,8 @@
 export const ASSETS = {
   images: {
-    mainLogo: "/images/aqar-new-logo.png",
+    mainLogo: "/images/aqar-new-logo-nav.webp",
+    heroLogo: "/images/aqar-new-logo-hero.webp",
+    smallLogo: "/images/aqar-new-logo-sm.webp",
     logoIcon: "/images/icons/logo-icon.svg",
     default: "/images/avatars.png",
     notifications: {

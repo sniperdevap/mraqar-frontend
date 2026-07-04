@@ -1,7 +1,11 @@
 import { OfficesPage } from '@/components/offices/offices-page';
 import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
 import { getLocale } from 'next-intl/server';
-import { createServerQueryClient, prefetchOffices } from '@/lib/query-prefetch';
+import {
+  createServerQueryClient,
+  prefetchOffices,
+  prefetchWithinBudget,
+} from '@/lib/query-prefetch';
 
 type OfficesProps = {
   searchParams: Promise<{ search?: string }>;
@@ -16,7 +20,7 @@ export default async function Offices({ searchParams }: OfficesProps) {
     search: search || undefined,
   };
 
-  await prefetchOffices(queryClient, params, locale);
+  await prefetchWithinBudget([prefetchOffices(queryClient, params, locale)], 400);
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

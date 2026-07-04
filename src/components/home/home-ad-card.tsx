@@ -158,26 +158,26 @@ export function HomeAdCard({
             )}
           </div>
 
-          {/* Title + Price/Time (constrained beside the image) */}
-          <div className="flex-1 flex flex-col min-w-0">
-            <h3 className="text-sm font-extrabold text-gray-900 line-clamp-1 leading-snug">
+          {/* Title + Price/Time — fixed min-height reduces CLS from font swap */}
+          <div className="flex-1 flex flex-col min-w-0 min-h-[64px] justify-center">
+            <h3 className="text-sm font-extrabold text-gray-900 line-clamp-1 leading-5 h-5">
               {locale === "ar"
                 ? `${t(ad.purpose)} ${ad.propertyType?.labelAr || ad.propertyType?.label} في ${ad.area?.labelAr || ad.area?.label}`
                 : `${t(ad.purpose)} ${ad.propertyType?.label} in ${ad.area?.label}`}
             </h3>
 
-            <div className="flex items-center gap-3 my-3">
+            <div className="flex items-center gap-3 mt-2 h-5">
               <div className="flex items-center gap-1.5">
-                <span className="flex items-center justify-center w-5 h-5 rounded-full bg-[#169899]/10 text-[#169899] shrink-0">
-                  <DollarSign size={12} strokeWidth={2.5} />
+                <span className="flex items-center justify-center w-5 h-5 rounded-full bg-[#0d6b6c]/10 text-[#0d6b6c] shrink-0">
+                  <DollarSign size={12} strokeWidth={2.5} aria-hidden="true" />
                 </span>
-                <span className="font-bold text-[#169899] text-[13px]">
+                <span className="font-bold text-[#0d6b6c] text-[13px] leading-5">
                   {formatPrice(ad.price)}
                 </span>
               </div>
-              <div className="flex items-center gap-1 text-gray-500">
-                <Clock size={14} className="text-gray-500" />
-                <span className="text-[13px] font-medium">
+              <div className="flex items-center gap-1 text-gray-700">
+                <Clock size={14} className="text-gray-700" aria-hidden="true" />
+                <span className="text-[13px] font-medium leading-5">
                   {getTimeAgo(ad.createdAt)}
                 </span>
               </div>
@@ -186,7 +186,7 @@ export function HomeAdCard({
         </div>
 
         {/* Description - spans full card width below the image */}
-        <p className="text-sm text-gray-500 line-clamp-2 leading-relaxed font-normal">
+        <p className="text-sm text-gray-700 line-clamp-2 leading-5 min-h-10 mt-1 font-normal">
           {ad.description}
         </p>
       </div>

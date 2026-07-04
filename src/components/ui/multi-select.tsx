@@ -182,9 +182,12 @@ export function MultiSelect({ options, value, onChange, placeholder = 'Select it
             }
           }}
           disabled={disabled}
+          aria-label={placeholder}
+          aria-expanded={open}
           className="outline-none focus:outline-none flex-shrink-0"
         >
           <ChevronDownIcon
+            aria-hidden="true"
             className={cn(
               'size-4 text-gray-600 cursor-pointer transition-transform',
               open && 'rotate-180'

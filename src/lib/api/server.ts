@@ -17,6 +17,7 @@ type ApiResponse<T> = {
 type ServerFetchOptions = {
   locale?: string;
   revalidate?: number;
+  timeoutMs?: number;
 };
 
 const buildQueryString = (params?: object) => {
@@ -57,20 +58,29 @@ export async function serverApiGet<T>(
   options?: ServerFetchOptions,
 ): Promise<T> {
   const url = `${getApiBaseUrl()}${endpoint}${buildQueryString(params)}`;
-  const response = await fetch(url, {
-    headers: {
-      "Content-Type": "application/json",
-      ...(options?.locale ? { "Accept-Language": options.locale } : {}),
-    },
-    next: { revalidate: options?.revalidate ?? 60 },
-  });
+  const timeoutMs = options?.timeoutMs ?? 2000;
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
-  if (!response.ok) {
-    throw new Error(`Server API request failed with status ${response.status}`);
+  try {
+    const response = await fetch(url, {
+      headers: {
+        "Content-Type": "application/json",
+        ...(options?.locale ? { "Accept-Language": options.locale } : {}),
+      },
+      next: { revalidate: options?.revalidate ?? 60 },
+      signal: controller.signal,
+    });
+
+    if (!response.ok) {
+      throw new Error(`Server API request failed with status ${response.status}`);
+    }
+
+    const payload = (await response.json()) as ApiResponse<T>;
+    return payload.data;
+  } finally {
+    clearTimeout(timeoutId);
   }
-
-  const payload = (await response.json()) as ApiResponse<T>;
-  return payload.data;
 }
 
 export const getServerPropertyTypes = (locale?: string) =>
