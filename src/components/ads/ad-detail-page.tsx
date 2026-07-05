@@ -539,7 +539,7 @@ ${window.location.href}`);
             </div>
             {/* Views count on the left */}
             <div className="bg-[#8b0000] text-white px-3 py-1 rounded-md text-[13px] font-bold flex items-center gap-1.5 shadow-sm">
-              <span>{ad.views || 193}</span>
+              <span>{ad.views || 0}</span>
               <svg
                 stroke="currentColor"
                 fill="none"
