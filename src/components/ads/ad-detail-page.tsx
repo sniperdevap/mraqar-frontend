@@ -74,11 +74,11 @@ export function AdDetailPage({ adId }: AdDetailPageProps) {
   const [isFavorite, setIsFavorite] = useState(ad?.isFav || false);
   const [isFavoriteLoading, setIsFavoriteLoading] = useState(false);
   const [showArrows, setShowArrows] = useState(false);
-  const [isViewCounted, setIsViewCounted] = useState(false);
   const [hasSetSimilarAdsForPage, setHasSetSimilarAdsForPage] = useState<
     number[]
   >([]);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const countedViewAdIdRef = useRef<string | null>(null);
   const similarAdsPerPage = 10;
 
   // Update store when full ad detail is fetched
@@ -94,12 +94,9 @@ export function AdDetailPage({ adId }: AdDetailPageProps) {
   }, []);
 
   useEffect(() => {
-    if (!adId) return;
-    setIsViewCounted(false);
-    countView(undefined, {
-      onSuccess: () => setIsViewCounted(true),
-      onError: () => setIsViewCounted(true),
-    });
+    if (!adId || countedViewAdIdRef.current === adId) return;
+    countedViewAdIdRef.current = adId;
+    countView();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [adId]);
 
@@ -543,11 +540,7 @@ ${window.location.href}`);
             </div>
             {/* Views count on the left */}
             <div className="bg-[#8b0000] text-white px-3 py-1 rounded-md text-[13px] font-bold flex items-center gap-1.5 shadow-sm">
-              {isViewCounted ? (
-                <span>{ad.views || 0}</span>
-              ) : (
-                <span className="h-3 w-3 rounded-full border-2 border-white/40 border-t-white animate-spin" />
-              )}
+              <span>{ad.views || 0}</span>
               <svg
                 stroke="currentColor"
                 fill="none"
