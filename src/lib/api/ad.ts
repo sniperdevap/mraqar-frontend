@@ -41,16 +41,6 @@ export const getAdById = async (id: string): Promise<DetailAd> => {
   return response.data;
 };
 
-export interface CountAdViewResult {
-  counted: boolean;
-  views: number;
-}
-
-export const countAdView = async (id: string): Promise<CountAdViewResult> => {
-  const response = await axiosWrapper<CountAdViewResult>('post', API_ENDPOINTS.AD.VIEW(id));
-  return response.data;
-};
-
 export const getMyAds = async (): Promise<Ad[]> => {
   const response = await axiosWrapper<Ad[]>('get', API_ENDPOINTS.AD.MY_ADS);
   return response.data;

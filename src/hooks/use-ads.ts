@@ -1,5 +1,5 @@
-import { useQuery, useInfiniteQuery, useMutation } from '@tanstack/react-query';
-import { getAds, getAdById, countAdView } from '@/lib/api/ad';
+import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
+import { getAds, getAdById } from '@/lib/api/ad';
 import { GetAdsParams, GetAdsResult, DetailAd } from '@/types/ad';
 
 export const useAds = (params: GetAdsParams) => {
@@ -58,14 +58,5 @@ export const useAdById = (id: string, initialData?: DetailAd) => {
     queryFn: () => getAdById(id),
     enabled: !!id,
     initialData: initialData,
-  });
-};
-
-// Registers the view server-side but deliberately does not feed the returned
-// count back into the ['ad', id] cache — otherwise the number the visitor is
-// currently looking at would jump right after page load.
-export const useCountAdView = (id: string) => {
-  return useMutation({
-    mutationFn: () => countAdView(id),
   });
 };

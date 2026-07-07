@@ -7,8 +7,9 @@ import {
   prefetchInfiniteSearchAds,
   prefetchWithinBudget,
 } from "@/lib/query-prefetch";
-import { getServerAdById } from "@/lib/api/server";
+import { getServerAdById, countServerAdView } from "@/lib/api/server";
 import { permanentRedirect } from "next/navigation";
+import { headers } from "next/headers";
 import { SITE_URL } from "@/lib/seo";
 
 type Props = {
@@ -89,8 +90,27 @@ export default async function AdDetail({ params }: Props) {
   const locale = await getLocale();
   const queryClient = createServerQueryClient();
 
+  // Count the view BEFORE fetching ad details, so the number rendered below
+  // already reflects the increment — no client-side jump from N to N+1.
+  // Skip Next.js Link hover/viewport prefetch requests — only count real page loads.
+  const requestHeaders = await headers();
+  const isPrefetch = requestHeaders.has("next-router-prefetch");
+  if (!isPrefetch) {
+    try {
+      const forwardedFor =
+        requestHeaders.get("x-forwarded-for") ||
+        requestHeaders.get("x-real-ip") ||
+        undefined;
+      await countServerAdView(id, locale, forwardedFor);
+    } catch {
+      // Best-effort — a missed view count shouldn't block the page.
+    }
+  }
+
   try {
-    const canonicalAd = await getServerAdById(id, locale);
+    // revalidate: 0 — bypass Next's Data Cache so this reflects the count
+    // increment just sent above, not a stale cached response.
+    const canonicalAd = await getServerAdById(id, locale, 0);
     if (String(canonicalAd.id) !== id) {
       permanentRedirect(`/${routeLocale}/ads/${canonicalAd.id}`);
     }
