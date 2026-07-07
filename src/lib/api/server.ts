@@ -83,6 +83,53 @@ export async function serverApiGet<T>(
   }
 }
 
+async function serverApiPost<T>(
+  endpoint: string,
+  options?: ServerFetchOptions & { forwardedFor?: string },
+): Promise<T> {
+  const url = `${getApiBaseUrl()}${endpoint}`;
+  const timeoutMs = options?.timeoutMs ?? 2000;
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(options?.locale ? { "Accept-Language": options.locale } : {}),
+        // Forward the real visitor IP — this fetch runs on the Next.js
+        // server, so without it the backend's per-viewer dedup would see
+        // every visitor as this server's own IP.
+        ...(options?.forwardedFor
+          ? { "X-Forwarded-For": options.forwardedFor }
+          : {}),
+      },
+      cache: "no-store",
+      signal: controller.signal,
+    });
+
+    if (!response.ok) {
+      throw new Error(`Server API request failed with status ${response.status}`);
+    }
+
+    const payload = (await response.json()) as ApiResponse<T>;
+    return payload.data;
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
+export const countServerAdView = (
+  id: string,
+  locale?: string,
+  forwardedFor?: string,
+) =>
+  serverApiPost<{ counted: boolean; views: number }>(API_ENDPOINTS.AD.VIEW(id), {
+    locale,
+    forwardedFor,
+  });
+
 export const getServerPropertyTypes = (locale?: string) =>
   serverApiGet<PropertyType[]>(API_ENDPOINTS.METADATA.PROPERTY_TYPES, undefined, {
     locale,
@@ -101,10 +148,10 @@ export const getServerAds = (params?: GetAdsParams, locale?: string) =>
     revalidate: 60,
   });
 
-export const getServerAdById = (id: string, locale?: string) =>
+export const getServerAdById = (id: string, locale?: string, revalidate = 60) =>
   serverApiGet<DetailAd>(API_ENDPOINTS.AD.GET_BY_ID(id), undefined, {
     locale,
-    revalidate: 60,
+    revalidate,
   });
 
 export const getServerOffices = (params?: GetOfficesParams, locale?: string) =>
