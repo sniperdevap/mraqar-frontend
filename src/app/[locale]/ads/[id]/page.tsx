@@ -101,9 +101,11 @@ export default async function AdDetail({ params }: Props) {
         requestHeaders.get("x-forwarded-for") ||
         requestHeaders.get("x-real-ip") ||
         undefined;
-      await countServerAdView(id, locale, forwardedFor);
-    } catch {
+      const result = await countServerAdView(id, locale, forwardedFor);
+      console.log("[view-count]", { id, forwardedFor, result });
+    } catch (err) {
       // Best-effort — a missed view count shouldn't block the page.
+      console.error("[view-count] failed", { id }, err);
     }
   }
 

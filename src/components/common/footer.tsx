@@ -161,11 +161,11 @@ export function Footer() {
               {t("contactUs")}
             </Link>
           </div>
-          {showAppButtons && (
+          {/* {showAppButtons && (
             <div className="flex flex-col md:flex-row items-center gap-4">
               <AppDownloadButtons />
             </div>
-          )}
+          )} */}
         </div>
       </footer>
 
