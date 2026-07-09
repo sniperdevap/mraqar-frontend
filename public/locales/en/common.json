@@ -47,6 +47,9 @@
     "failedToUpdateFavorite": "Failed to update favorite",
     "sharedSuccessfully": "Ad shared successfully",
     "linkCopied": "Link copied to clipboard",
+    "descriptionCopied": "Description copied to clipboard",
+    "failedToCopy": "Failed to copy description",
+    "copyDescription": "Copy description",
     "adNotFound": "Ad not found",
     "edit": "Edit",
     "editAd": "Ad modification",
@@ -181,7 +184,7 @@
     "CANNOT_UPDATE_AD": "Cannot update this ad."
   },
   "footer": {
-    "allRightsReserved": "All rights reserved aqar.com @ 2026",
+    "allRightsReserved": "All rights reserved mr-aqar.com @ 2026",
     "aboutUs": "About Us",
     "termsAndConditions": "Terms and Conditions",
     "privacyPolicy": "Privacy Policy",

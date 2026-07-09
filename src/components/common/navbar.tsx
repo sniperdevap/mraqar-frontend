@@ -140,7 +140,8 @@ export function Navbar() {
     <>
       {/* Desktop Navbar */}
       {showTopNavbar && (
-        <nav className="hidden lg:flex items-center px-12 py-2 bg-white border-b border-gray-200 sticky top-0 z-50 min-h-20">
+        <nav className="hidden lg:flex items-center py-2 bg-white border-b border-gray-200 sticky top-0 z-50 min-h-20">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex items-center">
           <div className="flex-shrink-0 w-24 h-16">
             <Link href="/" className="block w-24 h-16">
               <Image
@@ -236,6 +237,7 @@ export function Navbar() {
                 {t('nav.login')}
               </button>
             ))} */}
+          </div>
           </div>
         </nav>
       )}

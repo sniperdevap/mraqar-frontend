@@ -105,12 +105,12 @@ export function MultiSelect({ options, value, onChange, placeholder = 'Select it
         dir={dir}
         onClick={() => !disabled && setOpen(true)}
         className={cn(
-          'border-secondary data-[placeholder]:text-muted-foreground relative flex w-full items-center gap-2 rounded-md border bg-white px-3 text-sm shadow-xs transition-[color,box-shadow] outline-none disabled:cursor-not-allowed disabled:opacity-50 cursor-text overflow-hidden',
+          'border-secondary data-[placeholder]:text-muted-foreground relative flex w-full items-center gap-2 rounded-md border bg-white ps-3 pe-3 text-sm shadow-xs transition-[color,box-shadow] outline-none disabled:cursor-not-allowed disabled:opacity-50 cursor-text overflow-hidden',
           className,
           disabled && 'opacity-50 cursor-not-allowed'
         )}
       >
-        <div className="flex flex-wrap gap-2 flex-1 items-center min-w-0 py-1 pr-6 overflow-hidden justify-start">
+        <div className="flex flex-wrap gap-1.5 flex-1 items-center min-w-0 pe-6 overflow-hidden justify-start">
           {' '}
           {selectedOptions.length > 0 ? (
             <>

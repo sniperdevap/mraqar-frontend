@@ -10,6 +10,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Play,
+  Copy,
 } from "lucide-react";
 import { updateAd, deleteAd } from "@/lib/api/ad";
 import { Media } from "@/types/ad";
@@ -324,6 +325,16 @@ export function AdDetailPage({ adId }: AdDetailPageProps) {
     setIsShareOpen(true);
   };
 
+  const handleCopyDescription = async () => {
+    if (!ad?.description) return;
+    try {
+      await navigator.clipboard.writeText(ad.description);
+      toast.success(t("descriptionCopied"));
+    } catch {
+      toast.error(t("failedToCopy"));
+    }
+  };
+
   const handleWhatsApp = () => {
     if (!ad) return;
     const phoneNumber =
@@ -598,18 +609,28 @@ ${window.location.href}`);
                 }
               }}
             >
-              <div className="w-6 h-6 rounded-full bg-black flex items-center justify-center shrink-0">
-                <svg
-                  stroke="currentColor"
-                  fill="none"
-                  strokeWidth="2.5"
-                  viewBox="0 0 24 24"
-                  className="w-3.5 h-3.5 text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                  <circle cx="12" cy="7" r="4"></circle>
-                </svg>
+              <div className="w-6 h-6 rounded-full bg-black flex items-center justify-center shrink-0 overflow-hidden">
+                {ad.user?.avatar ? (
+                  <Image
+                    src={getImageUrl(ad.user.avatar)}
+                    alt={ad.user?.name || "User"}
+                    width={24}
+                    height={24}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <svg
+                    stroke="currentColor"
+                    fill="none"
+                    strokeWidth="2.5"
+                    viewBox="0 0 24 24"
+                    className="w-3.5 h-3.5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                )}
               </div>
               <span className="text-sm text-white font-bold tracking-wide">
                 {ad.user?.name || "علي جمال أبو حمزة"}
@@ -630,14 +651,25 @@ ${window.location.href}`);
               <h3 className="text-base font-bold text-gray-800">
                 {t("description")}
               </h3>
-              <Image
-                src={"/images/icons/share-icon.svg"}
-                alt="Share"
-                width={40}
-                height={40}
-                className="text-black cursor-pointer"
-                onClick={handleShare}
-              />
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleCopyDescription}
+                  aria-label={t("copyDescription")}
+                  title={t("copyDescription")}
+                  className="cursor-pointer p-2 rounded-full hover:bg-gray-100 transition-colors"
+                >
+                  <Copy className="w-5 h-5 text-gray-600" />
+                </button>
+                <Image
+                  src={"/images/icons/share-icon.svg"}
+                  alt="Share"
+                  width={40}
+                  height={40}
+                  className="text-black cursor-pointer"
+                  onClick={handleShare}
+                />
+              </div>
             </div>
             <p
               className={`text-gray-700 text-sm sm:text-base leading-relaxed w-full whitespace-pre-wrap break-words ${

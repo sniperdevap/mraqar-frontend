@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { OfficesPage } from '@/components/offices/offices-page';
 import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
 import { getLocale } from 'next-intl/server';
@@ -6,6 +7,17 @@ import {
   prefetchOffices,
   prefetchWithinBudget,
 } from '@/lib/query-prefetch';
+
+export const metadata: Metadata = {
+  title: 'مكاتب عقارية في الكويت | أفضل الوسطاء والشركات العقارية - مستر عقار',
+  description:
+    'اكتشف أفضل المكاتب العقارية في الكويت عبر مستر عقار. تصفح مكاتب ووسطاء عقاريين معتمدين، واعثر على خدمات بيع وشراء وتأجير وإدارة العقارات بسهولة.',
+  openGraph: {
+    title: 'مكاتب عقارية في الكويت | أفضل الوسطاء والشركات العقارية - مستر عقار',
+    description:
+      'اكتشف أفضل المكاتب العقارية في الكويت عبر مستر عقار. تصفح مكاتب ووسطاء عقاريين معتمدين، واعثر على خدمات بيع وشراء وتأجير وإدارة العقارات بسهولة.',
+  },
+};
 
 type OfficesProps = {
   searchParams: Promise<{ search?: string }>;

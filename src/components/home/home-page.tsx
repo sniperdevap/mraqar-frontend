@@ -18,7 +18,7 @@ import { usePropertyTypes, useAreas } from "@/hooks/use-metadata";
 import { useSearchAds } from "@/hooks/use-ads";
 import { useAdStore } from "@/lib/store/ad-store";
 import { useInView } from "react-intersection-observer";
-import { Search } from "lucide-react";
+import { Search, MapPin, Building2, ArrowLeftRight, Key, Home as HomeIcon } from "lucide-react";
 import { HomeAdCard } from "./home-ad-card";
 import { MultiSelect } from "@/components/ui/multi-select";
 
@@ -276,7 +276,7 @@ export function HomePage() {
 
       {/* Hero Header Section */}
       <section
-        className="w-full pt-4 md:pt-4 px-4 sm:px-6 lg:px-8 max-w-xl mx-auto mb-4 relative z-10"
+        className="w-full pt-4 md:pt-4 px-4 sm:px-6 lg:px-8 max-w-md mx-auto mb-4 relative z-10"
         dir={direction}
       >
         {/* LCP image: fixed box reserves space before decode (avoids CLS). */}
@@ -297,36 +297,44 @@ export function HomePage() {
           />
         </div>
 
-        <div className="flex flex-col items-center gap-6 w-full bg-white p-6 rounded-[24px] border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.03)]">
-          {/* Title */}
-          <h1 className="text-xl md:text-xl font-bold text-[#1f2937] text-center">
-            {t("hero.title")}
-          </h1>
+        {/* Title sits outside any card, floating over the page */}
+        <h1 className="text-xl md:text-xl font-bold text-[#1f2937] text-center mb-5">
+          {t("hero.title")}
+        </h1>
 
-          {/* Search Form */}
-          <div className="w-full space-y-4">
-            {/* Area Search */}
-            <div className="relative">
-              <MultiSelect
-                options={areas.map((a) => ({
-                  label: locale === "ar" ? a.labelAr : a.label,
-                  value: String(a.id),
-                  governorate:
-                    locale === "ar" ? a.governorateAr : a.governorate,
-                }))}
-                value={selectedAreas}
-                onChange={(val) => {
-                  setSelectedAreas(val);
-                }}
-                placeholder={t("search.areaPlaceholder")}
-                className="w-full min-h-10 md:min-h-11 h-auto py-1 bg-white border border-gray-300 rounded-md flex items-center px-3 text-gray-700  transition-all focus-within:border-[#9a090e] text-sm font-medium"
-                disabled={isLoading}
-                enableGrouping={true}
-                dir={direction}
-              />
-            </div>
+        {/* Search Form */}
+        <div className="w-full space-y-3 p-5 rounded-3xl border border-gray-100 bg-white/60">
+          {/* Area Search */}
+          <div className="relative">
+            <MapPin
+              size={18}
+              className={`absolute top-1/2 -translate-y-1/2 z-10 text-gray-400 pointer-events-none ${direction === "rtl" ? "right-8" : "left-4"}`}
+            />
+            <MultiSelect
+              options={areas.map((a) => ({
+                label: locale === "ar" ? a.labelAr : a.label,
+                value: String(a.id),
+                governorate:
+                  locale === "ar" ? a.governorateAr : a.governorate,
+              }))}
+              value={selectedAreas}
+              onChange={(val) => {
+                setSelectedAreas(val);
+              }}
+              placeholder={t("search.areaPlaceholder")}
+              className={`w-full min-h-10 md:min-h-11 h-auto py-1 bg-white border border-gray-200 rounded-xl flex items-center text-gray-700 shadow-[0_4px_16px_rgb(0,0,0,0.06)] transition-all focus-within:shadow-[0_4px_20px_rgba(154,9,14,0.15)] text-sm font-medium ${direction === "rtl" ? "pr-16 pl-3" : "pl-10 pr-10"}`}
+              disabled={isLoading}
+              enableGrouping={true}
+              dir={direction}
+            />
+          </div>
 
-            {/* Property Type */}
+          {/* Property Type */}
+          <div className="relative">
+            <Building2
+              size={18}
+              className={`absolute top-1/2 -translate-y-1/2 z-10 text-gray-400 pointer-events-none ${direction === "rtl" ? "right-8" : "left-4"}`}
+            />
             <Select
               value={propertyType}
               onValueChange={(val) => {
@@ -337,7 +345,8 @@ export function HomePage() {
             >
               <SelectTrigger
                 aria-label={t("search.propertyTypePlaceholder")}
-                className="w-full !h-10 md:!h-11 bg-white border border-gray-300 rounded-md text-gray-700 data-[placeholder]:!text-gray-500 transition-all focus:border-[#9a090e] text-sm font-medium px-3"
+                style={{ paddingRight: direction === "rtl" ? "4rem" : "2rem" }}
+                className={`w-full !h-10 md:!h-11 bg-white border border-gray-200 rounded-xl text-gray-700 data-[placeholder]:!text-gray-500 shadow-[0_4px_16px_rgb(0,0,0,0.06)] transition-all focus:shadow-[0_4px_20px_rgba(154,9,14,0.15)] text-sm font-medium ${direction === "rtl" ? "pl-3" : "pl-10"}`}
               >
                 <SelectValue
                   placeholder={t("search.propertyTypePlaceholder")}
@@ -355,52 +364,57 @@ export function HomePage() {
                 ))}
               </SelectContent>
             </Select>
-
-            {/* Purpose Tabs (Pills) */}
-            <div className="bg-white !h-10 md:!h-11 w-full rounded-md border border-gray-300 flex  items-center divide-x divide-gray-100" dir={direction}>
-              <button
-                onClick={() => {
-                  setActiveTab("exchange");
-                }}
-                className={`flex-1 h-full font-medium  transition-all text-sm ${activeTab === "exchange"
-                  ? "bg-primary text-white"
-                  : "text-gray-500 hover:text-gray-700"
-                  } ${direction === "rtl" ? "rounded-r-md border-l" : "rounded-l-md border-r"}`}
-              >
-                {t("tabs.exchange")}
-              </button>
-              <button
-                onClick={() => {
-                  setActiveTab("rent");
-                }}
-                className={`flex-1 h-full font-medium  transition-all text-sm ${activeTab === "rent"
-                  ? "bg-primary text-white"
-                  : "text-gray-500 hover:text-gray-700"
-                  } ${direction === "rtl" ? "border-l" : "border-r"}`}
-              >
-                {t("tabs.rent")}
-              </button>
-              <button
-                onClick={() => {
-                  setActiveTab("sale");
-                }}
-                className={`flex-1 h-full font-medium transition-all text-sm ${activeTab === "sale"
-                  ? "bg-primary text-white"
-                  : "text-gray-500 hover:text-gray-700"
-                  } ${direction === "rtl" ? "rounded-l-md" : "rounded-r-md"}`}
-              >
-                {t("tabs.sale")}
-              </button>
-            </div>
-
-            {/* Search Button */}
-            <Button
-              onClick={handleSearch}
-              className="rounded-xl !h-10 md:!h-11 w-full mt-2 bg-[#9a090e] hover:bg-[#9a090e]/95 border-none text-white font-medium text-sm shadow-[0_2px_4px_rgba(154,9,14,0.2)] transition-all active:scale-[0.98]"
-            >
-              {tCommon("buttons.search")}
-            </Button>
           </div>
+
+          {/* Purpose Tabs — sliding segmented control */}
+          <div
+            className="bg-white !h-10 md:!h-11 w-full rounded-xl p-1 border border-gray-200 shadow-[0_4px_16px_rgb(0,0,0,0.06)]"
+            dir={direction}
+          >
+            <div className="relative h-full flex items-center">
+              <div
+                className="absolute top-0 bottom-0 w-1/3 rounded-lg bg-[#9a090e] shadow-[0_2px_8px_rgba(154,9,14,0.35)] transition-all duration-300 ease-out"
+                style={{
+                  insetInlineStart:
+                    activeTab === "exchange"
+                      ? "0%"
+                      : activeTab === "rent"
+                        ? "33.333%"
+                        : activeTab === "sale"
+                          ? "66.666%"
+                          : "0%",
+                  opacity: activeTab ? 1 : 0,
+                }}
+              />
+              {[
+                { key: "exchange", label: t("tabs.exchange"), Icon: ArrowLeftRight },
+                { key: "rent", label: t("tabs.rent"), Icon: Key },
+                { key: "sale", label: t("tabs.sale"), Icon: HomeIcon },
+              ].map(({ key, label, Icon }) => (
+                <button
+                  key={key}
+                  onClick={() => setActiveTab(key)}
+                  className={`relative z-10 flex-1 h-full flex items-center justify-center gap-1.5 rounded-lg font-medium transition-colors text-sm ${
+                    activeTab === key
+                      ? "text-white"
+                      : "text-gray-500 hover:text-gray-700"
+                  }`}
+                >
+                  <Icon size={16} />
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Search Button */}
+          <Button
+            onClick={handleSearch}
+            className="rounded-xl !h-10 md:!h-11 w-full mt-2 bg-[#9a090e] hover:bg-[#9a090e]/95 border-none text-white font-semibold text-sm shadow-[0_6px_20px_rgba(154,9,14,0.3)] transition-all active:scale-[0.98]"
+          >
+            <Search size={16} className="mr-1.5" />
+            {tCommon("buttons.search")}
+          </Button>
         </div>
       </section>
 
