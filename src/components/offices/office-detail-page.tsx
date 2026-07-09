@@ -18,8 +18,8 @@ import { Loader } from "../common/loader";
 import dynamic from "next/dynamic";
 import { useInView } from "react-intersection-observer";
 
-const AdCard = dynamic(() =>
-  import("@/components/ads/ad-card").then((mod) => mod.AdCard),
+const HomeAdCard = dynamic(() =>
+  import("@/components/home/home-ad-card").then((mod) => mod.HomeAdCard),
 );
 const MultiSelect = dynamic(() =>
   import("@/components/ui/multi-select").then((mod) => mod.MultiSelect),
@@ -362,11 +362,10 @@ export function OfficeDetailPage({ officeId }: OfficeDetailPageProps) {
 
         <div className="grid grid-cols-1 gap-4 md:gap-6 mb-8">
           {ads.map((ad) => (
-            <AdCard
+            <HomeAdCard
               key={ad.id}
               ad={ad}
               onClick={() => router.push(`/ads/${ad.id}`)}
-              mode={ad.isPremium ? "dark" : "light"}
             />
           ))}
         </div>

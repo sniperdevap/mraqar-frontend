@@ -115,9 +115,9 @@ export function OfficeCard({ office, onClick }: OfficeCardProps) {
             </div>
 
             {/* Description */}
-            <p className="text-xs sm:text-base text-gray-500 line-clamp-2 sm:line-clamp-3 leading-relaxed mt-1 overflow-hidden">
+            {/* <p className="text-xs sm:text-base text-gray-500 line-clamp-2 sm:line-clamp-3 leading-relaxed mt-1 overflow-hidden">
               {office.description || "لا يوجد وصف متاح لهذا المكتب العقاري"}
-            </p>
+            </p> */}
           </div>
         </div>
       </div>

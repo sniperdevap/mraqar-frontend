@@ -2,7 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
-import { Heart, Clock } from "lucide-react";
+import { Heart, Clock, Eye } from "lucide-react";
 import { Ad, Media } from "@/types/ad";
 import { useTranslations } from "next-intl";
 import { formatDistanceToNow } from "date-fns";
@@ -177,6 +177,10 @@ export function SearchAdCard({ ad, onClick }: SearchAdCardProps) {
             <div className="flex items-center gap-1.5 text-gray-500 font-medium">
               <Clock size={13} className="text-[#94a3b8]" />
               <span className="text-[12px]">{getTimeAgo(ad.createdAt)}</span>
+            </div>
+            <div className="flex items-center gap-1.5 text-gray-500 font-medium">
+              <Eye size={13} className="text-[#94a3b8]" />
+              <span className="text-[12px]">{ad.views || 0}</span>
             </div>
           </div>
         </div>

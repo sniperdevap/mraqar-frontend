@@ -36,8 +36,8 @@ const MediaViewer = dynamic(() =>
 const ShareDialog = dynamic(() =>
   import("@/components/common/share-dialog").then((mod) => mod.ShareDialog),
 );
-const SearchAdCard = dynamic(() =>
-  import("@/components/search/search-ad-card").then((mod) => mod.SearchAdCard),
+const HomeAdCard = dynamic(() =>
+  import("@/components/home/home-ad-card").then((mod) => mod.HomeAdCard),
 );
 import { formatDisplayPhone } from "@/lib/utils";
 import { useAdById, useInfiniteSearchAds } from "@/hooks/use-ads";
@@ -708,7 +708,7 @@ ${window.location.href}`);
                           : undefined
                       }
                     >
-                      <SearchAdCard
+                      <HomeAdCard
                         ad={similarAd}
                         onClick={() => router.push(`/ads/${similarAd.id}`)}
                       />

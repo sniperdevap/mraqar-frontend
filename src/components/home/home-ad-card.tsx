@@ -4,7 +4,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { Clock, DollarSign, Play } from "lucide-react";
+import { Clock, DollarSign, Eye, Play } from "lucide-react";
 import { Ad, Media } from "@/types/ad";
 import { useLocale, useTranslations } from "@/hooks/use-locale";
 import { formatDistanceToNow } from "@/lib/utils/format";
@@ -129,6 +129,12 @@ export function HomeAdCard({
                   suppressHydrationWarning
                 >
                   {getTimeAgo(ad.createdAt)}
+                </span>
+              </div>
+              <div className="flex items-center gap-1 text-gray-700">
+                <Eye size={14} className="text-[#169899]" aria-hidden="true" />
+                <span className="text-[12px] font-medium leading-5">
+                  {ad.views || 0}
                 </span>
               </div>
             </div>
