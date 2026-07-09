@@ -110,14 +110,14 @@ export function MultiSelect({ options, value, onChange, placeholder = 'Select it
           disabled && 'opacity-50 cursor-not-allowed'
         )}
       >
-        <div className="flex flex-wrap gap-1.5 flex-1 items-center min-w-0 pe-6 overflow-hidden justify-start">
+        <div className="flex flex-wrap gap-1.5 flex-1 items-center min-w-0 pr-6 overflow-hidden justify-start">
           {' '}
           {selectedOptions.length > 0 ? (
             <>
               {selectedOptions.map(option => (
                 <div
                   key={option.value}
-                  className="inline-flex items-center gap-1.5 ps-2.5 pe-1.5 py-1 bg-[#f7eff1] border border-[#f7eff1] rounded-md text-sm font-medium text-gray-700 transition-all hover:bg-[#efdee2] max-w-full min-w-0"
+                  className="inline-flex items-center gap-1.5 ps-2.5 pe-1.5 py-1 bg-[#f7eff1] border border-[#f7eff1] rounded-md text-base font-medium text-gray-700 transition-all hover:bg-[#efdee2] max-w-full min-w-0"
                 >
                   <span className="truncate">{option.label}</span>
                   <button
@@ -139,7 +139,7 @@ export function MultiSelect({ options, value, onChange, placeholder = 'Select it
                   onClick={e => e.stopPropagation()}
                   placeholder="Search..."
                   className={cn(
-                    'border-none outline-none bg-transparent flex-1 text-[15px] font-medium text-gray-700 placeholder:text-gray-400',
+                    'border-none outline-none bg-transparent flex-1 text-base font-medium text-gray-700 placeholder:text-gray-400',
                     'text-start'
                   )}
                   disabled={disabled}
@@ -158,14 +158,14 @@ export function MultiSelect({ options, value, onChange, placeholder = 'Select it
                   onClick={e => e.stopPropagation()}
                   placeholder={placeholder}
                   className={cn(
-                    'border-none outline-none bg-transparent flex-1 text-[15px] font-medium text-gray-700 placeholder:text-gray-400 min-w-[150px]',
+                    'border-none outline-none bg-transparent flex-1 text-base font-medium text-gray-700 placeholder:text-gray-400 min-w-[150px]',
                     'text-start'
                   )}
                   disabled={disabled}
                 />
               )}
               {!open && (
-                <span className={cn('text-gray-500 text-[15px] font-medium block w-full', 'text-start')}>
+                <span className={cn('text-gray-500 text-base font-medium block w-full', 'text-start')}>
                   {placeholder}
                 </span>
               )}
@@ -211,7 +211,7 @@ export function MultiSelect({ options, value, onChange, placeholder = 'Select it
                         <div
                           key={option.value}
                           onClick={() => handleToggle(option.value)}
-                          className={cn('flex items-center gap-2 px-4 py-3 text-sm cursor-pointer transition-all hover:bg-primary/10', 'text-start')}
+                          className={cn('flex items-center gap-2 px-4 py-3 text-base cursor-pointer transition-all hover:bg-primary/10', 'text-start')}
                         >
                           <span className={cn('flex-1', 'text-start')}>{option.label}</span>
                         </div>

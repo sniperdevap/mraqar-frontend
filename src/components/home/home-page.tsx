@@ -18,7 +18,7 @@ import { usePropertyTypes, useAreas } from "@/hooks/use-metadata";
 import { useSearchAds } from "@/hooks/use-ads";
 import { useAdStore } from "@/lib/store/ad-store";
 import { useInView } from "react-intersection-observer";
-import { Search, MapPin, Building2, ArrowLeftRight, Key, Home as HomeIcon } from "lucide-react";
+import { Search } from "lucide-react";
 import { HomeAdCard } from "./home-ad-card";
 import { MultiSelect } from "@/components/ui/multi-select";
 
@@ -276,7 +276,7 @@ export function HomePage() {
 
       {/* Hero Header Section */}
       <section
-        className="w-full pt-4 md:pt-4 px-4 sm:px-6 lg:px-8 max-w-md mx-auto mb-4 relative z-10"
+        className="w-full pt-4 md:pt-4 px-4 sm:px-6 lg:px-8 max-w-xl mx-auto mb-4 relative z-10"
         dir={direction}
       >
         {/* LCP image: fixed box reserves space before decode (avoids CLS). */}
@@ -306,10 +306,6 @@ export function HomePage() {
         <div className="w-full space-y-3 p-5 rounded-3xl border border-gray-100 bg-white/60">
           {/* Area Search */}
           <div className="relative">
-            <MapPin
-              size={18}
-              className={`absolute top-1/2 -translate-y-1/2 z-10 text-gray-400 pointer-events-none ${direction === "rtl" ? "right-8" : "left-4"}`}
-            />
             <MultiSelect
               options={areas.map((a) => ({
                 label: locale === "ar" ? a.labelAr : a.label,
@@ -322,7 +318,7 @@ export function HomePage() {
                 setSelectedAreas(val);
               }}
               placeholder={t("search.areaPlaceholder")}
-              className={`w-full min-h-10 md:min-h-11 h-auto py-1 bg-white border border-gray-200 rounded-xl flex items-center text-gray-700 shadow-[0_4px_16px_rgb(0,0,0,0.06)] transition-all focus-within:shadow-[0_4px_20px_rgba(154,9,14,0.15)] text-sm font-medium ${direction === "rtl" ? "pr-16 pl-3" : "pl-10 pr-10"}`}
+              className="w-full min-h-10 md:min-h-11 h-auto py-1 px-3 bg-white border border-gray-200 rounded-xl flex items-center text-gray-700 shadow-[0_4px_16px_rgb(0,0,0,0.06)] transition-all focus-within:shadow-[0_4px_20px_rgba(154,9,14,0.15)] text-base font-medium"
               disabled={isLoading}
               enableGrouping={true}
               dir={direction}
@@ -331,10 +327,6 @@ export function HomePage() {
 
           {/* Property Type */}
           <div className="relative">
-            <Building2
-              size={18}
-              className={`absolute top-1/2 -translate-y-1/2 z-10 text-gray-400 pointer-events-none ${direction === "rtl" ? "right-8" : "left-4"}`}
-            />
             <Select
               value={propertyType}
               onValueChange={(val) => {
@@ -345,8 +337,7 @@ export function HomePage() {
             >
               <SelectTrigger
                 aria-label={t("search.propertyTypePlaceholder")}
-                style={{ paddingRight: direction === "rtl" ? "4rem" : "2rem" }}
-                className={`w-full !h-10 md:!h-11 bg-white border border-gray-200 rounded-xl text-gray-700 data-[placeholder]:!text-gray-500 shadow-[0_4px_16px_rgb(0,0,0,0.06)] transition-all focus:shadow-[0_4px_20px_rgba(154,9,14,0.15)] text-sm font-medium ${direction === "rtl" ? "pl-3" : "pl-10"}`}
+                className="w-full !h-10 md:!h-11 px-3 bg-white border border-gray-200 rounded-xl text-gray-700 data-[placeholder]:!text-gray-500 shadow-[0_4px_16px_rgb(0,0,0,0.06)] transition-all focus:shadow-[0_4px_20px_rgba(154,9,14,0.15)] text-base font-medium"
               >
                 <SelectValue
                   placeholder={t("search.propertyTypePlaceholder")}
@@ -357,7 +348,7 @@ export function HomePage() {
                   <SelectItem
                     key={type.id}
                     value={String(type.id)}
-                    className="cursor-pointer font-normal text-sm text-gray-800"
+                    className="cursor-pointer font-normal text-base text-gray-800"
                   >
                     {locale === "ar" ? type.labelAr || type.label : type.label}
                   </SelectItem>
@@ -387,20 +378,19 @@ export function HomePage() {
                 }}
               />
               {[
-                { key: "exchange", label: t("tabs.exchange"), Icon: ArrowLeftRight },
-                { key: "rent", label: t("tabs.rent"), Icon: Key },
-                { key: "sale", label: t("tabs.sale"), Icon: HomeIcon },
-              ].map(({ key, label, Icon }) => (
+                { key: "exchange", label: t("tabs.exchange") },
+                { key: "rent", label: t("tabs.rent") },
+                { key: "sale", label: t("tabs.sale") },
+              ].map(({ key, label }) => (
                 <button
                   key={key}
                   onClick={() => setActiveTab(key)}
-                  className={`relative z-10 flex-1 h-full flex items-center justify-center gap-1.5 rounded-lg font-medium transition-colors text-sm ${
+                  className={`relative z-10 flex-1 h-full flex items-center justify-center rounded-lg font-medium transition-colors text-base ${
                     activeTab === key
                       ? "text-white"
                       : "text-gray-500 hover:text-gray-700"
                   }`}
                 >
-                  <Icon size={16} />
                   {label}
                 </button>
               ))}
@@ -410,7 +400,7 @@ export function HomePage() {
           {/* Search Button */}
           <Button
             onClick={handleSearch}
-            className="rounded-xl !h-10 md:!h-11 w-full mt-2 bg-[#9a090e] hover:bg-[#9a090e]/95 border-none text-white font-semibold text-sm shadow-[0_6px_20px_rgba(154,9,14,0.3)] transition-all active:scale-[0.98]"
+            className="rounded-xl !h-10 md:!h-11 w-full mt-2 bg-[#9a090e] hover:bg-[#9a090e]/95 border-none text-white font-semibold text-lg shadow-[0_6px_20px_rgba(154,9,14,0.3)] transition-all active:scale-[0.98]"
           >
             <Search size={16} className="mr-1.5" />
             {tCommon("buttons.search")}
