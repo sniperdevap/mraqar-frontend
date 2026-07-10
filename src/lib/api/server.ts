@@ -136,11 +136,14 @@ export const getServerPropertyTypes = (locale?: string) =>
     revalidate: 60 * 60 * 24,
   });
 
-export const getServerAreas = (locale?: string) =>
-  serverApiGet<Area[]>(API_ENDPOINTS.METADATA.AREAS, undefined, {
+export const getServerAreas = async (locale?: string) => {
+  const data = await serverApiGet<Area[]>(API_ENDPOINTS.METADATA.AREAS, undefined, {
     locale,
     revalidate: 60 * 60 * 24,
   });
+  console.log('Areas response (server): count =', data.length, 'dasma =', data.find((a) => a.value === 'dasma'));
+  return data;
+};
 
 export const getServerAds = (params?: GetAdsParams, locale?: string) =>
   serverApiGet<GetAdsResult>(API_ENDPOINTS.AD.GET_ALL, params, {
