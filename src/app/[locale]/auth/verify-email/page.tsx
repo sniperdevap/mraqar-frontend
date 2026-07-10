@@ -59,7 +59,7 @@ export default function VerifyEmailPage() {
                 <div className="flex items-center justify-center lg:justify-start mb-8">
                   <Image
                     src="/images/aqar-new-logo.png"
-                    alt="Mr aqar Logo"
+                    alt="Mr aqar"
                     width={160}
                     height={40}
                     className="h-24 w-auto"

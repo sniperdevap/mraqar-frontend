@@ -86,7 +86,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
             <Link href="/admin" className="flex items-center">
               <Image
                 src="/images/aqar-new-logo.png"
-                alt="Mr aqar Logo"
+                alt="Mr aqar"
                 width={80}
                 height={30}
                 className=""

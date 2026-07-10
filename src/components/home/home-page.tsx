@@ -246,7 +246,7 @@ export function HomePage() {
             <div className="flex items-center gap-3">
               <Image
                 src="/images/aqar-new-logo-sm.webp"
-                alt="Mr aqar Logo"
+                alt="Mr aqar"
                 width={84}
                 height={56}
                 priority
@@ -287,7 +287,7 @@ export function HomePage() {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/images/aqar-new-logo-hero.webp"
-            alt="Mr aqar Logo"
+            alt="Mr aqar"
             width={168}
             height={112}
             fetchPriority="high"

@@ -21,7 +21,7 @@ export function AuthWrapperNew({ children }: AuthWrapperNewProps) {
           <div className="flex justify-start mb-2">
             <OptimizedImage
               src="/images/aqar-new-logo.png"
-              alt="Mr aqar Logo"
+              alt="Mr aqar"
               width={140}
               height={32}
               fallbackSrc="/images/aqar-new-logo.png"

@@ -146,7 +146,7 @@ export function Navbar() {
             <Link href="/" className="block w-24 h-16">
               <Image
                 src="/images/aqar-new-logo-nav.webp"
-                alt="Mr aqar Logo"
+                alt="Mr aqar"
                 width={96}
                 height={64}
                 priority
@@ -252,7 +252,7 @@ export function Navbar() {
                 <Link href="/" className="block w-24 h-16">
                   <Image
                     src="/images/aqar-new-logo-nav.webp"
-                    alt="Mr aqar Logo"
+                    alt="Mr aqar"
                     width={96}
                     height={64}
                     priority
@@ -306,7 +306,7 @@ export function Navbar() {
                 <Link href="/" className="block w-24 h-16">
                   <Image
                     src="/images/aqar-new-logo-nav.webp"
-                    alt="Mr aqar Logo"
+                    alt="Mr aqar"
                     width={96}
                     height={64}
                     unoptimized
@@ -349,7 +349,7 @@ export function Navbar() {
                   <Link href="/" className="block w-24 h-16">
                     <Image
                       src="/images/aqar-new-logo-nav.webp"
-                      alt="Mr aqar Logo"
+                      alt="Mr aqar"
                       width={96}
                       height={64}
                       unoptimized
