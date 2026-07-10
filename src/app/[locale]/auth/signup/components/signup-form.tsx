@@ -38,7 +38,7 @@ export function SignupForm() {
   const [isAvatarUploading, setIsAvatarUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
-  const { signup, isLoading } = useAuthStore();
+  const { signup, login, isLoading } = useAuthStore();
   const { locale } = useLocale();
 
   const form = useForm<SignupFormValues>({
@@ -97,9 +97,11 @@ export function SignupForm() {
 
       if (success) {
         toast.success(t("success"));
-        router.push(
-          `/auth/verify?phoneNumber=${encodeURIComponent(formattedPhone)}&type=signup`,
-        );
+        // ponytail: no OTP gate on signup, reuse login() to establish the session immediately
+        await login(formattedPhone, values.password);
+        const user = useAuthStore.getState().user;
+        router.refresh();
+        window.location.href = user?.role === "super_admin" ? "/admin" : "/";
       } else {
         toast.error(t("error"));
       }
