@@ -105,7 +105,7 @@ export function MultiSelect({ options, value, onChange, placeholder = 'Select it
         dir={dir}
         onClick={() => !disabled && setOpen(true)}
         className={cn(
-          'border-secondary data-[placeholder]:text-muted-foreground relative flex w-full items-center gap-2 rounded-md border bg-white ps-3 pe-3 text-sm shadow-xs transition-[color,box-shadow] outline-none disabled:cursor-not-allowed disabled:opacity-50 cursor-text overflow-hidden',
+          'border-secondary data-[placeholder]:text-muted-foreground relative flex w-full min-h-14 items-center gap-2 rounded-md border bg-white ps-3 pe-3 py-2.5 text-sm shadow-xs transition-[color,box-shadow] outline-none disabled:cursor-not-allowed disabled:opacity-50 cursor-text overflow-hidden',
           className,
           disabled && 'opacity-50 cursor-not-allowed'
         )}

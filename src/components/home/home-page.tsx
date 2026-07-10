@@ -276,7 +276,7 @@ export function HomePage() {
 
       {/* Hero Header Section */}
       <section
-        className="w-full pt-4 md:pt-4 px-4 sm:px-6 lg:px-8 max-w-xl mx-auto mb-4 relative z-10"
+        className="w-full pt-4 md:pt-4 px-4 sm:px-4 lg:px-4 max-w-xxl mx-auto mb-4 relative z-10"
         dir={direction}
       >
         {/* LCP image: fixed box reserves space before decode (avoids CLS). */}
