@@ -42,9 +42,9 @@ const HomeAdCard = dynamic(() =>
 );
 import { formatDisplayPhone } from "@/lib/utils";
 import { useAdById, useInfiniteSearchAds } from "@/hooks/use-ads";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, type InfiniteData } from "@tanstack/react-query";
 import { useAdStore } from "@/lib/store/ad-store";
-import { DetailAd, GetAdsParams } from "@/types/ad";
+import { DetailAd, GetAdsParams, GetAdsResult } from "@/types/ad";
 import Image from "next/image";
 
 interface AdDetailPageProps {
@@ -87,6 +87,28 @@ export function AdDetailPage({ adId }: AdDetailPageProps) {
       setAd(ad);
     }
   }, [ad, cachedAd, setAd]);
+
+  // Copy this ad's fresh view count into the cached home/search lists,
+  // so going back shows the new number instantly.
+  useEffect(() => {
+    const views = ad?.views;
+    if (typeof views !== "number") return;
+
+    const updatePage = (page: GetAdsResult): GetAdsResult => ({
+      ...page,
+      ads: page.ads.map((a) => (String(a.id) === adId ? { ...a, views } : a)),
+    });
+
+    queryClient.setQueriesData<GetAdsResult | InfiniteData<GetAdsResult>>(
+      { queryKey: ["ads"] },
+      (data) => {
+        if (!data) return data;
+        if ("pages" in data)
+          return { ...data, pages: data.pages.map(updatePage) };
+        return updatePage(data);
+      },
+    );
+  }, [ad?.views, adId, queryClient]);
 
   useEffect(() => {
     window.scrollTo(0, 0);

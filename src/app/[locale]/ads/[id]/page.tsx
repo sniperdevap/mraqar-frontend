@@ -8,6 +8,7 @@ import {
   prefetchWithinBudget,
 } from "@/lib/query-prefetch";
 import { getServerAdById, countServerAdView } from "@/lib/api/server";
+import type { DetailAd } from "@/types/ad";
 import { permanentRedirect } from "next/navigation";
 import { headers } from "next/headers";
 import { SITE_URL } from "@/lib/seo";
@@ -90,35 +91,49 @@ export default async function AdDetail({ params }: Props) {
   const locale = await getLocale();
   const queryClient = createServerQueryClient();
 
-  // Count the view BEFORE fetching ad details, so the number rendered below
-  // already reflects the increment — no client-side jump from N to N+1.
+  // Count the view in parallel with a cached ad fetch. The POST returns the
+  // fresh views total, which overwrites the (possibly stale) cached value —
+  // same accuracy as the old serial count→uncached-refetch, minus a full
+  // blocking round trip. The cached fetch also dedupes with generateMetadata.
   // Skip Next.js Link hover/viewport prefetch requests — only count real page loads.
   const requestHeaders = await headers();
   const isPrefetch = requestHeaders.has("next-router-prefetch");
-  if (!isPrefetch) {
-    try {
-      const forwardedFor =
-        requestHeaders.get("x-forwarded-for") ||
-        requestHeaders.get("x-real-ip") ||
-        undefined;
-      const result = await countServerAdView(id, locale, forwardedFor);
-      console.log("[view-count]", { id, forwardedFor, result });
-    } catch (err) {
-      // Best-effort — a missed view count shouldn't block the page.
-      console.error("[view-count] failed", { id }, err);
-    }
-  }
+  const forwardedFor =
+    requestHeaders.get("x-forwarded-for") ||
+    requestHeaders.get("x-real-ip") ||
+    undefined;
+  const countPromise = isPrefetch
+    ? null
+    : countServerAdView(id, locale, forwardedFor)
+        .then((result) => {
+          console.log("[view-count]", { id, forwardedFor, result });
+          return result;
+        })
+        .catch((err) => {
+          // Best-effort — a missed view count shouldn't block the page.
+          console.error("[view-count] failed", { id }, err);
+          return null;
+        });
 
+  let canonicalAd: DetailAd | null = null;
   try {
-    // revalidate: 0 — bypass Next's Data Cache so this reflects the count
-    // increment just sent above, not a stale cached response.
-    const canonicalAd = await getServerAdById(id, locale, 0);
-    if (String(canonicalAd.id) !== id) {
-      permanentRedirect(`/${routeLocale}/ads/${canonicalAd.id}`);
-    }
-    queryClient.setQueryData(["ad", id], canonicalAd);
+    canonicalAd = await getServerAdById(id, locale);
   } catch {
     // API slow/unavailable — client will load the ad; do not block HTML.
+  }
+
+  if (canonicalAd && String(canonicalAd.id) !== id) {
+    permanentRedirect(`/${routeLocale}/ads/${canonicalAd.id}`);
+  }
+
+  if (canonicalAd) {
+    const count = countPromise ? await countPromise : null;
+    queryClient.setQueryData(
+      ["ad", id],
+      typeof count?.views === "number"
+        ? { ...canonicalAd, views: count.views }
+        : canonicalAd,
+    );
   }
 
   await prefetchWithinBudget(

@@ -151,10 +151,10 @@ export const getServerAds = (params?: GetAdsParams, locale?: string) =>
     revalidate: 60,
   });
 
-export const getServerAdById = (id: string, locale?: string, revalidate = 60) =>
+export const getServerAdById = (id: string, locale?: string) =>
   serverApiGet<DetailAd>(API_ENDPOINTS.AD.GET_BY_ID(id), undefined, {
     locale,
-    revalidate,
+    revalidate: 30,
   });
 
 export const getServerOffices = (params?: GetOfficesParams, locale?: string) =>
