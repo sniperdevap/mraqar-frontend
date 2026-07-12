@@ -159,7 +159,7 @@ export function HomeAdCard({
     return (
       <Link
         href={href}
-        prefetch={true}
+        prefetch={false}
         onMouseEnter={prefetchAd}
         onTouchStart={prefetchAd}
         className={cardClasses}
@@ -175,7 +175,9 @@ export function HomeAdCard({
     <div className="relative block w-full mb-3" dir={direction}>
       <Link
         href={href}
-        prefetch={true}
+        prefetch={false}
+        onMouseEnter={prefetchAd}
+        onTouchStart={prefetchAd}
         onClick={onClick}
         className="block relative"
       >

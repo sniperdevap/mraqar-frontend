@@ -136,16 +136,6 @@ export function AdDetailPage({ adId }: AdDetailPageProps) {
     };
   }, [ad?.media]);
 
-  const scroll = (direction: "left" | "right") => {
-    if (scrollContainerRef.current) {
-      const scrollAmount = 200;
-      scrollContainerRef.current.scrollBy({
-        left: direction === "left" ? -scrollAmount : scrollAmount,
-        behavior: "smooth",
-      });
-    }
-  };
-
   // Initialize favorite status from ad data
   useEffect(() => {
     if (ad && isAuthenticated) {
