@@ -10,6 +10,7 @@ import {
 import { getServerAdById, countServerAdView } from "@/lib/api/server";
 import type { DetailAd } from "@/types/ad";
 import { permanentRedirect } from "next/navigation";
+import { after } from "next/server";
 import { headers } from "next/headers";
 import { SITE_URL } from "@/lib/seo";
 
@@ -91,10 +92,6 @@ export default async function AdDetail({ params }: Props) {
   const locale = await getLocale();
   const queryClient = createServerQueryClient();
 
-  // Count the view in parallel with a cached ad fetch. The POST returns the
-  // fresh views total, which overwrites the (possibly stale) cached value —
-  // same accuracy as the old serial count→uncached-refetch, minus a full
-  // blocking round trip. The cached fetch also dedupes with generateMetadata.
   // Skip Next.js Link hover/viewport prefetch requests — only count real page loads.
   const requestHeaders = await headers();
   const isPrefetch = requestHeaders.has("next-router-prefetch");
@@ -102,18 +99,6 @@ export default async function AdDetail({ params }: Props) {
     requestHeaders.get("x-forwarded-for") ||
     requestHeaders.get("x-real-ip") ||
     undefined;
-  const countPromise = isPrefetch
-    ? null
-    : countServerAdView(id, locale, forwardedFor)
-        .then((result) => {
-          console.log("[view-count]", { id, forwardedFor, result });
-          return result;
-        })
-        .catch((err) => {
-          // Best-effort — a missed view count shouldn't block the page.
-          console.error("[view-count] failed", { id }, err);
-          return null;
-        });
 
   let canonicalAd: DetailAd | null = null;
   try {
@@ -127,12 +112,15 @@ export default async function AdDetail({ params }: Props) {
   }
 
   if (canonicalAd) {
-    const count = countPromise ? await countPromise : null;
-    queryClient.setQueryData(
-      ["ad", id],
-      typeof count?.views === "number"
-        ? { ...canonicalAd, views: count.views }
-        : canonicalAd,
+    queryClient.setQueryData(["ad", id], canonicalAd);
+  }
+
+  if (!isPrefetch) {
+    after(
+      countServerAdView(id, locale, forwardedFor).catch((err) => {
+        // Best-effort — a missed view count shouldn't matter.
+        console.error("[view-count] failed", { id }, err);
+      }),
     );
   }
 
