@@ -430,15 +430,18 @@ ${window.location.href}`);
         <section className="relative max-w-4xl mx-auto h-[35vh] md:h-[45vh] overflow-hidden bg-neutral-900 border-b border-gray-100">
           {/* Main Media Slider */}
           <div
-            className="w-full h-full cursor-pointer"
+            className="relative w-full h-full cursor-pointer"
             onClick={() => setIsMediaViewerOpen(true)}
           >
             {currentMedia?.type === "video" ? (
               <div className="relative w-full h-full flex items-center justify-center bg-white/5">
-                <img
+                <Image
                   src={getThumbnailUrl(currentMedia)}
                   alt="Video thumbnail"
-                  className="w-full h-full object-cover"
+                  fill
+                  priority
+                  sizes="(max-width: 896px) 100vw, 896px"
+                  className="object-cover"
                 />
                 <div className="absolute inset-0 flex items-center justify-center bg-black/10">
                   <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/30 shadow-2xl">
@@ -447,7 +450,7 @@ ${window.location.href}`);
                 </div>
               </div>
             ) : (
-              <img
+              <Image
                 src={currentImageUrl}
                 alt={
                   locale === "ar"
@@ -456,7 +459,10 @@ ${window.location.href}`);
                       "عقار"
                     : ad.propertyType?.label || "Property"
                 }
-                className="w-full h-full object-cover"
+                fill
+                priority
+                sizes="(max-width: 896px) 100vw, 896px"
+                className="object-cover"
               />
             )}
           </div>
