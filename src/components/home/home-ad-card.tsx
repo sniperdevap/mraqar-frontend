@@ -159,7 +159,7 @@ export function HomeAdCard({
     return (
       <Link
         href={href}
-        prefetch={false}
+        prefetch={true}
         onMouseEnter={prefetchAd}
         onTouchStart={prefetchAd}
         className={cardClasses}
