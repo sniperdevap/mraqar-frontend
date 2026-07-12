@@ -133,31 +133,26 @@ export const countServerAdView = (
 export const getServerPropertyTypes = (locale?: string) =>
   serverApiGet<PropertyType[]>(API_ENDPOINTS.METADATA.PROPERTY_TYPES, undefined, {
     locale,
-    revalidate: 0,
   });
 
 export const getServerAreas = (locale?: string) =>
   serverApiGet<Area[]>(API_ENDPOINTS.METADATA.AREAS, undefined, {
     locale,
-    revalidate: 0,
   });
 
 export const getServerAds = (params?: GetAdsParams, locale?: string) =>
   serverApiGet<GetAdsResult>(API_ENDPOINTS.AD.GET_ALL, params, {
     locale,
-    revalidate: 0,
   });
 
 export const getServerAdById = (id: string, locale?: string) =>
   serverApiGet<DetailAd>(API_ENDPOINTS.AD.GET_BY_ID(id), undefined, {
     locale,
-    revalidate: 0,
   });
 
 export const getServerOffices = (params?: GetOfficesParams, locale?: string) =>
   serverApiGet<GetOfficesResult>(API_ENDPOINTS.OFFICE.GET_ALL, params, {
     locale,
-    revalidate: 0,
   });
 
 export const getServerOfficeById = (
@@ -170,7 +165,6 @@ export const getServerOfficeById = (
     adFilters,
     {
       locale,
-      revalidate: 0,
     },
   );
 
@@ -180,7 +174,6 @@ export const getServerSubscriptionPlans = (locale?: string) =>
     undefined,
     {
       locale,
-      revalidate: 0,
     },
   );
 
@@ -190,6 +183,5 @@ export const getServerSubscriptionPlanById = (id: string, locale?: string) =>
     undefined,
     {
       locale,
-      revalidate: 0,
     },
   );

@@ -41,6 +41,21 @@ export function Navbar() {
 
   const showAuthUi = hasMounted && isAuthenticated;
 
+  // Prefetch every primary nav destination once so taps are instant.
+  // Covers the router.push buttons (create, notifications, back) too — Links
+  // already prefetch on viewport, but router.push does not.
+  useEffect(() => {
+    [
+      "/",
+      "/offices",
+      "/plans",
+      "/account",
+      "/menu",
+      "/notifications",
+      "/ads/create",
+    ].forEach((route) => router.prefetch(route));
+  }, [router]);
+
   useEffect(() => {
     const viewport = window.visualViewport;
     if (!viewport) return;
@@ -267,7 +282,6 @@ export function Navbar() {
                 {/* Favorites button */}
                 <Link
                   href="/account?tab=favourites"
-                  prefetch={false}
                   className="flex flex-col items-center justify-center text-[#555] hover:text-primary transition-colors cursor-pointer"
                 >
                   <Heart size={22} className="text-gray-900" strokeWidth={1.8} />
