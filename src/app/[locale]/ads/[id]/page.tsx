@@ -97,10 +97,18 @@ export default async function AdDetail({ params }: Props) {
     undefined;
 
   let canonicalAd: DetailAd | null = null;
+  const startedAt = Date.now();
   try {
     canonicalAd = await getServerAdById(id, locale);
+    // ponytail: temporary probe — total round-trip incl. network + Next data
+    // cache. Compare against backend "[getAdByIdAggregated] db ms": if this is
+    // much larger, the cost is the wire/host, not the query. Remove once diagnosed.
+    console.log("[getServerAdById] total ms", Date.now() - startedAt, { id });
   } catch {
     // API slow/unavailable — client will load the ad; do not block HTML.
+    console.log("[getServerAdById] FAILED after ms", Date.now() - startedAt, {
+      id,
+    });
   }
 
   if (canonicalAd && String(canonicalAd.id) !== id) {

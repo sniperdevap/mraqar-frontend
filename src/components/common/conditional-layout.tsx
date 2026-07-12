@@ -10,15 +10,23 @@ export function ConditionalLayout({ children }: { children: React.ReactNode }) {
   const pathnameWithoutLocale = pathname?.replace(/^\/(en|ar)/, '') || '/';
   const isAdminRoute = pathnameWithoutLocale.startsWith('/admin');
 
+  // Re-key by route so the cross-fade replays on every navigation. Data lives
+  // in React Query / zustand above this, so the remount is cheap.
+  const animated = (
+    <div key={pathname} className="animate-page-enter">
+      {children}
+    </div>
+  );
+
   if (isAdminRoute) {
     // Admin pages get rendered without navbar/footer — their own layout handles everything
-    return <>{children}</>;
+    return animated;
   }
 
   return (
     <>
       <Navbar />
-      <DynamicMainPadding>{children}</DynamicMainPadding>
+      <DynamicMainPadding>{animated}</DynamicMainPadding>
       <Footer />
     </>
   );
