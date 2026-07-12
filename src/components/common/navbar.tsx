@@ -33,7 +33,6 @@ export function Navbar() {
   const { direction } = useLocale();
   const [unreadCount, setUnreadCount] = useState(0);
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
-  // Avoid auth-store persist mismatch between SSR HTML and client hydration.
   const [hasMounted, setHasMounted] = useState(false);
 
   useEffect(() => {
@@ -440,7 +439,6 @@ export function Navbar() {
               <Link
                 key={item.href || "menu"}
                 href={item.href || "/menu"}
-                prefetch={false}
                 className={cn(
                   "relative flex flex-col items-center gap-1.5 py-1 px-3 rounded-2xl transition-all duration-300",
                   isActive

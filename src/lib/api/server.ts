@@ -133,34 +133,31 @@ export const countServerAdView = (
 export const getServerPropertyTypes = (locale?: string) =>
   serverApiGet<PropertyType[]>(API_ENDPOINTS.METADATA.PROPERTY_TYPES, undefined, {
     locale,
-    revalidate: 60 * 60 * 24,
+    revalidate: 0,
   });
 
-export const getServerAreas = async (locale?: string) => {
-  const data = await serverApiGet<Area[]>(API_ENDPOINTS.METADATA.AREAS, undefined, {
+export const getServerAreas = (locale?: string) =>
+  serverApiGet<Area[]>(API_ENDPOINTS.METADATA.AREAS, undefined, {
     locale,
-    revalidate: 60 * 60 * 24,
+    revalidate: 0,
   });
-  console.log('Areas response (server): count =', data.length, 'dasma =', data.find((a) => a.value === 'dasma'));
-  return data;
-};
 
 export const getServerAds = (params?: GetAdsParams, locale?: string) =>
   serverApiGet<GetAdsResult>(API_ENDPOINTS.AD.GET_ALL, params, {
     locale,
-    revalidate: 60,
+    revalidate: 0,
   });
 
 export const getServerAdById = (id: string, locale?: string) =>
   serverApiGet<DetailAd>(API_ENDPOINTS.AD.GET_BY_ID(id), undefined, {
     locale,
-    revalidate: 30,
+    revalidate: 0,
   });
 
 export const getServerOffices = (params?: GetOfficesParams, locale?: string) =>
   serverApiGet<GetOfficesResult>(API_ENDPOINTS.OFFICE.GET_ALL, params, {
     locale,
-    revalidate: 60,
+    revalidate: 0,
   });
 
 export const getServerOfficeById = (
@@ -173,7 +170,7 @@ export const getServerOfficeById = (
     adFilters,
     {
       locale,
-      revalidate: 60,
+      revalidate: 0,
     },
   );
 
@@ -183,7 +180,7 @@ export const getServerSubscriptionPlans = (locale?: string) =>
     undefined,
     {
       locale,
-      revalidate: 60 * 60,
+      revalidate: 0,
     },
   );
 
@@ -193,6 +190,6 @@ export const getServerSubscriptionPlanById = (id: string, locale?: string) =>
     undefined,
     {
       locale,
-      revalidate: 60 * 60,
+      revalidate: 0,
     },
   );
