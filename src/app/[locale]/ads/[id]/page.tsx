@@ -2,11 +2,7 @@ import { AdDetailPage } from "@/components/ads/ad-detail-page";
 import { Metadata } from "next";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { getLocale } from "next-intl/server";
-import {
-  createServerQueryClient,
-  prefetchInfiniteSearchAds,
-  prefetchWithinBudget,
-} from "@/lib/query-prefetch";
+import { createServerQueryClient } from "@/lib/query-prefetch";
 import { getServerAdById, countServerAdView } from "@/lib/api/server";
 import type { DetailAd } from "@/types/ad";
 import { permanentRedirect } from "next/navigation";
@@ -124,10 +120,8 @@ export default async function AdDetail({ params }: Props) {
     );
   }
 
-  await prefetchWithinBudget(
-    [prefetchInfiniteSearchAds(queryClient, {}, 10, locale)],
-    400,
-  );
+  // Similar ads load client-side with ad-derived filters (purpose/type/area),
+  // so an SSR prefetch keyed on {} never matches — dropped to save its blocking time.
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
