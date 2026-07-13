@@ -2,6 +2,7 @@
 
 import React from "react";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import {
   Pin,
@@ -45,6 +46,9 @@ export function AdCard({
   const { locale, direction } = useLocale();
   const { isAuthenticated } = useAuthStore();
   const query = useQueryClient();
+  const router = useRouter();
+  // Prefetch the ad detail route on intent (hover/touch) so the tap is instant.
+  const prefetchAd = () => router.prefetch(`/ads/${ad.id}`);
   const t = useTranslations("common.ads");
   const tButtons = useTranslations("common.buttons");
   const [isFavorite, setIsFavorite] = React.useState(ad.isFav || false);
@@ -168,6 +172,8 @@ export function AdCard({
       <Card
         className={`group rounded-[6px] relative shadow-lg border ${variant === "admin" ? "border-gray-200" : "border-gray-200"} gap-0 h-auto flex flex-col overflow-hidden transition-all duration-200 hover:bg-gray-50/50 active:scale-[0.99] active:bg-gray-50/50 cursor-pointer select-none bg-white mb-2`}
         onClick={onClick}
+        onMouseEnter={prefetchAd}
+        onTouchStart={prefetchAd}
         dir={direction}
       >
         {isPremiumAd && (
