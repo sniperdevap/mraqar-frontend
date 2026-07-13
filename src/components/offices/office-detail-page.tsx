@@ -30,6 +30,7 @@ const ShareDialog = dynamic(() =>
 import { formatDisplayPhone } from "@/lib/utils";
 import { usePropertyTypes, useAreas } from "@/hooks/use-metadata";
 import { useInfiniteOfficeById } from "@/hooks/use-offices";
+import { useOfficeStore } from "@/lib/store/office-store";
 
 interface OfficeDetailPageProps {
   officeId: string;
@@ -84,6 +85,10 @@ export function OfficeDetailPage({ officeId }: OfficeDetailPageProps) {
   const areas = areasData || [];
   const officeData = data?.pages?.[0];
   const ads = data?.pages?.flatMap((page) => page.ads) || [];
+  // Fall back to the office cached from the list so the header renders
+  // instantly while the office's ads are still loading.
+  const cachedOffice = useOfficeStore((s) => s.getOffice(officeId));
+  const office = officeData?.office || cachedOffice;
 
   // Sync local filters with URL when URL changes
   useEffect(() => {
@@ -128,13 +133,15 @@ export function OfficeDetailPage({ officeId }: OfficeDetailPageProps) {
   };
 
   const getImageUrl = () => {
-    if (officeData?.office.avatar) {
-      return `${process.env.NEXT_PUBLIC_IMAGE_HOST}/${officeData.office.avatar}`;
+    if (office?.avatar) {
+      return `${process.env.NEXT_PUBLIC_IMAGE_HOST}/${office.avatar}`;
     }
     return "/images/aqar-new-logo.png";
   };
 
-  if (isLoading) {
+  // Only block on the loader when we have nothing to show yet — a cached
+  // office header lets us render immediately while its ads load.
+  if (isLoading && !office) {
     return (
       <div className="min-h-screen flex items-center justify-center ">
         <Loader />
@@ -142,7 +149,7 @@ export function OfficeDetailPage({ officeId }: OfficeDetailPageProps) {
     );
   }
 
-  if (!officeData || !officeData.office) {
+  if (!office) {
     return null;
   }
 
@@ -153,25 +160,25 @@ export function OfficeDetailPage({ officeId }: OfficeDetailPageProps) {
         <div className="relative w-44 h-40 sm:w-64 sm:h-60 rounded-sm overflow-hidden mb-4 bg-[#f8f9fa]">
           <Image
             src={getImageUrl()}
-            alt={officeData.office.name}
+            alt={office.name}
             fill
             className="object-cover"
           />
         </div>
         <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
-          {officeData.office.name}
+          {office.name}
         </h1>
 
         {/* Social & Contact Actions */}
         <div className="flex flex-wrap justify-center gap-3 mb-4">
-          {officeData.office.phoneNumber && (
+          {office.phoneNumber && (
             <a
-              href={`tel:${officeData.office.phoneNumber}`}
+              href={`tel:${office.phoneNumber}`}
               className="flex items-center gap-1.5 text-[#9a090e] font-bold text-sm hover:underline"
             >
               <Phone size={14} fill="currentColor" className="stroke-none" />
               <span dir="ltr">
-                {formatDisplayPhone(officeData.office.phoneNumber)}
+                {formatDisplayPhone(office.phoneNumber)}
               </span>
             </a>
           )}
@@ -179,7 +186,7 @@ export function OfficeDetailPage({ officeId }: OfficeDetailPageProps) {
             {/* WhatsApp */}
             <a
               href={(function () {
-                const phone = officeData.office.phoneNumber || "";
+                const phone = office.phoneNumber || "";
                 let p = phone.replace(/[^0-9]/g, "");
                 if (!p.startsWith("965")) p = "965" + p;
                 return `https://wa.me/${p}`;
@@ -201,9 +208,9 @@ export function OfficeDetailPage({ officeId }: OfficeDetailPageProps) {
               </svg>
             </a>
             {/* Instagram */}
-            {officeData.office.instagram && (
+            {office.instagram && (
               <a
-                href={officeData.office.instagram}
+                href={office.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-primary-blue hover:text-[#E1306C] transition-colors"
@@ -356,7 +363,7 @@ export function OfficeDetailPage({ officeId }: OfficeDetailPageProps) {
         {/* Results Info */}
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl md:text-2xl font-bold text-gray-900">
-            {t("officeAds", { count: officeData.totalAds })}
+            {t("officeAds", { count: officeData?.totalAds ?? 0 })}
           </h2>
         </div>
 
@@ -380,7 +387,7 @@ export function OfficeDetailPage({ officeId }: OfficeDetailPageProps) {
         isOpen={isShareOpen}
         onClose={() => setIsShareOpen(false)}
         url={typeof window !== "undefined" ? window.location.href : ""}
-        title={officeData.office.name}
+        title={office.name}
       />
     </div>
   );

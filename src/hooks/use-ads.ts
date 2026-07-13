@@ -58,5 +58,7 @@ export const useAdById = (id: string, initialData?: DetailAd) => {
     queryFn: () => getAdById(id),
     enabled: !!id,
     initialData: initialData,
+    staleTime: initialData ? Infinity : undefined,
   });
 };
+

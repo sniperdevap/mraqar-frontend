@@ -12,6 +12,7 @@ const OfficeCard = dynamic(() => import('./office-card').then(mod => mod.OfficeC
 const OfficeSearchModal = dynamic(() => import('./office-search-modal').then(mod => mod.OfficeSearchModal));
 import { useTranslations } from 'next-intl';
 import { useInfiniteOffices } from '@/hooks/use-offices';
+import { useOfficeStore } from '@/lib/store/office-store';
 
 export function OfficesPage() {
   const t = useTranslations('office');
@@ -46,6 +47,13 @@ export function OfficesPage() {
   const offices = useMemo(() => {
     return data?.pages.flatMap(page => page.offices) || [];
   }, [data]);
+
+  // Cache offices so the detail page can render its header instantly
+  // instead of waiting on a fresh fetch.
+  const { setOffices } = useOfficeStore();
+  useEffect(() => {
+    if (offices.length) setOffices(offices);
+  }, [offices, setOffices]);
 
   const totalOffices = data?.pages[0]?.total || 0;
 

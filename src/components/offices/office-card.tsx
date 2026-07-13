@@ -2,6 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { Office } from "@/lib/api/office";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
@@ -16,6 +17,9 @@ interface OfficeCardProps {
 export function OfficeCard({ office, onClick }: OfficeCardProps) {
   const t = useTranslations("office");
   const tCommon = useTranslations("plan");
+  const router = useRouter();
+  // Prefetch the office detail route on intent (hover/touch) so the tap is instant.
+  const prefetchOffice = () => router.prefetch(`/offices/${office._id}`);
 
   const getImageUrl = () => {
     if (office.avatar) {
@@ -28,6 +32,8 @@ export function OfficeCard({ office, onClick }: OfficeCardProps) {
     <Card
       className="group relative overflow-hidden border border-gray-200 hover:border-primary/30 transition-all duration-300 hover:shadow-lg cursor-pointer bg-white p-4 sm:p-6 rounded-2xl flex flex-col items-center text-center gap-1"
       onClick={onClick}
+      onMouseEnter={prefetchOffice}
+      onTouchStart={prefetchOffice}
     >
       {/* Social Icons - always on the physical right, vertically centered on the logo */}
       <div className="absolute right-3 top-14 sm:top-20 -translate-y-1/2 flex flex-col items-center gap-2 sm:gap-3">
