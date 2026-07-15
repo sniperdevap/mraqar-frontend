@@ -80,7 +80,7 @@ export function HomeAdCard({
     <>
       {isFeatured && (
         <span
-          className={`absolute -top-2 z-10 bg-[#e11d2b] text-white px-3 py-1 text-[11px] font-bold rounded-full shadow-sm ${
+          className={`absolute top-2 z-10 bg-[#e11d2b] text-white px-2 py-0.5 text-[9px] font-bold rounded-full shadow-sm ${
             direction === "rtl" ? "left-3" : "right-3"
           }`}
         >
