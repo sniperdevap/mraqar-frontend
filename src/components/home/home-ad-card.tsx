@@ -81,7 +81,7 @@ export function HomeAdCard({
       {isFeatured && (
         <span
           className={`absolute -top-2 z-10 bg-[#e11d2b] text-white px-3 py-1 text-[11px] font-bold rounded-full shadow-sm ${
-            direction === "rtl" ? "right-3" : "left-3"
+            direction === "rtl" ? "left-3" : "right-3"
           }`}
         >
           {locale === "ar" ? "مميز" : "Featured"}
@@ -108,6 +108,11 @@ export function HomeAdCard({
                 </span>
               </div>
             )}
+            {/* View count pill */}
+            <div className="absolute top-1 right-1 md:top-1.5 md:right-1.5 z-10 flex items-center gap-0.5 sm:gap-1 bg-[#353e4b] text-white ps-1 pe-1.5 sm:ps-1.5 sm:pe-2 py-0.5 rounded-full text-[9px] sm:text-[10px] md:text-[11px] font-semibold leading-none shadow-sm">
+              <Eye strokeWidth={2.5} className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-3.5 md:h-3.5" />
+              <span>{ad.views || 0}</span>
+            </div>
           </div>
 
           <div className="flex-1 flex flex-col min-w-0 min-h-[64px] justify-center">
@@ -133,12 +138,6 @@ export function HomeAdCard({
                   suppressHydrationWarning
                 >
                   {getTimeAgo(ad.createdAt)}
-                </span>
-              </div>
-              <div className="flex items-center gap-1 text-gray-700">
-                <Eye size={14} className="text-[#0C7D76]" aria-hidden="true" />
-                <span className="text-[12px] font-medium leading-5">
-                  {ad.views || 0}
                 </span>
               </div>
             </div>

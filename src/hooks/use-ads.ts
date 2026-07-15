@@ -34,6 +34,9 @@ export const useSearchAds = (params: GetAdsParams, limit: number) => {
       return undefined;
     },
     initialPageParam: 1,
+    // Home/search must show live view counts: paint cached list, then refetch.
+    staleTime: 0,
+    refetchOnMount: 'always',
   });
 };
 
@@ -58,7 +61,9 @@ export const useAdById = (id: string, initialData?: DetailAd) => {
     queryFn: () => getAdById(id),
     enabled: !!id,
     initialData: initialData,
-    staleTime: initialData ? Infinity : undefined,
+    // Paint cached ad instantly, but always refetch so the view count is current.
+    staleTime: 0,
+    refetchOnMount: 'always',
   });
 };
 
