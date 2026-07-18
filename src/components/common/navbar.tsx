@@ -11,11 +11,9 @@ import {
   Plus,
   Bell,
   LogOut,
-  LogIn,
   ChevronLeft,
   Heart,
   Menu,
-  ChevronRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/lib/store/auth-store";
@@ -41,20 +39,28 @@ export function Navbar() {
 
   const showAuthUi = hasMounted && isAuthenticated;
 
-  // Prefetch every primary nav destination once so taps are instant.
-  // Covers the router.push buttons (create, notifications, back) too — Links
-  // already prefetch on viewport, but router.push does not.
+  // Public Links use Next's viewport-aware prefetching. Only warm protected
+  // button destinations after auth has hydrated, and only while the browser is
+  // idle so current-page data and images keep network priority.
   useEffect(() => {
-    [
-      "/",
-      "/offices",
-      "/plans",
-      "/account",
-      "/menu",
-      "/notifications",
-      "/ads/create",
-    ].forEach((route) => router.prefetch(route));
-  }, [router]);
+    if (!hasMounted) return;
+
+    const hasAuthCookie = document.cookie
+      .split(";")
+      .some(cookie => cookie.trim().startsWith("auth-token="));
+    const routes = isAuthenticated && hasAuthCookie
+      ? ["/account", "/notifications", "/ads/create"]
+      : ["/auth/signin"];
+    const warmRoutes = () => routes.forEach(route => router.prefetch(route));
+
+    if ("requestIdleCallback" in window) {
+      const idleId = window.requestIdleCallback(warmRoutes, { timeout: 1500 });
+      return () => window.cancelIdleCallback(idleId);
+    }
+
+    const timeoutId = globalThis.setTimeout(warmRoutes, 500);
+    return () => globalThis.clearTimeout(timeoutId);
+  }, [hasMounted, isAuthenticated, router]);
 
   useEffect(() => {
     const viewport = window.visualViewport;
@@ -102,7 +108,6 @@ export function Navbar() {
     pathname?.split("/").length === 3 &&
     pathname?.split("/")[2] !== "create";
   const isSearchPage = pathname === "/search";
-  const isAuthRoute = pathname?.startsWith("/auth");
   const showStandardNav = !isSpecialRoute;
   const showTopNavbar = showStandardNav;
 
@@ -140,6 +145,14 @@ export function Navbar() {
   };
 
   const getCreateAdHref = () => (isAuthenticated ? "/ads/create" : "/auth/signin");
+
+  const prefetchCreateAd = () => router.prefetch(getCreateAdHref());
+  const prefetchNotifications = () => {
+    const hasAuthCookie = document.cookie
+      .split(";")
+      .some(cookie => cookie.trim().startsWith("auth-token="));
+    if (isAuthenticated && hasAuthCookie) router.prefetch("/notifications");
+  };
 
   const handleCreateAdClick = () => {
     router.push(getCreateAdHref());
@@ -202,6 +215,9 @@ export function Navbar() {
               variant="outline"
               className="ml-4 border-gray-200 text-gray-900 hover:bg-gray-50 hover:text-primary rounded-xl px-6 py-2 h-10 text-sm font-semibold"
               onClick={handleCreateAdClick}
+              onMouseEnter={prefetchCreateAd}
+              onFocus={prefetchCreateAd}
+              onTouchStart={prefetchCreateAd}
             >
               + {t("nav.addFreeAd")}
             </Button>
@@ -212,6 +228,8 @@ export function Navbar() {
               <button
                 type="button"
                 onClick={() => router.push("/notifications")}
+                onMouseEnter={prefetchNotifications}
+                onFocus={prefetchNotifications}
                 aria-label={t("notifications.title")}
                 className="p-2 text-gray-900 hover:text-primary transition-colors relative cursor-pointer"
               >
@@ -291,6 +309,8 @@ export function Navbar() {
                 {/* Bell Icon */}
                 <button
                   onClick={() => router.push("/notifications")}
+                  onMouseEnter={prefetchNotifications}
+                  onFocus={prefetchNotifications}
                   aria-label={t("notifications.title")}
                   className="p-2 text-gray-900 hover:text-primary transition-colors relative cursor-pointer flex items-center justify-center"
                 >
@@ -420,7 +440,7 @@ export function Navbar() {
             { isCentral: true },
             { href: "/account", icon: UserIcon, label: t("nav.myAccount") },
             { href: "/menu", icon: Menu, label: t("nav.menu") },
-          ].map((item, idx) => {
+          ].map((item) => {
             if (item.isCentral) {
               return (
                 <div
@@ -430,6 +450,9 @@ export function Navbar() {
                   <button
                     type="button"
                     onClick={handleCreateAdClick}
+                    onMouseEnter={prefetchCreateAd}
+                    onFocus={prefetchCreateAd}
+                    onTouchStart={prefetchCreateAd}
                     aria-label={t("nav.addFreeAd")}
                     className="absolute -top-[34px] focus:outline-none z-50 transition-transform duration-200 hover:scale-[1.08] active:scale-90"
                   >

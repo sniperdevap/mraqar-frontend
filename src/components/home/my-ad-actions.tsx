@@ -13,6 +13,7 @@ import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
 import { deleteAd, updateAd } from "@/lib/api/ad";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { useRoutePrefetch } from "@/hooks/use-route-prefetch";
 
 interface MyAdActionsProps {
   ad: Ad;
@@ -23,6 +24,9 @@ export function MyAdActions({ ad, onAction }: MyAdActionsProps) {
   const t = useTranslations("common.ads");
   const tButtons = useTranslations("common.buttons");
   const queryClient = useQueryClient();
+  const { prefetchNow: prefetchEditAd } = useRoutePrefetch(
+    `/ads/edit/${ad.id}`,
+  );
 
   const handleDelete = async () => {
     try {
@@ -105,6 +109,9 @@ export function MyAdActions({ ad, onAction }: MyAdActionsProps) {
         title={t("editAd")}
         className="w-7 h-7 rounded-full bg-white border border-gray-200 text-slate-600 hover:bg-gray-50 flex items-center justify-center transition-all active:scale-95"
         onClick={() => onAction?.("edit", ad)}
+        onMouseEnter={prefetchEditAd}
+        onFocus={prefetchEditAd}
+        onTouchStart={prefetchEditAd}
       >
         <Pencil size={13} />
       </button>

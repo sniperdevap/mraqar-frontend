@@ -1,5 +1,5 @@
 import { API_ENDPOINTS } from "@/lib/constants/api";
-import type { GetAdsParams, GetAdsResult, DetailAd } from "@/types/ad";
+import type { Ad, GetAdsParams, GetAdsResult, DetailAd } from "@/types/ad";
 import type { Area, PropertyType } from "@/lib/api/metadata";
 import type {
   GetOfficeByIdResult,
@@ -7,6 +7,13 @@ import type {
   GetOfficesResult,
 } from "@/lib/api/office";
 import type { SubscriptionPlan } from "@/lib/api/subscription-plan";
+import type { UserSubscription } from "@/lib/api/subscription-plan";
+import type {
+  GetNotificationsResult,
+  Profile,
+  Wishlist,
+} from "@/lib/api/account";
+import { cache } from "react";
 
 type ApiResponse<T> = {
   success: boolean;
@@ -120,6 +127,38 @@ async function serverApiPost<T>(
   }
 }
 
+export async function privateServerApiGet<T>(
+  endpoint: string,
+  token: string,
+  params?: object,
+  locale?: string,
+): Promise<T> {
+  const url = `${getApiBaseUrl()}${endpoint}${buildQueryString(params)}`;
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 2000);
+
+  try {
+    const response = await fetch(url, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+        ...(locale ? { "Accept-Language": locale } : {}),
+      },
+      cache: "no-store",
+      signal: controller.signal,
+    });
+
+    if (!response.ok) {
+      throw new Error(`Private server API request failed with status ${response.status}`);
+    }
+
+    const payload = (await response.json()) as ApiResponse<T>;
+    return payload.data;
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
 export const countServerAdView = (
   id: string,
   locale?: string,
@@ -149,6 +188,11 @@ export const getServerAdById = (id: string, locale?: string) =>
   serverApiGet<DetailAd>(API_ENDPOINTS.AD.GET_BY_ID(id), undefined, {
     locale,
   });
+
+// generateMetadata and the page render both need the same ad. React cache is
+// request-scoped on the server, so this removes the duplicate API round trip
+// without sharing ad data between visitors or changing its revalidation.
+export const getCachedServerAdById = cache(getServerAdById);
 
 export const getServerOffices = (params?: GetOfficesParams, locale?: string) =>
   serverApiGet<GetOfficesResult>(API_ENDPOINTS.OFFICE.GET_ALL, params, {
@@ -185,3 +229,52 @@ export const getServerSubscriptionPlanById = (id: string, locale?: string) =>
       locale,
     },
   );
+
+export const getPrivateServerProfile = (token: string, locale?: string) =>
+  privateServerApiGet<Profile>(API_ENDPOINTS.ACCOUNT.PROFILE, token, undefined, locale);
+
+export const getPrivateServerSubscriptions = (token: string, locale?: string) =>
+  privateServerApiGet<UserSubscription[]>(
+    API_ENDPOINTS.SUBSCRIPTION_PLAN.MY_SUBSCRIPTIONS,
+    token,
+    undefined,
+    locale,
+  );
+
+export const getPrivateServerMyAds = (token: string, locale?: string) =>
+  privateServerApiGet<Ad[]>(API_ENDPOINTS.AD.MY_ADS, token, undefined, locale);
+
+export const getPrivateServerWishlists = (token: string, locale?: string) =>
+  privateServerApiGet<Wishlist[]>(
+    API_ENDPOINTS.ACCOUNT.WISHLIST.GET_ALL,
+    token,
+    undefined,
+    locale,
+  );
+
+export const getPrivateServerFavorites = async (token: string, locale?: string) => {
+  const result = await privateServerApiGet<{
+    favorites: Ad[];
+    total: number;
+    page: number;
+    totalPages: number;
+  }>(API_ENDPOINTS.ACCOUNT.FAVORITES.GET_ALL, token, { page: 1, limit: 12 }, locale);
+
+  return {
+    ads: result.favorites || [],
+    total: result.total,
+    page: result.page,
+    totalPages: result.totalPages,
+  } satisfies GetAdsResult;
+};
+
+export const getPrivateServerNotifications = (token: string, locale?: string) =>
+  privateServerApiGet<GetNotificationsResult>(
+    API_ENDPOINTS.ACCOUNT.NOTIFICATIONS.GET_ALL,
+    token,
+    { page: 1, limit: 15 },
+    locale,
+  );
+
+export const getPrivateServerAdById = (id: string, token: string, locale?: string) =>
+  privateServerApiGet<Ad>(API_ENDPOINTS.AD.GET_BY_ID(id), token, undefined, locale);

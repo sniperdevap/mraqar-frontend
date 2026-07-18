@@ -1,23 +1,25 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import dynamic from "next/dynamic";
 
-const ProfileTab = dynamic(() =>
-  import("./tabs/profile-tab").then((mod) => mod.ProfileTab),
-);
+const loadProfileTab = () => import("./tabs/profile-tab");
+const loadAdBalanceTab = () => import("./tabs/ad-balance-tab");
+const loadWishlistTab = () => import("./tabs/wishlist-tab");
+const loadMyAdsTab = () => import("./tabs/my-ads-tab");
+const loadFavouritesTab = () => import("./tabs/favourites-tab");
+
+const ProfileTab = dynamic(() => loadProfileTab().then((mod) => mod.ProfileTab));
 const AdBalanceTab = dynamic(() =>
-  import("./tabs/ad-balance-tab").then((mod) => mod.AdBalanceTab),
+  loadAdBalanceTab().then((mod) => mod.AdBalanceTab),
 );
 const WishlistTab = dynamic(() =>
-  import("./tabs/wishlist-tab").then((mod) => mod.WishlistTab),
+  loadWishlistTab().then((mod) => mod.WishlistTab),
 );
-const MyAdsTab = dynamic(() =>
-  import("./tabs/my-ads-tab").then((mod) => mod.MyAdsTab),
-);
+const MyAdsTab = dynamic(() => loadMyAdsTab().then((mod) => mod.MyAdsTab));
 const FavouritesTab = dynamic(() =>
-  import("./tabs/favourites-tab").then((mod) => mod.FavouritesTab),
+  loadFavouritesTab().then((mod) => mod.FavouritesTab),
 );
 import { useRef, useEffect } from "react";
 import { useTranslations } from "next-intl";
@@ -32,7 +34,6 @@ const VALID_TABS = [
 type TabType = (typeof VALID_TABS)[number];
 
 export function AccountPage() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const tabsListRef = useRef<HTMLDivElement>(null);
   const t = useTranslations("common.account");
@@ -40,6 +41,28 @@ export function AccountPage() {
   const activeTab = VALID_TABS.includes(tabParam as TabType)
     ? tabParam
     : "profile";
+
+  useEffect(() => {
+    const warmInactiveTabs = () => {
+      void Promise.allSettled([
+        loadProfileTab(),
+        loadAdBalanceTab(),
+        loadWishlistTab(),
+        loadMyAdsTab(),
+        loadFavouritesTab(),
+      ]);
+    };
+
+    if ("requestIdleCallback" in window) {
+      const idleId = window.requestIdleCallback(warmInactiveTabs, {
+        timeout: 2000,
+      });
+      return () => window.cancelIdleCallback(idleId);
+    }
+
+    const timeoutId = globalThis.setTimeout(warmInactiveTabs, 1000);
+    return () => globalThis.clearTimeout(timeoutId);
+  }, []);
 
   useEffect(() => {
     if (tabsListRef.current) {
@@ -64,9 +87,11 @@ export function AccountPage() {
       params.set("tab", value);
     }
     const queryString = params.toString();
-    router.push(`/account${queryString ? `?${queryString}` : ""}`, {
-      scroll: false,
-    });
+    const nextUrl = `/account${queryString ? `?${queryString}` : ""}`;
+
+    // Account tab content is already a local client boundary. Native history
+    // keeps the URL/back button in sync without requesting a new RSC payload.
+    window.history.pushState(null, "", nextUrl);
   };
 
   return (

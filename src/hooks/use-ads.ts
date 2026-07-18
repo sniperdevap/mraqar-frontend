@@ -34,9 +34,11 @@ export const useSearchAds = (params: GetAdsParams, limit: number) => {
       return undefined;
     },
     initialPageParam: 1,
-    // Home/search must show live view counts: paint cached list, then refetch.
-    staleTime: 0,
-    refetchOnMount: 'always',
+    // The server-hydrated first page is already current. Ad detail writes its
+    // fresh view count back into matching list caches, avoiding a duplicate
+    // list request immediately after navigation/hydration.
+    staleTime: 60 * 1000,
+    refetchOnMount: false,
   });
 };
 
@@ -66,4 +68,3 @@ export const useAdById = (id: string, initialData?: DetailAd) => {
     refetchOnMount: 'always',
   });
 };
-

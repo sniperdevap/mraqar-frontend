@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback, useMemo, type SetStateAction } from 'react';
 import { useRouter } from 'next/navigation';
-import { Bell, CheckCheck, Trash2, ChevronRight } from 'lucide-react';
+import { Bell, CheckCheck, Trash2 } from 'lucide-react';
 import { formatDistanceToNowStrict } from 'date-fns';
 import { ar, enUS } from 'date-fns/locale';
 import { toast } from 'sonner';
@@ -13,6 +13,7 @@ import { ConfirmationDialog } from '@/components/ui/confirmation-dialog';
 import Pagination from '@/components/ui/pagination';
 import { useLocale, useTranslations } from '@/hooks/use-locale';
 import { cn } from '@/lib/utils';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 const NOTIFICATIONS_PER_PAGE = 15;
 
@@ -55,27 +56,28 @@ const getNotificationIcon = (type: Notification['type']) => {
 
 export function NotificationsPage() {
   const router = useRouter();
-  const { locale, direction } = useLocale();
+  const { locale } = useLocale();
   const t = useTranslations('common');
-  const [data, setData] = useState<GetNotificationsResult | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
+  const queryClient = useQueryClient();
+  const queryKey = useMemo(
+    () => ['notifications', currentPage, NOTIFICATIONS_PER_PAGE] as const,
+    [currentPage],
+  );
+  const { data, isLoading } = useQuery<GetNotificationsResult>({
+    queryKey,
+    queryFn: () => getNotifications(currentPage, NOTIFICATIONS_PER_PAGE),
+    staleTime: 60 * 1000,
+  });
 
-  const fetchNotifications = useCallback(async (page: number) => {
-    setIsLoading(true);
-    try {
-      const result = await getNotifications(page, NOTIFICATIONS_PER_PAGE);
-      setData(result);
-    } catch (error) {
-      toast.error(getErrorMessage(error));
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchNotifications(currentPage);
-  }, [currentPage, fetchNotifications]);
+  const setData = useCallback(
+    (update: SetStateAction<GetNotificationsResult | null>) => {
+      queryClient.setQueryData<GetNotificationsResult | null>(queryKey, previous =>
+        typeof update === 'function' ? update(previous ?? null) : update,
+      );
+    },
+    [queryClient, queryKey],
+  );
 
   const getTimeAgo = (date: string) => {
     try {
@@ -89,26 +91,38 @@ export function NotificationsPage() {
     }
   };
 
-  const handleNotificationClick = async (notification: Notification) => {
-    try {
-      if (!notification.isRead) {
-        await markNotificationAsRead(notification._id);
-        // Update local state
+  const handleNotificationClick = (notification: Notification) => {
+    if (!notification.isRead) {
+      // Paint the read state immediately. The mutation must never sit between
+      // the user's tap and the destination route.
+      setData(prev => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          notifications: prev.notifications.map(n =>
+            n._id === notification._id ? { ...n, isRead: true } : n,
+          ),
+        };
+      });
+
+      void markNotificationAsRead(notification._id).catch(error => {
+        // If the user stayed on this page, restore the real state and surface
+        // the error. If navigation already completed, this is harmless.
         setData(prev => {
           if (!prev) return prev;
           return {
             ...prev,
-            notifications: prev.notifications.map(n => (n._id === notification._id ? { ...n, isRead: true } : n)),
+            notifications: prev.notifications.map(n =>
+              n._id === notification._id ? { ...n, isRead: false } : n,
+            ),
           };
         });
-      }
+        toast.error(getErrorMessage(error));
+      });
+    }
 
-      // Redirect to the appropriate page
-      if (notification.redirectUrl) {
-        router.push(notification.redirectUrl);
-      }
-    } catch (error) {
-      toast.error(getErrorMessage(error));
+    if (notification.redirectUrl) {
+      router.push(notification.redirectUrl);
     }
   };
 

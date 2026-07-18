@@ -42,7 +42,6 @@ const nextConfig: NextConfig = {
     remotePatterns: remotePatterns as RemotePattern[],
     formats: ["image/avif", "image/webp"],
   },
-  htmlLimitedBots: /.*/,
   experimental: {
     inlineCss: true,
     // Client router cache: reuse visited pages for 60s instead of refetching

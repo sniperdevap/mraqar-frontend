@@ -28,7 +28,6 @@ import { getErrorMessage, getErrorCode } from '@/lib/utils/api';
 import { formatFileSize, normalizeKuwaitPhone } from '@/lib/utils/format';
 import { formatDisplayPhone } from '@/lib/utils';
 import { useQueryClient } from '@tanstack/react-query';
-import imageCompression from 'browser-image-compression';
 
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, rectSortingStrategy, useSortable } from '@dnd-kit/sortable';
@@ -523,6 +522,7 @@ export function CreateAdForm({ initialData, mode = 'create', onSuccess, requireC
                 useWebWorker: true,
               };
               try {
+                const { default: imageCompression } = await import('browser-image-compression');
                 fileToUpload = await imageCompression(item.file, options);
                 setFileProgress(index, 20);
               } catch (error) {

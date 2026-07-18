@@ -3,7 +3,7 @@ import { Metadata } from "next";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { getLocale } from "next-intl/server";
 import { createServerQueryClient } from "@/lib/query-prefetch";
-import { getServerAdById, countServerAdView } from "@/lib/api/server";
+import { getCachedServerAdById, countServerAdView } from "@/lib/api/server";
 import type { DetailAd } from "@/types/ad";
 import { permanentRedirect } from "next/navigation";
 import { after } from "next/server";
@@ -14,10 +14,27 @@ type Props = {
   params: Promise<{ id: string; locale: string }>;
 };
 
+async function getAdWithinNavigationBudget(
+  id: string,
+  locale: string,
+): Promise<DetailAd | null> {
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
+  try {
+    return await Promise.race([
+      getCachedServerAdById(id, locale).catch(() => null),
+      new Promise<null>(resolve => {
+        timeoutId = setTimeout(() => resolve(null), 180);
+      }),
+    ]);
+  } finally {
+    if (timeoutId) clearTimeout(timeoutId);
+  }
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id, locale } = await params;
   try {
-    const ad = await getServerAdById(id, locale);
+    const ad = await getCachedServerAdById(id, locale);
     if (!ad) return {};
 
     const title = `${ad.purpose === "sale" ? "للبيع" : ad.purpose === "rent" ? "للايجار" : "للبدل"} ${ad.propertyType?.labelAr || ad.propertyType?.label || "عقار"} في ${ad.area?.labelAr || ad.area?.label || "المنطقة"}`;
@@ -97,11 +114,7 @@ export default async function AdDetail({ params }: Props) {
     undefined;
 
   let canonicalAd: DetailAd | null = null;
-  try {
-    canonicalAd = await getServerAdById(id, locale);
-  } catch {
-    // API slow/unavailable — client will load the ad; do not block HTML.
-  }
+  canonicalAd = await getAdWithinNavigationBudget(id, locale);
 
   if (canonicalAd && String(canonicalAd.id) !== id) {
     permanentRedirect(`/${routeLocale}/ads/${canonicalAd.id}`);

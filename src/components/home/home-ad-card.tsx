@@ -3,12 +3,12 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import { Clock, Eye, Play } from "lucide-react";
 import { Ad, Media } from "@/types/ad";
 import { useLocale, useTranslations } from "@/hooks/use-locale";
 import { formatDistanceToNow } from "@/lib/utils/format";
+import { useRoutePrefetch } from "@/hooks/use-route-prefetch";
 
 const MyAdActions = dynamic(() =>
   import("./my-ad-actions").then((mod) => mod.MyAdActions),
@@ -29,9 +29,8 @@ export function HomeAdCard({
 }: HomeAdCardProps) {
   const { locale, direction } = useLocale();
   const t = useTranslations("common.ads");
-  const router = useRouter();
   const href = `/ads/${ad.id}`;
-  const prefetchAd = () => router.prefetch(href);
+  const { setPrefetchTarget, prefetchNow } = useRoutePrefetch(href);
 
   const formatPrice = (price: number) => {
     return `${Number(price).toLocaleString("en-US")} ${locale === "ar" ? "دك" : "KD"}`;
@@ -159,8 +158,10 @@ export function HomeAdCard({
       <Link
         href={href}
         prefetch={false}
-        onMouseEnter={prefetchAd}
-        onTouchStart={prefetchAd}
+        ref={setPrefetchTarget}
+        onMouseEnter={prefetchNow}
+        onFocus={prefetchNow}
+        onTouchStart={prefetchNow}
         className={cardClasses}
         onClick={onClick}
         dir={direction}
@@ -175,8 +176,10 @@ export function HomeAdCard({
       <Link
         href={href}
         prefetch={false}
-        onMouseEnter={prefetchAd}
-        onTouchStart={prefetchAd}
+        ref={setPrefetchTarget}
+        onMouseEnter={prefetchNow}
+        onFocus={prefetchNow}
+        onTouchStart={prefetchNow}
         onClick={onClick}
         className="block relative"
       >

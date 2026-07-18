@@ -8,6 +8,12 @@ import {
   getServerPropertyTypes,
   getServerSubscriptionPlanById,
   getServerSubscriptionPlans,
+  getPrivateServerFavorites,
+  getPrivateServerMyAds,
+  getPrivateServerNotifications,
+  getPrivateServerProfile,
+  getPrivateServerSubscriptions,
+  getPrivateServerWishlists,
 } from "@/lib/api/server";
 import type { GetAdsParams } from "@/types/ad";
 import type { GetOfficesParams } from "@/lib/api/office";
@@ -137,4 +143,63 @@ export const prefetchSubscriptionPlan = (
     queryKey: ["subscription-plan", id],
     queryFn: () => getServerSubscriptionPlanById(id, locale),
     staleTime: 1000 * 60 * 60 * 24,
+  });
+
+export type AccountTab =
+  | "profile"
+  | "ad-balance"
+  | "my-ads"
+  | "wishlist"
+  | "favourites";
+
+export function prefetchPrivateAccountTab(
+  queryClient: QueryClient,
+  tab: AccountTab,
+  token: string,
+  locale?: string,
+) {
+  switch (tab) {
+    case "ad-balance":
+      return queryClient.prefetchQuery({
+        queryKey: ["my-subscriptions"],
+        queryFn: () => getPrivateServerSubscriptions(token, locale),
+        staleTime: 5 * 60 * 1000,
+      });
+    case "my-ads":
+      return queryClient.prefetchQuery({
+        queryKey: ["my-ads"],
+        queryFn: () => getPrivateServerMyAds(token, locale),
+        staleTime: 5 * 60 * 1000,
+      });
+    case "wishlist":
+      return queryClient.prefetchQuery({
+        queryKey: ["wishlists", undefined],
+        queryFn: () => getPrivateServerWishlists(token, locale),
+        staleTime: 5 * 60 * 1000,
+      });
+    case "favourites":
+      return queryClient.prefetchQuery({
+        queryKey: ["favorites", 1, 12],
+        queryFn: () => getPrivateServerFavorites(token, locale),
+        staleTime: 5 * 60 * 1000,
+      });
+    case "profile":
+    default:
+      return queryClient.prefetchQuery({
+        queryKey: ["profile"],
+        queryFn: () => getPrivateServerProfile(token, locale),
+        staleTime: 5 * 60 * 1000,
+      });
+  }
+}
+
+export const prefetchPrivateNotifications = (
+  queryClient: QueryClient,
+  token: string,
+  locale?: string,
+) =>
+  queryClient.prefetchQuery({
+    queryKey: ["notifications", 1, 15],
+    queryFn: () => getPrivateServerNotifications(token, locale),
+    staleTime: 60 * 1000,
   });

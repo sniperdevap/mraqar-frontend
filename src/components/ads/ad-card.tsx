@@ -2,7 +2,6 @@
 
 import React from "react";
 import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
 import {
   Pin,
@@ -16,7 +15,6 @@ import {
 } from "lucide-react";
 import { Ad, Media } from "@/types/ad";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { formatDistanceToNow } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 import { deleteAd, updateAd } from "@/lib/api/ad";
@@ -26,6 +24,7 @@ import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
 import { useLocale } from "@/hooks/use-locale";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuthStore } from "@/lib/store/auth-store";
+import { useRoutePrefetch } from "@/hooks/use-route-prefetch";
 
 interface AdCardProps {
   ad: Ad;
@@ -41,14 +40,14 @@ export function AdCard({
   onClick,
   variant = "default",
   onAction,
-  mode = "light",
 }: AdCardProps) {
   const { locale, direction } = useLocale();
   const { isAuthenticated } = useAuthStore();
   const query = useQueryClient();
-  const router = useRouter();
-  // Prefetch the ad detail route on intent (hover/touch) so the tap is instant.
-  const prefetchAd = () => router.prefetch(`/ads/${ad.id}`);
+  const { setPrefetchTarget, prefetchNow } = useRoutePrefetch(
+    `/ads/${ad.id}`,
+    variant !== "admin",
+  );
   const t = useTranslations("common.ads");
   const tButtons = useTranslations("common.buttons");
   const [isFavorite, setIsFavorite] = React.useState(ad.isFav || false);
@@ -126,10 +125,6 @@ export function AdCard({
     if (onAction) onAction("edit", ad);
   };
 
-  const formatPrice = (price: number) => {
-    return `${price}  د.ك`;
-  };
-
   const getTimeAgo = (date: string) => {
     try {
       const locale_obj = locale === "ar" ? ar : enUS;
@@ -155,9 +150,6 @@ export function AdCard({
   };
 
   const isPremiumAd = ad.isPremium ?? ad.premiumAd;
-  const premiumCardClasses = isPremiumAd
-    ? "border border-gray-300 shadow-[0_0_0_1px_hsl(var(--primary)/0.2)]"
-    : "";
   const firstMedia = ad.media?.[0];
   const isVideo = firstMedia?.type === "video";
   const displayUrl = firstMedia
@@ -170,10 +162,12 @@ export function AdCard({
   return (
     <>
       <Card
+        ref={setPrefetchTarget}
         className={`group rounded-[6px] relative shadow-lg border ${variant === "admin" ? "border-gray-200" : "border-gray-200"} gap-0 h-auto flex flex-col overflow-hidden transition-all duration-200 hover:bg-gray-50/50 active:scale-[0.99] active:bg-gray-50/50 cursor-pointer select-none bg-white mb-2`}
         onClick={onClick}
-        onMouseEnter={prefetchAd}
-        onTouchStart={prefetchAd}
+        onMouseEnter={prefetchNow}
+        onFocus={prefetchNow}
+        onTouchStart={prefetchNow}
         dir={direction}
       >
         {isPremiumAd && (
