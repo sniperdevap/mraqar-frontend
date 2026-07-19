@@ -187,11 +187,14 @@ export const getServerAds = (params?: GetAdsParams, locale?: string) =>
 export const getServerAdById = (id: string, locale?: string) =>
   serverApiGet<DetailAd>(API_ENDPOINTS.AD.GET_BY_ID(id), undefined, {
     locale,
+    // The view counter changes independently of ad content. Do not serve a
+    // stale detail payload (often views: 0) into the server-rendered page.
+    revalidate: 0,
   });
 
 // generateMetadata and the page render both need the same ad. React cache is
-// request-scoped on the server, so this removes the duplicate API round trip
-// without sharing ad data between visitors or changing its revalidation.
+// request-scoped on the server, so this still removes the duplicate API round
+// trip without sharing view counts between requests.
 export const getCachedServerAdById = cache(getServerAdById);
 
 export const getServerOffices = (params?: GetOfficesParams, locale?: string) =>
