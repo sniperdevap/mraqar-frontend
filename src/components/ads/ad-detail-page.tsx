@@ -659,11 +659,11 @@ ${window.location.href}`);
           {/* Description Section */}
           <div
             className={`flex flex-col w-full mt-4 ${
-              locale === "ar"
-                ? "items-start text-right"
+              direction === "rtl"
+                ? "items-end text-right"
                 : "items-start text-left"
             }`}
-            dir={locale === "ar" ? "rtl" : "ltr"}
+            dir={direction}
           >
             <div className="mb-2 flex justify-between w-full items-center">
               <h3 className="text-base font-bold text-gray-800">
@@ -691,9 +691,10 @@ ${window.location.href}`);
             </div>
             <p
               className={`text-gray-700 text-sm sm:text-base leading-relaxed w-full whitespace-pre-wrap break-words ${
-                locale === "ar" ? "text-right" : "text-left"
+                direction === "rtl" ? "text-right" : "text-left"
               }`}
-              dir={locale === "ar" ? "rtl" : "ltr"}
+              dir={direction}
+              style={{ unicodeBidi: "plaintext" }}
             >
               {ad.description}
             </p>
