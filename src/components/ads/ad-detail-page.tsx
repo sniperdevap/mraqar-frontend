@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import {
-  Share2,
+  Eye,
   Phone,
   Heart,
   Play,
@@ -479,24 +479,13 @@ ${window.location.href}`);
               alt="Share"
               width={40}
               height={40}
-              className="text-black cursor-pointer"
+              className="cursor-pointer"
               onClick={handleShare}
             />
 
             {/* Views count on the far side */}
             <div className="flex items-center gap-1.5 text-gray-900 text-base font-bold">
-              <svg
-                viewBox="0 0 24 24"
-                className="w-5 h-5"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fill="#0d7377"
-                  d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"
-                ></path>
-                <circle cx="12" cy="12" r="3.4" fill="#fff"></circle>
-                <circle cx="12" cy="12" r="1.5" fill="#0d7377"></circle>
-              </svg>
+              <Eye className="w-5 h-5 text-brand-teal" strokeWidth={2.5} />
               <span>{ad.views}</span>
             </div>
           </div>
