@@ -392,9 +392,29 @@ export function HomePage() {
 
       {/* Hero Header Section */}
       <section
-        className="w-full pt-4 md:pt-4 px-4 sm:px-4 lg:px-4 max-w-xl mx-auto mb-4 relative z-30"
+        className="w-full pt-4 md:pt-4 px-4 sm:px-4 lg:px-4 max-w-xl mx-auto mb-4 relative z-30 isolate"
         dir={direction}
       >
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -inset-x-8 -top-12 -z-10 h-[320px] overflow-hidden select-none"
+          style={{ transform: direction === "rtl" ? "scaleX(-1)" : undefined }}
+        >
+          <div
+            className="h-full w-full"
+            style={{
+              background: [
+                // broad soft spotlight behind the logo/title
+                "radial-gradient(ellipse 70% 55% at 50% 0%, color-mix(in srgb, var(--color-brand-teal) 16%, transparent) 0%, transparent 72%)",
+                // tighter, brighter core
+                "radial-gradient(ellipse 32% 26% at 50% 4%, color-mix(in srgb, var(--color-brand-teal) 14%, transparent) 0%, transparent 65%)",
+                // off-centre streak that keeps it from reading as a perfect circle
+                "radial-gradient(ellipse 38% 22% at 74% 10%, color-mix(in srgb, var(--color-brand-teal) 9%, transparent) 0%, transparent 60%)",
+              ].join(", "),
+              filter: "blur(6px)",
+            }}
+          />
+        </div>
         {/* LCP image: fixed box reserves space before decode (avoids CLS). */}
         <div
           className="flex justify-center mb-4 mx-auto"
