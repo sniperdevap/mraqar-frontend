@@ -166,7 +166,7 @@ export function MultiSelect({ options, value, onChange, placeholder = 'Select it
                 />
               )}
               {!open && (
-                <span className={cn('text-gray-500 text-base font-medium block w-full', 'text-start')}>
+                <span className={cn('text-gray-400 text-base font-medium block w-full', 'text-start')}>
                   {placeholder}
                 </span>
               )}
@@ -199,7 +199,7 @@ export function MultiSelect({ options, value, onChange, placeholder = 'Select it
 
       {open && (
         <div
-          className="absolute z-[150] w-full mt-1 bg-white border border-gray-100 shadow-[0_12px_32px_rgba(0,0,0,0.12)] rounded-xl overflow-hidden origin-top animate-in fade-in-0 zoom-in-95 slide-in-from-top-2 duration-200 ease-out"
+          className="absolute z-[150] w-full mt-1 bg-white border border-gray-100 shadow-[0_8px_24px_rgba(0,0,0,0.10)] rounded-xl overflow-hidden origin-top animate-in fade-in-0 zoom-in-95 slide-in-from-top-2 duration-200 ease-out"
           dir={dir}
         >
           <div ref={scrollContainerRef} className="max-h-[300px] overflow-y-auto overflow-x-hidden custom-scrollbar" onWheel={handleWheel}>

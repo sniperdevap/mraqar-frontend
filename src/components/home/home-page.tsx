@@ -28,6 +28,14 @@ const PriceFilterDialog = dynamic(
   { ssr: false },
 );
 
+/**
+ * A/B flag: transaction type (rent/sale/exchange) first, before region and
+ * property type — an early micro-commitment before the heavier choices.
+ * Flip to false to restore the original region -> type -> purpose order.
+ */
+const SEARCH_PURPOSE_FIRST =
+  process.env.NEXT_PUBLIC_SEARCH_PURPOSE_FIRST !== "false";
+
 export function HomePage() {
   const router = useRouter();
   const t = useTranslations("home");
@@ -235,11 +243,119 @@ export function HomePage() {
     setMaxPrice("");
   };
 
+  const purposeTabs = (
+    <>
+          {/* Purpose Tabs — sliding segmented control */}
+          <div
+            className="bg-gray-50 !h-11 md:!h-12 w-full rounded-xl p-1 border border-gray-200/70"
+            dir={direction}
+          >
+            <div className="relative h-full flex items-center">
+              <div
+                className="absolute top-0 bottom-0 w-1/3 rounded-xl bg-white shadow-sm transition-all duration-300 ease-out"
+                style={{
+                  insetInlineStart:
+                    activeTab === "exchange"
+                      ? "0%"
+                      : activeTab === "rent"
+                        ? "33.333%"
+                        : activeTab === "sale"
+                          ? "66.666%"
+                          : "0%",
+                  opacity: activeTab ? 1 : 0,
+                }}
+              />
+              {[
+                { key: "exchange", label: t("tabs.exchange") },
+                { key: "rent", label: t("tabs.rent") },
+                { key: "sale", label: t("tabs.sale") },
+              ].map(({ key, label }) => (
+                <button
+                  key={key}
+                  onClick={() => setActiveTab(key)}
+                  className={`relative z-10 flex-1 h-full flex items-center justify-center rounded-xl font-medium transition-colors text-[15px] ${activeTab === key
+                      ? "text-gray-900 font-semibold"
+                      : "text-gray-600 hover:text-gray-900"
+                    }`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+    </>
+  );
+
+  const areaField = (
+    <>
+          {/* Area Search */}
+          <div className="relative">
+            <MultiSelect
+              options={areas.map((a) => ({
+                label: locale === "ar" ? a.labelAr : a.label,
+                value: String(a.id),
+                governorate:
+                  locale === "ar" ? a.governorateAr : a.governorate,
+              }))}
+              value={selectedAreas}
+              onChange={(val) => {
+                setSelectedAreas(val);
+              }}
+              placeholder={t("search.areaPlaceholder")}
+              className="w-full min-h-11 md:min-h-12 h-auto py-1 px-4 bg-white border border-gray-200 rounded-xl flex items-center text-gray-700 transition-all hover:border-primary/50 hover:bg-primary/[0.03] focus-within:border-primary data-[state=open]:border-primary data-[state=open]:shadow-[0_4px_20px_rgba(5,110,114,0.15)] text-base font-medium"
+              disabled={isLoading}
+              enableGrouping={true}
+              dir={direction}
+            />
+          </div>
+
+    </>
+  );
+
+  const propertyTypeField = (
+    <>
+          {/* Property Type */}
+          <div className="relative">
+            <Select
+              value={propertyType}
+              onValueChange={(val) => {
+                setPropertyType(val);
+              }}
+              disabled={isLoading}
+              dir={direction}
+            >
+              <SelectTrigger
+                aria-label={t("search.propertyTypePlaceholder")}
+                className="w-full !h-11 md:!h-12 px-4 bg-white border border-gray-200 rounded-xl text-gray-700 data-[placeholder]:!text-gray-400 transition-all hover:border-primary/50 hover:bg-primary/[0.03] focus:border-primary data-[state=open]:border-primary data-[state=open]:shadow-[0_4px_20px_rgba(5,110,114,0.15)] text-base font-medium"
+              >
+                <SelectValue
+                  placeholder={t("search.propertyTypePlaceholder")}
+                />
+              </SelectTrigger>
+              <SelectContent className="rounded-xl">
+                {propertyTypes.map((type) => (
+                  <SelectItem
+                    key={type.id}
+                    value={String(type.id)}
+                    className="cursor-pointer font-normal text-base text-gray-800"
+                  >
+                    {locale === "ar" ? type.labelAr || type.label : type.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+
+    </>
+  );
+
   return (
     <div className="flex flex-col min-h-[calc(100vh-64px)] relative overflow-x-hidden bg-[#f8f9fa] md:bg-white">
       {showStickySearchBar && (
         <div
-          className="fixed top-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-sm border-b border-gray-200 shadow-sm animate-slide-down"
+          className="fixed top-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-[0_1px_12px_rgba(16,24,40,0.06)] animate-slide-down"
           dir={direction}
         >
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
@@ -298,109 +414,30 @@ export function HomePage() {
         </div>
 
         {/* Title sits outside any card, floating over the page */}
-        <h1 className="text-xl md:text-xl font-bold text-[#1f2937] text-center mb-5">
+        <h1 className="text-[22px] md:text-2xl font-bold tracking-tight text-[#1f2937] text-center mb-5">
           {t("hero.title")}
         </h1>
 
         {/* Search Form */}
-        <div className="w-full space-y-4 p-5 sm:p-6 rounded-3xl border border-gray-100 bg-white shadow-[0_4px_24px_rgba(0,0,0,0.06)]">
-          {/* Area Search */}
-          <div className="relative">
-            <MultiSelect
-              options={areas.map((a) => ({
-                label: locale === "ar" ? a.labelAr : a.label,
-                value: String(a.id),
-                governorate:
-                  locale === "ar" ? a.governorateAr : a.governorate,
-              }))}
-              value={selectedAreas}
-              onChange={(val) => {
-                setSelectedAreas(val);
-              }}
-              placeholder={t("search.areaPlaceholder")}
-              className="w-full min-h-11 md:min-h-12 h-auto py-1 px-4 bg-white border border-gray-200 rounded-xl flex items-center text-gray-700 transition-all hover:border-primary/50 hover:bg-primary/[0.03] focus-within:border-primary data-[state=open]:border-primary data-[state=open]:shadow-[0_4px_20px_rgba(5,110,114,0.15)] text-base font-medium"
-              disabled={isLoading}
-              enableGrouping={true}
-              dir={direction}
-            />
-          </div>
-
-          {/* Property Type */}
-          <div className="relative">
-            <Select
-              value={propertyType}
-              onValueChange={(val) => {
-                setPropertyType(val);
-              }}
-              disabled={isLoading}
-              dir={direction}
-            >
-              <SelectTrigger
-                aria-label={t("search.propertyTypePlaceholder")}
-                className="w-full !h-11 md:!h-12 px-4 bg-white border border-gray-200 rounded-xl text-gray-700 data-[placeholder]:!text-gray-500 transition-all hover:border-primary/50 hover:bg-primary/[0.03] focus:border-primary data-[state=open]:border-primary data-[state=open]:shadow-[0_4px_20px_rgba(5,110,114,0.15)] text-base font-medium"
-              >
-                <SelectValue
-                  placeholder={t("search.propertyTypePlaceholder")}
-                />
-              </SelectTrigger>
-              <SelectContent className="rounded-xl">
-                {propertyTypes.map((type) => (
-                  <SelectItem
-                    key={type.id}
-                    value={String(type.id)}
-                    className="cursor-pointer font-normal text-base text-gray-800"
-                  >
-                    {locale === "ar" ? type.labelAr || type.label : type.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Purpose Tabs — sliding segmented control */}
-          <div
-            className="bg-gray-100 !h-11 md:!h-12 w-full rounded-xl p-1 border border-gray-200"
-            dir={direction}
-          >
-            <div className="relative h-full flex items-center">
-              <div
-                className="absolute top-0 bottom-0 w-1/3 rounded-lg bg-white shadow-sm transition-all duration-300 ease-out"
-                style={{
-                  insetInlineStart:
-                    activeTab === "exchange"
-                      ? "0%"
-                      : activeTab === "rent"
-                        ? "33.333%"
-                        : activeTab === "sale"
-                          ? "66.666%"
-                          : "0%",
-                  opacity: activeTab ? 1 : 0,
-                }}
-              />
-              {[
-                { key: "exchange", label: t("tabs.exchange") },
-                { key: "rent", label: t("tabs.rent") },
-                { key: "sale", label: t("tabs.sale") },
-              ].map(({ key, label }) => (
-                <button
-                  key={key}
-                  onClick={() => setActiveTab(key)}
-                  className={`relative z-10 flex-1 h-full flex items-center justify-center rounded-lg font-medium transition-colors text-base ${
-                    activeTab === key
-                      ? "text-brand-teal font-semibold"
-                      : "text-gray-500 hover:text-gray-700"
-                  }`}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-          </div>
+        <div className="w-full space-y-4 p-5 sm:p-6 rounded-2xl border border-gray-100 bg-white shadow-[0_4px_12px_rgba(0,0,0,0.08)]">
+          {SEARCH_PURPOSE_FIRST ? (
+            <>
+              {purposeTabs}
+              {areaField}
+              {propertyTypeField}
+            </>
+          ) : (
+            <>
+              {areaField}
+              {propertyTypeField}
+              {purposeTabs}
+            </>
+          )}
 
           {/* Search Button */}
           <Button
             onClick={handleSearch}
-            className="rounded-xl !h-11 md:!h-12 w-full mt-4 bg-[#056e72] hover:bg-[#045c5f] border-none text-white font-semibold text-lg transition-all hover:shadow-[0_6px_18px_rgba(5,110,114,0.25)] active:scale-[0.98]"
+            className="rounded-xl !h-11 md:!h-12 w-full mt-5 bg-[#056e72] hover:bg-[#045c5f] border-none text-white font-semibold text-base tracking-wide transition-all hover:shadow-[0_6px_18px_rgba(5,110,114,0.25)] active:scale-[0.98]"
           >
             <Search size={18} className="me-1.5" />
             {tCommon("buttons.search")}
@@ -421,7 +458,7 @@ export function HomePage() {
             {/* <span className="border-[#169899] text-[#169899] flex items-center justify-center font-bold text-base group-hover:scale-105 group-active:scale-95 transition-all duration-200">
                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M12.0049 22.0027C6.48204 22.0027 2.00488 17.5256 2.00488 12.0027C2.00488 6.4799 6.48204 2.00275 12.0049 2.00275C17.5277 2.00275 22.0049 6.4799 22.0049 12.0027C22.0049 17.5256 17.5277 22.0027 12.0049 22.0027ZM12.0049 20.0027C16.4232 20.0027 20.0049 16.421 20.0049 12.0027C20.0049 7.58447 16.4232 4.00275 12.0049 4.00275C7.5866 4.00275 4.00488 7.58447 4.00488 12.0027C4.00488 16.421 7.5866 20.0027 12.0049 20.0027ZM8.50488 14.0027H14.0049C14.281 14.0027 14.5049 13.7789 14.5049 13.5027C14.5049 13.2266 14.281 13.0027 14.0049 13.0027H10.0049C8.62417 13.0027 7.50488 11.8835 7.50488 10.5027C7.50488 9.12203 8.62417 8.00275 10.0049 8.00275H11.0049V6.00275H13.0049V8.00275H15.5049V10.0027H10.0049C9.72874 10.0027 9.50488 10.2266 9.50488 10.5027C9.50488 10.7789 9.72874 11.0027 10.0049 11.0027H14.0049C15.3856 11.0027 16.5049 12.122 16.5049 13.5027C16.5049 14.8835 15.3856 16.0027 14.0049 16.0027H13.0049V18.0027H11.0049V16.0027H8.50488V14.0027Z"></path></svg>
             </span> */}
-            <h2 className="text-xl font-bold text-black tracking-tight group-hover:text-[#169899] transition-colors">
+            <h2 className="text-xl font-bold text-black tracking-tight group-hover:text-gray-600 transition-colors">
               {t("latestListings.title")}
             </h2>
           </button>
