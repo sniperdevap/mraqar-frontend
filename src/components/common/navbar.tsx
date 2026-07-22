@@ -433,7 +433,7 @@ export function Navbar() {
 
       {/* Mobile Bottom Navbar */}
       {showStandardNav && !isAdDetailPage && !isKeyboardOpen && (
-        <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-lg flex items-center justify-around py-2 px-4 z-50 rounded-t-[32px] shadow-[0_-6px_24px_rgba(16,24,40,0.10)] h-[4.5rem] border-t border-gray-100/50">
+        <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-lg flex items-center justify-around py-2 px-4 z-50 rounded-t-[32px] shadow-[0_-8px_30px_rgba(0,0,0,0.06)] h-[4.5rem] border-t border-gray-100/50">
           {[
             { href: "/", icon: Home, label: t("nav.home") },
             { href: "/offices", icon: MapPin, label: t("nav.offices") },
@@ -456,7 +456,7 @@ export function Navbar() {
                     aria-label={t("nav.addFreeAd")}
                     className="absolute -top-[34px] focus:outline-none z-50 transition-transform duration-200 hover:scale-[1.08] active:scale-90"
                   >
-                    <div className="flex items-center justify-center w-[50px] h-[50px] rounded-full bg-primary shadow-[0_8px_24px_rgba(5,110,114,0.32)] cursor-pointer transition-all duration-300 hover:shadow-[0_10px_28px_rgba(5,110,114,0.40)]">
+                    <div className="flex items-center justify-center w-[50px] h-[50px] rounded-full bg-primary shadow-[0_8px_16px_rgba(5,110,114,0.3)] cursor-pointer transition-all duration-300 hover:shadow-[0_8px_20px_rgba(5,110,114,0.45)]">
                       <Plus
                         size={26}
                         strokeWidth={3.5}
@@ -479,8 +479,8 @@ export function Navbar() {
                 className={cn(
                   "relative flex flex-col items-center gap-1.5 py-1 px-3 rounded-2xl transition-all duration-300",
                   isActive
-                    ? "text-gray-900 bg-gray-100 shadow-[0_2px_8px_rgba(16,24,40,0.08)]"
-                    : "text-[#555555] hover:bg-gray-100/70",
+                    ? "text-primary-blue"
+                    : "text-[#555555] hover:text-[#555555]",
                 )}
               >
                 <div
@@ -497,7 +497,7 @@ export function Navbar() {
                   className={cn(
                     "text-[10px] z-10 font-bold transition-all duration-300",
                     isActive
-                      ? "text-gray-900 opacity-100"
+                      ? "text-primary-blue opacity-100"
                       : "text-[#555555]",
                   )}
                 >

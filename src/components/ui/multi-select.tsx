@@ -140,7 +140,7 @@ export function MultiSelect({ options, value, onChange, placeholder = 'Select it
                   onClick={e => e.stopPropagation()}
                   placeholder="Search..."
                   className={cn(
-                    'border-none outline-none bg-transparent flex-1 text-base font-medium text-gray-700 placeholder:text-gray-400',
+                    'border-none outline-none bg-transparent flex-1 text-base font-medium text-gray-700 placeholder:text-gray-400 placeholder:font-light',
                     'text-start'
                   )}
                   disabled={disabled}
@@ -159,14 +159,14 @@ export function MultiSelect({ options, value, onChange, placeholder = 'Select it
                   onClick={e => e.stopPropagation()}
                   placeholder={placeholder}
                   className={cn(
-                    'border-none outline-none bg-transparent flex-1 text-base font-medium text-gray-700 placeholder:text-gray-400 min-w-[150px]',
+                    'border-none outline-none bg-transparent flex-1 text-base font-medium text-gray-700 placeholder:text-gray-400 placeholder:font-light min-w-[150px]',
                     'text-start'
                   )}
                   disabled={disabled}
                 />
               )}
               {!open && (
-                <span className={cn('text-gray-400 text-base font-medium block w-full', 'text-start')}>
+                <span className={cn('text-gray-400 text-base font-light block w-full', 'text-start')}>
                   {placeholder}
                 </span>
               )}
