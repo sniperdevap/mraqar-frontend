@@ -1,8 +1,9 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
 import Cookies from 'js-cookie';
 
 type Locale = 'en' | 'ar';
+const DEFAULT_LOCALE: Locale = 'ar';
+const STORAGE_KEY = 'locale';
 
 interface LanguageState {
   locale: Locale;
@@ -10,36 +11,33 @@ interface LanguageState {
   setLocale: (locale: Locale) => void;
 }
 
-export const useLanguageStore = create<LanguageState>()(
-  persist(
-    set => ({
-      locale: 'ar',
-      direction: 'rtl',
-      setLocale: (locale: Locale) => {
-        const direction = locale === 'ar' ? 'rtl' : 'ltr';
+const isLocale = (value: string | null | undefined): value is Locale =>
+  value === 'en' || value === 'ar';
 
-        // Set cookie for server-side locale detection
-        Cookies.set('NEXT_LOCALE', locale, { expires: 365 });
+const readStoredLocale = (): Locale => {
+  if (typeof window === 'undefined') return DEFAULT_LOCALE;
+  const stored = window.sessionStorage.getItem(STORAGE_KEY);
+  if (isLocale(stored)) return stored;
+  const cookieLocale = Cookies.get('NEXT_LOCALE');
+  return isLocale(cookieLocale) ? cookieLocale : DEFAULT_LOCALE;
+};
 
-        // Update store
-        set({ locale, direction });
+const initialLocale = readStoredLocale();
 
-        // Reload page to apply new locale
-        window.location.reload();
-      },
-    }),
-    {
-      name: 'language-storage',
-      // Initialize from cookie on load
-      onRehydrateStorage: () => state => {
-        if (state) {
-          const cookieLocale = Cookies.get('NEXT_LOCALE') as Locale | undefined;
-          if (cookieLocale && (cookieLocale === 'en' || cookieLocale === 'ar')) {
-            state.locale = cookieLocale;
-            state.direction = cookieLocale === 'ar' ? 'rtl' : 'ltr';
-          }
-        }
-      },
-    }
-  )
-);
+export const useLanguageStore = create<LanguageState>()(set => ({
+  locale: initialLocale,
+  direction: initialLocale === 'ar' ? 'rtl' : 'ltr',
+  setLocale: (locale: Locale) => {
+    window.sessionStorage.setItem(STORAGE_KEY, locale);
+    // Session cookie (no `expires`) — dies with the browser session.
+    Cookies.set('NEXT_LOCALE', locale);
+    set({ locale, direction: locale === 'ar' ? 'rtl' : 'ltr' });
+    // Reload so the server re-renders with the new messages.
+    window.location.reload();
+  },
+}));
+
+if (typeof window !== 'undefined' && !window.sessionStorage.getItem(STORAGE_KEY)) {
+  window.sessionStorage.setItem(STORAGE_KEY, initialLocale);
+  Cookies.set('NEXT_LOCALE', initialLocale);
+}

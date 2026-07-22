@@ -7,8 +7,6 @@ import {
   Share2,
   Phone,
   Heart,
-  ChevronLeft,
-  ChevronRight,
   Play,
   Copy,
 } from "lucide-react";
@@ -415,132 +413,25 @@ ${window.location.href}`);
 
   return (
     <div className="min-h-screen pb-28 bg-white" dir={direction}>
-      {/* Top Image Slider or Spacer */}
-      {ad.media && ad.media.length > 0 ? (
-        <section className="relative max-w-4xl mx-auto h-[35vh] md:h-[45vh] overflow-hidden bg-neutral-900 border-b border-gray-100">
-          {/* Main Media Slider */}
-          <div
-            className={`relative w-full h-full ${currentMedia?.type === "video" ? "cursor-pointer" : ""}`}
-            onClick={
-              currentMedia?.type === "video"
-                ? () => setIsMediaViewerOpen(true)
-                : undefined
-            }
-          >
-            {currentMedia?.type === "video" ? (
-              <div className="relative w-full h-full flex items-center justify-center bg-white/5">
-                <Image
-                  src={getThumbnailUrl(currentMedia)}
-                  alt="Video thumbnail"
-                  fill
-                  priority
-                  sizes="(max-width: 896px) 100vw, 896px"
-                  className="object-cover"
-                />
-                <div className="absolute inset-0 flex items-center justify-center bg-black/10">
-                  <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/30 shadow-2xl">
-                    <Play className="w-8 h-8 text-white fill-white ml-1" />
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <Image
-                src={currentImageUrl}
-                alt={
-                  locale === "ar"
-                    ? ad.propertyType?.labelAr ||
-                      ad.propertyType?.label ||
-                      "عقار"
-                    : ad.propertyType?.label || "Property"
-                }
-                fill
-                priority
-                sizes="(max-width: 896px) 100vw, 896px"
-                className="object-cover"
-              />
-            )}
-          </div>
-
-          {/* Slide Controls (Forward/Backward On-Image Icons) */}
-          {ad.media.length > 1 && (
-            <div className="absolute inset-y-0 left-0 right-0 pointer-events-none flex items-center justify-between px-2 text-white">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setCurrentImageIndex((prev) =>
-                    prev === 0 ? ad.media!.length - 1 : prev - 1,
-                  );
-                }}
-                className="pointer-events-auto w-9 h-9 rounded-full bg-black/20 flex items-center justify-center backdrop-blur-xs hover:bg-black/40 transition-colors"
-              >
-                {direction === "rtl" ? (
-                  <ChevronRight size={24} />
-                ) : (
-                  <ChevronLeft size={24} />
-                )}
-              </button>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setCurrentImageIndex((prev) =>
-                    prev === ad.media!.length - 1 ? 0 : prev + 1,
-                  );
-                }}
-                className="pointer-events-auto w-9 h-9 rounded-full bg-black/20 flex items-center justify-center backdrop-blur-xs hover:bg-black/40 transition-colors"
-              >
-                {direction === "rtl" ? (
-                  <ChevronLeft size={24} />
-                ) : (
-                  <ChevronRight size={24} />
-                )}
-              </button>
-            </div>
-          )}
-
-          {/* Media Badge (Count) */}
-          <div className="absolute bottom-4 left-4 bg-black/60 text-white px-3 py-1.5 rounded-lg text-xs font-bold backdrop-blur-md flex items-center gap-2">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              className="w-4 h-4"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-              <circle cx="8.5" cy="8.5" r="1.5"></circle>
-              <polyline points="21 15 16 10 5 21"></polyline>
-            </svg>
-            {currentImageIndex + 1} / {ad.media.length}
-          </div>
-        </section>
-      ) : (
-        <section className="relative max-w-4xl mx-auto h-[35vh] md:h-[45vh] overflow-hidden bg-gray-50 border-b border-gray-100">
-          <img
-            src="/images/DefaultAdImage.jpeg"
-            alt={
-              locale === "ar"
-                ? ad.propertyType?.labelAr || ad.propertyType?.label || "عقار"
-                : ad.propertyType?.label || "Property"
-            }
-            className="w-full h-full object-contain"
-          />
-        </section>
-      )}
-
       {/* Detail Content Section */}
       <div className="max-w-4xl mx-auto px-4 pt-3 pb-10">
         <div className="flex flex-col w-full mb-4">
           {/* Title */}
-          <h1 className="text-xl md:text-2xl font-bold text-gray-900 text-center tracking-tight uppercase mb-4">
+          <h1 className="text-xl md:text-2xl font-bold text-gray-900 text-center tracking-tight uppercase mb-6">
             {locale === "ar"
               ? `${ad.purpose === "sale" ? "للبيع" : ad.purpose === "rent" ? "للايجار" : "للبدل"} ${ad.propertyType?.labelAr || ad.propertyType?.label || ""} في ${ad.area?.labelAr || ad.area?.label || ""}`
               : `${ad.purpose === "sale" ? "FOR SALE" : ad.purpose === "rent" ? "FOR RENT" : "FOR EXCHANGE"} ${ad.propertyType?.label || ""} IN ${ad.area?.label || ""}`}
           </h1>
 
-          {/* Views & Phone Row */}
-          <div className="flex items-center justify-between w-full pb-3 mb-3">
-            {/* Phone numbers on the right */}
+          {/* Price */}
+          <div className="text-xl font-bold text-[#9a090e] text-center mb-4">
+            {ad.price
+              ? `${Number(ad.price).toLocaleString("en-US")} ${locale === "ar" ? "د.ك" : "KD"}`
+              : ""}
+          </div>
+
+          {/* Phone numbers */}
+          <div className="flex items-center justify-start w-full pb-3 mb-4">
             <div
               className="flex items-center gap-2 text-[#169899] font-bold text-base sm:text-lg tracking-wide"
               dir="ltr"
@@ -562,25 +453,10 @@ ${window.location.href}`);
                 </>
               )}
             </div>
-            {/* Views count on the left */}
-            <div className="bg-[#8b0000] text-white px-3 py-1 rounded-md text-[13px] font-bold flex items-center gap-1.5 shadow-sm">
-              <span>{ad.views}</span>
-              <svg
-                stroke="currentColor"
-                fill="none"
-                strokeWidth="2.5"
-                viewBox="0 0 24 24"
-                className="w-4 h-4"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                <circle cx="12" cy="12" r="3"></circle>
-              </svg>
-            </div>
           </div>
 
-          {/* Price & Time Row */}
-          <div className="flex items-center justify-between w-full mb-5">
+          {/* Time, Views & Share Row */}
+          <div className="flex items-center justify-center gap-8 w-full mb-5">
             {/* Time-ago on the right */}
             <div className="flex items-center gap-1.5 text-gray-500 text-xs font-semibold">
               <svg
@@ -597,16 +473,69 @@ ${window.location.href}`);
               <span className="text-right">{getTimeAgo(ad.createdAt)}</span>
             </div>
 
-            {/* Price on the left */}
-            <div className="text-xl font-bold text-[#9a090e]">
-              {ad.price
-                ? `${Number(ad.price).toLocaleString("en-US")} ${locale === "ar" ? "د.ك" : "KD"}`
-                : ""}
+            {/* Share in the middle */}
+            <Image
+              src={"/images/icons/share-icon.svg"}
+              alt="Share"
+              width={40}
+              height={40}
+              className="text-black cursor-pointer"
+              onClick={handleShare}
+            />
+
+            {/* Views count on the far side */}
+            <div className="bg-[#8b0000] text-white px-3 py-1 rounded-md text-[13px] font-bold flex items-center gap-1.5 shadow-sm">
+              <span>{ad.views}</span>
+              <svg
+                stroke="currentColor"
+                fill="none"
+                strokeWidth="2.5"
+                viewBox="0 0 24 24"
+                className="w-4 h-4"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
             </div>
           </div>
 
+          {/* Lead media — small, the rest of the gallery sits under the description */}
+          {currentMedia && (
+            <div
+              className={`relative w-56 sm:w-64 aspect-4/3 mx-auto mb-6 rounded-xl overflow-hidden bg-gray-50 ${
+                currentMedia.type === "video" ? "cursor-pointer" : ""
+              }`}
+              onClick={
+                currentMedia.type === "video"
+                  ? () => setIsMediaViewerOpen(true)
+                  : undefined
+              }
+            >
+              <Image
+                src={currentImageUrl}
+                alt={
+                locale === "ar"
+                  ? ad.propertyType?.labelAr || ad.propertyType?.label || "عقار"
+                  : ad.propertyType?.label || "Property"
+                }
+                fill
+                priority
+                sizes="256px"
+                className="object-cover"
+              />
+              {currentMedia.type === "video" && (
+                <div className="absolute inset-0 flex items-center justify-center bg-black/10">
+                  <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/30 shadow-lg">
+                    <Play className="w-6 h-6 text-white fill-white ml-0.5" />
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Publisher profile badge */}
-          <div className="flex justify-center mb-6">
+          <div className="flex justify-center mb-8">
             <div
               className={`inline-flex items-center gap-2 bg-primary px-3 py-2 rounded-full shadow-sm text-white ${
                 ad.isOffice
@@ -683,14 +612,6 @@ ${window.location.href}`);
                 >
                   <Copy className="w-5 h-5 text-gray-600" />
                 </button>
-                <Image
-                  src={"/images/icons/share-icon.svg"}
-                  alt="Share"
-                  width={40}
-                  height={40}
-                  className="text-black cursor-pointer"
-                  onClick={handleShare}
-                />
               </div>
             </div>
             <p
@@ -703,6 +624,57 @@ ${window.location.href}`);
               {ad.description}
             </p>
           </div>
+
+          {/* Full gallery, small tiles — only worth showing beyond the lead image */}
+          {ad.media && ad.media.length > 1 ? (
+            <div className="grid grid-cols-3 gap-2 mt-6">
+              {ad.media.map((m, index) => (
+                <div
+                  key={m._id ?? index}
+                  className={`relative aspect-4/3 rounded-lg overflow-hidden bg-gray-50 ${
+                    m.type === "video" ? "cursor-pointer" : ""
+                  }`}
+                  onClick={
+                    m.type === "video"
+                      ? () => {
+                          setCurrentImageIndex(index);
+                          setIsMediaViewerOpen(true);
+                        }
+                      : undefined
+                  }
+                >
+                  <Image
+                    src={m.type === "video" ? getThumbnailUrl(m) : getMediaUrl(m)}
+                    alt={
+                      locale === "ar"
+                        ? ad.propertyType?.labelAr || ad.propertyType?.label || "عقار"
+                        : ad.propertyType?.label || "Property"
+                    }
+                    fill
+                    sizes="(max-width: 640px) 33vw, 200px"
+                    className="object-cover"
+                  />
+                  {m.type === "video" && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/10">
+                      <Play className="w-7 h-7 text-white fill-white drop-shadow" />
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          ) : null}
+
+          {(!ad.media || ad.media.length === 0) && (
+            <img
+              src="/images/DefaultAdImage.jpeg"
+              alt={
+                locale === "ar"
+                  ? ad.propertyType?.labelAr || ad.propertyType?.label || "عقار"
+                  : ad.propertyType?.label || "Property"
+              }
+              className="w-40 h-auto mx-auto mt-6 object-contain"
+            />
+          )}
         </div>
 
         {/* Owner Controls */}
