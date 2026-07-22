@@ -103,6 +103,7 @@ export function MultiSelect({ options, value, onChange, placeholder = 'Select it
     <div ref={containerRef} className="relative w-full">
       <div
         dir={dir}
+        data-state={open ? 'open' : 'closed'}
         onClick={() => !disabled && setOpen(true)}
         className={cn(
           'border-secondary data-[placeholder]:text-muted-foreground relative flex w-full min-h-14 items-center gap-2 rounded-md border bg-white ps-3 pe-3 py-2.5 text-sm shadow-xs transition-[color,box-shadow] outline-none disabled:cursor-not-allowed disabled:opacity-50 cursor-text overflow-hidden',
@@ -197,7 +198,10 @@ export function MultiSelect({ options, value, onChange, placeholder = 'Select it
       </div>
 
       {open && (
-        <div className="absolute z-[150] w-full mt-1 bg-white shadow-xl rounded-lg" dir={dir}>
+        <div
+          className="absolute z-[150] w-full mt-1 bg-white border border-gray-100 shadow-[0_12px_32px_rgba(0,0,0,0.12)] rounded-xl overflow-hidden origin-top animate-in fade-in-0 zoom-in-95 slide-in-from-top-2 duration-200 ease-out"
+          dir={dir}
+        >
           <div ref={scrollContainerRef} className="max-h-[300px] overflow-y-auto overflow-x-hidden custom-scrollbar" onWheel={handleWheel}>
             {filteredOptions.length > 0 ? (
               <div className="py-1">
@@ -211,7 +215,11 @@ export function MultiSelect({ options, value, onChange, placeholder = 'Select it
                         <div
                           key={option.value}
                           onClick={() => handleToggle(option.value)}
-                          className={cn('flex items-center gap-2 px-4 py-3 text-base cursor-pointer transition-all hover:bg-primary/10', 'text-start')}
+                          className={cn(
+                            'mx-1 flex items-center gap-2 rounded-lg px-3 py-2.5 text-base cursor-pointer transition-colors hover:bg-primary/10 hover:text-brand-teal',
+                            value.includes(option.value) && 'bg-primary/5 font-semibold text-brand-teal',
+                            'text-start',
+                          )}
                         >
                           <span className={cn('flex-1', 'text-start')}>{option.label}</span>
                         </div>

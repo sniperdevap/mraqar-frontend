@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation';
 import { Navbar } from '@/components/common/navbar';
 import { Footer } from '@/components/common/footer';
 import { DynamicMainPadding } from '@/components/common/dynamic-main-padding';
+import { ScrollToTop } from '@/components/common/scroll-to-top';
 
 export function ConditionalLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -19,6 +20,7 @@ export function ConditionalLayout({ children }: { children: React.ReactNode }) {
     <>
       <Navbar />
       <DynamicMainPadding>{children}</DynamicMainPadding>
+      <ScrollToTop />
       <Footer />
     </>
   );

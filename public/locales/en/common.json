@@ -25,7 +25,8 @@
     "share": "Share",
     "copyLink": "Copy Link",
     "linkCopied": "Link copied",
-    "viewMore": "View More"
+    "viewMore": "View More",
+    "scrollToTop": "Scroll to top"
   },
   "messages": {
     "loading": "Loading...",

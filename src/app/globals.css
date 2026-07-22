@@ -1,4 +1,6 @@
 @import "tailwindcss";
+/* enter/exit animations used by the Radix-based ui components (dropdowns, dialogs, tooltips) */
+@import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
 

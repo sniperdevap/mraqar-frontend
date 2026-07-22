@@ -72,6 +72,11 @@ export function HomeAdCard({
       : getMediaUrl(firstMedia) || "/images/DefaultAdImage.jpeg"
     : "/images/DefaultAdImage.jpeg";
 
+  const shortDescription =
+    ad.description && ad.description.length > 75
+      ? `${ad.description.slice(0, 75).trimEnd()}...`
+      : ad.description;
+
   const isFeatured = ad.isPremium || ad.premiumAd;
   const isVideo = firstMedia?.type === "video";
 
@@ -143,8 +148,8 @@ export function HomeAdCard({
           </div>
         </div>
 
-        <p className="text-sm text-gray-500 line-clamp-2 leading-5 min-h-10 mt-1 font-light">
-          {ad.description}
+        <p className="text-sm text-gray-500 line-clamp-2 leading-5 min-h-10 mt-1 font-medium">
+          {shortDescription}
         </p>
       </div>
     </>

@@ -303,7 +303,7 @@ export function HomePage() {
         </h1>
 
         {/* Search Form */}
-        <div className="w-full space-y-3 p-5 rounded-3xl border border-gray-100 bg-white/60">
+        <div className="w-full space-y-4 p-5 sm:p-6 rounded-3xl border border-gray-100 bg-white shadow-[0_4px_24px_rgba(0,0,0,0.06)]">
           {/* Area Search */}
           <div className="relative">
             <MultiSelect
@@ -318,7 +318,7 @@ export function HomePage() {
                 setSelectedAreas(val);
               }}
               placeholder={t("search.areaPlaceholder")}
-              className="w-full min-h-10 md:min-h-11 h-auto py-1 px-3 bg-white border border-gray-200 rounded-xl flex items-center text-gray-700 shadow-[0_4px_16px_rgb(0,0,0,0.06)] transition-all focus-within:shadow-[0_4px_20px_rgba(154,9,14,0.15)] text-base font-medium"
+              className="w-full min-h-11 md:min-h-12 h-auto py-1 px-4 bg-white border border-gray-200 rounded-xl flex items-center text-gray-700 transition-all hover:border-primary/50 hover:bg-primary/[0.03] focus-within:border-primary data-[state=open]:border-primary data-[state=open]:shadow-[0_4px_20px_rgba(5,110,114,0.15)] text-base font-medium"
               disabled={isLoading}
               enableGrouping={true}
               dir={direction}
@@ -337,7 +337,7 @@ export function HomePage() {
             >
               <SelectTrigger
                 aria-label={t("search.propertyTypePlaceholder")}
-                className="w-full !h-10 md:!h-11 px-3 bg-white border border-gray-200 rounded-xl text-gray-700 data-[placeholder]:!text-gray-500 shadow-[0_4px_16px_rgb(0,0,0,0.06)] transition-all focus:shadow-[0_4px_20px_rgba(154,9,14,0.15)] text-base font-medium"
+                className="w-full !h-11 md:!h-12 px-4 bg-white border border-gray-200 rounded-xl text-gray-700 data-[placeholder]:!text-gray-500 transition-all hover:border-primary/50 hover:bg-primary/[0.03] focus:border-primary data-[state=open]:border-primary data-[state=open]:shadow-[0_4px_20px_rgba(5,110,114,0.15)] text-base font-medium"
               >
                 <SelectValue
                   placeholder={t("search.propertyTypePlaceholder")}
@@ -359,12 +359,12 @@ export function HomePage() {
 
           {/* Purpose Tabs — sliding segmented control */}
           <div
-            className="bg-white !h-10 md:!h-11 w-full rounded-xl p-1 border border-gray-200 shadow-[0_4px_16px_rgb(0,0,0,0.06)]"
+            className="bg-gray-100 !h-11 md:!h-12 w-full rounded-xl p-1 border border-gray-200"
             dir={direction}
           >
             <div className="relative h-full flex items-center">
               <div
-                className="absolute top-0 bottom-0 w-1/3 rounded-lg bg-[#056e72] shadow-[0_2px_8px_rgba(154,9,14,0.35)] transition-all duration-300 ease-out"
+                className="absolute top-0 bottom-0 w-1/3 rounded-lg bg-white shadow-sm transition-all duration-300 ease-out"
                 style={{
                   insetInlineStart:
                     activeTab === "exchange"
@@ -387,7 +387,7 @@ export function HomePage() {
                   onClick={() => setActiveTab(key)}
                   className={`relative z-10 flex-1 h-full flex items-center justify-center rounded-lg font-medium transition-colors text-base ${
                     activeTab === key
-                      ? "text-white"
+                      ? "text-brand-teal font-semibold"
                       : "text-gray-500 hover:text-gray-700"
                   }`}
                 >
@@ -400,9 +400,9 @@ export function HomePage() {
           {/* Search Button */}
           <Button
             onClick={handleSearch}
-            className="rounded-xl !h-10 md:!h-11 w-full mt-2 bg-[#056e72] hover:bg-[#056e72]/95 border-none text-white font-semibold text-lg shadow-[0_6px_20px_rgba(154,9,14,0.3)] transition-all active:scale-[0.98]"
+            className="rounded-xl !h-11 md:!h-12 w-full mt-4 bg-[#056e72] hover:bg-[#045c5f] border-none text-white font-semibold text-lg transition-all hover:shadow-[0_6px_18px_rgba(5,110,114,0.25)] active:scale-[0.98]"
           >
-            <Search size={16} className="mr-1.5" />
+            <Search size={18} className="me-1.5" />
             {tCommon("buttons.search")}
           </Button>
         </div>
