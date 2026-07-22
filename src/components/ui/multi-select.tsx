@@ -117,12 +117,12 @@ export function MultiSelect({ options, value, onChange, placeholder = 'Select it
               {selectedOptions.map(option => (
                 <div
                   key={option.value}
-                  className="inline-flex items-center gap-1.5 ps-2.5 pe-1.5 py-1 bg-[#f7eff1] border border-[#f7eff1] rounded-md text-base font-medium text-gray-700 transition-all hover:bg-[#efdee2] max-w-full min-w-0"
+                  className="inline-flex items-center gap-1.5 ps-2.5 pe-1.5 py-1 bg-card-mint border border-card-mint rounded-md text-base font-medium text-gray-700 transition-all hover:bg-[#d7e6e8] max-w-full min-w-0"
                 >
                   <span className="truncate">{option.label}</span>
                   <button
                     onClick={e => handleRemove(e, option.value)}
-                    className="flex items-center justify-center size-4 rounded-full text-gray-500 hover:bg-[#9a090e]/10 hover:text-[#9a090e] transition-colors shrink-0"
+                    className="flex items-center justify-center size-4 rounded-full text-gray-500 hover:bg-[#056e72]/10 hover:text-[#056e72] transition-colors shrink-0"
                     aria-label={`Remove ${option.label}`}
                   >
                     <X className="w-3 h-3" />

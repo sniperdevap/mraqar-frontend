@@ -117,7 +117,7 @@ export function AdminDashboard() {
       {
         label: t("dashboard.charts.adsPostedLabel"),
         data: chartData?.map((d) => d.count) || [],
-        backgroundColor: "#9a090e",
+        backgroundColor: "#056e72",
         borderRadius: 6,
         hoverBackgroundColor: "#1d7fa1",
         barThickness: chartPeriod === "weekly" ? 40 : 30,

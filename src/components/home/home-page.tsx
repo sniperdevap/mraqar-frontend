@@ -282,18 +282,18 @@ export function HomePage() {
         {/* LCP image: fixed box reserves space before decode (avoids CLS). */}
         <div
           className="flex justify-center mb-4 mx-auto"
-          style={{ width: 168, height: 112 }}
+          style={{ width: 132, height: 88 }}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/images/aqar-new-logo-hero.webp"
             alt="Mr aqar"
-            width={168}
-            height={112}
+            width={132}
+            height={88}
             fetchPriority="high"
             decoding="async"
             className="object-contain"
-            style={{ width: 168, height: 112 }}
+            style={{ width: 132, height: 88 }}
           />
         </div>
 
@@ -364,7 +364,7 @@ export function HomePage() {
           >
             <div className="relative h-full flex items-center">
               <div
-                className="absolute top-0 bottom-0 w-1/3 rounded-lg bg-[#9a090e] shadow-[0_2px_8px_rgba(154,9,14,0.35)] transition-all duration-300 ease-out"
+                className="absolute top-0 bottom-0 w-1/3 rounded-lg bg-[#056e72] shadow-[0_2px_8px_rgba(154,9,14,0.35)] transition-all duration-300 ease-out"
                 style={{
                   insetInlineStart:
                     activeTab === "exchange"
@@ -400,7 +400,7 @@ export function HomePage() {
           {/* Search Button */}
           <Button
             onClick={handleSearch}
-            className="rounded-xl !h-10 md:!h-11 w-full mt-2 bg-[#9a090e] hover:bg-[#9a090e]/95 border-none text-white font-semibold text-lg shadow-[0_6px_20px_rgba(154,9,14,0.3)] transition-all active:scale-[0.98]"
+            className="rounded-xl !h-10 md:!h-11 w-full mt-2 bg-[#056e72] hover:bg-[#056e72]/95 border-none text-white font-semibold text-lg shadow-[0_6px_20px_rgba(154,9,14,0.3)] transition-all active:scale-[0.98]"
           >
             <Search size={16} className="mr-1.5" />
             {tCommon("buttons.search")}
@@ -431,18 +431,18 @@ export function HomePage() {
               {Array.from({ length: 4 }).map((_, i) => (
                 <div
                   key={i}
-                  className="w-full bg-[#f7eff1] border border-[#f3d9de] rounded-2xl overflow-hidden p-2.5 animate-pulse"
+                  className="w-full bg-card-mint rounded-2xl overflow-hidden p-2.5 animate-pulse"
                 >
                   <div className="flex flex-row w-full items-start gap-2.5">
-                    <div className="w-[64px] h-[64px] shrink-0 rounded-lg bg-[#efdee2]" />
+                    <div className="w-[64px] h-[64px] shrink-0 rounded-lg bg-[#d7e6e8]" />
                     <div className="flex-1 flex flex-col min-w-0 min-h-[64px] justify-center gap-2">
-                      <div className="h-5 w-3/4 rounded bg-[#efdee2]" />
-                      <div className="h-5 w-1/2 rounded bg-[#efdee2]" />
+                      <div className="h-5 w-3/4 rounded bg-[#d7e6e8]" />
+                      <div className="h-5 w-1/2 rounded bg-[#d7e6e8]" />
                     </div>
                   </div>
                   <div className="mt-1 space-y-1.5">
-                    <div className="h-5 w-full rounded bg-[#efdee2]" />
-                    <div className="h-5 w-5/6 rounded bg-[#efdee2]" />
+                    <div className="h-5 w-full rounded bg-[#d7e6e8]" />
+                    <div className="h-5 w-5/6 rounded bg-[#d7e6e8]" />
                   </div>
                 </div>
               ))}

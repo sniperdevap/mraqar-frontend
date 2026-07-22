@@ -75,7 +75,7 @@ export function MyAdActions({ ad, onAction }: MyAdActionsProps) {
       <button
         type="button"
         title={ad.status === "active" ? t("stopAd") : t("activateAd")}
-        className="w-7 h-7 rounded-full bg-white border border-gray-200 text-[#4fd1ed] hover:bg-gray-50 flex items-center justify-center transition-all active:scale-95"
+        className="w-7 h-7 rounded-full bg-white border border-gray-200 text-brand-teal hover:bg-gray-50 flex items-center justify-center transition-all active:scale-95"
         onClick={handleToggleStatus}
       >
         {ad.status === "active" ? <Play size={13} /> : <RotateCw size={13} />}
@@ -87,7 +87,7 @@ export function MyAdActions({ ad, onAction }: MyAdActionsProps) {
             <button
               type="button"
               title={t("featureAdTitle")}
-              className="w-7 h-7 rounded-full bg-white border border-gray-200 text-amber-500 hover:bg-gray-50 flex items-center justify-center transition-all active:scale-95"
+              className="w-7 h-7 rounded-full bg-white border border-gray-200 text-brand-teal hover:bg-gray-50 flex items-center justify-center transition-all active:scale-95"
             >
               <Pin size={13} />
             </button>
@@ -107,7 +107,7 @@ export function MyAdActions({ ad, onAction }: MyAdActionsProps) {
       <button
         type="button"
         title={t("editAd")}
-        className="w-7 h-7 rounded-full bg-white border border-gray-200 text-slate-600 hover:bg-gray-50 flex items-center justify-center transition-all active:scale-95"
+        className="w-7 h-7 rounded-full bg-white border border-gray-200 text-brand-teal hover:bg-gray-50 flex items-center justify-center transition-all active:scale-95"
         onClick={() => onAction?.("edit", ad)}
         onMouseEnter={prefetchEditAd}
         onFocus={prefetchEditAd}

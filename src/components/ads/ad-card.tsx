@@ -163,7 +163,7 @@ export function AdCard({
     <>
       <Card
         ref={setPrefetchTarget}
-        className={`group rounded-[6px] relative shadow-lg border ${variant === "admin" ? "border-gray-200" : "border-gray-200"} gap-0 h-auto flex flex-col overflow-hidden transition-all duration-200 hover:bg-gray-50/50 active:scale-[0.99] active:bg-gray-50/50 cursor-pointer select-none bg-white mb-2`}
+        className="group rounded-2xl relative shadow-none border-0 gap-0 h-auto flex flex-col overflow-hidden transition-all duration-200 active:scale-[0.99] cursor-pointer select-none bg-card-mint mb-3"
         onClick={onClick}
         onMouseEnter={prefetchNow}
         onFocus={prefetchNow}
@@ -172,7 +172,7 @@ export function AdCard({
       >
         {isPremiumAd && (
           <div
-            className={`absolute top-0 z-20 bg-[#9a090e] text-white px-2 py-0.5 text-[10px] sm:text-[11px] font-bold rounded-xs uppercase tracking-tight ${direction === "rtl" ? "right-0" : "left-0"}`}
+            className={`absolute top-2 z-20 bg-brand-teal text-white px-3 py-1 text-[10px] sm:text-[11px] font-semibold rounded-full tracking-tight ${direction === "rtl" ? "left-2" : "right-2"}`}
           >
             {t("premiumBadge")}
           </div>
@@ -216,7 +216,7 @@ export function AdCard({
                       fill="currentColor"
                       strokeWidth="0"
                       viewBox="0 0 24 24"
-                      className="text-[#9a090e] shrink-0"
+                      className="text-[#056e72] shrink-0"
                       height="14"
                       width="14"
                       xmlns="http://www.w3.org/2000/svg"
@@ -252,14 +252,14 @@ export function AdCard({
               </div>
 
               {/* Title */}
-              <h3 className="mt-2 text-[16px] sm:text-[15px] font-bold text-[#9a090e] leading-snug line-clamp-2 mb-1">
+              <h3 className="mt-2 text-[16px] sm:text-[15px] font-bold text-black leading-snug line-clamp-2 mb-1">
                 {locale === "ar"
                   ? `${t(ad.purpose)} ${ad.propertyType?.labelAr || ad.propertyType?.label || "عقار"} في ${ad.area?.labelAr || ad.area?.label || "منطقة غير معروفة"}`
                   : `${t(ad.purpose)} ${ad.propertyType?.label || "Property"} in ${ad.area?.label || "Unknown Area"}`}
               </h3>
 
               {/* Description */}
-              <p className="mt-4 text-[14px] sm:text-[13px] text-gray-600 line-clamp-2 leading-snug">
+              <p className="mt-4 text-[14px] sm:text-[13px] text-gray-500 font-light line-clamp-2 leading-snug">
                 {ad.description}
               </p>
             </div>
@@ -267,7 +267,7 @@ export function AdCard({
             <div className="mt-auto">
               {/* Time Row */}
               <div className="flex items-center justify-start gap-1 text-gray-500 mb-1.5 mt-6">
-                <Clock size={12} className="text-[#9a090e]" />
+                <Clock size={12} className="text-[#056e72]" />
                 <span className="text-[11px] font-medium">
                   {getTimeAgo(ad.createdAt)}
                 </span>
@@ -284,7 +284,7 @@ export function AdCard({
                   {variant === "admin" && (
                     <button
                       title={tButtons("viewMore")}
-                      className="w-7 h-7 rounded-full bg-white border border-gray-200 text-blue-500 hover:bg-gray-50 flex items-center justify-center transition-all active:scale-95"
+                      className="w-7 h-7 rounded-full bg-white border border-gray-200 text-brand-teal hover:bg-gray-50 flex items-center justify-center transition-all active:scale-95"
                       onClick={(e) => {
                         e.stopPropagation();
                         if (onAction) onAction("view", ad);
@@ -299,7 +299,7 @@ export function AdCard({
                     title={
                       ad.status === "active" ? t("stopAd") : t("activateAd")
                     }
-                    className="w-7 h-7 rounded-full bg-white border border-gray-200 text-[#4fd1ed] hover:bg-gray-50 flex items-center justify-center transition-all active:scale-95"
+                    className="w-7 h-7 rounded-full bg-white border border-gray-200 text-brand-teal hover:bg-gray-50 flex items-center justify-center transition-all active:scale-95"
                     onClick={handleToggleStatus}
                   >
                     {ad.status === "active" ? (
@@ -315,7 +315,7 @@ export function AdCard({
                       trigger={
                         <button
                           title={t("featureAdTitle")}
-                          className="w-7 h-7 rounded-full bg-white border border-gray-200 text-amber-500 hover:bg-gray-50 flex items-center justify-center transition-all active:scale-95"
+                          className="w-7 h-7 rounded-full bg-white border border-gray-200 text-brand-teal hover:bg-gray-50 flex items-center justify-center transition-all active:scale-95"
                         >
                           <Pin size={13} />
                         </button>
@@ -335,7 +335,7 @@ export function AdCard({
                   {/* Edit Button */}
                   <button
                     title={t("editAd")}
-                    className="w-7 h-7 rounded-full bg-white border border-gray-200 text-slate-600 hover:bg-gray-50 flex items-center justify-center transition-all active:scale-95"
+                    className="w-7 h-7 rounded-full bg-white border border-gray-200 text-brand-teal hover:bg-gray-50 flex items-center justify-center transition-all active:scale-95"
                     onClick={handleEdit}
                   >
                     <Pencil size={13} />

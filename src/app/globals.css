@@ -7,14 +7,16 @@
   --breakpoint-3xl: 105rem; /* 1680px */
 
   /* Primary Colors */
-  --color-primary-main: #9a090e;
-  --color-secondary-main: #9a090e;
+  --color-primary-main: #056e72;
+  --color-secondary-main: #056e72;
   --color-primary-light: #f7f7f7;
   --color-primary-cyan: #212121;
   --color-primary-dark: #1d2738;
-  --color-primary-blue: #9a090e;
+  --color-primary-blue: #056e72;
   --color-primary-blue-light: #5e92dd;
   --color-primary-coral: #fb6b5b;
+  --color-brand-teal: #056e72;
+  --color-card-mint: #ecf4f6;
 
   /* Grayscale Colors */
   --color-cloud: #edeff7;

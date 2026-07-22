@@ -169,17 +169,17 @@ export function Navbar() {
       {showTopNavbar && (
         <nav className="hidden lg:flex items-center py-2 bg-white border-b border-gray-200 sticky top-0 z-50 min-h-20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex items-center">
-          <div className="flex-shrink-0 w-24 h-16">
-            <Link href="/" className="block w-24 h-16">
+          <div className="flex-shrink-0 w-20 h-13">
+            <Link href="/" className="block w-20 h-13">
               <Image
                 src="/images/aqar-new-logo-nav.webp"
                 alt="Mr aqar"
-                width={96}
-                height={64}
+                width={80}
+                height={52}
                 priority
                 unoptimized
                 className="object-contain"
-                style={{ width: 96, height: 64 }}
+                style={{ width: 80, height: 52 }}
               />
             </Link>
           </div>
@@ -280,17 +280,17 @@ export function Navbar() {
           {(pathname === '/' || pathname?.replace(/^\/(en|ar)/, '') === '/' || pathname?.replace(/^\/(en|ar)/, '') === '') ? (
             <div className="flex items-center justify-between w-full h-full" dir="ltr">
               {/* Left: Logo */}
-              <div className="flex-shrink-0 w-24 h-16">
-                <Link href="/" className="block w-24 h-16">
+              <div className="flex-shrink-0 w-20 h-13">
+                <Link href="/" className="block w-20 h-13">
                   <Image
                     src="/images/aqar-new-logo-nav.webp"
                     alt="Mr aqar"
-                    width={96}
-                    height={64}
+                    width={80}
+                    height={52}
                     priority
                     unoptimized
                     className="object-contain"
-                    style={{ width: 96, height: 64 }}
+                    style={{ width: 80, height: 52 }}
                   />
                 </Link>
               </div>
@@ -329,22 +329,22 @@ export function Navbar() {
               <button
                 onClick={() => router.push("/")}
                 aria-label={t("buttons.back")}
-                className="p-2 text-[#9a090e] hover:text-[#7f070b] transition-colors cursor-pointer flex items-center justify-center"
+                className="p-2 text-[#056e72] hover:text-[#7f070b] transition-colors cursor-pointer flex items-center justify-center"
               >
                 <ChevronLeft size={32} strokeWidth={2.5} aria-hidden="true" />
               </button>
 
               {/* Middle: Logo */}
-              <div className="flex-shrink-0 w-24 h-16">
-                <Link href="/" className="block w-24 h-16">
+              <div className="flex-shrink-0 w-20 h-13">
+                <Link href="/" className="block w-20 h-13">
                   <Image
                     src="/images/aqar-new-logo-nav.webp"
                     alt="Mr aqar"
-                    width={96}
-                    height={64}
+                    width={80}
+                    height={52}
                     unoptimized
                     className="object-contain"
-                    style={{ width: 96, height: 64 }}
+                    style={{ width: 80, height: 52 }}
                   />
                 </Link>
               </div>
@@ -361,7 +361,7 @@ export function Navbar() {
                     size={26}
                     strokeWidth={1.8}
                     aria-hidden="true"
-                    className={adFavoriteState?.isFavorite ? "fill-[#9a090e] text-[#9a090e]" : "text-gray-900"}
+                    className={adFavoriteState?.isFavorite ? "fill-[#056e72] text-[#056e72]" : "text-gray-900"}
                   />
                 </button>
               </div>
@@ -379,15 +379,15 @@ export function Navbar() {
                   </button>
                 ) : null}
                 <div className="flex-shrink-0 flex items-center justify-center w-full">
-                  <Link href="/" className="block w-24 h-16">
+                  <Link href="/" className="block w-20 h-13">
                     <Image
                       src="/images/aqar-new-logo-nav.webp"
                       alt="Mr aqar"
-                      width={96}
-                      height={64}
+                      width={80}
+                      height={52}
                       unoptimized
                       className="object-contain"
-                      style={{ width: 96, height: 64 }}
+                      style={{ width: 80, height: 52 }}
                     />
                   </Link>
                 </div>

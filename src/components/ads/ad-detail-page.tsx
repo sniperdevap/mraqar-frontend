@@ -424,7 +424,7 @@ ${window.location.href}`);
           </h1>
 
           {/* Price */}
-          <div className="text-xl font-bold text-[#9a090e] text-center mb-4">
+          <div className="text-xl font-bold text-[#056e72] text-center mb-4">
             {ad.price
               ? `${Number(ad.price).toLocaleString("en-US")} ${locale === "ar" ? "د.ك" : "KD"}`
               : ""}
@@ -484,19 +484,20 @@ ${window.location.href}`);
             />
 
             {/* Views count on the far side */}
-            <div className="bg-[#8b0000] text-white px-3 py-1 rounded-md text-[13px] font-bold flex items-center gap-1.5 shadow-sm">
-              <span>{ad.views}</span>
+            <div className="flex items-center gap-1.5 text-gray-900 text-base font-bold">
               <svg
-                stroke="currentColor"
-                fill="none"
-                strokeWidth="2.5"
                 viewBox="0 0 24 24"
-                className="w-4 h-4"
+                className="w-5 h-5"
                 xmlns="http://www.w3.org/2000/svg"
               >
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                <circle cx="12" cy="12" r="3"></circle>
+                <path
+                  fill="#0d7377"
+                  d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"
+                ></path>
+                <circle cx="12" cy="12" r="3.4" fill="#fff"></circle>
+                <circle cx="12" cy="12" r="1.5" fill="#0d7377"></circle>
               </svg>
+              <span>{ad.views}</span>
             </div>
           </div>
 

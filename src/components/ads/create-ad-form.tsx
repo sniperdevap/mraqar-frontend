@@ -642,7 +642,7 @@ export function CreateAdForm({ initialData, mode = 'create', onSuccess, requireC
                     <input type="file" multiple accept="image/*,video/*" className="hidden" id="media-upload" onChange={handleImageUpload} />
                     <label htmlFor="media-upload" className="cursor-pointer flex flex-col items-center justify-center ">
                       <div className="flex flex-col items-center justify-center pb-2">
-                        <Upload size={40} className="text-[#9a090e]" strokeWidth={1.5} />
+                        <Upload size={40} className="text-[#056e72]" strokeWidth={1.5} />
                       </div>
                       <span className="text-xs md:text-sm text-gray-600">{t('ads.uploadConstraints')}</span>
                     </label>
