@@ -94,13 +94,13 @@ export function HomeAdCard({
 
       <div className="w-full bg-card-mint rounded-2xl overflow-hidden p-3">
         <div className="flex flex-row w-full items-start gap-2.5">
-          <div className="relative w-[75px] h-[75px] shrink-0 rounded-lg overflow-hidden bg-gray-100">
+          <div className="relative w-[96px] h-[96px] shrink-0 rounded-lg overflow-hidden bg-gray-100">
             <Image
               src={displayUrl as string}
               alt={ad.description}
               fill
               className="object-cover"
-              sizes="75px"
+              sizes="96px"
             />
             {isVideo && (
               <div className="absolute inset-0 flex items-center justify-center bg-black/10">
@@ -119,7 +119,7 @@ export function HomeAdCard({
             </div>
           </div>
 
-          <div className="flex-1 flex flex-col min-w-0 min-h-[75px] justify-center">
+          <div className="flex-1 flex flex-col min-w-0 min-h-[96px] justify-center">
             <h3 className="text-base font-medium text-gray-900 line-clamp-2 leading-6">
               {locale === "ar"
                 ? `${t(ad.purpose)} ${ad.propertyType?.labelAr || ad.propertyType?.label} في ${ad.area?.labelAr || ad.area?.label}`
@@ -148,7 +148,7 @@ export function HomeAdCard({
           </div>
         </div>
 
-        <p className="text-sm text-gray-500 line-clamp-2 leading-5 min-h-10 mt-1 font-medium">
+        <p className="text-sm text-gray-500 line-clamp-2 leading-5 min-h-10 mt-1 font-light">
           {shortDescription}
         </p>
       </div>
