@@ -420,8 +420,12 @@ ${window.location.href}`);
         <section className="relative max-w-4xl mx-auto h-[35vh] md:h-[45vh] overflow-hidden bg-neutral-900 border-b border-gray-100">
           {/* Main Media Slider */}
           <div
-            className="relative w-full h-full cursor-pointer"
-            onClick={() => setIsMediaViewerOpen(true)}
+            className={`relative w-full h-full ${currentMedia?.type === "video" ? "cursor-pointer" : ""}`}
+            onClick={
+              currentMedia?.type === "video"
+                ? () => setIsMediaViewerOpen(true)
+                : undefined
+            }
           >
             {currentMedia?.type === "video" ? (
               <div className="relative w-full h-full flex items-center justify-center bg-white/5">

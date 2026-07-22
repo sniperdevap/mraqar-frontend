@@ -14,7 +14,14 @@ const GUEST_ROUTES = ['/auth/signin', '/auth/signup', '/auth/forgot-password', '
 const ADMIN_ROUTES = ['/admin'];
 
 // Create the i18n middleware
-const intlMiddleware = createMiddleware(routing);
+const baseIntlMiddleware = createMiddleware(routing);
+
+function intlMiddleware(request: NextRequest) {
+  if (!request.cookies.get('NEXT_LOCALE')) {
+    request.cookies.set('NEXT_LOCALE', routing.defaultLocale);
+  }
+  return baseIntlMiddleware(request);
+}
 
 function getUserRole(request: NextRequest): string | null {
   try {

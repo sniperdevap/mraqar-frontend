@@ -182,6 +182,7 @@ export const getServerAreas = (locale?: string) =>
 export const getServerAds = (params?: GetAdsParams, locale?: string) =>
   serverApiGet<GetAdsResult>(API_ENDPOINTS.AD.GET_ALL, params, {
     locale,
+    revalidate: 0,
   });
 
 export const getServerAdById = (id: string, locale?: string) =>

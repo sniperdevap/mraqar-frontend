@@ -34,11 +34,8 @@ export const useSearchAds = (params: GetAdsParams, limit: number) => {
       return undefined;
     },
     initialPageParam: 1,
-    // The server-hydrated first page is already current. Ad detail writes its
-    // fresh view count back into matching list caches, avoiding a duplicate
-    // list request immediately after navigation/hydration.
     staleTime: 60 * 1000,
-    refetchOnMount: false,
+    refetchOnMount: true,
   });
 };
 
