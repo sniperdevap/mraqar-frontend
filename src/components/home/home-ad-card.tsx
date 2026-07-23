@@ -204,7 +204,7 @@ function HomeAdCardBase({
       {/* Price + location + actions */}
       <div className="flex items-center justify-between gap-3 mt-4">
         <div className="min-w-0">
-          <span className="block truncate font-bold text-sm sm:text-base text-[#7546BD]">
+          <span className="whitespace-nowrap font-bold text-sm sm:text-base text-[#7546BD]">
             {formatPrice(ad.price)}
           </span>
         </div>
