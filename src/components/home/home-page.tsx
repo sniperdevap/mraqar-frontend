@@ -491,7 +491,7 @@ export function HomePage() {
                   className="w-full bg-card-mint rounded-2xl overflow-hidden p-2.5 animate-pulse"
                 >
                   <div className="flex flex-row w-full items-start gap-2.5">
-                    <div className="w-[80px] h-[80px] shrink-0 rounded-lg bg-[#d7e6e8]" />
+                    <div className="w-[75px] h-[75px] shrink-0 rounded-lg bg-[#d7e6e8]" />
                     <div className="flex-1 flex flex-col min-w-0 min-h-[96px] justify-center gap-2">
                       <div className="h-5 w-3/4 rounded bg-[#d7e6e8]" />
                       <div className="h-5 w-1/2 rounded bg-[#d7e6e8]" />

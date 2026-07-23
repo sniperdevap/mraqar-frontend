@@ -94,7 +94,7 @@ export function HomeAdCard({
 
       <div className="w-full bg-card-mint rounded-2xl overflow-hidden p-3">
         <div className="flex flex-row w-full items-start gap-2.5">
-          <div className="relative w-[80px] h-[80px] shrink-0 rounded-lg overflow-hidden bg-gray-100">
+          <div className="relative w-[75px] h-[75px] shrink-0 rounded-lg overflow-hidden bg-gray-100">
             <Image
               src={displayUrl as string}
               alt={ad.description}
