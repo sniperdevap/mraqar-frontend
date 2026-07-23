@@ -130,13 +130,13 @@ function HomeAdCardBase({
   const cardContent = (
     <div className="relative w-full rounded-3xl border border-[#f1e5db] shadow-[0_2px_16px_rgba(16,24,40,0.06)] p-4 sm:p-5 bg-gradient-to-br from-[#fbf1ea] via-white to-[#fbf1ea]">
       {isFeatured && (
-        <span className="absolute top-3 inset-e-4 z-10 bg-[#047E76] text-white px-3 py-1 text-[10px] sm:text-[11px] font-bold rounded-full shadow-sm tracking-wide">
+        <span className="absolute top-3 left-4 z-10 bg-[#047E76] text-white px-3 py-1 text-[10px] sm:text-[11px] font-bold rounded-full shadow-sm tracking-wide">
           {locale === "ar" ? "مميز" : "DISTINCT"}
         </span>
       )}
 
       {/* Title */}
-      <h3 className="text-lg sm:text-xl font-bold text-gray-900 line-clamp-2 leading-7 sm:leading-8 pt-1.5 pe-16">
+      <h3 className="text-lg sm:text-xl font-bold text-gray-900 line-clamp-2 leading-7 sm:leading-8 pt-1.5 pl-16">
         {title}
       </h3>
 
@@ -204,7 +204,7 @@ function HomeAdCardBase({
       {/* Price + location + actions */}
       <div className="flex items-center justify-between gap-3 mt-4">
         <div className="min-w-0">
-          <span className="font-bold text-base sm:text-lg text-[#e11d1d] whitespace-nowrap">
+          <span className="block truncate font-bold text-sm sm:text-base text-[#e11d1d]">
             {formatPrice(ad.price)}
           </span>
         </div>
