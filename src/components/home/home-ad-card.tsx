@@ -19,13 +19,15 @@ interface HomeAdCardProps {
   onClick?: () => void;
   variant?: "default" | "my-ad";
   onAction?: (action: "edit" | "refresh" | "view", ad: Ad) => void;
+  priority?: boolean;
 }
 
-export function HomeAdCard({
+function HomeAdCardBase({
   ad,
   onClick,
   variant = "default",
   onAction,
+  priority = false,
 }: HomeAdCardProps) {
   const { locale, direction } = useLocale();
   const t = useTranslations("common.ads");
@@ -101,6 +103,8 @@ export function HomeAdCard({
               fill
               className="object-cover"
               sizes="96px"
+              priority={priority}
+              loading={priority ? "eager" : "lazy"}
             />
             {isVideo && (
               <div className="absolute inset-0 flex items-center justify-center bg-black/10">
@@ -156,7 +160,7 @@ export function HomeAdCard({
   );
 
   const cardClasses =
-    "relative block w-full cursor-pointer mb-3 hover:opacity-95 transition-opacity";
+    "relative block w-full cursor-pointer mb-3 hover:opacity-95 transition-opacity cv-card";
 
   if (variant === "default") {
     return (
@@ -194,3 +198,5 @@ export function HomeAdCard({
     </div>
   );
 }
+
+export const HomeAdCard = React.memo(HomeAdCardBase);

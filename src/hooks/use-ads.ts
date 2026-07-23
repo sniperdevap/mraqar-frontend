@@ -36,6 +36,7 @@ export const useSearchAds = (params: GetAdsParams, limit: number) => {
     initialPageParam: 1,
     staleTime: 60 * 1000,
     refetchOnMount: true,
+    refetchOnWindowFocus: true,
   });
 };
 

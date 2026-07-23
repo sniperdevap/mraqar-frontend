@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -43,7 +42,6 @@ export function HomePage() {
   const { locale, direction } = useLocale();
 
   const [isPriceFilterOpen, setIsPriceFilterOpen] = useState(false);
-  const [showStickySearchBar, setShowStickySearchBar] = useState(false);
 
   const [propertyType, setPropertyType] = useState("");
   const [selectedAreas, setSelectedAreas] = useState<string[]>([]);
@@ -75,7 +73,10 @@ export function HomePage() {
 
   const propertyTypes = propertyTypesData || [];
   const areas = areasData || [];
-  const ads = adsData?.pages.flatMap((page) => page.ads) || [];
+  const ads = useMemo(
+    () => adsData?.pages.flatMap((page) => page.ads) ?? [],
+    [adsData?.pages],
+  );
   const prefetchTriggerIndex = Math.max(
     0,
     ads.length - Math.ceil(adsPerPage / 2),
@@ -100,22 +101,6 @@ export function HomePage() {
       fetchNextPage();
     }
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const searchButton = document.getElementById("main-search-button");
-      if (searchButton) {
-        const rect = searchButton.getBoundingClientRect();
-        // Show sticky header when the bottom of the search button is above the viewport
-        setShowStickySearchBar(rect.bottom < 0);
-      } else {
-        setShowStickySearchBar(window.scrollY > 300);
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   const clamp = (value: number, min: number, max: number) =>
     Math.min(Math.max(value, min), max);
@@ -353,42 +338,6 @@ export function HomePage() {
 
   return (
     <div className="flex flex-col min-h-[calc(100vh-64px)] relative overflow-x-hidden bg-[#f8f9fa] md:bg-white">
-      {showStickySearchBar && (
-        <div
-          className="fixed top-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-[0_1px_12px_rgba(16,24,40,0.06)] animate-slide-down"
-          dir={direction}
-        >
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Image
-                src="/images/aqar-new-logo-sm.webp"
-                alt="Mr aqar"
-                width={84}
-                height={56}
-                priority
-                className="h-14 w-[84px] object-contain"
-                style={{ width: 84, height: 56 }}
-              />
-              {/* <div className="flex flex-col">
-                <span className="text-[11px] md:text-[13px] font-bold text-black uppercase leading-tight">{tCommon('buttons.search')}</span>
-                <span className="text-[9px] md:text-[10px] font-semibold text-gray-500 capitalize leading-tight">
-                  {t('latestListings.propertyInKuwait', { count: adsData?.pages[0]?.total || 0 })}
-                </span>
-              </div> */}
-            </div>
-
-            <button
-              className="flex flex-col items-center justify-center text-black hover:text-gray-600 transition-transform active:scale-95"
-              onClick={() => router.push("/search")}
-            >
-              <Search size={20} className="mb-0.5 stroke-[2.5]" />
-              <span className="text-[10px] font-bold uppercase tracking-wider">
-                {tCommon("buttons.search")}
-              </span>
-            </button>
-          </div>
-        </div>
-      )}
 
       {/* Hero Header Section */}
       <section
@@ -516,7 +465,7 @@ export function HomePage() {
                         : undefined
                     }
                   >
-                    <HomeAdCard ad={ad} />
+                    <HomeAdCard ad={ad} priority={index < 4} />
                   </div>
                 ))}
               </div>

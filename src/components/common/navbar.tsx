@@ -69,9 +69,14 @@ export function Navbar() {
     const initialHeight = window.innerHeight;
 
     const handleResize = () => {
-      // When the keyboard opens, the visual viewport height shrinks significantly
+      const el = document.activeElement;
+      const isTyping =
+        !!el &&
+        (el.tagName === "INPUT" ||
+          el.tagName === "TEXTAREA" ||
+          (el as HTMLElement).isContentEditable);
       const heightDiff = initialHeight - viewport.height;
-      setIsKeyboardOpen(heightDiff > 100);
+      setIsKeyboardOpen(isTyping && heightDiff > 150);
     };
 
     viewport.addEventListener("resize", handleResize);
@@ -433,7 +438,7 @@ export function Navbar() {
 
       {/* Mobile Bottom Navbar */}
       {showStandardNav && !isAdDetailPage && !isKeyboardOpen && (
-        <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-lg flex items-center justify-around py-2 px-4 z-50 rounded-t-[32px] shadow-[0_-8px_30px_rgba(0,0,0,0.06)] h-[4.5rem] border-t border-gray-100/50">
+        <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-lg flex items-center justify-around py-2 px-4 z-50 rounded-t-[32px] shadow-[0_-8px_30px_rgba(0,0,0,0.06)] h-[4.5rem] border-t border-gray-100/50 pb-[env(safe-area-inset-bottom)] [transform:translateZ(0)] will-change-auto">
           {[
             { href: "/", icon: Home, label: t("nav.home") },
             { href: "/offices", icon: MapPin, label: t("nav.offices") },

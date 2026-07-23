@@ -415,6 +415,11 @@ body {
   border-color: var(--color-black);
 }
 
+.cv-card {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 152px;
+}
+
 /* Hide number input spinners */
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
