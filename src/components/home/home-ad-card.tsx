@@ -4,7 +4,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { Clock, Eye, Play } from "lucide-react";
+import { Eye, Play, Share2, Calendar, BadgeCheck } from "lucide-react";
 import { Ad, Media } from "@/types/ad";
 import { useLocale, useTranslations } from "@/hooks/use-locale";
 import { formatDistanceToNow } from "@/lib/utils/format";
@@ -13,6 +13,17 @@ import { useRoutePrefetch } from "@/hooks/use-route-prefetch";
 const MyAdActions = dynamic(() =>
   import("./my-ad-actions").then((mod) => mod.MyAdActions),
 );
+const ShareDialog = dynamic(() =>
+  import("@/components/common/share-dialog").then((mod) => mod.ShareDialog),
+);
+
+function WhatsAppIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 448 512" fill="currentColor" className={className} aria-hidden="true">
+      <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z" />
+    </svg>
+  );
+}
 
 interface HomeAdCardProps {
   ad: Ad;
@@ -31,8 +42,40 @@ function HomeAdCardBase({
 }: HomeAdCardProps) {
   const { locale, direction } = useLocale();
   const t = useTranslations("common.ads");
+  const tButtons = useTranslations("common.buttons");
   const href = `/ads/${ad.id}`;
   const { setPrefetchTarget, prefetchNow } = useRoutePrefetch(href);
+  const [shareUrl, setShareUrl] = React.useState<string | null>(null);
+
+  const title =
+    locale === "ar"
+      ? `${t(ad.purpose)} ${ad.propertyType?.labelAr || ad.propertyType?.label} في ${ad.area?.labelAr || ad.area?.label}`
+      : `${t(ad.purpose)} ${ad.propertyType?.label} in ${ad.area?.label}`;
+
+  const stop = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleShare = (e: React.MouseEvent) => {
+    stop(e);
+    setShareUrl(`${window.location.origin}${href}`);
+  };
+
+  const handleWhatsApp = (e: React.MouseEvent) => {
+    stop(e);
+    const raw =
+      ad.isPhoneHidden && ad.alternativePhoneNumber
+        ? ad.alternativePhoneNumber
+        : ad.phoneNumber;
+    if (!raw) return;
+    let phone = raw.replace(/[^0-9]/g, "");
+    if (!phone.startsWith("965")) phone = "965" + phone;
+    const message = encodeURIComponent(
+      `${t("whatsappMessage")}\n${title}\n${window.location.origin}${href}`,
+    );
+    window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
+  };
 
   const formatPrice = (price: number) => {
     return `${Number(price).toLocaleString("en-US")} ${locale === "ar" ? "دك" : "KD"}`;
@@ -82,101 +125,144 @@ function HomeAdCardBase({
   const isFeatured = ad.isPremium || ad.premiumAd;
   const isVideo = firstMedia?.type === "video";
 
+  const ownerName = ad.user?.name || "";
+
   const cardContent = (
-    <>
+    <div className="relative w-full rounded-3xl border border-[#f1e5db] shadow-[0_2px_16px_rgba(16,24,40,0.06)] p-4 sm:p-5 bg-gradient-to-br from-[#fbf1ea] via-white to-[#fbf1ea]">
       {isFeatured && (
-        <span
-          className={`absolute top-2 z-10 bg-brand-gold text-white px-2 py-0.5 text-[9px] font-bold rounded-full shadow-sm ${
-            direction === "rtl" ? "left-3" : "right-3"
-          }`}
-        >
-          {locale === "ar" ? "مميز" : "Featured"}
+        <span className="absolute top-3 inset-e-4 z-10 bg-[#047E76] text-white px-3 py-1 text-[10px] sm:text-[11px] font-bold rounded-full shadow-sm tracking-wide">
+          {locale === "ar" ? "مميز" : "DISTINCT"}
         </span>
       )}
 
-      <div className="w-full bg-card-mint rounded-2xl overflow-hidden p-3">
-        <div className="flex flex-row w-full items-start gap-2.5">
-          <div className="relative w-[75px] h-[75px] lg:w-[120px] lg:h-[120px] shrink-0 rounded-lg overflow-hidden bg-gray-100">
-            <Image
-              src={displayUrl as string}
-              alt={ad.description}
-              fill
-              className="object-cover"
-              sizes="(min-width: 1024px) 120px, 96px"
-              priority={priority}
-              loading={priority ? "eager" : "lazy"}
-            />
-            {isVideo && (
-              <div className="absolute inset-0 flex items-center justify-center bg-black/10">
-                <span className="flex items-center justify-center w-6 h-6 rounded-full bg-white/90 shadow">
-                  <Play
-                    size={12}
-                    className="text-gray-800 fill-gray-800 ms-0.5"
-                  />
-                </span>
-              </div>
-            )}
-            {/* View count pill */}
-            <div className="absolute top-1 right-1 md:top-1.5 md:right-1.5 z-10 flex items-center gap-0.5 sm:gap-1 bg-[#353e4b] text-white ps-1 pe-1.5 sm:ps-1.5 sm:pe-2 py-0.5 rounded-full text-[9px] sm:text-[10px] md:text-[11px] font-semibold leading-none shadow-sm">
-              <Eye strokeWidth={2.5} className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-3.5 md:h-3.5" />
-              <span>{ad.views || 0}</span>
+      {/* Title */}
+      <h3 className="text-lg sm:text-xl font-bold text-gray-900 line-clamp-2 leading-7 sm:leading-8 pt-1.5 pe-16">
+        {title}
+      </h3>
+
+      {/* Image (start) + owner / date / description (end) */}
+      <div className="flex gap-3 mt-3">
+        <div className="relative w-24 h-24 sm:w-28 sm:h-28 shrink-0 rounded-2xl overflow-hidden bg-gray-100 ring-2 ring-white shadow-[0_4px_14px_rgba(16,24,40,0.14)]">
+          <Image
+            src={displayUrl as string}
+            alt={ad.description}
+            fill
+            className="object-cover"
+            sizes="(min-width: 640px) 112px, 96px"
+            priority={priority}
+            loading={priority ? "eager" : "lazy"}
+          />
+          {isVideo && (
+            <div className="absolute inset-0 flex items-center justify-center bg-black/10">
+              <span className="flex items-center justify-center w-10 h-10 rounded-full border-2 border-white/90 bg-white/10 backdrop-blur-[1px] shadow-sm">
+                <Play size={18} className="text-white fill-white ms-0.5" />
+              </span>
             </div>
+          )}
+          {/* view count */}
+          <div className="absolute top-1.5 inset-x-0 flex justify-center">
+            <span className="flex items-center gap-1 bg-[#1f2937] text-white ps-1.5 pe-2 py-0.5 rounded-full text-[10px] font-semibold leading-none shadow-sm">
+              <Eye strokeWidth={2.5} className="w-3 h-3" />
+              {ad.views || 0}
+            </span>
           </div>
-
-          <div className="flex-1 flex flex-col min-w-0 min-h-[96px] lg:min-h-[120px] justify-center">
-            <h3 className="text-base lg:text-xl font-medium text-gray-900 line-clamp-2 leading-6 lg:leading-8">
-              {locale === "ar"
-                ? `${t(ad.purpose)} ${ad.propertyType?.labelAr || ad.propertyType?.label} في ${ad.area?.labelAr || ad.area?.label}`
-                : `${t(ad.purpose)} ${ad.propertyType?.label} in ${ad.area?.label}`}
-            </h3>
-
-            <div className="flex items-center gap-3 mt-2 h-5">
-              <div className="flex items-center gap-1.5">
-                <span className="flex items-center rounded-full text-brand-teal shrink-0">
-                  <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="18" width="18" xmlns="http://www.w3.org/2000/svg"><path d="M12.0049 22.0027C6.48204 22.0027 2.00488 17.5256 2.00488 12.0027C2.00488 6.4799 6.48204 2.00275 12.0049 2.00275C17.5277 2.00275 22.0049 6.4799 22.0049 12.0027C22.0049 17.5256 17.5277 22.0027 12.0049 22.0027ZM12.0049 20.0027C16.4232 20.0027 20.0049 16.421 20.0049 12.0027C20.0049 7.58447 16.4232 4.00275 12.0049 4.00275C7.5866 4.00275 4.00488 7.58447 4.00488 12.0027C4.00488 16.421 7.5866 20.0027 12.0049 20.0027ZM8.50488 14.0027H14.0049C14.281 14.0027 14.5049 13.7789 14.5049 13.5027C14.5049 13.2266 14.281 13.0027 14.0049 13.0027H10.0049C8.62417 13.0027 7.50488 11.8835 7.50488 10.5027C7.50488 9.12203 8.62417 8.00275 10.0049 8.00275H11.0049V6.00275H13.0049V8.00275H15.5049V10.0027H10.0049C9.72874 10.0027 9.50488 10.2266 9.50488 10.5027C9.50488 10.7789 9.72874 11.0027 10.0049 11.0027H14.0049C15.3856 11.0027 16.5049 12.122 16.5049 13.5027C16.5049 14.8835 15.3856 16.0027 14.0049 16.0027H13.0049V18.0027H11.0049V16.0027H8.50488V14.0027Z"></path></svg>
-                </span>
-                <span className="font-bold text-gray-900 text-[12px] leading-6">
-                  {formatPrice(ad.price)}
-                </span>
-              </div>
-              <div className="flex items-center gap-1 text-gray-700">
-                <Clock size={14} className="text-brand-teal" aria-hidden="true" />
-                <span
-                  className="text-[12px] font-medium leading-5"
-                  suppressHydrationWarning
-                >
-                  {getTimeAgo(ad.createdAt)}
-                </span>
-              </div>
-            </div>
+          {/* purpose */}
+          <div className="absolute bottom-1.5 inset-x-0 flex justify-center">
+            <span className="bg-white/95 text-gray-800 text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-md shadow-sm">
+              {t(ad.purpose)}
+            </span>
           </div>
         </div>
 
-        <p className="text-sm text-gray-500 line-clamp-2 leading-5 min-h-10 mt-1 font-light">
-          {shortDescription}
-        </p>
+        <div className="flex-1 min-w-0 flex flex-col justify-center gap-1.5">
+          {/* owner */}
+          <div className="flex items-center gap-1.5 min-w-0">
+            <span className="flex items-center justify-center w-5 h-5 shrink-0 rounded-full bg-brand-teal/10 text-brand-teal text-[9px] font-bold">
+              {ownerName.trim().charAt(0) || "?"}
+            </span>
+            <span className="text-[10px] sm:text-[11px] font-medium text-gray-700 truncate">
+              {ownerName}
+            </span>
+          </div>
+          {/* date */}
+          <div className="flex items-center gap-1.5 text-gray-500 text-[11px] sm:text-[12px]">
+            {ad.isOffice && (
+              <BadgeCheck size={14} className="text-[#16A34A] shrink-0" aria-hidden="true" />
+            )}
+            <Calendar size={13} className="shrink-0" aria-hidden="true" />
+            <span className="whitespace-nowrap" suppressHydrationWarning>
+              {getTimeAgo(ad.createdAt)}
+            </span>
+          </div>
+          {/* description */}
+          <p className="text-[12px] sm:text-[13px] text-gray-600 line-clamp-2 leading-5 font-light">
+            {shortDescription}
+          </p>
+        </div>
       </div>
-    </>
+
+      {/* Price + location + actions */}
+      <div className="flex items-center justify-between gap-3 mt-4">
+        <div className="min-w-0">
+          <span className="font-bold text-base sm:text-lg text-[#e11d1d] whitespace-nowrap">
+            {formatPrice(ad.price)}
+          </span>
+        </div>
+
+        {variant === "default" && (
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={handleShare}
+              className="flex items-center gap-1.5 whitespace-nowrap bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 rounded-full px-3.5 py-2 text-[12px] sm:text-[13px] font-semibold transition-colors"
+            >
+              <Share2 size={15} />
+              <span>{tButtons("share")}</span>
+            </button>
+            <button
+              type="button"
+              onClick={handleWhatsApp}
+              className="flex items-center gap-1.5 whitespace-nowrap bg-white border border-gray-200 text-[#16A34A] hover:bg-[#f0fdf4] rounded-full px-3.5 py-2 text-[12px] sm:text-[13px] font-semibold transition-colors"
+            >
+              <WhatsAppIcon className="w-4 h-4" />
+              <span>{t("whatsapp")}</span>
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
   );
 
   const cardClasses =
     "relative block w-full cursor-pointer mb-3 hover:opacity-95 transition-opacity cv-card";
 
+  const shareDialog = shareUrl !== null && (
+    <ShareDialog
+      isOpen
+      onClose={() => setShareUrl(null)}
+      url={shareUrl}
+      title={title}
+    />
+  );
+
   if (variant === "default") {
     return (
-      <Link
-        href={href}
-        prefetch={false}
-        ref={setPrefetchTarget}
-        onMouseEnter={prefetchNow}
-        onFocus={prefetchNow}
-        onTouchStart={prefetchNow}
-        className={cardClasses}
-        onClick={onClick}
-        dir={direction}
-      >
-        {cardContent}
-      </Link>
+      <>
+        <Link
+          href={href}
+          prefetch={false}
+          ref={setPrefetchTarget}
+          onMouseEnter={prefetchNow}
+          onFocus={prefetchNow}
+          onTouchStart={prefetchNow}
+          className={cardClasses}
+          onClick={onClick}
+          dir={direction}
+        >
+          {cardContent}
+        </Link>
+        {shareDialog}
+      </>
     );
   }
 
@@ -195,6 +281,7 @@ function HomeAdCardBase({
         {cardContent}
       </Link>
       <MyAdActions ad={ad} onAction={onAction} />
+      {shareDialog}
     </div>
   );
 }

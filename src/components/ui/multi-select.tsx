@@ -123,7 +123,7 @@ export function MultiSelect({ options, value, onChange, placeholder = 'Select it
                   <span className="truncate">{option.label}</span>
                   <button
                     onClick={e => handleRemove(e, option.value)}
-                    className="flex items-center justify-center size-4 rounded-full text-gray-500 hover:bg-[#056e72]/10 hover:text-[#056e72] transition-colors shrink-0"
+                    className="flex items-center justify-center size-4 rounded-full text-gray-500 hover:bg-[#e11d1d]/10 hover:text-[#e11d1d] transition-colors shrink-0"
                     aria-label={`Remove ${option.label}`}
                   >
                     <X className="w-3 h-3" />

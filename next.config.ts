@@ -31,7 +31,7 @@ const remotePatterns = IMAGE_HOST
       },
       {
         protocol: "https",
-        hostname: "pub-c839aceddc8d42a3ae148c2001b4ed58.r2.dev",
+        hostname: "**.r2.dev", // any Cloudflare R2 public bucket subdomain
         pathname: "/**",
       },
     ]

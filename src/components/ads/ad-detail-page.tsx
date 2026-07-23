@@ -424,7 +424,7 @@ ${window.location.href}`);
           </h1>
 
           {/* Price */}
-          <div className="text-xl font-bold text-[#056e72] text-center mb-4">
+          <div className="text-xl font-bold text-[#e11d1d] text-center mb-4">
             {ad.price
               ? `${Number(ad.price).toLocaleString("en-US")} ${locale === "ar" ? "د.ك" : "KD"}`
               : ""}

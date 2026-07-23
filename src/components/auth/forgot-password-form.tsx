@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { ChevronLeft, ChevronRight, Phone } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useLocale } from "@/hooks/use-locale";
 import { toast } from "sonner";
@@ -64,10 +64,10 @@ export function ForgotPasswordForm() {
       <div className="w-full max-w-lg md:space-y-8 space-y-3">
         {/* Logo and Header */}
         <div className="flex flex-col items-center text-center mt-2">
-          <h2 className="md:text-3xl text-2xl font-bold text-gray-900 mt-4">
+          <h2 className="md:text-2xl text-xl font-bold text-gray-900 mt-4">
             {t("title")}
           </h2>
-          <p className="text-gray-500 mt-2 text-center">{t("subTitle")}</p>
+          <p className="text-gray-500 mt-2 text-center text-sm md:text-base">{t("subTitle")}</p>
         </div>
 
         {/* Forgot Password Card */}
@@ -90,17 +90,19 @@ export function ForgotPasswordForm() {
                       {tSignup("phone")}
                     </FormLabel>
                     <FormControl>
-                      <div className="relative">
+                      <div className="flex items-stretch gap-2" dir="ltr">
+                        <div className="flex items-center gap-1.5 shrink-0 px-3 h-11 md:h-12 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 text-sm font-medium">
+                          <span className="text-lg leading-none" aria-hidden="true">🇰🇼</span>
+                          <span>+965</span>
+                        </div>
                         <Input
                           dir="ltr"
                           type="text"
+                          inputMode="numeric"
                           placeholder={tSignup("phonePlaceholder")}
-                          className={`bg-white border-gray-200 rounded-xl h-11 md:h-12 focus:ring-primary/20 focus:border-primary transition-all ${locale === "ar" ? "pl-10" : "pr-10"}`}
+                          className="flex-1 bg-white border-gray-200 rounded-xl h-11 md:h-12 focus:ring-primary/20 focus:border-primary transition-all"
                           {...field}
                         />
-                        <div className={`absolute top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none ${locale === "ar" ? "left-3" : "right-3"}`}>
-                          <Phone size={18} />
-                        </div>
                       </div>
                     </FormControl>
                     <FormMessage />

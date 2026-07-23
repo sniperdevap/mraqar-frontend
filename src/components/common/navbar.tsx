@@ -334,7 +334,7 @@ export function Navbar() {
               <button
                 onClick={() => router.push("/")}
                 aria-label={t("buttons.back")}
-                className="p-2 text-[#056e72] hover:text-[#7f070b] transition-colors cursor-pointer flex items-center justify-center"
+                className="p-2 text-[#e11d1d] hover:text-[#7f070b] transition-colors cursor-pointer flex items-center justify-center"
               >
                 <ChevronLeft size={32} strokeWidth={2.5} aria-hidden="true" />
               </button>
@@ -461,7 +461,7 @@ export function Navbar() {
                     aria-label={t("nav.addFreeAd")}
                     className="absolute -top-[34px] focus:outline-none z-50 transition-transform duration-200 hover:scale-[1.08] active:scale-90"
                   >
-                    <div className="flex items-center justify-center w-[50px] h-[50px] rounded-full bg-primary shadow-[0_8px_16px_rgba(5,110,114,0.3)] cursor-pointer transition-all duration-300 hover:shadow-[0_8px_20px_rgba(5,110,114,0.45)]">
+                    <div className="flex items-center justify-center w-[50px] h-[50px] rounded-full bg-primary shadow-[0_8px_16px_rgba(225,29,29,0.3)] cursor-pointer transition-all duration-300 hover:shadow-[0_8px_20px_rgba(225,29,29,0.45)]">
                       <Plus
                         size={26}
                         strokeWidth={3.5}
@@ -482,10 +482,10 @@ export function Navbar() {
                 key={item.href || "menu"}
                 href={item.href || "/menu"}
                 className={cn(
-                  "relative flex flex-col items-center gap-1.5 py-1 px-3 rounded-2xl transition-all duration-300",
+                  "relative flex flex-col items-center gap-1.5 py-1.5 rounded-2xl transition-all duration-300",
                   isActive
-                    ? "text-primary-blue"
-                    : "text-[#555555] hover:text-[#555555]",
+                    ? "text-primary-blue bg-primary/10 px-4"
+                    : "text-[#555555] hover:text-[#555555] px-3",
                 )}
               >
                 <div

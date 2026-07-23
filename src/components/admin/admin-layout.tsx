@@ -89,7 +89,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
                 alt="Mr aqar"
                 width={80}
                 height={30}
-                className=""
+                className="h-10 w-auto"
               />
             </Link>
             <button

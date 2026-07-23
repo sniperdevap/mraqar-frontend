@@ -25,7 +25,7 @@ export function Loader({
   const variantClasses = {
     primary: "border-primary/20 border-t-primary",
     white: "border-white/20 border-t-white",
-    teal: "border-[#056e72]/20 border-t-[#056e72]",
+    teal: "border-[#e11d1d]/20 border-t-[#e11d1d]",
   };
 
   const loader = (

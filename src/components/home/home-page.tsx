@@ -288,7 +288,7 @@ export function HomePage() {
                 setSelectedAreas(val);
               }}
               placeholder={t("search.areaPlaceholder")}
-              className="w-full min-h-11 md:min-h-12 h-auto py-1 px-4 bg-white border border-gray-200 rounded-xl flex items-center text-gray-700 transition-all hover:border-primary/50 hover:bg-primary/[0.03] focus-within:border-primary data-[state=open]:border-primary data-[state=open]:shadow-[0_4px_20px_rgba(5,110,114,0.15)] text-base font-medium"
+              className="w-full min-h-11 md:min-h-12 h-auto py-1 px-4 bg-white border border-gray-200 rounded-xl flex items-center text-gray-700 transition-all hover:border-primary/50 hover:bg-primary/[0.03] focus-within:border-primary data-[state=open]:border-primary data-[state=open]:shadow-[0_4px_20px_rgba(225,29,29,0.15)] text-base font-medium"
               disabled={isLoading}
               enableGrouping={true}
               dir={direction}
@@ -312,7 +312,7 @@ export function HomePage() {
             >
               <SelectTrigger
                 aria-label={t("search.propertyTypePlaceholder")}
-                className="w-full !h-11 md:!h-12 px-4 bg-white border border-gray-200 rounded-xl text-gray-700 data-[placeholder]:!text-gray-400 data-[placeholder]:!font-normal transition-all hover:border-primary/50 hover:bg-primary/[0.03] focus:border-primary data-[state=open]:border-primary data-[state=open]:shadow-[0_4px_20px_rgba(5,110,114,0.15)] text-base font-medium"
+                className="w-full !h-11 md:!h-12 px-4 bg-white border border-gray-200 rounded-xl text-gray-700 data-[placeholder]:!text-gray-400 data-[placeholder]:!font-normal transition-all hover:border-primary/50 hover:bg-primary/[0.03] focus:border-primary data-[state=open]:border-primary data-[state=open]:shadow-[0_4px_20px_rgba(225,29,29,0.15)] text-base font-medium"
               >
                 <SelectValue
                   placeholder={t("search.propertyTypePlaceholder")}
@@ -406,7 +406,7 @@ export function HomePage() {
           {/* Search Button */}
           <Button
             onClick={handleSearch}
-            className="rounded-xl !h-11 md:!h-12 w-full mt-5 bg-[#056e72] hover:bg-[#045c5f] border-none text-white font-light text-base tracking-wide transition-all hover:shadow-[0_6px_18px_rgba(5,110,114,0.25)] active:scale-[0.98]"
+            className="rounded-xl !h-11 md:!h-12 w-full mt-5 bg-[#e11d1d] hover:bg-[#b91616] border-none text-white font-light text-base tracking-wide transition-all hover:shadow-[0_6px_18px_rgba(225,29,29,0.25)] active:scale-[0.98]"
           >
             <Search size={18} className="me-1.5" />
             {tCommon("buttons.search")}

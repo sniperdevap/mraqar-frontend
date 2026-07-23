@@ -216,7 +216,7 @@ export function AdCard({
                       fill="currentColor"
                       strokeWidth="0"
                       viewBox="0 0 24 24"
-                      className="text-[#056e72] shrink-0"
+                      className="text-[#e11d1d] shrink-0"
                       height="14"
                       width="14"
                       xmlns="http://www.w3.org/2000/svg"
@@ -267,7 +267,7 @@ export function AdCard({
             <div className="mt-auto">
               {/* Time Row */}
               <div className="flex items-center justify-start gap-1 text-gray-500 mb-1.5 mt-6">
-                <Clock size={12} className="text-[#056e72]" />
+                <Clock size={12} className="text-[#e11d1d]" />
                 <span className="text-[11px] font-medium">
                   {getTimeAgo(ad.createdAt)}
                 </span>

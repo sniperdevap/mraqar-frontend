@@ -25,7 +25,7 @@ export function AuthWrapperNew({ children }: AuthWrapperNewProps) {
               width={140}
               height={32}
               fallbackSrc="/images/aqar-new-logo.png"
-              className="h-auto"
+              className="h-12 w-auto"
             />
           </div>
           {children}

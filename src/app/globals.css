@@ -9,15 +9,15 @@
   --breakpoint-3xl: 105rem; /* 1680px */
 
   /* Primary Colors */
-  --color-primary-main: #056e72;
-  --color-secondary-main: #056e72;
+  --color-primary-main: #e11d1d;
+  --color-secondary-main: #e11d1d;
   --color-primary-light: #f7f7f7;
   --color-primary-cyan: #212121;
   --color-primary-dark: #1d2738;
-  --color-primary-blue: #056e72;
-  --color-primary-blue-light: #5e92dd;
+  --color-primary-blue: #e11d1d;
+  --color-primary-blue-light: #f26a6a;
   --color-primary-coral: #fb6b5b;
-  --color-brand-teal: #056e72;
+  --color-brand-teal: #e11d1d;
   --color-brand-gold: #c59925;
   --color-card-mint: #ecf4f6;
 
