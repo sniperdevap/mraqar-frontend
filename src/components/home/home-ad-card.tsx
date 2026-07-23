@@ -86,7 +86,7 @@ function HomeAdCardBase({
     <>
       {isFeatured && (
         <span
-          className={`absolute top-2 z-10 bg-brand-teal text-white px-2 py-0.5 text-[9px] font-bold rounded-full shadow-sm ${
+          className={`absolute top-2 z-10 bg-brand-gold text-white px-2 py-0.5 text-[9px] font-bold rounded-full shadow-sm ${
             direction === "rtl" ? "left-3" : "right-3"
           }`}
         >
@@ -96,13 +96,13 @@ function HomeAdCardBase({
 
       <div className="w-full bg-card-mint rounded-2xl overflow-hidden p-3">
         <div className="flex flex-row w-full items-start gap-2.5">
-          <div className="relative w-[75px] h-[75px] shrink-0 rounded-lg overflow-hidden bg-gray-100">
+          <div className="relative w-[75px] h-[75px] lg:w-[120px] lg:h-[120px] shrink-0 rounded-lg overflow-hidden bg-gray-100">
             <Image
               src={displayUrl as string}
               alt={ad.description}
               fill
               className="object-cover"
-              sizes="96px"
+              sizes="(min-width: 1024px) 120px, 96px"
               priority={priority}
               loading={priority ? "eager" : "lazy"}
             />
@@ -123,8 +123,8 @@ function HomeAdCardBase({
             </div>
           </div>
 
-          <div className="flex-1 flex flex-col min-w-0 min-h-[96px] justify-center">
-            <h3 className="text-base font-medium text-gray-900 line-clamp-2 leading-6">
+          <div className="flex-1 flex flex-col min-w-0 min-h-[96px] lg:min-h-[120px] justify-center">
+            <h3 className="text-base lg:text-xl font-medium text-gray-900 line-clamp-2 leading-6 lg:leading-8">
               {locale === "ar"
                 ? `${t(ad.purpose)} ${ad.propertyType?.labelAr || ad.propertyType?.label} في ${ad.area?.labelAr || ad.area?.label}`
                 : `${t(ad.purpose)} ${ad.propertyType?.label} in ${ad.area?.label}`}

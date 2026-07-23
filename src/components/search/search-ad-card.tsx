@@ -103,7 +103,7 @@ export function SearchAdCard({ ad, onClick }: SearchAdCardProps) {
       {isPremiumAd && (
         <div
           className={cn(
-            "absolute top-2 z-20 bg-brand-teal text-white px-3 py-1 rounded-full text-[10px] font-semibold",
+            "absolute top-2 z-20 bg-brand-gold text-white px-3 py-1 rounded-full text-[10px] font-semibold",
             direction === "rtl" ? "left-2" : "right-2",
           )}
         >

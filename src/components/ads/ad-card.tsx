@@ -172,7 +172,7 @@ export function AdCard({
       >
         {isPremiumAd && (
           <div
-            className={`absolute top-2 z-20 bg-brand-teal text-white px-3 py-1 text-[10px] sm:text-[11px] font-semibold rounded-full tracking-tight ${direction === "rtl" ? "left-2" : "right-2"}`}
+            className={`absolute top-2 z-20 bg-brand-gold text-white px-3 py-1 text-[10px] sm:text-[11px] font-semibold rounded-full tracking-tight ${direction === "rtl" ? "left-2" : "right-2"}`}
           >
             {t("premiumBadge")}
           </div>
