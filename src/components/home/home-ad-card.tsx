@@ -136,7 +136,7 @@ function HomeAdCardBase({
       )}
 
       {/* Title */}
-      <h3 className="text-lg sm:text-xl font-bold text-gray-900 line-clamp-2 leading-7 sm:leading-8 pt-1.5 pl-16">
+      <h3 className="sm:text-xl font-bold text-gray-900 line-clamp-2 leading-7 sm:leading-8 pt-1.5 pl-16">
         {title}
       </h3>
 
