@@ -493,14 +493,8 @@ ${window.location.href}`);
           {/* Lead media — small, the rest of the gallery sits under the description */}
           {currentMedia && (
             <div
-              className={`relative w-56 sm:w-64 aspect-4/3 mx-auto mb-6 rounded-xl overflow-hidden bg-gray-50 ${
-                currentMedia.type === "video" ? "cursor-pointer" : ""
-              }`}
-              onClick={
-                currentMedia.type === "video"
-                  ? () => setIsMediaViewerOpen(true)
-                  : undefined
-              }
+              className="relative w-56 sm:w-64 aspect-4/3 mx-auto mb-6 rounded-xl overflow-hidden bg-gray-50 cursor-pointer"
+              onClick={() => setIsMediaViewerOpen(true)}
             >
               <Image
                 src={currentImageUrl}
