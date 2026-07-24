@@ -2,10 +2,10 @@
 # Auto-deploy frontend: pull latest main IF newest incoming commit is by zaheer-bashir.
 set -euo pipefail
 
-DIR="/var/www/mr-aqar/aqar-frontend"   # <-- repo path on the server
+DIR="/var/www/mr-aqar-staging/aqar-frontend"   # <-- repo path on the server
 BRANCH="main"
 AUTHOR_MATCH="zaheer-bashir"   # matches name or email, case-insensitive
-PM2_NAME="aqar-frontend"
+PM2_NAME="mr-aqar-staging-frontend"
 
 log() { echo "[$(date '+%F %T')] $*"; }
 
