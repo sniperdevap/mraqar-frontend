@@ -4,7 +4,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { Eye, Play, Share2, Calendar, BadgeCheck } from "lucide-react";
+import { Eye, Play, Share2, Calendar, BadgeCheck, Crown } from "lucide-react";
 import { Ad, Media } from "@/types/ad";
 import { useLocale, useTranslations } from "@/hooks/use-locale";
 import { formatDistanceToNow } from "@/lib/utils/format";
@@ -130,8 +130,9 @@ function HomeAdCardBase({
   const cardContent = (
     <div className="relative w-full rounded-3xl border border-[#f1e5db] shadow-[0_2px_16px_rgba(16,24,40,0.06)] p-4 sm:p-5 bg-gradient-to-br from-[#fbf1ea] via-white to-[#fbf1ea]">
       {isFeatured && (
-        <span className="absolute top-3 left-4 z-10 bg-[#047E76] text-white px-3 py-1 text-[10px] sm:text-[11px] font-bold rounded-full shadow-sm tracking-wide">
+        <span className="absolute top-3 left-4 z-10 flex items-center gap-1 bg-[linear-gradient(135deg,#b8891f_0%,#e6cb7a_50%,#b8891f_100%)] text-white px-3 py-1 text-[10px] sm:text-[11px] font-bold rounded-full shadow-sm tracking-wide">
           {locale === "ar" ? "مميز" : "DISTINCT"}
+          <Crown size={12} className="fill-white text-white" />
         </span>
       )}
 
