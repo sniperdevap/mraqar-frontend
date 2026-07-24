@@ -21,7 +21,7 @@ log() { echo "[$(date '+%F %T')] $*"; }
 
   log "deploying $remote_rev"
   git reset --hard "origin/$BRANCH"
-  npm ci && npm run build && pm2 restart "$PM2_NAME"
+  pnpm install --frozen-lockfile && pnpm run build && pm2 restart "$PM2_NAME"
   log "deployed."
 } >> "$DIR/deploy.log" 2>&1
 
