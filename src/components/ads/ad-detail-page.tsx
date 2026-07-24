@@ -427,20 +427,20 @@ ${window.location.href}`);
             </div>
 
             <div className="grid grid-cols-3 gap-2.5">
-              <div className="flex items-center justify-center gap-1.5 border border-[#f3cccc] bg-[#fdf2f2] text-[#e11d1d] rounded-xl py-2.5 px-1 text-[11px] sm:text-xs font-semibold">
+              <div className="flex items-center justify-center gap-1.5 border border-[#cfe8dd] bg-[#f3faf6] text-[#047E76] rounded-xl py-2.5 px-1 text-[11px] sm:text-xs font-semibold">
                 <Clock size={15} className="shrink-0" />
                 <span className="truncate" suppressHydrationWarning>
                   {getTimeAgo(ad.createdAt)}
                 </span>
               </div>
-              <div className="flex items-center justify-center gap-1.5 border border-[#f3cccc] bg-[#fdf2f2] text-[#e11d1d] rounded-xl py-2.5 px-1 text-[11px] sm:text-xs font-semibold">
+              <div className="flex items-center justify-center gap-1.5 border border-[#cfe8dd] bg-[#f3faf6] text-[#047E76] rounded-xl py-2.5 px-1 text-[11px] sm:text-xs font-semibold">
                 <Eye size={16} strokeWidth={2.5} className="shrink-0" />
                 <span>{ad.views || 0}</span>
               </div>
               <button
                 type="button"
                 onClick={handleShare}
-                className="flex items-center justify-center gap-1.5 border border-[#f3cccc] bg-[#fdf2f2] text-[#e11d1d] rounded-xl py-2.5 px-1 text-[11px] sm:text-xs font-semibold transition-colors hover:bg-[#fbe6e6]"
+                className="flex items-center justify-center gap-1.5 border border-[#cfe8dd] bg-[#f3faf6] text-[#047E76] rounded-xl py-2.5 px-1 text-[11px] sm:text-xs font-semibold transition-colors hover:bg-[#e9f6ef]"
               >
                 <Share2 size={15} className="shrink-0" />
                 <span className="truncate">{tButtons("share")}</span>
@@ -456,7 +456,7 @@ ${window.location.href}`);
               </div>
               <div
                 dir="ltr"
-                className="flex items-center justify-center gap-2 text-[#169899] font-bold text-xs sm:text-sm mt-1"
+                className="flex items-center justify-center gap-2 text-[#e11d1d] font-bold text-xs sm:text-sm mt-1"
               >
                 <button onClick={handlePhoneCall} className="hover:underline">
                   {formatDisplayPhone(ad.phoneNumber)}
@@ -569,7 +569,7 @@ ${window.location.href}`);
             </p>
 
             {/* Full gallery, small tiles */}
-            {ad.media && ad.media.length > 1 ? (
+            {ad.media && ad.media.length > 0 ? (
               <div className="grid grid-cols-3 gap-2 mt-4">
                 {ad.media.map((m, index) => (
                   <div
