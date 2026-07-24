@@ -126,6 +126,11 @@ function HomeAdCardBase({
   const isVideo = firstMedia?.type === "video";
 
   const ownerName = ad.user?.name || "";
+  const avatarUrl = ad.user?.avatar
+    ? ad.user.avatar.startsWith("http")
+      ? ad.user.avatar
+      : `${(process.env.NEXT_PUBLIC_IMAGE_HOST || "").replace(/\/+$/, "")}/${ad.user.avatar.replace(/^\/+/, "")}`
+    : null;
 
   const cardContent = (
     <div className="relative w-full rounded-2xl border border-[#f1e5db] shadow-[0_2px_12px_rgba(16,24,40,0.05)] p-3 sm:p-3.5 bg-gradient-to-br from-[#fbf1ea] via-white to-[#fbf1ea]">
@@ -176,8 +181,19 @@ function HomeAdCardBase({
         <div className="flex-1 min-w-0 flex flex-col justify-center gap-1">
           {/* owner */}
           <div className="flex items-center gap-1.5 min-w-0">
-            <span className="flex items-center justify-center w-4 h-4 shrink-0 rounded-full bg-brand-teal/10 text-brand-teal text-[8px] font-bold">
-              {ownerName.trim().charAt(0) || "?"}
+            <span className="flex items-center justify-center w-5 h-5 shrink-0 rounded-full overflow-hidden bg-brand-teal/10 text-brand-teal text-[8px] font-bold">
+              {avatarUrl ? (
+                <Image
+                  src={avatarUrl}
+                  alt={ownerName || "User"}
+                  width={20}
+                  height={20}
+                  className="w-full h-full object-cover"
+                  unoptimized
+                />
+              ) : (
+                ownerName.trim().charAt(0) || "?"
+              )}
             </span>
             <span className="text-[10px] sm:text-[11px] font-medium text-gray-700 truncate">
               {ownerName}
