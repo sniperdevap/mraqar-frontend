@@ -558,17 +558,11 @@ ${window.location.href}`);
                 />
                 {heroMedia?.type === "video" && (
                   <div className="absolute inset-0 flex items-center justify-center bg-black/10">
-                    <span className="flex items-center justify-center w-10 h-10 bg-white/25 backdrop-blur-sm rounded-full border border-white/40 shadow-md">
-                      <Play className="w-5 h-5 text-white fill-white ms-0.5" />
+                    <span className="flex items-center justify-center w-11 h-11 rounded-full bg-black/40 backdrop-blur-sm border-2 border-white/80">
+                      <Play className="w-4 h-4 text-white fill-white ms-0.5" />
                     </span>
                   </div>
                 )}
-                {/* purpose sticker */}
-                <div className="absolute bottom-1.5 inset-x-0 flex justify-center">
-                  <span className="bg-white/95 text-gray-800 text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-md shadow-sm">
-                    {t(ad.purpose)}
-                  </span>
-                </div>
               </div>
             )}
           </div>
@@ -643,7 +637,9 @@ ${window.location.href}`);
                     />
                     {m.type === "video" && (
                       <div className="absolute inset-0 flex items-center justify-center bg-black/10">
-                        <Play className="w-7 h-7 text-white fill-white drop-shadow" />
+                        <span className="flex items-center justify-center w-9 h-9 rounded-full bg-black/40 backdrop-blur-sm border-2 border-white/80">
+                          <Play className="w-3.5 h-3.5 text-white fill-white ms-0.5" />
+                        </span>
                       </div>
                     )}
                   </div>
