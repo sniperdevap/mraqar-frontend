@@ -143,7 +143,7 @@ function HomeAdCardBase({
 
       {/* Image (start) + owner / date / description (end) */}
       <div className="flex gap-3 mt-3">
-        <div className="relative w-24 h-24 sm:w-28 sm:h-28 shrink-0 rounded-2xl overflow-hidden bg-gray-100 ring-2 ring-white shadow-[0_4px_14px_rgba(16,24,40,0.14)]">
+        <div className="relative w-24 h-24 sm:w-28 sm:h-28 shrink-0 rounded-[1.75rem] overflow-hidden bg-gray-100 ring-2 ring-white shadow-[0_4px_14px_rgba(16,24,40,0.14)]">
           <Image
             src={displayUrl as string}
             alt={ad.description}
@@ -161,12 +161,10 @@ function HomeAdCardBase({
             </div>
           )}
           {/* view count */}
-          <div className="absolute top-1.5 inset-x-0 flex justify-center">
-            <span className="flex items-center gap-1 bg-[#1f2937] text-white ps-1.5 pe-2 py-0.5 rounded-full text-[10px] font-semibold leading-none shadow-sm">
-              <Eye strokeWidth={2.5} className="w-3 h-3" />
-              {ad.views || 0}
-            </span>
-          </div>
+          <span className="absolute top-2 right-2 flex items-center gap-1 bg-black/70 text-white ps-1.5 pe-2 py-0.5 rounded-full text-[10px] font-semibold leading-none shadow-sm">
+            <Eye strokeWidth={2.5} className="w-3 h-3" />
+            {ad.views || 0}
+          </span>
           {/* purpose */}
           <div className="absolute bottom-1.5 inset-x-0 flex justify-center">
             <span className="bg-white/95 text-gray-800 text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-md shadow-sm">
