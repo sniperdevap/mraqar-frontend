@@ -160,8 +160,8 @@ function HomeAdCardBase({
           />
           {isVideo && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/10">
-              <span className="flex items-center justify-center w-10 h-10 rounded-full border-2 border-white/90 bg-white/10 backdrop-blur-[1px] shadow-sm">
-                <Play size={18} className="text-white fill-white ms-0.5" />
+              <span className="flex items-center justify-center w-10 h-10 bg-white/25 backdrop-blur-sm rounded-full border border-white/40 shadow-md">
+                <Play className="w-5 h-5 text-white fill-white ms-0.5" />
               </span>
             </div>
           )}
@@ -170,6 +170,12 @@ function HomeAdCardBase({
             <Eye strokeWidth={2.5} className="w-3 h-3" />
             {ad.views || 0}
           </span>
+          {/* purpose sticker */}
+          <div className="absolute bottom-1.5 inset-x-0 flex justify-center">
+            <span className="bg-white/95 text-gray-800 text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-md shadow-sm">
+              {t(ad.purpose)}
+            </span>
+          </div>
         </div>
 
         <div className="flex-1 min-w-0 flex flex-col justify-center gap-1">

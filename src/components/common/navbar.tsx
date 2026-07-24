@@ -354,22 +354,8 @@ export function Navbar() {
                 </Link>
               </div>
 
-              {/* Right: Heart (Toggle Favorites) */}
-              <div className="flex items-center justify-center w-12 h-12">
-                <button
-                  onClick={handleMobileFavoriteToggle}
-                  disabled={adFavoriteState?.isFavoriteLoading}
-                  aria-label={adFavoriteState?.isFavorite ? t("ads.ariaRemoveFromFavorites") : t("ads.ariaAddToFavorites")}
-                  className="p-2 text-gray-900 hover:text-red-500 transition-colors cursor-pointer"
-                >
-                  <Heart
-                    size={26}
-                    strokeWidth={1.8}
-                    aria-hidden="true"
-                    className={adFavoriteState?.isFavorite ? "fill-gray-900 text-gray-900" : "text-gray-900"}
-                  />
-                </button>
-              </div>
+              {/* Right: spacer to keep the logo centered */}
+              <div className="w-12 h-12" aria-hidden="true" />
             </div>
           ) : (
             <>

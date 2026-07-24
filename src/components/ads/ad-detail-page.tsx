@@ -434,9 +434,9 @@ ${window.location.href}`);
             </div>
 
             <div className="grid grid-cols-3 gap-2.5">
-              <div className="flex items-center justify-center gap-1.5 border border-[#cfe8dd] bg-[#f3faf6] text-[#047E76] rounded-xl py-2.5 px-1 text-[11px] sm:text-xs font-semibold">
-                <Clock size={15} className="shrink-0" />
-                <span className="truncate" suppressHydrationWarning>
+              <div className="flex items-center justify-center gap-1 border border-[#cfe8dd] bg-[#f3faf6] text-[#047E76] rounded-xl py-2.5 px-1 text-[9px] sm:text-[10px] font-semibold">
+                <Clock size={12} className="shrink-0" />
+                <span className="whitespace-nowrap" suppressHydrationWarning>
                   {getTimeAgo(ad.createdAt)}
                 </span>
               </div>
@@ -558,9 +558,17 @@ ${window.location.href}`);
                 />
                 {heroMedia?.type === "video" && (
                   <div className="absolute inset-0 flex items-center justify-center bg-black/10">
-                    <Play className="w-7 h-7 text-white fill-white" />
+                    <span className="flex items-center justify-center w-10 h-10 bg-white/25 backdrop-blur-sm rounded-full border border-white/40 shadow-md">
+                      <Play className="w-5 h-5 text-white fill-white ms-0.5" />
+                    </span>
                   </div>
                 )}
+                {/* purpose sticker */}
+                <div className="absolute bottom-1.5 inset-x-0 flex justify-center">
+                  <span className="bg-white/95 text-gray-800 text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-md shadow-sm">
+                    {t(ad.purpose)}
+                  </span>
+                </div>
               </div>
             )}
           </div>
@@ -733,26 +741,26 @@ ${window.location.href}`);
         <div className="max-w-4xl mx-auto flex items-center gap-3">
           <button
             onClick={handleWhatsApp}
-            className="cursor-pointer flex-1 bg-[#15803d] hover:bg-[#166534] text-white h-12 rounded-xl flex items-center justify-center gap-3 text-xl font-bold transition-all active:scale-[0.98] shadow-md"
+            className="cursor-pointer flex-1 bg-[#15803d] hover:bg-[#166534] text-white h-11 rounded-xl flex items-center justify-center gap-2 text-sm font-medium transition-all active:scale-[0.98] shadow-sm"
           >
             <svg
               stroke="currentColor"
               fill="currentColor"
               strokeWidth="0"
               viewBox="0 0 512 512"
-              height="24"
-              width="24"
+              height="18"
+              width="18"
               xmlns="http://www.w3.org/2000/svg"
             >
               <path d="M260.062 32C138.605 32 40.134 129.701 40.134 250.232c0 41.23 11.532 79.79 31.559 112.687L32 480l121.764-38.682c31.508 17.285 67.745 27.146 106.298 27.146C381.535 468.464 480 370.749 480 250.232 480 129.701 381.535 32 260.062 32zm109.362 301.11c-5.174 12.827-28.574 24.533-38.899 25.072-10.314.547-10.608 7.994-66.84-16.434-56.225-24.434-90.052-83.844-92.719-87.67-2.669-3.812-21.78-31.047-20.749-58.455 1.038-27.413 16.047-40.346 21.404-45.725 5.351-5.387 11.486-6.352 15.232-6.413 4.428-.072 7.296-.132 10.573-.011 3.274.124 8.192-.685 12.45 10.639 4.256 11.323 14.443 39.153 15.746 41.989 1.302 2.839 2.108 6.126.102 9.771-2.012 3.653-3.042 5.935-5.961 9.083-2.935 3.148-6.174 7.042-8.792 9.449-2.92 2.665-5.97 5.572-2.9 11.269 3.068 5.693 13.653 24.356 29.779 39.736 20.725 19.771 38.598 26.329 44.098 29.317 5.515 3.004 8.806 2.67 12.226-.929 3.404-3.599 14.639-15.746 18.596-21.169 3.955-5.438 7.661-4.373 12.742-2.329 5.078 2.052 32.157 16.556 37.673 19.551 5.51 2.989 9.193 4.529 10.51 6.9 1.317 2.38.901 13.531-4.271 26.359z"></path>
             </svg>
-            <span className="text-lg">{t("contactOffice")}</span>
+            <span>{t("contactOffice")}</span>
           </button>
           <button
             onClick={handlePhoneCall}
-            className="cursor-pointer flex items-center justify-center gap-2 bg-white border border-gray-200 text-gray-800 px-5 h-12 rounded-xl font-bold hover:bg-gray-50 transition-all active:scale-95"
+            className="cursor-pointer flex items-center justify-center gap-2 bg-white border border-gray-200 text-gray-800 px-5 h-11 rounded-xl text-sm font-medium hover:bg-gray-50 transition-all active:scale-95"
           >
-            <Phone size={20} />
+            <Phone size={17} />
             <span>{t("call")}</span>
           </button>
         </div>
