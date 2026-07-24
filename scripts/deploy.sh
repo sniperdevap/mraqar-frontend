@@ -20,8 +20,10 @@ log() { echo "[$(date '+%F %T')] $*"; }
   fi
 
   log "deploying $remote_rev"
-  git reset --hard "origin/$BRANCH"
-  pnpm install --frozen-lockfile && pnpm run build && pm2 restart "$PM2_NAME"
+  git reset --hard "origin/$BRANCH"          # pull latest
+  pnpm install --frozen-lockfile             # sync deps
+  pnpm run build                             # build
+  pm2 restart "$PM2_NAME" --update-env       # restart app
   log "deployed."
 } >> "$DIR/deploy.log" 2>&1
 
