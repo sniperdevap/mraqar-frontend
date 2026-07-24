@@ -510,7 +510,7 @@ ${window.location.href}`);
                 </div>
                 <div
                   dir="ltr"
-                  className="flex items-center gap-1 whitespace-nowrap text-[#e11d1d] font-bold text-sm sm:text-base mt-1"
+                  className="flex items-center gap-1 whitespace-nowrap text-[#e11d1d] font-bold text-xs sm:text-sm mt-1"
                 >
                   <Image
                     src="/images/phone-call-icon.png"
@@ -612,8 +612,8 @@ ${window.location.href}`);
               {ad.description}
             </p>
 
-            {/* Full gallery, small tiles */}
-            {ad.media && ad.media.length > 0 ? (
+            {/* Full gallery, small tiles — skip when only the hero image exists */}
+            {ad.media && ad.media.length > 1 ? (
               <div className="grid grid-cols-3 gap-2 mt-4">
                 {ad.media.map((m, index) => (
                   <div
