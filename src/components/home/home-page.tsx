@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -28,6 +27,14 @@ const PriceFilterDialog = dynamic(
   { ssr: false },
 );
 
+/**
+ * A/B flag: transaction type (rent/sale/exchange) first, before region and
+ * property type — an early micro-commitment before the heavier choices.
+ * Flip to false to restore the original region -> type -> purpose order.
+ */
+const SEARCH_PURPOSE_FIRST =
+  process.env.NEXT_PUBLIC_SEARCH_PURPOSE_FIRST !== "false";
+
 export function HomePage() {
   const router = useRouter();
   const t = useTranslations("home");
@@ -35,7 +42,6 @@ export function HomePage() {
   const { locale, direction } = useLocale();
 
   const [isPriceFilterOpen, setIsPriceFilterOpen] = useState(false);
-  const [showStickySearchBar, setShowStickySearchBar] = useState(false);
 
   const [propertyType, setPropertyType] = useState("");
   const [selectedAreas, setSelectedAreas] = useState<string[]>([]);
@@ -67,7 +73,10 @@ export function HomePage() {
 
   const propertyTypes = propertyTypesData || [];
   const areas = areasData || [];
-  const ads = adsData?.pages.flatMap((page) => page.ads) || [];
+  const ads = useMemo(
+    () => adsData?.pages.flatMap((page) => page.ads) ?? [],
+    [adsData?.pages],
+  );
   const prefetchTriggerIndex = Math.max(
     0,
     ads.length - Math.ceil(adsPerPage / 2),
@@ -92,22 +101,6 @@ export function HomePage() {
       fetchNextPage();
     }
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const searchButton = document.getElementById("main-search-button");
-      if (searchButton) {
-        const rect = searchButton.getBoundingClientRect();
-        // Show sticky header when the bottom of the search button is above the viewport
-        setShowStickySearchBar(rect.bottom < 0);
-      } else {
-        setShowStickySearchBar(window.scrollY > 300);
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   const clamp = (value: number, min: number, max: number) =>
     Math.min(Math.max(value, min), max);
@@ -235,136 +228,16 @@ export function HomePage() {
     setMaxPrice("");
   };
 
-  return (
-    <div className="flex flex-col min-h-[calc(100vh-64px)] relative overflow-x-hidden bg-[#f8f9fa] md:bg-white">
-      {showStickySearchBar && (
-        <div
-          className="fixed top-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-sm border-b border-gray-200 shadow-sm animate-slide-down"
-          dir={direction}
-        >
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Image
-                src="/images/aqar-new-logo-sm.webp"
-                alt="Mr aqar"
-                width={84}
-                height={56}
-                priority
-                className="h-14 w-[84px] object-contain"
-                style={{ width: 84, height: 56 }}
-              />
-              {/* <div className="flex flex-col">
-                <span className="text-[11px] md:text-[13px] font-bold text-black uppercase leading-tight">{tCommon('buttons.search')}</span>
-                <span className="text-[9px] md:text-[10px] font-semibold text-gray-500 capitalize leading-tight">
-                  {t('latestListings.propertyInKuwait', { count: adsData?.pages[0]?.total || 0 })}
-                </span>
-              </div> */}
-            </div>
-
-            <button
-              className="flex flex-col items-center justify-center text-black hover:text-gray-600 transition-transform active:scale-95"
-              onClick={() => router.push("/search")}
-            >
-              <Search size={20} className="mb-0.5 stroke-[2.5]" />
-              <span className="text-[10px] font-bold uppercase tracking-wider">
-                {tCommon("buttons.search")}
-              </span>
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Hero Header Section */}
-      <section
-        className="w-full pt-4 md:pt-4 px-4 sm:px-4 lg:px-4 max-w-xl mx-auto mb-4 relative z-30"
-        dir={direction}
-      >
-        {/* LCP image: fixed box reserves space before decode (avoids CLS). */}
-        <div
-          className="flex justify-center mb-4 mx-auto"
-          style={{ width: 168, height: 112 }}
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/images/aqar-new-logo-hero.webp"
-            alt="Mr aqar"
-            width={168}
-            height={112}
-            fetchPriority="high"
-            decoding="async"
-            className="object-contain"
-            style={{ width: 168, height: 112 }}
-          />
-        </div>
-
-        {/* Title sits outside any card, floating over the page */}
-        <h1 className="text-xl md:text-xl font-bold text-[#1f2937] text-center mb-5">
-          {t("hero.title")}
-        </h1>
-
-        {/* Search Form */}
-        <div className="w-full space-y-3 p-5 rounded-3xl border border-gray-100 bg-white/60">
-          {/* Area Search */}
-          <div className="relative">
-            <MultiSelect
-              options={areas.map((a) => ({
-                label: locale === "ar" ? a.labelAr : a.label,
-                value: String(a.id),
-                governorate:
-                  locale === "ar" ? a.governorateAr : a.governorate,
-              }))}
-              value={selectedAreas}
-              onChange={(val) => {
-                setSelectedAreas(val);
-              }}
-              placeholder={t("search.areaPlaceholder")}
-              className="w-full min-h-10 md:min-h-11 h-auto py-1 px-3 bg-white border border-gray-200 rounded-xl flex items-center text-gray-700 shadow-[0_4px_16px_rgb(0,0,0,0.06)] transition-all focus-within:shadow-[0_4px_20px_rgba(154,9,14,0.15)] text-base font-medium"
-              disabled={isLoading}
-              enableGrouping={true}
-              dir={direction}
-            />
-          </div>
-
-          {/* Property Type */}
-          <div className="relative">
-            <Select
-              value={propertyType}
-              onValueChange={(val) => {
-                setPropertyType(val);
-              }}
-              disabled={isLoading}
-              dir={direction}
-            >
-              <SelectTrigger
-                aria-label={t("search.propertyTypePlaceholder")}
-                className="w-full !h-10 md:!h-11 px-3 bg-white border border-gray-200 rounded-xl text-gray-700 data-[placeholder]:!text-gray-500 shadow-[0_4px_16px_rgb(0,0,0,0.06)] transition-all focus:shadow-[0_4px_20px_rgba(154,9,14,0.15)] text-base font-medium"
-              >
-                <SelectValue
-                  placeholder={t("search.propertyTypePlaceholder")}
-                />
-              </SelectTrigger>
-              <SelectContent className="rounded-xl">
-                {propertyTypes.map((type) => (
-                  <SelectItem
-                    key={type.id}
-                    value={String(type.id)}
-                    className="cursor-pointer font-normal text-base text-gray-800"
-                  >
-                    {locale === "ar" ? type.labelAr || type.label : type.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
+  const purposeTabs = (
+    <>
           {/* Purpose Tabs — sliding segmented control */}
           <div
-            className="bg-white !h-10 md:!h-11 w-full rounded-xl p-1 border border-gray-200 shadow-[0_4px_16px_rgb(0,0,0,0.06)]"
+            className="bg-gray-50 !h-11 md:!h-12 w-full rounded-xl p-1 border border-gray-200/70"
             dir={direction}
           >
             <div className="relative h-full flex items-center">
               <div
-                className="absolute top-0 bottom-0 w-1/3 rounded-lg bg-[#9a090e] shadow-[0_2px_8px_rgba(154,9,14,0.35)] transition-all duration-300 ease-out"
+                className="absolute top-0 bottom-0 w-1/3 rounded-xl bg-white shadow-sm transition-all duration-300 ease-out"
                 style={{
                   insetInlineStart:
                     activeTab === "exchange"
@@ -385,11 +258,10 @@ export function HomePage() {
                 <button
                   key={key}
                   onClick={() => setActiveTab(key)}
-                  className={`relative z-10 flex-1 h-full flex items-center justify-center rounded-lg font-medium transition-colors text-base ${
-                    activeTab === key
-                      ? "text-white"
-                      : "text-gray-500 hover:text-gray-700"
-                  }`}
+                  className={`relative z-10 flex-1 h-full flex items-center justify-center rounded-xl font-light transition-colors text-[15px] ${activeTab === key
+                      ? "text-gray-900 font-medium"
+                      : "text-gray-600 hover:text-gray-900"
+                    }`}
                 >
                   {label}
                 </button>
@@ -397,12 +269,146 @@ export function HomePage() {
             </div>
           </div>
 
+    </>
+  );
+
+  const areaField = (
+    <>
+          {/* Area Search */}
+          <div className="relative">
+            <MultiSelect
+              options={areas.map((a) => ({
+                label: locale === "ar" ? a.labelAr : a.label,
+                value: String(a.id),
+                governorate:
+                  locale === "ar" ? a.governorateAr : a.governorate,
+              }))}
+              value={selectedAreas}
+              onChange={(val) => {
+                setSelectedAreas(val);
+              }}
+              placeholder={t("search.areaPlaceholder")}
+              className="w-full min-h-11 md:min-h-12 h-auto py-1 px-4 bg-white border border-gray-200 rounded-xl flex items-center text-gray-700 transition-all hover:border-primary/50 hover:bg-primary/[0.03] focus-within:border-primary data-[state=open]:border-primary data-[state=open]:shadow-[0_4px_20px_rgba(225,29,29,0.15)] text-base font-medium"
+              disabled={isLoading}
+              enableGrouping={true}
+              dir={direction}
+            />
+          </div>
+
+    </>
+  );
+
+  const propertyTypeField = (
+    <>
+          {/* Property Type */}
+          <div className="relative">
+            <Select
+              value={propertyType}
+              onValueChange={(val) => {
+                setPropertyType(val);
+              }}
+              disabled={isLoading}
+              dir={direction}
+            >
+              <SelectTrigger
+                aria-label={t("search.propertyTypePlaceholder")}
+                className="w-full !h-11 md:!h-12 px-4 bg-white border border-gray-200 rounded-xl text-gray-700 data-[placeholder]:!text-gray-400 data-[placeholder]:!font-normal transition-all hover:border-primary/50 hover:bg-primary/[0.03] focus:border-primary data-[state=open]:border-primary data-[state=open]:shadow-[0_4px_20px_rgba(225,29,29,0.15)] text-base font-medium"
+              >
+                <SelectValue
+                  placeholder={t("search.propertyTypePlaceholder")}
+                />
+              </SelectTrigger>
+              <SelectContent className="rounded-xl">
+                {propertyTypes.map((type) => (
+                  <SelectItem
+                    key={type.id}
+                    value={String(type.id)}
+                    className="cursor-pointer font-normal text-base text-gray-800"
+                  >
+                    {locale === "ar" ? type.labelAr || type.label : type.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+
+    </>
+  );
+
+  return (
+    <div className="flex flex-col min-h-[calc(100vh-64px)] relative overflow-x-hidden bg-[#f8f9fa] md:bg-white">
+
+      {/* Hero Header Section */}
+      <section
+        className="w-full pt-4 md:pt-4 px-4 sm:px-4 lg:px-4 max-w-xl mx-auto mb-4 relative z-30 isolate"
+        dir={direction}
+      >
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -inset-x-8 -top-12 -z-10 h-[320px] overflow-hidden select-none"
+          style={{ transform: direction === "rtl" ? "scaleX(-1)" : undefined }}
+        >
+          <div
+            className="h-full w-full"
+            style={{
+              background: [
+                // broad soft spotlight behind the logo/title
+                "radial-gradient(ellipse 70% 55% at 50% 0%, color-mix(in srgb, var(--color-brand-teal) 16%, transparent) 0%, transparent 72%)",
+                // tighter, brighter core
+                "radial-gradient(ellipse 32% 26% at 50% 4%, color-mix(in srgb, var(--color-brand-teal) 14%, transparent) 0%, transparent 65%)",
+                // off-centre streak that keeps it from reading as a perfect circle
+                "radial-gradient(ellipse 38% 22% at 74% 10%, color-mix(in srgb, var(--color-brand-teal) 9%, transparent) 0%, transparent 60%)",
+              ].join(", "),
+              filter: "blur(6px)",
+            }}
+          />
+        </div>
+        {/* LCP image: fixed box reserves space before decode (avoids CLS). */}
+        <div
+          className="flex justify-center mb-4 mx-auto"
+          style={{ width: 132, height: 88 }}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/images/aqar-new-logo-hero.webp"
+            alt="Mr aqar"
+            width={132}
+            height={88}
+            fetchPriority="high"
+            decoding="async"
+            className="object-contain"
+            style={{ width: 132, height: 88 }}
+          />
+        </div>
+
+        {/* Title sits outside any card, floating over the page */}
+        <h1 className="text-[22px] md:text-2xl font-bold tracking-tight text-[#1f2937] text-center mb-5">
+          {t("hero.title")}
+        </h1>
+
+        {/* Search Form */}
+        <div className="w-full space-y-4 p-5 sm:p-6 rounded-2xl border border-gray-100 bg-white shadow-[0_4px_12px_rgba(0,0,0,0.08)]">
+          {SEARCH_PURPOSE_FIRST ? (
+            <>
+              {purposeTabs}
+              {areaField}
+              {propertyTypeField}
+            </>
+          ) : (
+            <>
+              {areaField}
+              {propertyTypeField}
+              {purposeTabs}
+            </>
+          )}
+
           {/* Search Button */}
           <Button
             onClick={handleSearch}
-            className="rounded-xl !h-10 md:!h-11 w-full mt-2 bg-[#9a090e] hover:bg-[#9a090e]/95 border-none text-white font-semibold text-lg shadow-[0_6px_20px_rgba(154,9,14,0.3)] transition-all active:scale-[0.98]"
+            className="rounded-xl !h-11 md:!h-12 w-full mt-5 bg-[#e11d1d] hover:bg-[#b91616] border-none text-white font-light text-base tracking-wide transition-all hover:shadow-[0_6px_18px_rgba(225,29,29,0.25)] active:scale-[0.98]"
           >
-            <Search size={16} className="mr-1.5" />
+            <Search size={18} className="me-1.5" />
             {tCommon("buttons.search")}
           </Button>
         </div>
@@ -421,7 +427,7 @@ export function HomePage() {
             {/* <span className="border-[#169899] text-[#169899] flex items-center justify-center font-bold text-base group-hover:scale-105 group-active:scale-95 transition-all duration-200">
                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M12.0049 22.0027C6.48204 22.0027 2.00488 17.5256 2.00488 12.0027C2.00488 6.4799 6.48204 2.00275 12.0049 2.00275C17.5277 2.00275 22.0049 6.4799 22.0049 12.0027C22.0049 17.5256 17.5277 22.0027 12.0049 22.0027ZM12.0049 20.0027C16.4232 20.0027 20.0049 16.421 20.0049 12.0027C20.0049 7.58447 16.4232 4.00275 12.0049 4.00275C7.5866 4.00275 4.00488 7.58447 4.00488 12.0027C4.00488 16.421 7.5866 20.0027 12.0049 20.0027ZM8.50488 14.0027H14.0049C14.281 14.0027 14.5049 13.7789 14.5049 13.5027C14.5049 13.2266 14.281 13.0027 14.0049 13.0027H10.0049C8.62417 13.0027 7.50488 11.8835 7.50488 10.5027C7.50488 9.12203 8.62417 8.00275 10.0049 8.00275H11.0049V6.00275H13.0049V8.00275H15.5049V10.0027H10.0049C9.72874 10.0027 9.50488 10.2266 9.50488 10.5027C9.50488 10.7789 9.72874 11.0027 10.0049 11.0027H14.0049C15.3856 11.0027 16.5049 12.122 16.5049 13.5027C16.5049 14.8835 15.3856 16.0027 14.0049 16.0027H13.0049V18.0027H11.0049V16.0027H8.50488V14.0027Z"></path></svg>
             </span> */}
-            <h2 className="text-xl font-bold text-black tracking-tight group-hover:text-[#169899] transition-colors">
+            <h2 className="text-xl font-bold text-black tracking-tight group-hover:text-gray-600 transition-colors">
               {t("latestListings.title")}
             </h2>
           </button>
@@ -431,18 +437,18 @@ export function HomePage() {
               {Array.from({ length: 4 }).map((_, i) => (
                 <div
                   key={i}
-                  className="w-full bg-[#f7eff1] border border-[#f3d9de] rounded-2xl overflow-hidden p-2.5 animate-pulse"
+                  className="w-full bg-card-mint rounded-2xl overflow-hidden p-2.5 animate-pulse"
                 >
                   <div className="flex flex-row w-full items-start gap-2.5">
-                    <div className="w-[64px] h-[64px] shrink-0 rounded-lg bg-[#efdee2]" />
-                    <div className="flex-1 flex flex-col min-w-0 min-h-[64px] justify-center gap-2">
-                      <div className="h-5 w-3/4 rounded bg-[#efdee2]" />
-                      <div className="h-5 w-1/2 rounded bg-[#efdee2]" />
+                    <div className="w-[75px] h-[75px] shrink-0 rounded-lg bg-[#d7e6e8]" />
+                    <div className="flex-1 flex flex-col min-w-0 min-h-[96px] justify-center gap-2">
+                      <div className="h-5 w-3/4 rounded bg-[#d7e6e8]" />
+                      <div className="h-5 w-1/2 rounded bg-[#d7e6e8]" />
                     </div>
                   </div>
                   <div className="mt-1 space-y-1.5">
-                    <div className="h-5 w-full rounded bg-[#efdee2]" />
-                    <div className="h-5 w-5/6 rounded bg-[#efdee2]" />
+                    <div className="h-5 w-full rounded bg-[#d7e6e8]" />
+                    <div className="h-5 w-5/6 rounded bg-[#d7e6e8]" />
                   </div>
                 </div>
               ))}
@@ -459,7 +465,7 @@ export function HomePage() {
                         : undefined
                     }
                   >
-                    <HomeAdCard ad={ad} />
+                    <HomeAdCard ad={ad} priority={index < 4} />
                   </div>
                 ))}
               </div>

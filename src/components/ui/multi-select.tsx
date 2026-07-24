@@ -103,6 +103,7 @@ export function MultiSelect({ options, value, onChange, placeholder = 'Select it
     <div ref={containerRef} className="relative w-full">
       <div
         dir={dir}
+        data-state={open ? 'open' : 'closed'}
         onClick={() => !disabled && setOpen(true)}
         className={cn(
           'border-secondary data-[placeholder]:text-muted-foreground relative flex w-full min-h-14 items-center gap-2 rounded-md border bg-white ps-3 pe-3 py-2.5 text-sm shadow-xs transition-[color,box-shadow] outline-none disabled:cursor-not-allowed disabled:opacity-50 cursor-text overflow-hidden',
@@ -117,12 +118,12 @@ export function MultiSelect({ options, value, onChange, placeholder = 'Select it
               {selectedOptions.map(option => (
                 <div
                   key={option.value}
-                  className="inline-flex items-center gap-1.5 ps-2.5 pe-1.5 py-1 bg-[#f7eff1] border border-[#f7eff1] rounded-md text-base font-medium text-gray-700 transition-all hover:bg-[#efdee2] max-w-full min-w-0"
+                  className="inline-flex items-center gap-1.5 ps-2.5 pe-1.5 py-1 bg-card-mint border border-card-mint rounded-md text-base font-medium text-gray-700 transition-all hover:bg-[#d7e6e8] max-w-full min-w-0"
                 >
                   <span className="truncate">{option.label}</span>
                   <button
                     onClick={e => handleRemove(e, option.value)}
-                    className="flex items-center justify-center size-4 rounded-full text-gray-500 hover:bg-[#9a090e]/10 hover:text-[#9a090e] transition-colors shrink-0"
+                    className="flex items-center justify-center size-4 rounded-full text-gray-500 hover:bg-[#e11d1d]/10 hover:text-[#e11d1d] transition-colors shrink-0"
                     aria-label={`Remove ${option.label}`}
                   >
                     <X className="w-3 h-3" />
@@ -139,7 +140,7 @@ export function MultiSelect({ options, value, onChange, placeholder = 'Select it
                   onClick={e => e.stopPropagation()}
                   placeholder="Search..."
                   className={cn(
-                    'border-none outline-none bg-transparent flex-1 text-base font-medium text-gray-700 placeholder:text-gray-400',
+                    'border-none outline-none bg-transparent flex-1 text-base font-medium text-gray-700 placeholder:text-gray-400 placeholder:font-light',
                     'text-start'
                   )}
                   disabled={disabled}
@@ -158,14 +159,14 @@ export function MultiSelect({ options, value, onChange, placeholder = 'Select it
                   onClick={e => e.stopPropagation()}
                   placeholder={placeholder}
                   className={cn(
-                    'border-none outline-none bg-transparent flex-1 text-base font-medium text-gray-700 placeholder:text-gray-400 min-w-[150px]',
+                    'border-none outline-none bg-transparent flex-1 text-base font-medium text-gray-700 placeholder:text-gray-400 placeholder:font-light min-w-[150px]',
                     'text-start'
                   )}
                   disabled={disabled}
                 />
               )}
               {!open && (
-                <span className={cn('text-gray-500 text-base font-medium block w-full', 'text-start')}>
+                <span className={cn('text-gray-400 text-base font-light block w-full', 'text-start')}>
                   {placeholder}
                 </span>
               )}
@@ -197,7 +198,10 @@ export function MultiSelect({ options, value, onChange, placeholder = 'Select it
       </div>
 
       {open && (
-        <div className="absolute z-[150] w-full mt-1 bg-white shadow-xl rounded-lg" dir={dir}>
+        <div
+          className="absolute z-[150] w-full mt-1 bg-white border border-gray-100 shadow-[0_8px_24px_rgba(0,0,0,0.10)] rounded-xl overflow-hidden origin-top animate-in fade-in-0 zoom-in-95 slide-in-from-top-2 duration-200 ease-out"
+          dir={dir}
+        >
           <div ref={scrollContainerRef} className="max-h-[300px] overflow-y-auto overflow-x-hidden custom-scrollbar" onWheel={handleWheel}>
             {filteredOptions.length > 0 ? (
               <div className="py-1">
@@ -211,7 +215,11 @@ export function MultiSelect({ options, value, onChange, placeholder = 'Select it
                         <div
                           key={option.value}
                           onClick={() => handleToggle(option.value)}
-                          className={cn('flex items-center gap-2 px-4 py-3 text-base cursor-pointer transition-all hover:bg-primary/10', 'text-start')}
+                          className={cn(
+                            'mx-1 flex items-center gap-2 rounded-lg px-3 py-2.5 text-base cursor-pointer transition-colors hover:bg-primary/10 hover:text-brand-teal',
+                            value.includes(option.value) && 'bg-primary/5 font-semibold text-brand-teal',
+                            'text-start',
+                          )}
                         >
                           <span className={cn('flex-1', 'text-start')}>{option.label}</span>
                         </div>

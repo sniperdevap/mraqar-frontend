@@ -174,7 +174,7 @@ export function OfficeDetailPage({ officeId }: OfficeDetailPageProps) {
           {office.phoneNumber && (
             <a
               href={`tel:${office.phoneNumber}`}
-              className="flex items-center gap-1.5 text-[#9a090e] font-bold text-sm hover:underline"
+              className="flex items-center gap-1.5 text-[#e11d1d] font-bold text-sm hover:underline"
             >
               <Phone size={14} fill="currentColor" className="stroke-none" />
               <span dir="ltr">
@@ -266,19 +266,19 @@ export function OfficeDetailPage({ officeId }: OfficeDetailPageProps) {
               <TabsList className="bg-transparent flex gap-2 h-auto p-0 w-full max-w-xl">
                 <TabsTrigger
                   value="rent"
-                  className="flex-1 h-9 md:h-12 bg-[#e0e0e0] text-primary-blue border border-[#ced4da] font-semibold rounded-sm data-[state=active]:bg-[#9a090e] data-[state=active]:!text-white transition-all uppercase text-[11px]"
+                  className="flex-1 h-9 md:h-12 bg-[#e0e0e0] text-primary-blue border border-[#ced4da] font-semibold rounded-sm data-[state=active]:bg-[#e11d1d] data-[state=active]:!text-white transition-all uppercase text-[11px]"
                 >
                   {t("forRent")}
                 </TabsTrigger>
                 <TabsTrigger
                   value="sale"
-                  className="flex-1 h-9 md:h-12 bg-[#e0e0e0] text-primary-blue border border-[#ced4da] font-semibold rounded-sm data-[state=active]:bg-[#9a090e] data-[state=active]:!text-white transition-all uppercase text-[11px]"
+                  className="flex-1 h-9 md:h-12 bg-[#e0e0e0] text-primary-blue border border-[#ced4da] font-semibold rounded-sm data-[state=active]:bg-[#e11d1d] data-[state=active]:!text-white transition-all uppercase text-[11px]"
                 >
                   {t("forSale")}
                 </TabsTrigger>
                 <TabsTrigger
                   value="exchange"
-                  className="flex-1 h-9 md:h-12 bg-[#e0e0e0] text-primary-blue border border-[#ced4da] font-semibold rounded-sm data-[state=active]:bg-[#9a090e] data-[state=active]:!text-white transition-all uppercase text-[11px]"
+                  className="flex-1 h-9 md:h-12 bg-[#e0e0e0] text-primary-blue border border-[#ced4da] font-semibold rounded-sm data-[state=active]:bg-[#e11d1d] data-[state=active]:!text-white transition-all uppercase text-[11px]"
                 >
                   {t("exchange")}
                 </TabsTrigger>
@@ -303,7 +303,7 @@ export function OfficeDetailPage({ officeId }: OfficeDetailPageProps) {
                       setLocalFilters((prev) => ({ ...prev, area: val }))
                     }
                     placeholder={t("selectArea")}
-                    className="!h-auto min-h-[36px] md:!h-12 bg-[#e0e0e0] border-[#ced4da] rounded-sm font-medium flex items-center justify-center text-[#9a090e] placeholder:text-[#9a090e]/70 uppercase text-[11px]"
+                    className="!h-auto min-h-[36px] md:!h-12 bg-[#e0e0e0] border-[#ced4da] rounded-sm font-medium flex items-center justify-center text-[#e11d1d] placeholder:text-[#e11d1d]/70 uppercase text-[11px]"
                     enableGrouping={true}
                     dir={locale === "ar" ? "rtl" : "ltr"}
                   />
@@ -320,7 +320,7 @@ export function OfficeDetailPage({ officeId }: OfficeDetailPageProps) {
                     }
                     dir={locale === "ar" ? "rtl" : "ltr"}
                   >
-                    <SelectTrigger className="!h-9 md:!h-12 bg-[#e0e0e0] border-[#ced4da] rounded-sm text-[11px] font-medium text-[#9a090e] uppercase">
+                    <SelectTrigger className="!h-9 md:!h-12 bg-[#e0e0e0] border-[#ced4da] rounded-sm text-[11px] font-medium text-[#e11d1d] uppercase">
                       <SelectValue placeholder={t("propertyType")} />
                     </SelectTrigger>
                     <SelectContent className="rounded-xl">
@@ -342,7 +342,7 @@ export function OfficeDetailPage({ officeId }: OfficeDetailPageProps) {
                 <div className="w-full lg:flex-1 flex gap-2">
                   <Button
                     onClick={handleSearch}
-                    className="rounded-sm h-9 md:h-12 flex-1 bg-[#9a090e] hover:bg-[#004d1d] text-white font-semibold uppercase text-sm border border-[#9a090e] transition-colors"
+                    className="rounded-sm h-9 md:h-12 flex-1 bg-[#e11d1d] hover:bg-[#b91616] text-white font-semibold uppercase text-sm border border-[#e11d1d] transition-colors"
                   >
                     {t("search")}
                   </Button>
@@ -350,7 +350,7 @@ export function OfficeDetailPage({ officeId }: OfficeDetailPageProps) {
                     type="button"
                     variant="outline"
                     onClick={handleClearFilters}
-                    className="rounded-sm h-9 md:h-12 flex-1 border-[#ced4da] text-[#9a090e] font-semibold uppercase text-sm hover:bg-[#e0e0e0]"
+                    className="rounded-sm h-9 md:h-12 flex-1 border-[#ced4da] text-[#e11d1d] font-semibold uppercase text-sm hover:bg-[#e0e0e0]"
                   >
                     {t("clearAllFilters")}
                   </Button>

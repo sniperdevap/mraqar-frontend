@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
-# Auto-deploy frontend: pull latest main IF newest incoming commit is by zaheer-bashir.
+# Auto-deploy frontend: pull latest main whenever origin has new commits.
 set -euo pipefail
 
-DIR="/var/www/mr-aqar/aqar-frontend"   # <-- repo path on the server
-BRANCH="main"
-AUTHOR_MATCH="zaheer-bashir"   # matches name or email, case-insensitive
-PM2_NAME="aqar-frontend"
+DIR="/var/www/mr-aqar-staging/aqar-frontend"   # <-- repo path on the server
+BRANCH="staging"
+PM2_NAME="mr-aqar-staging-frontend"
 
 log() { echo "[$(date '+%F %T')] $*"; }
 
@@ -20,15 +19,11 @@ log() { echo "[$(date '+%F %T')] $*"; }
     exit 0
   fi
 
-  author=$(git log -1 --format='%an %ae' "origin/$BRANCH")
-  if ! echo "$author" | grep -qi "$AUTHOR_MATCH"; then
-    log "new commits but latest author '$author' is not $AUTHOR_MATCH — skipping."
-    exit 0
-  fi
-
-  log "deploying $remote_rev by $author"
-  git reset --hard "origin/$BRANCH"
-  npm ci && npm run build && pm2 restart "$PM2_NAME"
+  log "deploying $remote_rev"
+  git reset --hard "origin/$BRANCH"          # pull latest
+  pnpm install --frozen-lockfile             # sync deps
+  pnpm run build                             # build
+  pm2 restart "$PM2_NAME" --update-env       # restart app
   log "deployed."
 } >> "$DIR/deploy.log" 2>&1
 

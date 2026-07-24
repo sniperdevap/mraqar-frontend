@@ -25,7 +25,8 @@
     "share": "مشاركة",
     "copyLink": "نسخ الرابط",
     "linkCopied": "تم نسخ الرابط",
-    "viewMore": "مشاهدة المزيد"
+    "viewMore": "مشاهدة المزيد",
+    "scrollToTop": "العودة للأعلى"
   },
   "messages": {
     "loading": "جاري التحميل...",
@@ -193,7 +194,7 @@
     "appStore": "آب ستور",
     "playStore": "جوجل بلاي",
     "downloadOn": "حمل التطبيق على",
-    "copyrightNotice": "إشعار حقوق النشر"   
+    "copyrightNotice": "إشعار حقوق النشر"
   },
   "language": {
     "english": "الإنجليزية",

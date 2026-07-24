@@ -69,9 +69,14 @@ export function Navbar() {
     const initialHeight = window.innerHeight;
 
     const handleResize = () => {
-      // When the keyboard opens, the visual viewport height shrinks significantly
+      const el = document.activeElement;
+      const isTyping =
+        !!el &&
+        (el.tagName === "INPUT" ||
+          el.tagName === "TEXTAREA" ||
+          (el as HTMLElement).isContentEditable);
       const heightDiff = initialHeight - viewport.height;
-      setIsKeyboardOpen(heightDiff > 100);
+      setIsKeyboardOpen(isTyping && heightDiff > 150);
     };
 
     viewport.addEventListener("resize", handleResize);
@@ -167,19 +172,19 @@ export function Navbar() {
     <>
       {/* Desktop Navbar */}
       {showTopNavbar && (
-        <nav className="hidden lg:flex items-center py-2 bg-white border-b border-gray-200 sticky top-0 z-50 min-h-20">
+        <nav className="hidden lg:flex items-center py-2 bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-[0_1px_12px_rgba(16,24,40,0.06)] sticky top-0 z-50 min-h-20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex items-center">
-          <div className="flex-shrink-0 w-24 h-16">
-            <Link href="/" className="block w-24 h-16">
+          <div className="flex-shrink-0 w-20 h-13">
+            <Link href="/" className="block w-20 h-13">
               <Image
                 src="/images/aqar-new-logo-nav.webp"
                 alt="Mr aqar"
-                width={96}
-                height={64}
+                width={80}
+                height={52}
                 priority
                 unoptimized
                 className="object-contain"
-                style={{ width: 96, height: 64 }}
+                style={{ width: 80, height: 52 }}
               />
             </Link>
           </div>
@@ -187,25 +192,25 @@ export function Navbar() {
           <div className="flex-1 flex justify-center items-center gap-8 text-[15px] font-medium">
             <Link
               href="/"
-              className="text-gray-900 hover:text-primary transition-colors px-2"
+              className="text-gray-900 hover:text-gray-600 transition-colors px-2"
             >
               {t("nav.home")}
             </Link>
             <Link
               href="/offices"
-              className="text-gray-900 hover:text-primary transition-colors px-2"
+              className="text-gray-900 hover:text-gray-600 transition-colors px-2"
             >
               {t("nav.offices")}
             </Link>
             <Link
               href="/plans"
-              className="text-gray-900 hover:text-primary transition-colors px-2"
+              className="text-gray-900 hover:text-gray-600 transition-colors px-2"
             >
               {t("nav.plans")}
             </Link>
             <Link
               href="/account"
-              className="text-gray-900 hover:text-primary transition-colors px-2"
+              className="text-gray-900 hover:text-gray-600 transition-colors px-2"
             >
               {t("nav.account")}
             </Link>
@@ -231,7 +236,7 @@ export function Navbar() {
                 onMouseEnter={prefetchNotifications}
                 onFocus={prefetchNotifications}
                 aria-label={t("notifications.title")}
-                className="p-2 text-gray-900 hover:text-primary transition-colors relative cursor-pointer"
+                className="p-2 text-gray-900 hover:text-gray-600 transition-colors relative cursor-pointer"
               >
                 <Bell size={24} strokeWidth={1.5} aria-hidden="true" />
                 {unreadCount > 0 && (
@@ -265,7 +270,7 @@ export function Navbar() {
                 <LogOut size={24} strokeWidth={1.5} />
               </button>
             ) : (
-              <button onClick={() => router.push('/auth/signin')} className="p-2 text-gray-900 hover:text-primary transition-colors cursor-pointer" title={t('nav.login')}>
+              <button onClick={() => router.push('/auth/signin')} className="p-2 text-gray-900 hover:text-gray-600 transition-colors cursor-pointer" title={t('nav.login')}>
                 {t('nav.login')}
               </button>
             ))} */}
@@ -276,21 +281,21 @@ export function Navbar() {
 
       {/* Mobile Top Navbar */}
       {showTopNavbar && (
-        <nav className="lg:hidden flex items-center justify-between px-4 py-3 bg-white border-b border-gray-200 sticky top-0 z-50 h-20">
+        <nav className="lg:hidden flex items-center justify-between px-4 py-3 bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-[0_1px_12px_rgba(16,24,40,0.06)] sticky top-0 z-50 h-20">
           {(pathname === '/' || pathname?.replace(/^\/(en|ar)/, '') === '/' || pathname?.replace(/^\/(en|ar)/, '') === '') ? (
             <div className="flex items-center justify-between w-full h-full" dir="ltr">
               {/* Left: Logo */}
-              <div className="flex-shrink-0 w-24 h-16">
-                <Link href="/" className="block w-24 h-16">
+              <div className="flex-shrink-0 w-20 h-13">
+                <Link href="/" className="block w-20 h-13">
                   <Image
                     src="/images/aqar-new-logo-nav.webp"
                     alt="Mr aqar"
-                    width={96}
-                    height={64}
+                    width={80}
+                    height={52}
                     priority
                     unoptimized
                     className="object-contain"
-                    style={{ width: 96, height: 64 }}
+                    style={{ width: 80, height: 52 }}
                   />
                 </Link>
               </div>
@@ -300,7 +305,7 @@ export function Navbar() {
                 {/* Favorites button */}
                 <Link
                   href="/account?tab=favourites"
-                  className="flex flex-col items-center justify-center text-[#555] hover:text-primary transition-colors cursor-pointer"
+                  className="flex flex-col items-center justify-center text-[#555] hover:text-gray-600 transition-colors cursor-pointer"
                 >
                   <Heart size={22} className="text-gray-900" strokeWidth={1.8} />
                   <span className="text-[10px] font-bold mt-1 text-[#333]">Favorites</span>
@@ -312,7 +317,7 @@ export function Navbar() {
                   onMouseEnter={prefetchNotifications}
                   onFocus={prefetchNotifications}
                   aria-label={t("notifications.title")}
-                  className="p-2 text-gray-900 hover:text-primary transition-colors relative cursor-pointer flex items-center justify-center"
+                  className="p-2 text-gray-900 hover:text-gray-600 transition-colors relative cursor-pointer flex items-center justify-center"
                 >
                   <Bell size={24} strokeWidth={1.8} aria-hidden="true" />
                   {unreadCount > 0 && (
@@ -329,22 +334,22 @@ export function Navbar() {
               <button
                 onClick={() => router.push("/")}
                 aria-label={t("buttons.back")}
-                className="p-2 text-[#9a090e] hover:text-[#7f070b] transition-colors cursor-pointer flex items-center justify-center"
+                className="p-2 text-[#e11d1d] hover:text-[#7f070b] transition-colors cursor-pointer flex items-center justify-center"
               >
                 <ChevronLeft size={32} strokeWidth={2.5} aria-hidden="true" />
               </button>
 
               {/* Middle: Logo */}
-              <div className="flex-shrink-0 w-24 h-16">
-                <Link href="/" className="block w-24 h-16">
+              <div className="flex-shrink-0 w-20 h-13">
+                <Link href="/" className="block w-20 h-13">
                   <Image
                     src="/images/aqar-new-logo-nav.webp"
                     alt="Mr aqar"
-                    width={96}
-                    height={64}
+                    width={80}
+                    height={52}
                     unoptimized
                     className="object-contain"
-                    style={{ width: 96, height: 64 }}
+                    style={{ width: 80, height: 52 }}
                   />
                 </Link>
               </div>
@@ -361,7 +366,7 @@ export function Navbar() {
                     size={26}
                     strokeWidth={1.8}
                     aria-hidden="true"
-                    className={adFavoriteState?.isFavorite ? "fill-[#9a090e] text-[#9a090e]" : "text-gray-900"}
+                    className={adFavoriteState?.isFavorite ? "fill-gray-900 text-gray-900" : "text-gray-900"}
                   />
                 </button>
               </div>
@@ -373,21 +378,21 @@ export function Navbar() {
                   <button
                     onClick={() => router.push("/")}
                     aria-label={t("buttons.back")}
-                    className="p-2 text-gray-700 hover:text-primary transition-colors cursor-pointer"
+                    className="p-2 text-gray-700 hover:text-gray-600 transition-colors cursor-pointer"
                   >
                     <ChevronLeft size={28} aria-hidden="true" />
                   </button>
                 ) : null}
                 <div className="flex-shrink-0 flex items-center justify-center w-full">
-                  <Link href="/" className="block w-24 h-16">
+                  <Link href="/" className="block w-20 h-13">
                     <Image
                       src="/images/aqar-new-logo-nav.webp"
                       alt="Mr aqar"
-                      width={96}
-                      height={64}
+                      width={80}
+                      height={52}
                       unoptimized
                       className="object-contain"
-                      style={{ width: 96, height: 64 }}
+                      style={{ width: 80, height: 52 }}
                     />
                   </Link>
                 </div>
@@ -411,11 +416,11 @@ export function Navbar() {
 
       {/* Specialized Mobile Header for Create Listing */}
       {isSpecialRoute && (
-        <nav className=" flex items-center px-4 py-3 bg-white border-b border-gray-100 sticky top-0 z-50 h-16">
+        <nav className=" flex items-center px-4 py-3 bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-[0_1px_12px_rgba(16,24,40,0.06)] sticky top-0 z-50 h-16">
           <button
             onClick={() => router.back()}
             aria-label={t("buttons.back")}
-            className="p-2 -ml-2 text-gray-700 hover:text-primary transition-colors cursor-pointer"
+            className="p-2 -ml-2 text-gray-700 hover:text-gray-600 transition-colors cursor-pointer"
           >
             <ChevronLeft
               size={28}
@@ -433,7 +438,7 @@ export function Navbar() {
 
       {/* Mobile Bottom Navbar */}
       {showStandardNav && !isAdDetailPage && !isKeyboardOpen && (
-        <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-lg flex items-center justify-around py-2 px-4 z-50 rounded-t-[32px] shadow-[0_-8px_30px_rgba(0,0,0,0.06)] h-[4.5rem] border-t border-gray-100/50">
+        <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-lg flex items-center justify-around py-2 px-4 z-50 rounded-t-[32px] shadow-[0_-8px_30px_rgba(0,0,0,0.06)] h-[4.5rem] border-t border-gray-100/50 pb-[env(safe-area-inset-bottom)] [transform:translateZ(0)] will-change-auto">
           {[
             { href: "/", icon: Home, label: t("nav.home") },
             { href: "/offices", icon: MapPin, label: t("nav.offices") },
@@ -456,7 +461,7 @@ export function Navbar() {
                     aria-label={t("nav.addFreeAd")}
                     className="absolute -top-[34px] focus:outline-none z-50 transition-transform duration-200 hover:scale-[1.08] active:scale-90"
                   >
-                    <div className="flex items-center justify-center w-[50px] h-[50px] rounded-full bg-primary shadow-[0_8px_16px_rgba(154,9,14,0.3)] cursor-pointer transition-all duration-300 hover:shadow-[0_8px_20px_rgba(154,9,14,0.45)]">
+                    <div className="flex items-center justify-center w-[50px] h-[50px] rounded-full bg-primary shadow-[0_8px_16px_rgba(225,29,29,0.3)] cursor-pointer transition-all duration-300 hover:shadow-[0_8px_20px_rgba(225,29,29,0.45)]">
                       <Plus
                         size={26}
                         strokeWidth={3.5}
@@ -477,10 +482,10 @@ export function Navbar() {
                 key={item.href || "menu"}
                 href={item.href || "/menu"}
                 className={cn(
-                  "relative flex flex-col items-center gap-1.5 py-1 px-3 rounded-2xl transition-all duration-300",
+                  "relative flex flex-col items-center gap-1.5 py-1.5 rounded-2xl transition-all duration-300",
                   isActive
-                    ? "text-primary-blue"
-                    : "text-[#555555] hover:text-[#555555]",
+                    ? "text-primary-blue bg-primary/10 px-4"
+                    : "text-[#555555] hover:text-[#555555] px-3",
                 )}
               >
                 <div

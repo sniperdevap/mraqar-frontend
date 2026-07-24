@@ -49,7 +49,7 @@ export function GlobalTopHeader({ onMenuClick }: GlobalTopHeaderProps) {
             alt="Auto Glass Logo"
             width={100}
             height={30}
-            className="h-auto cursor-pointer"
+            className="h-9 w-auto cursor-pointer"
           />
         </Link>
       </div>
@@ -63,7 +63,7 @@ export function GlobalTopHeader({ onMenuClick }: GlobalTopHeaderProps) {
             alt="Auto Glass Logo"
             width={100}
             height={30}
-            className="h-auto cursor-pointer"
+            className="h-9 w-auto cursor-pointer"
           />
         </Link>
 

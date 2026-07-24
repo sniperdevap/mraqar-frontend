@@ -96,15 +96,27 @@ export function SearchAdCard({ ad, onClick }: SearchAdCardProps) {
       onClick={onClick}
       dir={direction}
       className={cn(
-        "group relative flex flex-col bg-[#f3f3f3] p-2 rounded-lg cursor-pointer transition-all hover:shadow-[0_10px_30px_-10px_rgba(31,64,114,0.15)] border border-primary/10 mb-4 overflow-hidden text-start",
+        "group relative flex flex-col bg-card-mint p-3 rounded-2xl cursor-pointer transition-all active:scale-[0.99] mb-3 overflow-hidden text-start",
       )}
     >
+      {/* Premium Badge (card corner pill) */}
+      {isPremiumAd && (
+        <div
+          className={cn(
+            "absolute top-2 z-20 bg-brand-gold text-white px-3 py-1 rounded-full text-[10px] font-semibold",
+            direction === "rtl" ? "left-2" : "right-2",
+          )}
+        >
+          {t("premiumBadge")}
+        </div>
+      )}
+
       {/* Main Content (Image + Header Info) */}
       <div className="flex items-start gap-2 flex-row">
         {/* Small Image with Badge */}
         <div className="relative w-16 h-16 sm:w-20 sm:h-20 shrink-0">
-          <div className="relative w-full h-full rounded-sm ">
-            <div className="absolute inset-0 overflow-hidden rounded-sm border border-gray-200">
+          <div className="relative w-full h-full rounded-lg ">
+            <div className="absolute inset-0 overflow-hidden rounded-lg">
               <Image
                 fill
                 src={(displayUrl as string) || "/images/DefaultAdImage.jpeg"}
@@ -113,31 +125,6 @@ export function SearchAdCard({ ad, onClick }: SearchAdCardProps) {
               />
             </div>
 
-            {/* Premium Badge (Corner Relative to Image) */}
-            {isPremiumAd && (
-              <div
-                className={cn(
-                  "absolute -top-1 z-20 flex",
-                  direction === "rtl" ? "-right-1" : "-left-1",
-                )}
-              >
-                <div
-                  className={cn(
-                    "relative bg-primary text-white px-2 py-0.5 text-[10px] font-bold uppercase shadow-lg",
-                    direction === "rtl" ? "rounded-l-sm" : "rounded-r-sm",
-                  )}
-                >
-                  {t("premiumBadge")}
-                  {/* Ribbon "fold" effect */}
-                  <div
-                    className={cn(
-                      "absolute top-full w-1.5 h-1.5 bg-primary [clip-path:polygon(0_0,100%_0,0_100%)]",
-                      direction === "rtl" ? "right-0 scale-x-[-1]" : "left-0",
-                    )}
-                  />
-                </div>
-              </div>
-            )}
           </div>
         </div>
 
@@ -172,14 +159,14 @@ export function SearchAdCard({ ad, onClick }: SearchAdCardProps) {
 
           <div className="flex items-center gap-4 flex-row">
             {ad.price ? (
-              <span className="text-base font-bold text-[#9a090e]">{`${Number(ad.price).toLocaleString("en-US")}  د.ك`}</span>
+              <span className="text-base font-bold text-[#e11d1d]">{`${Number(ad.price).toLocaleString("en-US")}  د.ك`}</span>
             ) : null}
             <div className="flex items-center gap-1.5 text-gray-500 font-medium">
-              <Clock size={13} className="text-[#94a3b8]" />
+              <Clock size={13} className="text-brand-teal" />
               <span className="text-[12px]">{getTimeAgo(ad.createdAt)}</span>
             </div>
             <div className="flex items-center gap-1.5 text-gray-500 font-medium">
-              <Eye size={13} className="text-[#94a3b8]" />
+              <Eye size={13} className="text-brand-teal" />
               <span className="text-[12px]">{ad.views || 0}</span>
             </div>
           </div>
@@ -187,7 +174,7 @@ export function SearchAdCard({ ad, onClick }: SearchAdCardProps) {
       </div>
 
       {/* Full Width Description (Bottom Row) */}
-      <p className="mt-2 text-xs md:text-sm text-[#506076] line-clamp-2 leading-relaxed font-medium">
+      <p className="mt-2 text-xs md:text-sm text-gray-500 line-clamp-2 leading-relaxed font-light">
         {ad.description}
       </p>
     </div>
