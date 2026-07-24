@@ -9,6 +9,8 @@ import {
   Heart,
   Play,
   Copy,
+  Clock,
+  Share2,
 } from "lucide-react";
 import { updateAd, deleteAd } from "@/lib/api/ad";
 import { Media } from "@/types/ad";
@@ -403,128 +405,81 @@ ${window.location.href}`);
     );
   }
 
-  const currentMedia =
-    ad.media && ad.media.length > 0 ? ad.media[currentImageIndex] : null;
-  const currentImageUrl = currentMedia
-    ? currentMedia.type === "video"
-      ? getThumbnailUrl(currentMedia)
-      : getMediaUrl(currentMedia)
-    : "/images/DefaultAdImage.jpeg";
-
   return (
-    <div className="min-h-screen pb-28 bg-white" dir={direction}>
+    <div className="min-h-screen pb-28 bg-[#f4f5f7]" dir={direction}>
       {/* Detail Content Section */}
       <div className="max-w-4xl mx-auto px-4 pt-3 pb-10">
-        <div className="flex flex-col w-full mb-4">
-          {/* Title */}
-          <h1 className="text-xl md:text-2xl font-bold text-gray-900 text-center tracking-tight uppercase mb-6">
-            {locale === "ar"
-              ? `${ad.purpose === "sale" ? "للبيع" : ad.purpose === "rent" ? "للايجار" : "للبدل"} ${ad.propertyType?.labelAr || ad.propertyType?.label || ""} في ${ad.area?.labelAr || ad.area?.label || ""}`
-              : `${ad.purpose === "sale" ? "FOR SALE" : ad.purpose === "rent" ? "FOR RENT" : "FOR EXCHANGE"} ${ad.propertyType?.label || ""} IN ${ad.area?.label || ""}`}
-          </h1>
+        <div className="flex flex-col w-full gap-4 mb-4">
+          {/* Card 1 — summary */}
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+            <h1 className="text-lg md:text-2xl font-bold text-gray-900 text-center tracking-tight">
+              {locale === "ar"
+                ? `${ad.purpose === "sale" ? "للبيع" : ad.purpose === "rent" ? "للايجار" : "للبدل"} ${ad.propertyType?.labelAr || ad.propertyType?.label || ""} في ${ad.area?.labelAr || ad.area?.label || ""}`
+                : `${ad.purpose === "sale" ? "Sale" : ad.purpose === "rent" ? "Rent" : "Exchange"} ${ad.propertyType?.label || ""} in ${ad.area?.label || ""}`}
+            </h1>
 
-          {/* Price */}
-          <div className="text-xl font-bold text-[#e11d1d] text-center mb-4">
-            {ad.price
-              ? `${Number(ad.price).toLocaleString("en-US")} ${locale === "ar" ? "د.ك" : "KD"}`
-              : ""}
-          </div>
+            <div className="w-10 h-0.5 bg-[#e11d1d] rounded-full mx-auto my-3" />
 
-          {/* Phone numbers */}
-          <div className="flex items-center justify-start w-full pb-3 mb-4">
-            <div
-              className="flex items-center gap-2 text-[#169899] font-bold text-base sm:text-lg tracking-wide"
-              dir="ltr"
-            >
-              <button onClick={handlePhoneCall} className="hover:underline">
-                {formatDisplayPhone(ad.phoneNumber)}
-              </button>
-              {ad.alternativePhoneNumber && (
-                <>
-                  <span>-</span>
-                  <button
-                    onClick={() =>
-                      (window.location.href = `tel:${ad.alternativePhoneNumber}`)
-                    }
-                    className="hover:underline"
-                  >
-                    {formatDisplayPhone(ad.alternativePhoneNumber)}
-                  </button>
-                </>
-              )}
+            <div className="text-xl font-bold text-gray-900 text-center mb-4">
+              {ad.price
+                ? `${Number(ad.price).toLocaleString("en-US")} ${locale === "ar" ? "د.ك" : "KD"}`
+                : ""}
             </div>
-          </div>
 
-          {/* Time, Views & Share Row */}
-          <div className="flex items-center justify-center gap-8 w-full mb-5">
-            {/* Time-ago on the right */}
-            <div className="flex items-center gap-1.5 text-gray-500 text-xs font-semibold">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                className="w-4 h-4"
-                xmlns="http://www.w3.org/2000/svg"
+            <div className="grid grid-cols-3 gap-2.5">
+              <div className="flex items-center justify-center gap-1.5 border border-[#f3cccc] bg-[#fdf2f2] text-[#e11d1d] rounded-xl py-2.5 px-1 text-[11px] sm:text-xs font-semibold">
+                <Clock size={15} className="shrink-0" />
+                <span className="truncate" suppressHydrationWarning>
+                  {getTimeAgo(ad.createdAt)}
+                </span>
+              </div>
+              <div className="flex items-center justify-center gap-1.5 border border-[#f3cccc] bg-[#fdf2f2] text-[#e11d1d] rounded-xl py-2.5 px-1 text-[11px] sm:text-xs font-semibold">
+                <Eye size={16} strokeWidth={2.5} className="shrink-0" />
+                <span>{ad.views || 0}</span>
+              </div>
+              <button
+                type="button"
+                onClick={handleShare}
+                className="flex items-center justify-center gap-1.5 border border-[#f3cccc] bg-[#fdf2f2] text-[#e11d1d] rounded-xl py-2.5 px-1 text-[11px] sm:text-xs font-semibold transition-colors hover:bg-[#fbe6e6]"
               >
-                <circle cx="12" cy="12" r="10"></circle>
-                <polyline points="12 6 12 12 16 14"></polyline>
-              </svg>
-              <span className="text-right">{getTimeAgo(ad.createdAt)}</span>
-            </div>
-
-            {/* Share in the middle */}
-            <Image
-              src={"/images/icons/share-icon.svg"}
-              alt="Share"
-              width={40}
-              height={40}
-              className="cursor-pointer"
-              onClick={handleShare}
-            />
-
-            {/* Views count on the far side */}
-            <div className="flex items-center gap-1.5 text-gray-900 text-base font-bold">
-              <Eye className="w-5 h-5 text-brand-teal" strokeWidth={2.5} />
-              <span>{ad.views}</span>
+                <Share2 size={15} className="shrink-0" />
+                <span className="truncate">{tButtons("share")}</span>
+              </button>
             </div>
           </div>
 
-          {/* Lead media — small, the rest of the gallery sits under the description */}
-          {currentMedia && (
-            <div
-              className="relative w-56 sm:w-64 aspect-4/3 mx-auto mb-6 rounded-xl overflow-hidden bg-gray-50 cursor-pointer"
-              onClick={() => setIsMediaViewerOpen(true)}
-            >
-              <Image
-                src={currentImageUrl}
-                alt={
-                locale === "ar"
-                  ? ad.propertyType?.labelAr || ad.propertyType?.label || "عقار"
-                  : ad.propertyType?.label || "Property"
-                }
-                fill
-                priority
-                sizes="256px"
-                className="object-cover"
-              />
-              {currentMedia.type === "video" && (
-                <div className="absolute inset-0 flex items-center justify-center bg-black/10">
-                  <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/30 shadow-lg">
-                    <Play className="w-6 h-6 text-white fill-white ml-0.5" />
-                  </div>
-                </div>
-              )}
+          {/* Card 2 — publisher */}
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex items-center gap-3">
+            <div className="flex-1 min-w-0 text-center">
+              <div className="font-bold text-gray-900 text-sm sm:text-base break-words">
+                {ad.user?.name}
+              </div>
+              <div
+                dir="ltr"
+                className="flex items-center justify-center gap-2 text-[#169899] font-bold text-xs sm:text-sm mt-1"
+              >
+                <button onClick={handlePhoneCall} className="hover:underline">
+                  {formatDisplayPhone(ad.phoneNumber)}
+                </button>
+                {ad.alternativePhoneNumber && (
+                  <>
+                    <span>-</span>
+                    <button
+                      onClick={() =>
+                        (window.location.href = `tel:${ad.alternativePhoneNumber}`)
+                      }
+                      className="hover:underline"
+                    >
+                      {formatDisplayPhone(ad.alternativePhoneNumber)}
+                    </button>
+                  </>
+                )}
+              </div>
             </div>
-          )}
 
-          {/* Publisher profile badge */}
-          <div className="flex justify-center mb-8">
             <div
-              className={`inline-flex items-center gap-2 bg-primary px-3 py-2 rounded-full shadow-sm text-white ${
-                ad.isOffice
-                  ? "cursor-pointer transition-opacity hover:opacity-90"
-                  : ""
+              className={`w-16 h-16 shrink-0 rounded-full overflow-hidden bg-gray-100 border border-gray-100 flex items-center justify-center ${
+                ad.isOffice ? "cursor-pointer" : ""
               }`}
               role={ad.isOffice ? "link" : undefined}
               tabIndex={ad.isOffice ? 0 : undefined}
@@ -544,49 +499,40 @@ ${window.location.href}`);
                 }
               }}
             >
-              <div className="w-6 h-6 rounded-full bg-black flex items-center justify-center shrink-0 overflow-hidden">
-                {ad.user?.avatar ? (
-                  <Image
-                    src={getImageUrl(ad.user.avatar)}
-                    alt={ad.user?.name || "User"}
-                    width={24}
-                    height={24}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <svg
-                    stroke="currentColor"
-                    fill="none"
-                    strokeWidth="2.5"
-                    viewBox="0 0 24 24"
-                    className="w-3.5 h-3.5 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="12" cy="7" r="4"></circle>
-                  </svg>
-                )}
-              </div>
-              <span className="text-sm text-white font-bold tracking-wide">
-                {ad.user?.name || "علي جمال أبو حمزة"}
-              </span>
+              {ad.user?.avatar ? (
+                <Image
+                  src={getImageUrl(ad.user.avatar)}
+                  alt={ad.user?.name || "User"}
+                  width={64}
+                  height={64}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <svg
+                  stroke="currentColor"
+                  fill="none"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                  className="w-7 h-7 text-gray-400"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+              )}
             </div>
           </div>
 
-          {/* Description Section */}
+          {/* Card 3 — description + gallery */}
           <div
-            className={`flex flex-col w-full mt-4 ${
-              direction === "rtl"
-                ? "items-end text-right"
-                : "items-start text-left"
-            }`}
+            className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4"
             dir={direction}
           >
-            <div className="mb-2 flex justify-between w-full items-center">
+            <div className="mb-3 flex justify-between w-full items-center">
               <h3 className="text-base font-bold text-gray-800">
                 {t("description")}
               </h3>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1">
                 <button
                   type="button"
                   onClick={handleCopyDescription}
@@ -595,6 +541,20 @@ ${window.location.href}`);
                   className="cursor-pointer p-2 rounded-full hover:bg-gray-100 transition-colors"
                 >
                   <Copy className="w-5 h-5 text-gray-600" />
+                </button>
+                <button
+                  type="button"
+                  onClick={handleToggleFavorite}
+                  aria-label={t("addToFavorites")}
+                  className="cursor-pointer p-2 rounded-full hover:bg-gray-100 transition-colors"
+                >
+                  <Heart
+                    className={`w-5 h-5 ${
+                      isFavorite
+                        ? "fill-[#16A34A] text-[#16A34A]"
+                        : "text-gray-600"
+                    }`}
+                  />
                 </button>
               </div>
             </div>
@@ -607,58 +567,40 @@ ${window.location.href}`);
             >
               {ad.description}
             </p>
+
+            {/* Full gallery, small tiles */}
+            {ad.media && ad.media.length > 1 ? (
+              <div className="grid grid-cols-3 gap-2 mt-4">
+                {ad.media.map((m, index) => (
+                  <div
+                    key={m._id ?? index}
+                    className="relative aspect-4/3 rounded-lg overflow-hidden bg-gray-50 cursor-pointer"
+                    onClick={() => {
+                      setCurrentImageIndex(index);
+                      setIsMediaViewerOpen(true);
+                    }}
+                  >
+                    <Image
+                      src={m.type === "video" ? getThumbnailUrl(m) : getMediaUrl(m)}
+                      alt={
+                        locale === "ar"
+                          ? ad.propertyType?.labelAr || ad.propertyType?.label || "عقار"
+                          : ad.propertyType?.label || "Property"
+                      }
+                      fill
+                      sizes="(max-width: 640px) 33vw, 200px"
+                      className="object-cover"
+                    />
+                    {m.type === "video" && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/10">
+                        <Play className="w-7 h-7 text-white fill-white drop-shadow" />
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ) : null}
           </div>
-
-          {/* Full gallery, small tiles — only worth showing beyond the lead image */}
-          {ad.media && ad.media.length > 1 ? (
-            <div className="grid grid-cols-3 gap-2 mt-6">
-              {ad.media.map((m, index) => (
-                <div
-                  key={m._id ?? index}
-                  className={`relative aspect-4/3 rounded-lg overflow-hidden bg-gray-50 ${
-                    m.type === "video" ? "cursor-pointer" : ""
-                  }`}
-                  onClick={
-                    m.type === "video"
-                      ? () => {
-                          setCurrentImageIndex(index);
-                          setIsMediaViewerOpen(true);
-                        }
-                      : undefined
-                  }
-                >
-                  <Image
-                    src={m.type === "video" ? getThumbnailUrl(m) : getMediaUrl(m)}
-                    alt={
-                      locale === "ar"
-                        ? ad.propertyType?.labelAr || ad.propertyType?.label || "عقار"
-                        : ad.propertyType?.label || "Property"
-                    }
-                    fill
-                    sizes="(max-width: 640px) 33vw, 200px"
-                    className="object-cover"
-                  />
-                  {m.type === "video" && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/10">
-                      <Play className="w-7 h-7 text-white fill-white drop-shadow" />
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          ) : null}
-
-          {(!ad.media || ad.media.length === 0) && (
-            <img
-              src="/images/DefaultAdImage.jpeg"
-              alt={
-                locale === "ar"
-                  ? ad.propertyType?.labelAr || ad.propertyType?.label || "عقار"
-                  : ad.propertyType?.label || "Property"
-              }
-              className="w-40 h-auto mx-auto mt-6 object-contain"
-            />
-          )}
         </div>
 
         {/* Owner Controls */}
@@ -766,9 +708,10 @@ ${window.location.href}`);
           </button>
           <button
             onClick={handlePhoneCall}
-            className="cursor-pointer flex items-center justify-center bg-[#111] text-white w-14 h-12 rounded-xl hover:bg-black transition-all active:scale-90"
+            className="cursor-pointer flex items-center justify-center gap-2 bg-white border border-gray-200 text-gray-800 px-5 h-12 rounded-xl font-bold hover:bg-gray-50 transition-all active:scale-95"
           >
-            <Phone size={24} fill="currentColor" />
+            <Phone size={20} />
+            <span>{t("call")}</span>
           </button>
         </div>
       </div>
