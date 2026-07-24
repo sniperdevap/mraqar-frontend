@@ -3,7 +3,7 @@
 set -euo pipefail
 
 DIR="/var/www/mr-aqar-staging/aqar-frontend"   # <-- repo path on the server
-BRANCH="main"
+BRANCH="staging"
 PM2_NAME="mr-aqar-staging-frontend"
 
 log() { echo "[$(date '+%F %T')] $*"; }
