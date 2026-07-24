@@ -405,6 +405,13 @@ ${window.location.href}`);
     );
   }
 
+  const heroMedia = ad.media && ad.media.length > 0 ? ad.media[0] : null;
+  const heroThumb = heroMedia
+    ? heroMedia.type === "video"
+      ? getThumbnailUrl(heroMedia)
+      : getMediaUrl(heroMedia)
+    : null;
+
   return (
     <div className="min-h-screen pb-28 bg-[#f4f5f7]" dir={direction}>
       {/* Detail Content Section */}
@@ -450,77 +457,112 @@ ${window.location.href}`);
 
           {/* Card 2 — publisher */}
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex items-center gap-3">
-            <div className="flex-1 min-w-0 text-center">
-              <div className="font-bold text-gray-900 text-sm sm:text-base break-words">
-                {ad.user?.name}
-              </div>
+            {/* Company: logo + name/phone — start (right in RTL) */}
+            <div className="flex items-center gap-2 flex-1 min-w-0">
               <div
-                dir="ltr"
-                className="flex items-center justify-center gap-2 text-[#e11d1d] font-bold text-xs sm:text-sm mt-1"
+                className={`w-11 h-11 shrink-0 rounded-full overflow-hidden bg-gray-100 border border-gray-100 flex items-center justify-center ${
+                  ad.isOffice ? "cursor-pointer" : ""
+                }`}
+                role={ad.isOffice ? "link" : undefined}
+                tabIndex={ad.isOffice ? 0 : undefined}
+                onClick={() => {
+                  if (ad.isOffice && ad.user?._id) {
+                    router.push(`/offices/${ad.user._id}`);
+                  }
+                }}
+                onKeyDown={(event) => {
+                  if (
+                    ad.isOffice &&
+                    ad.user?._id &&
+                    (event.key === "Enter" || event.key === " ")
+                  ) {
+                    event.preventDefault();
+                    router.push(`/offices/${ad.user._id}`);
+                  }
+                }}
               >
-                <button onClick={handlePhoneCall} className="hover:underline">
-                  {formatDisplayPhone(ad.phoneNumber)}
-                </button>
-                {ad.alternativePhoneNumber && (
-                  <>
-                    <span>-</span>
-                    <button
-                      onClick={() =>
-                        (window.location.href = `tel:${ad.alternativePhoneNumber}`)
-                      }
-                      className="hover:underline"
-                    >
-                      {formatDisplayPhone(ad.alternativePhoneNumber)}
-                    </button>
-                  </>
+                {ad.user?.avatar ? (
+                  <Image
+                    src={getImageUrl(ad.user.avatar)}
+                    alt={ad.user?.name || "User"}
+                    width={56}
+                    height={56}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <svg
+                    stroke="currentColor"
+                    fill="none"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                    className="w-6 h-6 text-gray-400"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
                 )}
+              </div>
+
+              <div className="min-w-0 text-start">
+                <div className="font-bold text-gray-900 text-xs sm:text-sm break-words">
+                  {ad.user?.name}
+                </div>
+                <div
+                  dir="ltr"
+                  className="flex items-center gap-1 whitespace-nowrap text-[#e11d1d] font-bold text-[11px] sm:text-xs mt-1"
+                >
+                  <Image
+                    src="/images/phone-call-icon.png"
+                    alt="Phone"
+                    width={14}
+                    height={14}
+                    className="shrink-0"
+                  />
+                  <button onClick={handlePhoneCall} className="hover:underline">
+                    {formatDisplayPhone(ad.phoneNumber)}
+                  </button>
+                  {ad.alternativePhoneNumber && (
+                    <>
+                      <span>-</span>
+                      <button
+                        onClick={() =>
+                          (window.location.href = `tel:${ad.alternativePhoneNumber}`)
+                        }
+                        className="hover:underline"
+                      >
+                        {formatDisplayPhone(ad.alternativePhoneNumber)}
+                      </button>
+                    </>
+                  )}
+                </div>
               </div>
             </div>
 
-            <div
-              className={`w-16 h-16 shrink-0 rounded-full overflow-hidden bg-gray-100 border border-gray-100 flex items-center justify-center ${
-                ad.isOffice ? "cursor-pointer" : ""
-              }`}
-              role={ad.isOffice ? "link" : undefined}
-              tabIndex={ad.isOffice ? 0 : undefined}
-              onClick={() => {
-                if (ad.isOffice && ad.user?._id) {
-                  router.push(`/offices/${ad.user._id}`);
-                }
-              }}
-              onKeyDown={(event) => {
-                if (
-                  ad.isOffice &&
-                  ad.user?._id &&
-                  (event.key === "Enter" || event.key === " ")
-                ) {
-                  event.preventDefault();
-                  router.push(`/offices/${ad.user._id}`);
-                }
-              }}
-            >
-              {ad.user?.avatar ? (
+            {/* House image — end (left in RTL) */}
+            {heroThumb && (
+              <div
+                className="relative w-32 h-32 sm:w-40 sm:h-40 shrink-0 rounded-2xl overflow-hidden bg-gray-100 cursor-pointer"
+                onClick={() => setIsMediaViewerOpen(true)}
+              >
                 <Image
-                  src={getImageUrl(ad.user.avatar)}
-                  alt={ad.user?.name || "User"}
-                  width={64}
-                  height={64}
-                  className="w-full h-full object-cover"
+                  src={heroThumb}
+                  alt={
+                    locale === "ar"
+                      ? ad.propertyType?.labelAr || ad.propertyType?.label || "عقار"
+                      : ad.propertyType?.label || "Property"
+                  }
+                  fill
+                  sizes="(min-width: 640px) 160px, 128px"
+                  className="object-cover"
                 />
-              ) : (
-                <svg
-                  stroke="currentColor"
-                  fill="none"
-                  strokeWidth="2"
-                  viewBox="0 0 24 24"
-                  className="w-7 h-7 text-gray-400"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                  <circle cx="12" cy="7" r="4"></circle>
-                </svg>
-              )}
-            </div>
+                {heroMedia?.type === "video" && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/10">
+                    <Play className="w-7 h-7 text-white fill-white" />
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Card 3 — description + gallery */}
