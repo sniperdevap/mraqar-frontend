@@ -460,7 +460,7 @@ ${window.location.href}`);
             {/* Company: logo + name/phone — start (right in RTL) */}
             <div className="flex items-center gap-2 flex-1 min-w-0">
               <div
-                className={`w-11 h-11 shrink-0 rounded-full overflow-hidden bg-gray-100 border border-gray-100 flex items-center justify-center ${
+                className={`w-11 h-11 shrink-0 rounded-full overflow-hidden bg-gray-100 border border-gray-100 flex items-center justify-center mb-10 ${
                   ad.isOffice ? "cursor-pointer" : ""
                 }`}
                 role={ad.isOffice ? "link" : undefined}
