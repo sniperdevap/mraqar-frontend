@@ -505,12 +505,12 @@ ${window.location.href}`);
               </div>
 
               <div className="min-w-0 text-start">
-                <div className="font-bold text-gray-900 text-xs sm:text-sm break-words">
+                <div className="font-bold text-gray-900 text-[10px] break-words">
                   {ad.user?.name}
                 </div>
                 <div
                   dir="ltr"
-                  className="flex items-center gap-1 whitespace-nowrap text-[#e11d1d] font-bold text-[11px] sm:text-xs mt-1"
+                  className="flex items-center gap-1 whitespace-nowrap text-[#e11d1d] font-bold text-sm sm:text-base mt-1"
                 >
                   <Image
                     src="/images/phone-call-icon.png"

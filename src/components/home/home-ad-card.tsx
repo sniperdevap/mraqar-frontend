@@ -170,12 +170,6 @@ function HomeAdCardBase({
             <Eye strokeWidth={2.5} className="w-3 h-3" />
             {ad.views || 0}
           </span>
-          {/* purpose */}
-          <div className="absolute bottom-1.5 inset-x-0 flex justify-center">
-            <span className="bg-white/95 text-gray-800 text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-md shadow-sm">
-              {t(ad.purpose)}
-            </span>
-          </div>
         </div>
 
         <div className="flex-1 min-w-0 flex flex-col justify-center gap-1">
