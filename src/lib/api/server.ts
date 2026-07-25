@@ -92,7 +92,7 @@ export async function serverApiGet<T>(
 
 async function serverApiPost<T>(
   endpoint: string,
-  options?: ServerFetchOptions & { forwardedFor?: string },
+  options?: ServerFetchOptions & { forwardedFor?: string; token?: string },
 ): Promise<T> {
   const url = `${getApiBaseUrl()}${endpoint}`;
   const timeoutMs = options?.timeoutMs ?? 2000;
@@ -111,6 +111,8 @@ async function serverApiPost<T>(
         ...(options?.forwardedFor
           ? { "X-Forwarded-For": options.forwardedFor }
           : {}),
+        // Lets the backend recognise the ad's owner and skip their own views.
+        ...(options?.token ? { Authorization: `Bearer ${options.token}` } : {}),
       },
       cache: "no-store",
       signal: controller.signal,
@@ -163,10 +165,12 @@ export const countServerAdView = (
   id: string,
   locale?: string,
   forwardedFor?: string,
+  token?: string,
 ) =>
   serverApiPost<{ counted: boolean; views: number }>(API_ENDPOINTS.AD.VIEW(id), {
     locale,
     forwardedFor,
+    token,
   });
 
 export const getServerPropertyTypes = (locale?: string) =>

@@ -276,6 +276,13 @@ export function CreateAdForm({ initialData, mode = 'create', onSuccess, requireC
     },
   });
 
+  useEffect(() => {
+    if (user?.phoneNumber && !form.getValues('phoneNumber')) {
+      console.log(user?.phoneNumber, 'phoneNumber')
+      form.setValue('phoneNumber', formatDisplayPhone(user.phoneNumber));
+    }
+  }, [user?.phoneNumber, form]);
+
   // Cleanup object URLs on unmount
   useEffect(() => {
     return () => {
