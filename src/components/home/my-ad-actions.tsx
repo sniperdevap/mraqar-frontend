@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  ArrowUpToLine,
   Pencil,
   Pin,
   Play,
@@ -10,7 +11,7 @@ import {
 import { Ad } from "@/types/ad";
 import { useTranslations } from "@/hooks/use-locale";
 import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
-import { deleteAd, updateAd } from "@/lib/api/ad";
+import { deleteAd, repostAd, updateAd } from "@/lib/api/ad";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useRoutePrefetch } from "@/hooks/use-route-prefetch";
@@ -52,6 +53,18 @@ export function MyAdActions({ ad, onAction }: MyAdActionsProps) {
     }
   };
 
+  const handleRepost = async () => {
+    try {
+      await repostAd(ad.id);
+      toast.success(t("repostedSuccessfully"));
+      queryClient.invalidateQueries({ queryKey: ["ads"] });
+      onAction?.("refresh", ad);
+    } catch (error) {
+      console.error("Repost failed:", error);
+      toast.error(t("failedToRepost"));
+    }
+  };
+
   const handleToggleStatus = async () => {
     const newStatus = ad.status === "active" ? "inactive" : "active";
     try {
@@ -80,6 +93,28 @@ export function MyAdActions({ ad, onAction }: MyAdActionsProps) {
       >
         {ad.status === "active" ? <Play size={13} /> : <RotateCw size={13} />}
       </button>
+
+      <ConfirmationDialog
+        trigger={
+          <button
+            type="button"
+            title={t("repostAd")}
+            className="w-7 h-7 rounded-full bg-white border border-gray-200 text-brand-teal hover:bg-gray-50 flex items-center justify-center transition-all active:scale-95"
+          >
+            <ArrowUpToLine size={13} />
+          </button>
+        }
+        icon={{
+          src: "/images/icons/refresh.svg",
+          alt: "Repost",
+          bgColor: "bg-blue-100",
+        }}
+        title={t("repostAd")}
+        description={t("repostAdDescription")}
+        confirmButtonText={tButtons("yes")}
+        cancelButtonText={tButtons("no")}
+        onConfirm={handleRepost}
+      />
 
       {!isPremiumAd && (
         <ConfirmationDialog

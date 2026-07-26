@@ -26,7 +26,9 @@
     "copyLink": "نسخ الرابط",
     "linkCopied": "تم نسخ الرابط",
     "viewMore": "مشاهدة المزيد",
-    "scrollToTop": "العودة للأعلى"
+    "scrollToTop": "العودة للأعلى",
+    "yes": "نعم",
+    "no": "لا"
   },
   "messages": {
     "loading": "جاري التحميل...",
@@ -144,7 +146,11 @@
     "creditsLeft": "متبقي {remaining} اعلان مميز",
     "noSubscription": "ليس لديك اشتراك. يرجى الاشتراك أولاً لإنشاء إعلانات.",
     "viewsCount": "{count} مشاهدة",
-    "call": "اتصال"
+    "call": "اتصال",
+    "repostAd": "إعادة نشر الإعلان",
+    "repostAdDescription": "إعادة نشر هذا الإعلان لنقله إلى أعلى القائمة؟ سيتم خصم رصيد واحد.",
+    "repostedSuccessfully": "تمت إعادة نشر الإعلان بنجاح",
+    "failedToRepost": "فشلت إعادة نشر الإعلان"
   },
   "search": {
     "title": "نتائج البحث",
