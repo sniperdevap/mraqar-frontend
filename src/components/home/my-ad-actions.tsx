@@ -105,9 +105,9 @@ export function MyAdActions({ ad, onAction }: MyAdActionsProps) {
           </button>
         }
         icon={{
-          src: "/images/icons/refresh.svg",
+          src: "/images/icons/repost.svg",
           alt: "Repost",
-          bgColor: "bg-blue-100",
+          bgColor: "bg-primary-gold-bg",
         }}
         title={t("repostAd")}
         description={t("repostAdDescription")}
