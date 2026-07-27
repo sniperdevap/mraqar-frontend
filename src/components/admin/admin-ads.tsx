@@ -33,6 +33,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { updateAd, deleteAd } from "@/lib/api/ad";
 import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
 import { Ad } from "@/types/ad";
+import { formatAdPrice } from "@/lib/utils/format";
 
 export function AdminAds() {
   const router = useRouter();
@@ -403,10 +404,7 @@ export function AdminAds() {
                             </span>
                           </td>
                           <td className="py-4 px-6 font-mono text-sm text-gray-600 whitespace-nowrap">
-                            {ad.price?.toLocaleString()}{" "}
-                            <span className="text-[10px] font-normal text-gray-500">
-                              د.ك
-                            </span>
+                            {formatAdPrice(ad.price, ad.priceUnit, locale)}
                           </td>
                           <td className="py-4 px-6">
                             <span

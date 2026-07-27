@@ -111,6 +111,7 @@ export default async function RootLayout({
         </>
       ) : null}
       <body
+        suppressHydrationWarning
         className={`${notoKufiArabic.className} antialiased min-h-screen flex flex-col overflow-x-hidden`}
       >
         <script

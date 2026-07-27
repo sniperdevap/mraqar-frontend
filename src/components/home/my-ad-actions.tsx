@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  ArrowUpToLine,
-  Pencil,
-  Pin,
-  Play,
-  RotateCw,
-  Trash,
-} from "lucide-react";
+import { Pencil, Pin, Play, Power, RotateCw, Trash } from "lucide-react";
 import { Ad } from "@/types/ad";
 import { useTranslations } from "@/hooks/use-locale";
 import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
@@ -80,18 +73,21 @@ export function MyAdActions({ ad, onAction }: MyAdActionsProps) {
 
   const isPremiumAd = ad.isPremium ?? ad.premiumAd;
 
+  const btn =
+    "w-9 h-9 rounded-full bg-white border-2 flex items-center justify-center transition-all active:scale-95 hover:bg-gray-50";
+
   return (
     <div
-      className="flex items-center justify-end gap-1.5 border-t border-gray-200/80 px-2.5 py-2"
+      className="flex items-center justify-around gap-1.5 border-t border-gray-200/80 px-2.5 py-2.5"
       onClick={(event) => event.stopPropagation()}
     >
       <button
         type="button"
         title={ad.status === "active" ? t("stopAd") : t("activateAd")}
-        className="w-7 h-7 rounded-full bg-white border border-gray-200 text-brand-teal hover:bg-gray-50 flex items-center justify-center transition-all active:scale-95"
+        className={`${btn} border-cyan-400 text-cyan-500`}
         onClick={handleToggleStatus}
       >
-        {ad.status === "active" ? <Play size={13} /> : <RotateCw size={13} />}
+        {ad.status === "active" ? <Play size={16} /> : <Power size={16} />}
       </button>
 
       <ConfirmationDialog
@@ -99,9 +95,9 @@ export function MyAdActions({ ad, onAction }: MyAdActionsProps) {
           <button
             type="button"
             title={t("repostAd")}
-            className="w-7 h-7 rounded-full bg-white border border-gray-200 text-brand-teal hover:bg-gray-50 flex items-center justify-center transition-all active:scale-95"
+            className={`${btn} border-gray-800 text-gray-800`}
           >
-            <ArrowUpToLine size={13} />
+            <RotateCw size={16} />
           </button>
         }
         icon={{
@@ -122,9 +118,9 @@ export function MyAdActions({ ad, onAction }: MyAdActionsProps) {
             <button
               type="button"
               title={t("featureAdTitle")}
-              className="w-7 h-7 rounded-full bg-white border border-gray-200 text-brand-teal hover:bg-gray-50 flex items-center justify-center transition-all active:scale-95"
+              className={`${btn} border-brand-gold text-brand-gold`}
             >
-              <Pin size={13} />
+              <Pin size={16} />
             </button>
           }
           icon={{
@@ -142,13 +138,13 @@ export function MyAdActions({ ad, onAction }: MyAdActionsProps) {
       <button
         type="button"
         title={t("editAd")}
-        className="w-7 h-7 rounded-full bg-white border border-gray-200 text-brand-teal hover:bg-gray-50 flex items-center justify-center transition-all active:scale-95"
+        className={`${btn} border-gray-400 text-gray-500`}
         onClick={() => onAction?.("edit", ad)}
         onMouseEnter={prefetchEditAd}
         onFocus={prefetchEditAd}
         onTouchStart={prefetchEditAd}
       >
-        <Pencil size={13} />
+        <Pencil size={16} />
       </button>
 
       <ConfirmationDialog
@@ -156,9 +152,9 @@ export function MyAdActions({ ad, onAction }: MyAdActionsProps) {
           <button
             type="button"
             title={t("deleteAd")}
-            className="w-7 h-7 rounded-full bg-white border border-gray-200 text-red-500 hover:bg-gray-50 flex items-center justify-center transition-all active:scale-95"
+            className={`${btn} border-red-500 text-red-500`}
           >
-            <Trash size={13} />
+            <Trash size={16} />
           </button>
         }
         icon={{

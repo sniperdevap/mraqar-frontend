@@ -34,6 +34,7 @@ export interface Ad {
     value: string;
   };
   price: number;
+  priceUnit?: 'kd' | 'thousand';
   phoneNumber: string;
   isPhoneHidden: boolean;
   alternativePhoneNumber?: string;

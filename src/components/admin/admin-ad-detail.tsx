@@ -41,6 +41,7 @@ import { useAdById } from "@/hooks/use-ads";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAdStore } from "@/lib/store/ad-store";
 import { DetailAd } from "@/types/ad";
+import { formatAdPrice } from "@/lib/utils/format";
 
 interface AdminAdDetailProps {
   adId: string;
@@ -333,7 +334,7 @@ ${window.location.origin}/${locale}/ads/${ad.id}`);
 
           {ad.price ? (
             <div className="text-2xl md:text-3xl font-bold">
-              {Number(ad.price).toLocaleString("en-US")} د.ك
+              {formatAdPrice(ad.price, ad.priceUnit, locale)}
             </div>
           ) : null}
           <div className="flex items-center justify-center gap-3 mt-2">

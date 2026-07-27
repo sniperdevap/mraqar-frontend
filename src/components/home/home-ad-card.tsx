@@ -7,8 +7,9 @@ import dynamic from "next/dynamic";
 import { Eye, Play, Share2, Calendar, BadgeCheck, Crown } from "lucide-react";
 import { Ad, Media } from "@/types/ad";
 import { useLocale, useTranslations } from "@/hooks/use-locale";
-import { formatDistanceToNow } from "@/lib/utils/format";
+import { formatAdPrice, formatDistanceToNow } from "@/lib/utils/format";
 import { useRoutePrefetch } from "@/hooks/use-route-prefetch";
+import { useIsLastViewedAd, LAST_VIEWED_ATTR } from "@/hooks/use-last-viewed-ad";
 
 const MyAdActions = dynamic(() =>
   import("./my-ad-actions").then((mod) => mod.MyAdActions),
@@ -45,6 +46,7 @@ function HomeAdCardBase({
   const tButtons = useTranslations("common.buttons");
   const href = `/ads/${ad.id}`;
   const { setPrefetchTarget, prefetchNow } = useRoutePrefetch(href);
+  const isLastViewed = useIsLastViewedAd(ad.id);
   const [shareUrl, setShareUrl] = React.useState<string | null>(null);
 
   const title =
@@ -77,9 +79,8 @@ function HomeAdCardBase({
     window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
   };
 
-  const formatPrice = (price: number) => {
-    return `${Number(price).toLocaleString("en-US")} ${locale === "ar" ? "دك" : "KD"}`;
-  };
+  const formatPrice = (price: number) =>
+    formatAdPrice(price, ad.priceUnit, locale);
 
   const getTimeAgo = (date: string) => {
     try {
@@ -127,8 +128,14 @@ function HomeAdCardBase({
 
   const ownerName = ad.user?.name || "";
 
+  const boxClasses =
+    "rounded-2xl border border-[#f1e5db] shadow-[0_2px_12px_rgba(16,24,40,0.05)] bg-gradient-to-br from-[#fbf1ea] via-white to-[#fbf1ea]" +
+    (isLastViewed ? " ad-glow" : "");
+
   const cardContent = (
-    <div className="relative w-full rounded-2xl border border-[#f1e5db] shadow-[0_2px_12px_rgba(16,24,40,0.05)] p-3 sm:p-3.5 bg-gradient-to-br from-[#fbf1ea] via-white to-[#fbf1ea]">
+    <div
+      className={`relative w-full p-3 sm:p-3.5 ${variant === "my-ad" ? "" : boxClasses}`}
+    >
       {isFeatured && (
         <span className={`absolute top-2.5 ${direction === "rtl" ? "left-3" : "right-3"} z-10 flex items-center gap-1 bg-[linear-gradient(135deg,#b8891f_0%,#e6cb7a_50%,#b8891f_100%)] text-white px-2.5 py-0.5 text-[9px] sm:text-[10px] font-bold rounded-full shadow-sm tracking-wide`}>
           {locale === "ar" ? "مميز" : "DISTINCT"}
@@ -257,6 +264,7 @@ function HomeAdCardBase({
           className={cardClasses}
           onClick={onClick}
           dir={direction}
+          {...(isLastViewed ? { [LAST_VIEWED_ATTR]: "" } : {})}
         >
           {cardContent}
         </Link>
@@ -266,7 +274,11 @@ function HomeAdCardBase({
   }
 
   return (
-    <div className="relative block w-full mb-3" dir={direction}>
+    <div
+      className={`relative block w-full mb-3 overflow-hidden ${boxClasses}`}
+      dir={direction}
+      {...(isLastViewed ? { [LAST_VIEWED_ATTR]: "" } : {})}
+    >
       <Link
         href={href}
         prefetch={false}
