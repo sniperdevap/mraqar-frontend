@@ -24,6 +24,7 @@ export const API_ENDPOINTS = {
     UPDATE: (id: number) => `/ads/${id}`,
     DELETE: (id: number) => `/ads/${id}`,
     VIEW: (id: string) => `/ads/${id}/view`,
+    REPOST: (id: number) => `/ads/${id}/repost`,
   },
   // Subscription endpoints
   SUBSCRIPTION: {

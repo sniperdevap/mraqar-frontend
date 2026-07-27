@@ -25,6 +25,8 @@ import { useLocale } from "@/hooks/use-locale";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuthStore } from "@/lib/store/auth-store";
 import { useRoutePrefetch } from "@/hooks/use-route-prefetch";
+import { useIsLastViewedAd, LAST_VIEWED_ATTR } from "@/hooks/use-last-viewed-ad";
+import { formatAdPrice } from "@/lib/utils/format";
 
 interface AdCardProps {
   ad: Ad;
@@ -48,6 +50,7 @@ export function AdCard({
     `/ads/${ad.id}`,
     variant !== "admin",
   );
+  const isLastViewed = useIsLastViewedAd(variant === "admin" ? undefined : ad.id);
   const t = useTranslations("common.ads");
   const tButtons = useTranslations("common.buttons");
   const [isFavorite, setIsFavorite] = React.useState(ad.isFav || false);
@@ -163,12 +166,13 @@ export function AdCard({
     <>
       <Card
         ref={setPrefetchTarget}
-        className="group rounded-2xl relative shadow-none border-0 gap-0 h-auto flex flex-col overflow-hidden transition-all duration-200 active:scale-[0.99] cursor-pointer select-none bg-card-mint mb-3"
+        className={`group rounded-2xl relative shadow-none border-0 gap-0 h-auto flex flex-col overflow-hidden transition-all duration-200 active:scale-[0.99] cursor-pointer select-none bg-card-mint mb-3 ${isLastViewed ? "ad-glow" : ""}`}
         onClick={onClick}
         onMouseEnter={prefetchNow}
         onFocus={prefetchNow}
         onTouchStart={prefetchNow}
         dir={direction}
+        {...(isLastViewed ? { [LAST_VIEWED_ATTR]: "" } : {})}
       >
         {isPremiumAd && (
           <div
@@ -226,7 +230,7 @@ export function AdCard({
                   ) : null}
                   <span className="text-[16px] sm:text-[16px] font-bold text-black whitespace-nowrap">
                     {ad.price
-                      ? `${Number(ad.price).toLocaleString("en-US")}  د.ك`
+                      ? formatAdPrice(ad.price, ad.priceUnit, locale)
                       : ""}
                   </span>
                 </div>

@@ -26,7 +26,9 @@
     "copyLink": "Copy Link",
     "linkCopied": "Link copied",
     "viewMore": "View More",
-    "scrollToTop": "Scroll to top"
+    "scrollToTop": "Scroll to top",
+    "yes": "Yes",
+    "no": "No"
   },
   "messages": {
     "loading": "Loading...",
@@ -131,6 +133,9 @@
     "propertyTypeRequired": "Property type is required",
     "areaRequired": "Area is required",
     "priceRequired": "Price must be greater than 0",
+    "unitKd": "KD",
+    "unitThousand": "K",
+    "priceUnitHint": "Choose the unit then enter the price",
     "phoneNumberMin": "Phone number must be at least 8 digits",
     "descriptionMin": "Description must be at least 10 characters",
     "descriptionRequired": "Description is required",
@@ -144,7 +149,12 @@
     "creditsLeft": "{remaining} prem ad left",
     "noSubscription": "You don't have a subscription. Please subscribe first to create ads.",
     "viewsCount": "{count, plural, =0 {0 Views} =1 {1 View} other {# Views}}",
-    "call": "Call"
+    "call": "Call",
+    "repostAd": "Repost the ad",
+    "repostAdDescription": "Repost this ad to move it back to the top of the listings? One credit will be deducted.",
+    "repostedSuccessfully": "Ad reposted successfully",
+    "failedToRepost": "Failed to repost the ad",
+    "repostCooldown": "You can repost this ad once every 24 hours"
   },
   "search": {
     "title": "Search Results",

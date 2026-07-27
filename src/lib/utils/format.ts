@@ -39,6 +39,17 @@ export function formatDistanceToNow(
   return rtf.format(0, "second");
 }
 
+export type PriceUnit = 'kd' | 'thousand';
+
+export function priceUnitLabel(unit: PriceUnit | undefined, locale: string): string {
+  if (unit === 'thousand') return locale === 'ar' ? 'الف' : 'K';
+  return locale === 'ar' ? 'د.ك' : 'KD';
+}
+
+export function formatAdPrice(price: number | undefined, unit: PriceUnit | undefined, locale: string): string {
+  return `${Number(price || 0).toLocaleString('en-US')} ${priceUnitLabel(unit, locale)}`;
+}
+
 /**
  * Normalizes a phone number to include the Kuwait country code (+965).
  * Handle cases:

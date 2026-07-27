@@ -13,6 +13,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { addFavorite, removeFavorite } from "@/lib/api/account";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { formatAdPrice } from "@/lib/utils/format";
 
 interface SearchAdCardProps {
   ad: Ad;
@@ -159,7 +160,7 @@ export function SearchAdCard({ ad, onClick }: SearchAdCardProps) {
 
           <div className="flex items-center gap-4 flex-row">
             {ad.price ? (
-              <span className="text-base font-bold text-[#e11d1d]">{`${Number(ad.price).toLocaleString("en-US")}  د.ك`}</span>
+              <span className="text-base font-bold text-[#e11d1d]">{formatAdPrice(ad.price, ad.priceUnit, locale)}</span>
             ) : null}
             <div className="flex items-center gap-1.5 text-gray-500 font-medium">
               <Clock size={13} className="text-brand-teal" />

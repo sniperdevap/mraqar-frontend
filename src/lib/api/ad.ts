@@ -52,6 +52,11 @@ export const updateAd = async (id: number, data: Partial<CreateAdRequest> & { st
   return response.data;
 };
 
+export const repostAd = async (id: number) => {
+  const response = await axiosWrapper('post', API_ENDPOINTS.AD.REPOST(id));
+  return response.data;
+};
+
 export const deleteAd = async (id: number) => {
   const response = await axiosWrapper('delete', API_ENDPOINTS.AD.DELETE(id));
   return response.data;

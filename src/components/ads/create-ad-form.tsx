@@ -25,7 +25,7 @@ import { usePropertyTypes, useAreas } from '@/hooks/use-metadata';
 import { ErrorSlot } from '../common/error';
 import { Ad, Media } from '@/types/ad';
 import { getErrorMessage, getErrorCode } from '@/lib/utils/api';
-import { formatFileSize, normalizeKuwaitPhone } from '@/lib/utils/format';
+import { formatFileSize, normalizeKuwaitPhone, priceUnitLabel } from '@/lib/utils/format';
 import { formatDisplayPhone } from '@/lib/utils';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -164,6 +164,7 @@ export function CreateAdForm({ initialData, mode = 'create', onSuccess, requireC
     propertyType: z.string().min(1, t('ads.propertyTypeRequired')),
     area: z.string().min(1, t('ads.areaRequired')),
     price: z.coerce.number().optional(),
+    priceUnit: z.enum(['kd', 'thousand']).default('kd'),
     phoneNumber: z.string().min(1, t('ads.phoneNumberMin')),
     isPhoneHidden: z.boolean().default(false),
     alternativePhoneNumber: z
@@ -271,17 +272,13 @@ export function CreateAdForm({ initialData, mode = 'create', onSuccess, requireC
       area: initialData?.area?.id ? String(initialData.area.id) : '',
       phoneNumber: formatDisplayPhone(initialData?.phoneNumber) || formatDisplayPhone(user?.phoneNumber) || '',
       price: initialData?.price || 0,
+      priceUnit: initialData?.priceUnit || 'kd',
       description: initialData?.description || '',
       alternativePhoneNumber: initialData?.alternativePhoneNumber ? formatDisplayPhone(initialData.alternativePhoneNumber) : '',
     },
   });
 
-  useEffect(() => {
-    if (user?.phoneNumber && !form.getValues('phoneNumber')) {
-      console.log(user?.phoneNumber, 'phoneNumber')
-      form.setValue('phoneNumber', formatDisplayPhone(user.phoneNumber));
-    }
-  }, [user?.phoneNumber, form]);
+  const priceUnit = form.watch('priceUnit');
 
   // Cleanup object URLs on unmount
   useEffect(() => {
@@ -849,9 +846,37 @@ export function CreateAdForm({ initialData, mode = 'create', onSuccess, requireC
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="font-medium">{t('ads.price')}</FormLabel>
-                      <FormControl>
-                        <Input type="number" placeholder={t('ads.pricePlaceholder')} {...field} value={field.value as number} className="bg-white border-gray-200 h-10 md:h-12" />
-                      </FormControl>
+                      <div className="flex items-stretch gap-2">
+                        <FormControl>
+                          <div className="relative flex-1">
+                            <span className="pointer-events-none absolute inset-y-0 start-3 flex items-center text-sm font-semibold text-gray-500">
+                              {priceUnitLabel(priceUnit, locale)}
+                            </span>
+                            <Input type="number" placeholder={t('ads.pricePlaceholder')} {...field} value={field.value as number} className="bg-white border-gray-200 h-10 md:h-12 ps-12" />
+                          </div>
+                        </FormControl>
+                        <div className="flex items-center gap-1 rounded-xl border border-gray-200 bg-white p-1 shrink-0">
+                          {(['kd', 'thousand'] as const).map(unit => (
+                            <label
+                              key={unit}
+                              className={`flex items-center gap-1.5 cursor-pointer rounded-lg px-2.5 py-1.5 text-sm font-semibold ${
+                                priceUnit === unit ? 'border border-primary text-primary' : 'border border-transparent text-gray-600'
+                              }`}
+                            >
+                              <input
+                                type="radio"
+                                name="priceUnit"
+                                value={unit}
+                                checked={priceUnit === unit}
+                                onChange={() => form.setValue('priceUnit', unit)}
+                                className="size-4 accent-primary"
+                              />
+                              {t(unit === 'kd' ? 'ads.unitKd' : 'ads.unitThousand')}
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                      <p className="text-xs text-gray-500">{t('ads.priceUnitHint')}</p>
                       <FormMessage />
                     </FormItem>
                   )}

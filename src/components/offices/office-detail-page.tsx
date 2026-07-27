@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
-import { Phone } from "lucide-react";
+import { Instagram, Phone, Search, Share2 } from "lucide-react";
 import { useLocale, useTranslations } from "@/hooks/use-locale";
 import { Button } from "@/components/ui/button";
 import {
@@ -39,7 +39,7 @@ interface OfficeDetailPageProps {
 export function OfficeDetailPage({ officeId }: OfficeDetailPageProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { locale } = useLocale();
+  const { locale, direction } = useLocale();
   const t = useTranslations("office");
   const [isShareOpen, setIsShareOpen] = useState(false);
 
@@ -153,229 +153,218 @@ export function OfficeDetailPage({ officeId }: OfficeDetailPageProps) {
     return null;
   }
 
-  return (
-    <div className="min-h-screen bg-white pb-12">
-      {/* Minimalist Office Header */}
-      <div className="w-full bg-[#f8f9fa] pt-8 pb-6 border-b border-gray-100 flex flex-col items-center text-center px-4">
-        <div className="relative w-44 h-40 sm:w-64 sm:h-60 rounded-sm overflow-hidden mb-4 bg-[#f8f9fa]">
-          <Image
-            src={getImageUrl()}
-            alt={office.name}
-            fill
-            className="object-cover"
-          />
-        </div>
-        <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
-          {office.name}
-        </h1>
+  const whatsappHref = (() => {
+    const digits = (office.phoneNumber || "").replace(/[^0-9]/g, "");
+    return `https://wa.me/${digits.startsWith("965") ? digits : `965${digits}`}`;
+  })();
 
-        {/* Social & Contact Actions */}
-        <div className="flex flex-wrap justify-center gap-3 mb-4">
-          {office.phoneNumber && (
-            <a
-              href={`tel:${office.phoneNumber}`}
-              className="flex items-center gap-1.5 text-[#e11d1d] font-bold text-sm hover:underline"
-            >
-              <Phone size={14} fill="currentColor" className="stroke-none" />
-              <span dir="ltr">
-                {formatDisplayPhone(office.phoneNumber)}
-              </span>
-            </a>
+  const iconButton =
+    "w-11 h-11 rounded-xl border border-gray-200 bg-white text-gray-500 flex items-center justify-center transition-all active:scale-95";
+
+  return (
+    <div className="min-h-screen bg-[#f8f9fa] pb-12" dir={direction}>
+      {/* Office header — floating logo over a soft brand spotlight */}
+      <section className="relative isolate overflow-hidden bg-white px-4 pt-8 pb-14">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 -top-24 -z-10 h-[300px]"
+          style={{
+            background:
+              "radial-gradient(ellipse 65% 55% at 50% 0%, color-mix(in srgb, var(--color-brand-teal) 14%, transparent) 0%, transparent 72%)",
+          }}
+        />
+
+        <div className="max-w-xl mx-auto flex flex-col items-center text-center">
+          <div className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-2xl overflow-hidden bg-white border border-gray-100 shadow-[0_6px_20px_rgba(0,0,0,0.08)]">
+            <Image
+              src={getImageUrl()}
+              alt={office.name}
+              fill
+              sizes="128px"
+              priority
+              className="object-contain p-3"
+            />
+          </div>
+
+          <h1 className="mt-4 text-xl sm:text-2xl font-bold tracking-tight text-[#1f2937]">
+            {office.name}
+          </h1>
+
+          {office.description && (
+            <p className="mt-2 max-w-md text-sm leading-relaxed text-gray-500 line-clamp-3">
+              {office.description}
+            </p>
           )}
-          <div className="flex items-center gap-3">
-            {/* WhatsApp */}
+
+          {/* Contact & social actions */}
+          <div className="mt-5 flex items-center justify-center gap-2.5">
+            {office.phoneNumber && (
+              <a
+                href={`tel:${office.phoneNumber}`}
+                className="inline-flex items-center gap-2 h-11 px-5 rounded-xl bg-[#e11d1d] text-white text-sm font-medium transition-all hover:bg-[#b91616] hover:shadow-[0_6px_18px_rgba(225,29,29,0.25)] active:scale-[0.98]"
+              >
+                <Phone size={16} fill="currentColor" className="stroke-none" />
+                <span dir="ltr">{formatDisplayPhone(office.phoneNumber)}</span>
+              </a>
+            )}
+
             <a
-              href={(function () {
-                const phone = office.phoneNumber || "";
-                let p = phone.replace(/[^0-9]/g, "");
-                if (!p.startsWith("965")) p = "965" + p;
-                return `https://wa.me/${p}`;
-              })()}
+              href={whatsappHref}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-primary-blue hover:text-[#25D366] transition-colors"
+              aria-label="WhatsApp"
+              className={`${iconButton} hover:text-[#25D366] hover:border-[#25D366]/40 hover:bg-[#25D366]/[0.06]`}
             >
               <svg
-                stroke="currentColor"
-                fill="currentColor"
-                stroke-width="0"
                 viewBox="0 0 448 512"
-                height="18"
+                fill="currentColor"
                 width="18"
-                xmlns="http://www.w3.org/2000/svg"
+                height="18"
+                aria-hidden="true"
               >
-                <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"></path>
+                <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z" />
               </svg>
             </a>
-            {/* Instagram */}
+
             {office.instagram && (
               <a
                 href={office.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-primary-blue hover:text-[#E1306C] transition-colors"
+                aria-label="Instagram"
+                className={`${iconButton} hover:text-[#E1306C] hover:border-[#E1306C]/40 hover:bg-[#E1306C]/[0.06]`}
               >
-                <svg
-                  stroke="currentColor"
-                  fill="currentColor"
-                  stroke-width="0"
-                  viewBox="0 0 256 256"
-                  height="20"
-                  width="20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path d="M128,80a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160ZM176,24H80A56.06,56.06,0,0,0,24,80v96a56.06,56.06,0,0,0,56,56h96a56.06,56.06,0,0,0,56-56V80A56.06,56.06,0,0,0,176,24Zm40,152a40,40,0,0,1-40,40H80a40,40,0,0,1-40-40V80A40,40,0,0,1,80,40h96a40,40,0,0,1,40,40ZM192,76a12,12,0,1,1-12-12A12,12,0,0,1,192,76Z"></path>
-                </svg>
+                <Instagram size={18} />
               </a>
             )}
-            {/* Share */}
+
             <button
+              type="button"
               onClick={() => setIsShareOpen(true)}
-              className="text-primary-blue hover:text-[#001b3d] transition-colors"
+              aria-label="Share"
+              className={`${iconButton} hover:text-primary hover:border-primary/50 hover:bg-primary/[0.04]`}
             >
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="w-5 h-5"
-              >
-                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
-                <polyline points="16 6 12 2 8 6" />
-                <line x1="12" y1="2" x2="12" y2="15" />
-              </svg>
+              <Share2 size={18} />
             </button>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
-        {/* Search Bar - EXACT Homepage Style */}
-        <div className="w-full mb-10">
+      <div className="max-w-xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-10">
+        {/* Filters — same floating card as the home search */}
+        <div className="w-full space-y-3 p-4 sm:p-5 rounded-2xl border border-gray-100 bg-white shadow-[0_4px_12px_rgba(0,0,0,0.08)]">
           <Tabs
             value={localFilters.purpose}
             onValueChange={(val: string) =>
               setLocalFilters((prev) => ({ ...prev, purpose: val }))
             }
-            className="w-full"
-            dir={locale === "ar" ? "rtl" : "ltr"}
+            className="w-full space-y-3"
+            dir={direction}
           >
-            <div className="flex justify-center mb-4 md:mb-6">
-              <TabsList className="bg-transparent flex gap-2 h-auto p-0 w-full max-w-xl">
+            <TabsList className="bg-gray-50 !h-11 md:!h-12 w-full rounded-xl p-1 border border-gray-200/70 grid grid-cols-3 gap-1">
+              {[
+                { value: "rent", label: t("forRent") },
+                { value: "sale", label: t("forSale") },
+                { value: "exchange", label: t("exchange") },
+              ].map(({ value, label }) => (
                 <TabsTrigger
-                  value="rent"
-                  className="flex-1 h-9 md:h-12 bg-[#e0e0e0] text-primary-blue border border-[#ced4da] font-semibold rounded-sm data-[state=active]:bg-[#e11d1d] data-[state=active]:!text-white transition-all uppercase text-[11px]"
+                  key={value}
+                  value={value}
+                  className="h-full rounded-xl text-[15px] font-light text-gray-600 transition-colors hover:text-gray-900 data-[state=active]:bg-white data-[state=active]:text-gray-900 data-[state=active]:font-medium data-[state=active]:shadow-sm"
                 >
-                  {t("forRent")}
+                  {label}
                 </TabsTrigger>
-                <TabsTrigger
-                  value="sale"
-                  className="flex-1 h-9 md:h-12 bg-[#e0e0e0] text-primary-blue border border-[#ced4da] font-semibold rounded-sm data-[state=active]:bg-[#e11d1d] data-[state=active]:!text-white transition-all uppercase text-[11px]"
-                >
-                  {t("forSale")}
-                </TabsTrigger>
-                <TabsTrigger
-                  value="exchange"
-                  className="flex-1 h-9 md:h-12 bg-[#e0e0e0] text-primary-blue border border-[#ced4da] font-semibold rounded-sm data-[state=active]:bg-[#e11d1d] data-[state=active]:!text-white transition-all uppercase text-[11px]"
-                >
-                  {t("exchange")}
-                </TabsTrigger>
-              </TabsList>
-            </div>
+              ))}
+            </TabsList>
 
-            <div className="flex flex-col gap-2 md:gap-4">
-              {/* Top Row: Area and Property Type */}
-              <div className="flex flex-wrap lg:flex-nowrap items-center gap-2 md:gap-4 w-full">
-                <div className="w-full lg:flex-1">
-                  <MultiSelect
-                    options={areas.map((a) => ({
-                      label: locale === "ar" ? a.labelAr || a.label : a.label,
-                      value: String(a.id),
-                      governorate:
-                        locale === "ar"
-                          ? a.governorateAr || a.governorate
-                          : a.governorate,
-                    }))}
-                    value={localFilters.area}
-                    onChange={(val) =>
-                      setLocalFilters((prev) => ({ ...prev, area: val }))
-                    }
-                    placeholder={t("selectArea")}
-                    className="!h-auto min-h-[36px] md:!h-12 bg-[#e0e0e0] border-[#ced4da] rounded-sm font-medium flex items-center justify-center text-[#e11d1d] placeholder:text-[#e11d1d]/70 uppercase text-[11px]"
-                    enableGrouping={true}
-                    dir={locale === "ar" ? "rtl" : "ltr"}
-                  />
-                </div>
+            <MultiSelect
+              options={areas.map((a) => ({
+                label: locale === "ar" ? a.labelAr || a.label : a.label,
+                value: String(a.id),
+                governorate:
+                  locale === "ar"
+                    ? a.governorateAr || a.governorate
+                    : a.governorate,
+              }))}
+              value={localFilters.area}
+              onChange={(val) =>
+                setLocalFilters((prev) => ({ ...prev, area: val }))
+              }
+              placeholder={t("selectArea")}
+              className="w-full min-h-11 md:min-h-12 h-auto py-1 px-4 bg-white border border-gray-200 rounded-xl flex items-center text-gray-700 transition-all hover:border-primary/50 hover:bg-primary/[0.03] focus-within:border-primary data-[state=open]:border-primary data-[state=open]:shadow-[0_4px_20px_rgba(225,29,29,0.15)] text-base font-medium"
+              enableGrouping={true}
+              dir={direction}
+            />
 
-                <div className="w-full lg:flex-1">
-                  <Select
-                    value={localFilters.propertyType}
-                    onValueChange={(val) =>
-                      setLocalFilters((prev) => ({
-                        ...prev,
-                        propertyType: val,
-                      }))
-                    }
-                    dir={locale === "ar" ? "rtl" : "ltr"}
+            <Select
+              value={localFilters.propertyType}
+              onValueChange={(val) =>
+                setLocalFilters((prev) => ({ ...prev, propertyType: val }))
+              }
+              dir={direction}
+            >
+              <SelectTrigger className="w-full !h-11 md:!h-12 px-4 bg-white border border-gray-200 rounded-xl text-gray-700 data-[placeholder]:!text-gray-400 data-[placeholder]:!font-normal transition-all hover:border-primary/50 hover:bg-primary/[0.03] focus:border-primary data-[state=open]:border-primary data-[state=open]:shadow-[0_4px_20px_rgba(225,29,29,0.15)] text-base font-medium">
+                <SelectValue placeholder={t("propertyType")} />
+              </SelectTrigger>
+              <SelectContent className="rounded-xl">
+                {propertyTypes.map((type) => (
+                  <SelectItem
+                    key={type.id}
+                    value={String(type.id)}
+                    className="cursor-pointer font-normal text-base text-gray-800"
                   >
-                    <SelectTrigger className="!h-9 md:!h-12 bg-[#e0e0e0] border-[#ced4da] rounded-sm text-[11px] font-medium text-[#e11d1d] uppercase">
-                      <SelectValue placeholder={t("propertyType")} />
-                    </SelectTrigger>
-                    <SelectContent className="rounded-xl">
-                      {propertyTypes.map((type) => (
-                        <SelectItem
-                          key={type.id}
-                          value={String(type.id)}
-                          className="cursor-pointer font-medium uppercase text-[11px]"
-                        >
-                          {locale === "ar"
-                            ? type.labelAr || type.label
-                            : type.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+                    {locale === "ar" ? type.labelAr || type.label : type.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
 
-                <div className="w-full lg:flex-1 flex gap-2">
-                  <Button
-                    onClick={handleSearch}
-                    className="rounded-sm h-9 md:h-12 flex-1 bg-[#e11d1d] hover:bg-[#b91616] text-white font-semibold uppercase text-sm border border-[#e11d1d] transition-colors"
-                  >
-                    {t("search")}
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={handleClearFilters}
-                    className="rounded-sm h-9 md:h-12 flex-1 border-[#ced4da] text-[#e11d1d] font-semibold uppercase text-sm hover:bg-[#e0e0e0]"
-                  >
-                    {t("clearAllFilters")}
-                  </Button>
-                </div>
-              </div>
+            <div className="flex items-center gap-2 pt-1">
+              <Button
+                onClick={handleSearch}
+                className="rounded-xl !h-11 md:!h-12 flex-1 bg-[#e11d1d] hover:bg-[#b91616] border-none text-white font-light text-base tracking-wide transition-all hover:shadow-[0_6px_18px_rgba(225,29,29,0.25)] active:scale-[0.98]"
+              >
+                <Search size={18} className="me-1.5" />
+                {t("search")}
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleClearFilters}
+                className="rounded-xl !h-11 md:!h-12 px-4 bg-white border-gray-200 text-gray-600 font-light text-sm transition-colors hover:bg-gray-50 hover:text-gray-900"
+              >
+                {t("clearAllFilters")}
+              </Button>
             </div>
           </Tabs>
         </div>
+      </div>
 
-        {/* Results Info */}
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl md:text-2xl font-bold text-gray-900">
-            {t("officeAds", { count: officeData?.totalAds ?? 0 })}
-          </h2>
-        </div>
+      {/* Office ads */}
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+        <h2 className="text-[17px] md:text-xl font-bold text-[#1f2937] mb-4">
+          {t("officeAds", { count: officeData?.totalAds ?? 0 })}
+        </h2>
 
-        <div className="grid grid-cols-1 gap-4 md:gap-6 mb-8">
-          {ads.map((ad) => (
-            <HomeAdCard
-              key={ad.id}
-              ad={ad}
-              onClick={() => router.push(`/ads/${ad.id}`)}
-            />
-          ))}
-        </div>
+        {isLoading ? (
+          <div className="flex justify-center py-10">
+            <Loader />
+          </div>
+        ) : ads.length === 0 ? (
+          <div className="rounded-2xl border border-gray-100 bg-white px-6 py-12 text-center shadow-[0_4px_12px_rgba(0,0,0,0.05)]">
+            <p className="text-sm text-gray-500">{t("noAdsFound")}</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-4 md:gap-6 mb-8">
+            {ads.map((ad) => (
+              <HomeAdCard
+                key={ad.id}
+                ad={ad}
+                onClick={() => router.push(`/ads/${ad.id}`)}
+              />
+            ))}
+          </div>
+        )}
 
         {(hasNextPage || isFetchingNextPage) && (
           <div ref={loadMoreRef} className="flex justify-center py-6">

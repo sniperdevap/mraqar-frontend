@@ -42,10 +42,12 @@ const HomeAdCard = dynamic(() =>
 );
 import { formatDisplayPhone } from "@/lib/utils";
 import { useAdById, useInfiniteSearchAds } from "@/hooks/use-ads";
+import { markAdViewed } from "@/hooks/use-last-viewed-ad";
 import { useQueryClient, type InfiniteData } from "@tanstack/react-query";
 import { useAdStore } from "@/lib/store/ad-store";
 import { DetailAd, GetAdsParams, GetAdsResult } from "@/types/ad";
 import Image from "next/image";
+import { formatAdPrice } from "@/lib/utils/format";
 
 interface AdDetailPageProps {
   adId: string;
@@ -79,6 +81,11 @@ export function AdDetailPage({ adId }: AdDetailPageProps) {
   >([]);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const similarAdsPerPage = 10;
+
+  // Remember which ad was opened so the list highlights it on back
+  useEffect(() => {
+    markAdViewed(adId);
+  }, [adId]);
 
   // Update store when full ad detail is fetched
   useEffect(() => {
@@ -429,7 +436,7 @@ ${window.location.href}`);
 
             <div className="text-xl font-bold text-gray-900 text-center mb-4">
               {ad.price
-                ? `${Number(ad.price).toLocaleString("en-US")} ${locale === "ar" ? "د.ك" : "KD"}`
+                ? formatAdPrice(ad.price, ad.priceUnit, locale)
                 : ""}
             </div>
 
@@ -589,7 +596,9 @@ ${window.location.href}`);
                 <button
                   type="button"
                   onClick={handleToggleFavorite}
-                  aria-label={t("addToFavorites")}
+                  aria-label={t(
+                    isFavorite ? "ariaRemoveFromFavorites" : "ariaAddToFavorites",
+                  )}
                   className="cursor-pointer p-2 rounded-full hover:bg-gray-100 transition-colors"
                 >
                   <Heart
