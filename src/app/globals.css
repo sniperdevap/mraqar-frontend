@@ -431,12 +431,13 @@ body {
   box-shadow:
     inset 0 0 0 1.5px var(--color-brand-teal),
     inset 0 0 12px rgba(225, 29, 29, 0.18);
-  animation: ad-glow-fade 2.6s ease-out forwards;
+  /* Long enough to still be glowing after the scroll-down finishes. */
+  animation: ad-glow-fade 4s ease-out forwards;
 }
 
 @keyframes ad-glow-fade {
   0%,
-  60% {
+  70% {
     opacity: 1;
   }
   100% {

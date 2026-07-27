@@ -8,6 +8,7 @@ import { deleteAd, repostAd, updateAd } from "@/lib/api/ad";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useRoutePrefetch } from "@/hooks/use-route-prefetch";
+import { getErrorMessage } from "@/lib/utils/api";
 
 interface MyAdActionsProps {
   ad: Ad;
@@ -54,7 +55,8 @@ export function MyAdActions({ ad, onAction }: MyAdActionsProps) {
       onAction?.("refresh", ad);
     } catch (error) {
       console.error("Repost failed:", error);
-      toast.error(t("failedToRepost"));
+      // Server explains the 24h cooldown; fall back to the generic message.
+      toast.error(getErrorMessage(error, t("failedToRepost")));
     }
   };
 
@@ -73,6 +75,9 @@ export function MyAdActions({ ad, onAction }: MyAdActionsProps) {
 
   const isPremiumAd = ad.isPremium ?? ad.premiumAd;
 
+  const canRepost =
+    Date.now() - new Date(ad.createdAt).getTime() >= 24 * 60 * 60 * 1000;
+
   const btn =
     "w-9 h-9 rounded-full bg-white border-2 flex items-center justify-center transition-all active:scale-95 hover:bg-gray-50";
 
@@ -90,27 +95,41 @@ export function MyAdActions({ ad, onAction }: MyAdActionsProps) {
         {ad.status === "active" ? <Play size={16} /> : <Power size={16} />}
       </button>
 
-      <ConfirmationDialog
-        trigger={
-          <button
-            type="button"
-            title={t("repostAd")}
-            className={`${btn} border-gray-800 text-gray-800`}
-          >
-            <RotateCw size={16} />
-          </button>
-        }
-        icon={{
-          src: "/images/icons/repost.svg",
-          alt: "Repost",
-          bgColor: "bg-primary-gold-bg",
-        }}
-        title={t("repostAd")}
-        description={t("repostAdDescription")}
-        confirmButtonText={tButtons("yes")}
-        cancelButtonText={tButtons("no")}
-        onConfirm={handleRepost}
-      />
+      {canRepost ? (
+        <ConfirmationDialog
+          trigger={
+            <button
+              type="button"
+              title={t("repostAd")}
+              className={`${btn} border-gray-800 text-gray-800`}
+            >
+              <RotateCw size={16} />
+            </button>
+          }
+          icon={{
+            src: "/images/icons/repost.svg",
+            alt: "Repost",
+            bgColor: "bg-primary-gold-bg",
+          }}
+          title={t("repostAd")}
+          description={t("repostAdDescription")}
+          confirmButtonText={tButtons("yes")}
+          cancelButtonText={tButtons("no")}
+          onConfirm={handleRepost}
+        />
+      ) : (
+        <button
+          type="button"
+          aria-disabled
+          title={t("repostCooldown")}
+          // Not `disabled`: on mobile the tooltip never shows, so the tap needs
+          // to explain why nothing happened.
+          onClick={() => toast.info(t("repostCooldown"))}
+          className={`${btn} border-gray-300 text-gray-300 cursor-not-allowed`}
+        >
+          <RotateCw size={16} />
+        </button>
+      )}
 
       {!isPremiumAd && (
         <ConfirmationDialog

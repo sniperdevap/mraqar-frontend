@@ -40,15 +40,43 @@ export function useIsLastViewedAd(id: string | number | undefined) {
     }
   }, [id]);
 
-  // Bring the card back into view on back-navigation. Cards use content-visibility,
-  // so their real height only settles after paint — hence the rAF.
+  // On back-navigation: start at the top of the list, then glide down to the
+  // card, so the user sees where in the list it sits. The card is only queried
+  // once it exists — cards use content-visibility, so heights settle after paint.
   useEffect(() => {
     if (!isLastViewed) return;
-    const frame = requestAnimationFrame(() => {
-      document
-        .querySelector(`[${LAST_VIEWED_ATTR}]`)
-        ?.scrollIntoView({ block: "center" });
-    });
+
+    window.scrollTo(0, 0);
+
+    const smooth = !window.matchMedia("(prefers-reduced-motion: reduce)")
+      .matches;
+    const deadline = Date.now() + 2500;
+    let frame = 0;
+
+    // Native `behavior: "smooth"` is aborted by the cards' `content-visibility`
+    // reflow mid-animation, so ease in manually: each frame close a fraction of
+    // the remaining distance, re-measured, which absorbs those layout shifts.
+    const glideTo = (el: Element) => {
+      const distance =
+        el.getBoundingClientRect().top -
+        (window.innerHeight - el.getBoundingClientRect().height) / 2;
+
+      if (Math.abs(distance) < 2 || Date.now() > deadline) return;
+      window.scrollBy(0, distance * 0.16);
+      frame = requestAnimationFrame(() => glideTo(el));
+    };
+
+    const run = () => {
+      const el = document.querySelector(`[${LAST_VIEWED_ATTR}]`);
+      if (el) {
+        if (smooth) glideTo(el);
+        else el.scrollIntoView({ block: "center" });
+        return;
+      }
+      if (Date.now() < deadline) frame = requestAnimationFrame(run);
+    };
+    frame = requestAnimationFrame(run);
+
     return () => cancelAnimationFrame(frame);
   }, [isLastViewed]);
 
