@@ -7,7 +7,7 @@ import { getCachedServerAdById, countServerAdView } from "@/lib/api/server";
 import type { DetailAd } from "@/types/ad";
 import { permanentRedirect } from "next/navigation";
 import { after } from "next/server";
-import { headers } from "next/headers";
+import { headers, cookies } from "next/headers";
 import { SITE_URL } from "@/lib/seo";
 
 type Props = {
@@ -125,8 +125,9 @@ export default async function AdDetail({ params }: Props) {
   }
 
   if (!isPrefetch) {
+    const token = (await cookies()).get("auth-token")?.value;
     after(
-      countServerAdView(id, locale, forwardedFor).catch((err) => {
+      countServerAdView(id, locale, forwardedFor, token).catch((err) => {
         // Best-effort — a missed view count shouldn't matter.
         console.error("[view-count] failed", { id }, err);
       }),

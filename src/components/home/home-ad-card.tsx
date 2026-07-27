@@ -127,6 +127,11 @@ function HomeAdCardBase({
   const isVideo = firstMedia?.type === "video";
 
   const ownerName = ad.user?.name || "";
+  const avatarUrl = ad.user?.avatar
+    ? ad.user.avatar.startsWith("http")
+      ? ad.user.avatar
+      : `${(process.env.NEXT_PUBLIC_IMAGE_HOST || "").replace(/\/+$/, "")}/${ad.user.avatar.replace(/^\/+/, "")}`
+    : null;
 
   const boxClasses =
     "rounded-2xl border border-[#f1e5db] shadow-[0_2px_12px_rgba(16,24,40,0.05)] bg-gradient-to-br from-[#fbf1ea] via-white to-[#fbf1ea]" +
@@ -162,8 +167,8 @@ function HomeAdCardBase({
           />
           {isVideo && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/10">
-              <span className="flex items-center justify-center w-10 h-10 rounded-full border-2 border-white/90 bg-white/10 backdrop-blur-[1px] shadow-sm">
-                <Play size={18} className="text-white fill-white ms-0.5" />
+              <span className="flex items-center justify-center w-8 h-8 rounded-full bg-black/40 backdrop-blur-sm border border-white/80">
+                <Play className="w-3 h-3 text-white fill-white ms-0.5" />
               </span>
             </div>
           )}
@@ -172,7 +177,7 @@ function HomeAdCardBase({
             <Eye strokeWidth={2.5} className="w-3 h-3" />
             {ad.views || 0}
           </span>
-          {/* purpose */}
+          {/* purpose sticker */}
           <div className="absolute bottom-1.5 inset-x-0 flex justify-center">
             <span className="bg-white/95 text-gray-800 text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-md shadow-sm">
               {t(ad.purpose)}
@@ -183,8 +188,19 @@ function HomeAdCardBase({
         <div className="flex-1 min-w-0 flex flex-col justify-center gap-1">
           {/* owner */}
           <div className="flex items-center gap-1.5 min-w-0">
-            <span className="flex items-center justify-center w-4 h-4 shrink-0 rounded-full bg-brand-teal/10 text-brand-teal text-[8px] font-bold">
-              {ownerName.trim().charAt(0) || "?"}
+            <span className="flex items-center justify-center w-5 h-5 shrink-0 rounded-full overflow-hidden bg-brand-teal/10 text-brand-teal text-[8px] font-bold">
+              {avatarUrl ? (
+                <Image
+                  src={avatarUrl}
+                  alt={ownerName || "User"}
+                  width={20}
+                  height={20}
+                  className="w-full h-full object-cover"
+                  unoptimized
+                />
+              ) : (
+                ownerName.trim().charAt(0) || "?"
+              )}
             </span>
             <span className="text-[10px] sm:text-[11px] font-medium text-gray-700 truncate">
               {ownerName}
