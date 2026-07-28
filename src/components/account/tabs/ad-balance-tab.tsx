@@ -1,9 +1,16 @@
 'use client';
 
 import { Calendar, CheckCircle2 } from 'lucide-react';
+import { format } from 'date-fns';
 import { useTranslations } from 'next-intl';
 import { useLocale } from '@/hooks/use-locale';
 import { useMySubscriptions } from '@/hooks/use-account';
+
+const formatSubscriptionDate = (value: string | Date) => {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '—';
+  return format(date, 'dd/MM/yyyy');
+};
 
 export function AdBalanceTab() {
   const { locale } = useLocale();
@@ -52,7 +59,9 @@ export function AdBalanceTab() {
                     <Calendar size={14} />
                     <span>{t('subscriptionDate')}</span>
                   </div>
-                  <span className="font-bold text-gray-700">{new Date(sub.startDate).toLocaleDateString()}</span>
+                  <span className="font-bold text-gray-700 tabular-nums">
+                    {formatSubscriptionDate(sub.startDate)}
+                  </span>
                 </div>
 
                 <div className="flex items-center justify-between text-xs sm:text-sm">
@@ -60,7 +69,9 @@ export function AdBalanceTab() {
                     <Calendar size={14} />
                     <span>{t('endDate')}</span>
                   </div>
-                  <span className="font-bold text-gray-700">{new Date(sub.endDate).toLocaleDateString()}</span>
+                  <span className="font-bold text-gray-700 tabular-nums">
+                    {formatSubscriptionDate(sub.endDate)}
+                  </span>
                 </div>
               </div>
             </div>
