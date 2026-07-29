@@ -46,8 +46,12 @@ export function priceUnitLabel(unit: PriceUnit | undefined, locale: string): str
   return locale === 'ar' ? 'د.ك' : 'KD';
 }
 
+// Empty string for 0/missing — "0 د.ك" reads as a real price, so ads with no
+// price stated just show nothing.
 export function formatAdPrice(price: number | undefined, unit: PriceUnit | undefined, locale: string): string {
-  return `${Number(price || 0).toLocaleString('en-US')} ${priceUnitLabel(unit, locale)}`;
+  const value = Number(price || 0);
+  if (!value) return '';
+  return `${value.toLocaleString('en-US')} ${priceUnitLabel(unit, locale)}`;
 }
 
 /**
