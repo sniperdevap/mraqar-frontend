@@ -43,11 +43,6 @@ const nextConfig: NextConfig = {
     formats: ["image/avif", "image/webp"],
   },
   experimental: {
-    inlineCss: true,
-    // Client router cache: reuse visited pages for 60s instead of refetching
-    // the RSC payload from the server on every navigation (Next 15 defaults
-    // dynamic to 0s, which makes each bottom-nav tap a full network round
-    // trip — the main reason navigation feels slow inside WebView wrappers).
     staleTimes: {
       dynamic: 60,
       static: 300,

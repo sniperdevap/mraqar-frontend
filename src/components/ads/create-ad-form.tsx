@@ -569,21 +569,18 @@ export function CreateAdForm({ initialData, mode = 'create', onSuccess, requireC
 
       const finalMediaIds = await Promise.all(uploadPromises);
 
-      // Destructure to explicitly remove 'images' if it exists in values
-      // and ensure we only send what's defined in the schema
-      const { ...restValues } = values;
-      // If 'images' exists in values (somehow), it will be removed by not spreading it or explicitly deleting it.
-      const cleanedValues = { ...restValues };
-      if ('images' in cleanedValues) {
-        delete (cleanedValues as Record<string, unknown>).images;
-      }
-
+      const price = Number(values.price);
       const adData = {
-        ...cleanedValues,
+        purpose: values.purpose,
         propertyType: Number(values.propertyType),
         area: Number(values.area),
+        price: Number.isFinite(price) ? price : 0,
+        priceUnit: values.priceUnit,
         phoneNumber: normalizeKuwaitPhone(values.phoneNumber),
+        isPhoneHidden: values.isPhoneHidden,
         alternativePhoneNumber: values.alternativePhoneNumber ? normalizeKuwaitPhone(values.alternativePhoneNumber) : '',
+        premiumAd: values.premiumAd,
+        description: values.description,
         media: finalMediaIds.filter((id): id is string => Boolean(id)),
       };
 

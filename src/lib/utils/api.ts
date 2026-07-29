@@ -218,7 +218,11 @@ const axiosWrapper = async <T = unknown>(
 // Utility function to extract error message from axios errors
 export const getErrorMessage = (error: unknown, defaultMessage = 'An error occurred'): string => {
   if (error instanceof AxiosError && error.response?.data?.message) {
-    return error.response.data.message;
+    const { message, data } = error.response.data;
+    const issues = Array.isArray(data)
+      ? data.map((issue: { path?: unknown[]; message?: string }) => (issue?.path?.length ? `${issue.path[issue.path.length - 1]}: ${issue.message}` : issue?.message)).filter(Boolean)
+      : [];
+    return issues.length ? `${message} — ${issues.join(', ')}` : message;
   }
   if (error instanceof Error) {
     return error.message;

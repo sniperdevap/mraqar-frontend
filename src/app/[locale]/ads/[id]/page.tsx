@@ -53,6 +53,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         : `${imageHost}${mediaPath.startsWith("/") ? "" : "/"}${mediaPath}`;
     }
 
+    const ogImage = `${SITE_URL}/_next/image?url=${encodeURIComponent(imageUrl)}&w=640&q=70`;
+
     const description = ad.description
       ? ad.description.substring(0, 160)
       : title;
@@ -69,28 +71,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         description,
         url: shareUrl,
         siteName: "مستر عقار",
-        images: [
-          {
-            url: imageUrl,
-            width: 1200,
-            height: 630,
-            alt: title,
-          },
-        ],
+        images: [{ url: ogImage, alt: title }],
         type: "website",
       },
       twitter: {
         card: "summary_large_image",
         title,
         description,
-        images: [
-          {
-            url: imageUrl,
-            width: 1200,
-            height: 630,
-            alt: title,
-          },
-        ],
+        images: [{ url: ogImage, alt: title }],
       },
     };
   } catch {
