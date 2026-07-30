@@ -54,7 +54,7 @@ export function Footer() {
   const AppDownloadButtons = ({ className }: { className?: string }) => (
     <div className={`flex items-center gap-4 ${className || ""}`}>
       <Link
-        href="https://shorturl.at/pZS46"
+        href="https://apps.apple.com/kw/app/mr-aqar-%D9%85%D8%B3%D8%AA%D8%B1-%D8%B9%D9%82%D8%A7%D8%B1/id6786697649"
         target="_blank"
         className="bg-black text-white px-4 py-2 rounded-md flex items-center gap-3 hover:bg-zinc-900 transition-colors w-fit border border-zinc-800"
       >
