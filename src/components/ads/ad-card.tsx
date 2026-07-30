@@ -197,9 +197,11 @@ export function AdCard({
                   className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
                 {isVideo && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/10 z-10">
-                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/30 shadow-lg">
-                      <Play className="w-4 h-4 sm:w-5 sm:h-5 text-white fill-white ms-0.5" />
+                  <div className="absolute inset-0 flex items-center justify-center z-10 drop-shadow-[0_1px_3px_rgba(0,0,0,0.5)]">
+                    <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-full flex items-center justify-center border sm:border-2 border-white/45">
+                      <div className="w-5 h-5 sm:w-7 sm:h-7 rounded-full flex items-center justify-center border-2 border-white/90">
+                        <Play className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white fill-white ms-0.5" />
+                      </div>
                     </div>
                   </div>
                 )}

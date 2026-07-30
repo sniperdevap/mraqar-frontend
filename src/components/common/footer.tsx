@@ -54,7 +54,7 @@ export function Footer() {
   const AppDownloadButtons = ({ className }: { className?: string }) => (
     <div className={`flex items-center gap-4 ${className || ""}`}>
       <Link
-        href="https://shorturl.at/pZS46"
+        href="https://apps.apple.com/kw/app/mr-aqar-%D9%85%D8%B3%D8%AA%D8%B1-%D8%B9%D9%82%D8%A7%D8%B1/id6786697649"
         target="_blank"
         className="bg-black text-white px-4 py-2 rounded-md flex items-center gap-3 hover:bg-zinc-900 transition-colors w-fit border border-zinc-800"
       >
@@ -82,7 +82,7 @@ export function Footer() {
       </Link>
 
       <Link
-        href="https://play.google.com/store/apps/details?id=aqar.com"
+        href="https://play.google.com/store/apps/details?id=com.mraqar.app"
         target="_blank"
         className="bg-black text-white px-4 py-2 rounded-md flex items-center gap-3 hover:bg-zinc-900 transition-colors w-fit border border-zinc-800"
       >
@@ -161,20 +161,19 @@ export function Footer() {
               {t("contactUs")}
             </Link>
           </div>
-          {/* {showAppButtons && (
+          {showAppButtons && (
             <div className="flex flex-col md:flex-row items-center gap-4">
               <AppDownloadButtons />
             </div>
-          )} */}
+          )}
         </div>
       </footer>
 
-      {/* Sticky Bottom Bar for Laptop and Tablet Browser */}
-      {/* {showStickyBar && (
-        <div className="hidden md:flex fixed bottom-0 left-0 right-0 z-[100] bg-white/95 backdrop-blur-sm border-t border-gray-100 p-3 shadow-[0_-4px_20px_rgba(0,0,0,0.1)] justify-center items-center">
+      {showStickyBar && (
+        <div className="hidden lg:flex fixed bottom-0 left-0 right-0 z-100 bg-white/95 backdrop-blur-sm border-t border-gray-100 p-3 shadow-[0_-4px_20px_rgba(0,0,0,0.1)] justify-center items-center">
           <AppDownloadButtons />
         </div>
-      )} */}
+      )}
     </>
   );
 }

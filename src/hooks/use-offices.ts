@@ -6,7 +6,7 @@ export const useOffices = (params?: GetOfficesParams) => {
   return useQuery({
     queryKey: ['offices', params],
     queryFn: () => getOffices(params),
-    staleTime: 1000 * 60 * 5, // 5 minutes
+    staleTime: 30 * 1000, // 30s — ad counts change as offices post
   });
 };
 
@@ -21,7 +21,9 @@ export const useInfiniteOffices = (params?: Omit<GetOfficesParams, 'page'>) => {
       return undefined;
     },
     initialPageParam: 1,
-    staleTime: 1000 * 60 * 5,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
+    staleTime: 30 * 1000, // 30s — ad counts change as offices post
   });
 };
 
@@ -29,7 +31,7 @@ export const useOfficeById = (id: string, adFilters?: GetAdsParams) => {
   return useQuery({
     queryKey: ['office', id, adFilters],
     queryFn: () => getOfficeById(id, adFilters),
-    staleTime: 1000 * 60 * 5, // 5 minutes
+    staleTime: 30 * 1000, // 30s — ad counts change as offices post
     enabled: !!id,
   });
 };
@@ -45,7 +47,7 @@ export const useInfiniteOfficeById = (id: string, adFilters?: Omit<GetAdsParams,
       return undefined;
     },
     initialPageParam: 1,
-    staleTime: 1000 * 60 * 5,
+    staleTime: 30 * 1000, // 30s — ad counts change as offices post
     enabled: !!id,
   });
 };
