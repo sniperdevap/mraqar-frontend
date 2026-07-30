@@ -166,9 +166,11 @@ function HomeAdCardBase({
             loading={priority ? "eager" : "lazy"}
           />
           {isVideo && (
-            <div className="absolute inset-0 flex items-center justify-center bg-black/10">
-              <span className="flex items-center justify-center w-8 h-8 rounded-full bg-black/40 backdrop-blur-sm border border-white/80">
-                <Play className="w-3 h-3 text-white fill-white ms-0.5" />
+            <div className="absolute inset-0 flex items-center justify-center drop-shadow-[0_1px_3px_rgba(0,0,0,0.5)]">
+              <span className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full border sm:border-2 border-white/45">
+                <span className="flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 border-white/90">
+                  <Play className="w-2 h-2 sm:w-2.5 sm:h-2.5 text-white fill-white ms-0.5" />
+                </span>
               </span>
             </div>
           )}

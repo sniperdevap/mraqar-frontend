@@ -10,6 +10,8 @@ export function ConditionalLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const pathnameWithoutLocale = pathname?.replace(/^\/(en|ar)/, '') || '/';
   const isAdminRoute = pathnameWithoutLocale.startsWith('/admin');
+  const showScrollToTop =
+    pathnameWithoutLocale === '/' || pathnameWithoutLocale.startsWith('/search');
 
   if (isAdminRoute) {
     // Admin pages get rendered without navbar/footer — their own layout handles everything
@@ -20,7 +22,7 @@ export function ConditionalLayout({ children }: { children: React.ReactNode }) {
     <>
       <Navbar />
       <DynamicMainPadding>{children}</DynamicMainPadding>
-      <ScrollToTop />
+      {showScrollToTop && <ScrollToTop />}
       <Footer />
     </>
   );

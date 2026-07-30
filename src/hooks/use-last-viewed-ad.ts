@@ -18,7 +18,22 @@ if (typeof window !== "undefined") {
   }
 }
 
+let pendingId: string | null | undefined;
+
+function takePendingId(): string | null {
+  if (pendingId === undefined) {
+    try {
+      pendingId = sessionStorage.getItem(KEY);
+      sessionStorage.removeItem(KEY);
+    } catch {
+      pendingId = null;
+    }
+  }
+  return pendingId;
+}
+
 export function markAdViewed(id: string | number) {
+  pendingId = undefined;
   try {
     sessionStorage.setItem(KEY, String(id));
   } catch {
@@ -33,10 +48,9 @@ export function useIsLastViewedAd(id: string | number | undefined) {
 
   useEffect(() => {
     if (id === undefined) return;
-    try {
-      setIsLastViewed(sessionStorage.getItem(KEY) === String(id));
-    } catch {
-      // ignore
+    if (takePendingId() === String(id)) {
+      pendingId = null;
+      setIsLastViewed(true);
     }
   }, [id]);
 
