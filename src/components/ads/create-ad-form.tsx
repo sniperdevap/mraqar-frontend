@@ -271,7 +271,7 @@ export function CreateAdForm({ initialData, mode = 'create', onSuccess, requireC
       propertyType: initialData?.propertyType?.id ? String(initialData.propertyType.id) : '',
       area: initialData?.area?.id ? String(initialData.area.id) : '',
       phoneNumber: formatDisplayPhone(initialData?.phoneNumber) || formatDisplayPhone(user?.phoneNumber) || '',
-      price: initialData?.price || 0,
+      price:  initialData?.price ?? ('' as unknown as number),
       priceUnit: initialData?.priceUnit || 'kd',
       description: initialData?.description || '',
       alternativePhoneNumber: initialData?.alternativePhoneNumber ? formatDisplayPhone(initialData.alternativePhoneNumber) : '',
