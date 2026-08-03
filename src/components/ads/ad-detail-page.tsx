@@ -467,9 +467,9 @@ ${window.location.href}`);
             {/* Company: logo + name/phone — start (right in RTL) */}
             <div className="flex items-center gap-2 flex-1 min-w-0">
               <div
-                className={`w-11 h-11 shrink-0 rounded-full overflow-hidden bg-gray-100 border border-gray-100 flex items-center justify-center mb-10 ${
-                  ad.isOffice ? "cursor-pointer" : ""
-                }`}
+                className={`w-11 h-11 shrink-0 rounded-full overflow-hidden bg-gray-100 border border-gray-100 flex items-center justify-center ${
+                  heroThumb ? "mb-10" : ""
+                } ${ad.isOffice ? "cursor-pointer" : ""}`}
                 role={ad.isOffice ? "link" : undefined}
                 tabIndex={ad.isOffice ? 0 : undefined}
                 onClick={() => {
@@ -512,12 +512,18 @@ ${window.location.href}`);
               </div>
 
               <div className="min-w-0 text-start">
-                <div className="font-bold text-gray-900 text-[10px] break-words">
+                <div
+                  className={`font-bold text-gray-900 break-words ${
+                    heroThumb ? "text-[10px]" : "text-sm sm:text-base"
+                  }`}
+                >
                   {ad.user?.name}
                 </div>
                 <div
                   dir="ltr"
-                  className="flex items-center gap-1 whitespace-nowrap text-[#e11d1d] font-bold text-xs sm:text-sm mt-1"
+                  className={`flex items-center gap-1 whitespace-nowrap text-[#e11d1d] font-bold mt-1 ${
+                    heroThumb ? "text-xs sm:text-sm" : "text-base sm:text-lg"
+                  }`}
                 >
                   <Image
                     src="/images/phone-call-icon.png"
