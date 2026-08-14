@@ -881,18 +881,18 @@ export function SearchPage({ children }: { children?: React.ReactNode }) {
             )}
           </div>
 
-          <div className="mt-4">
-            <h2 className="text-xl font-bold text-[#243449]">
-              {tSearch("resultsTitle", {
-                count: adsData?.pages[0]?.total || 0,
-              })}
-            </h2>
-          </div>
         </div>
       </div>
 
       <div className="mx-auto max-w-4xl px-4 py-2 sm:px-6 lg:px-8">
-        {children}
+        <div className="mb-3 rounded-2xl border border-[#e6ecf3] bg-[#f4f6f8] px-4 py-3">
+          <p className="text-sm font-semibold text-[#8b95a5]">
+            {tSearch("resultsTitle", {
+              count: adsData?.pages[0]?.total || 0,
+            })}
+          </p>
+          {children}
+        </div>
         {adsLoading ? (
           <div className="grid grid-cols-1 gap-6">
             {[...Array(4)].map((_, i) => (

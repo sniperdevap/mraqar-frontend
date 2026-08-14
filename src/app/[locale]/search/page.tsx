@@ -2,7 +2,6 @@ import { SearchPage } from '@/components/search/search-page';
 import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
 import { getLocale, getTranslations } from 'next-intl/server';
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import {
   createServerQueryClient,
   prefetchPublicMetadata,
@@ -33,7 +32,7 @@ const parseFilters = (raw: Record<string, string | string[] | undefined>): GetAd
 const purposeKey = (purpose?: string) =>
   purpose === 'sale' || purpose === 'rent' || purpose === 'exchange'
     ? (`purpose${purpose[0].toUpperCase()}${purpose.slice(1)}` as const)
-    : ('purposeAny' as const);
+    : ('purposeSale' as const);
 
 /**
  * Search results are the main organic landing page, so the heading, breadcrumb
@@ -133,25 +132,8 @@ export default async function Search({ params, searchParams }: SearchProps) {
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <SearchPage>
-        <section className="mb-3 rounded-2xl bg-[#f4f6f8] px-4 py-3">
-          <nav aria-label="Breadcrumb">
-            <ol className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[11px] text-[#66758b]">
-              {crumbs.map((crumb, index) => (
-                <li key={`${crumb.name}-${index}`} className="flex items-center gap-1.5">
-                  {index > 0 && <span aria-hidden="true">›</span>}
-                  {crumb.href ? (
-                    <Link href={`/${routeLocale}${crumb.href}`} className="hover:underline">
-                      {crumb.name}
-                    </Link>
-                  ) : (
-                    <span>{crumb.name}</span>
-                  )}
-                </li>
-              ))}
-            </ol>
-          </nav>
-          <h1 className="mt-1.5 text-lg font-bold text-[#243449] sm:text-xl">{heading}</h1>
-        </section>
+        {/* ponytail: breadcrumb is JSON-LD only — crumbs still feed BreadcrumbList below */}
+        <h1 className="mt-0.5 text-lg font-bold text-[#243449] sm:text-xl">{heading}</h1>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
