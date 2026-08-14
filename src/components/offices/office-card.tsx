@@ -2,7 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
-import { Office } from "@/lib/api/office";
+import { Office, officeHref } from "@/lib/api/office";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
@@ -18,7 +18,7 @@ export function OfficeCard({ office, onClick }: OfficeCardProps) {
   const t = useTranslations("office");
   const tCommon = useTranslations("plan");
   const { setPrefetchTarget, prefetchNow } = useRoutePrefetch(
-    `/offices/${office._id}`,
+    officeHref(office),
   );
 
   const getImageUrl = () => {

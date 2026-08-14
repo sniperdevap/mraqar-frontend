@@ -125,6 +125,7 @@ function HomeAdCardBase({
 
   const isFeatured = ad.isPremium || ad.premiumAd;
   const isVideo = firstMedia?.type === "video";
+  const priceLabel = formatPrice(ad.price);
 
   const ownerName = ad.user?.name || "";
   const avatarUrl = ad.user?.avatar
@@ -137,6 +138,27 @@ function HomeAdCardBase({
     "rounded-2xl border border-[#f1e5db] shadow-[0_2px_12px_rgba(16,24,40,0.05)] bg-gradient-to-br from-[#fbf1ea] via-white to-[#fbf1ea]" +
     (isLastViewed ? " ad-glow" : "");
 
+  const actions = variant === "default" && (
+    <div className="flex items-center gap-1.5 shrink-0">
+      <button
+        type="button"
+        onClick={handleShare}
+        className="flex items-center gap-1 whitespace-nowrap bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 rounded-full px-3 py-1.5 text-[11px] sm:text-[12px] font-semibold transition-colors"
+      >
+        <Share2 size={13} />
+        <span>{tButtons("share")}</span>
+      </button>
+      <button
+        type="button"
+        onClick={handleWhatsApp}
+        className="flex items-center gap-1 whitespace-nowrap bg-white border border-gray-200 text-[#16A34A] hover:bg-[#f0fdf4] rounded-full px-3 py-1.5 text-[11px] sm:text-[12px] font-semibold transition-colors"
+      >
+        <WhatsAppIcon className="w-3.5 h-3.5" />
+        <span>{t("whatsapp")}</span>
+      </button>
+    </div>
+  );
+
   const cardContent = (
     <div
       className={`relative w-full p-3 sm:p-3.5 ${variant === "my-ad" ? "" : boxClasses}`}
@@ -148,20 +170,19 @@ function HomeAdCardBase({
         </span>
       )}
 
-      {/* Title */}
-      <h3 className={`text-sm sm:text-base font-bold text-gray-900 line-clamp-2 leading-5 sm:leading-6 pt-0.5 ${direction === "rtl" ? "pl-14" : "pr-14"}`}>
-        {title}
-      </h3>
+      <div className="grid grid-cols-[auto_1fr] gap-x-2.5 gap-y-2.5 md:grid-cols-[8rem_1fr] md:gap-x-4 md:min-h-28">
+        {/* Title */}
+        <h3 className={`col-span-2 row-start-1 md:col-span-1 md:col-start-2 text-sm sm:text-base font-bold text-gray-900 line-clamp-2 leading-5 sm:leading-6 pt-0.5 ${direction === "rtl" ? "pl-14" : "pr-14"}`}>
+          {title}
+        </h3>
 
-      {/* Image (start) + owner / date / description (end) */}
-      <div className="flex gap-2.5 mt-2.5">
-        <div className="relative w-20 h-20 sm:w-24 sm:h-24 shrink-0 rounded-2xl overflow-hidden bg-gray-100 ring-2 ring-white shadow-[0_3px_10px_rgba(16,24,40,0.12)]">
+        <div className={`relative col-start-1 row-start-2 w-20 sm:w-24 ${priceLabel ? "h-20 sm:h-24" : "h-28 sm:h-32"} md:row-start-1 md:row-span-3 md:w-full md:h-auto md:self-stretch shrink-0 rounded-2xl overflow-hidden bg-gray-100 ring-2 ring-white shadow-[0_3px_10px_rgba(16,24,40,0.12)]`}>
           <Image
             src={displayUrl as string}
             alt={ad.description}
             fill
             className="object-cover"
-            sizes="(min-width: 640px) 112px, 96px"
+            sizes="(min-width: 768px) 128px, (min-width: 640px) 112px, 96px"
             priority={priority}
             loading={priority ? "eager" : "lazy"}
           />
@@ -187,7 +208,7 @@ function HomeAdCardBase({
           </div>
         </div>
 
-        <div className="flex-1 min-w-0 flex flex-col justify-center gap-1">
+        <div className="col-start-2 row-start-2 min-w-0 flex flex-col justify-center gap-1 md:gap-1.5">
           {/* owner */}
           <div className="flex items-center gap-1.5 min-w-0">
             <span className="flex items-center justify-center w-5 h-5 shrink-0 rounded-full overflow-hidden bg-brand-teal/10 text-brand-teal text-[8px] font-bold">
@@ -222,35 +243,19 @@ function HomeAdCardBase({
           <p className="text-[11px] sm:text-[12px] text-gray-600 line-clamp-2 leading-4 font-light">
             {shortDescription}
           </p>
-        </div>
-      </div>
-
-      {/* Price + location + actions */}
-      <div className="flex items-center justify-between gap-2 mt-3">
-        <div className="min-w-0">
-          <span className="whitespace-nowrap font-bold text-sm text-[#7546BD]">
-            {formatPrice(ad.price)}
-          </span>
+          {/* No price row to sit in — the actions move next to the image. */}
+          {!priceLabel && <div className="mt-1">{actions}</div>}
         </div>
 
-        {variant === "default" && (
-          <div className="flex items-center gap-1.5 shrink-0">
-            <button
-              type="button"
-              onClick={handleShare}
-              className="flex items-center gap-1 whitespace-nowrap bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 rounded-full px-3 py-1.5 text-[11px] sm:text-[12px] font-semibold transition-colors"
-            >
-              <Share2 size={13} />
-              <span>{tButtons("share")}</span>
-            </button>
-            <button
-              type="button"
-              onClick={handleWhatsApp}
-              className="flex items-center gap-1 whitespace-nowrap bg-white border border-gray-200 text-[#16A34A] hover:bg-[#f0fdf4] rounded-full px-3 py-1.5 text-[11px] sm:text-[12px] font-semibold transition-colors"
-            >
-              <WhatsAppIcon className="w-3.5 h-3.5" />
-              <span>{t("whatsapp")}</span>
-            </button>
+        {/* Price + actions */}
+        {priceLabel && (
+          <div className="col-span-2 row-start-3 md:col-span-1 md:col-start-2 flex items-center justify-between gap-2">
+            <div className="min-w-0">
+              <span className="whitespace-nowrap font-bold text-sm text-[#7546BD]">
+                {priceLabel}
+              </span>
+            </div>
+            {actions}
           </div>
         )}
       </div>

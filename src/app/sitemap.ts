@@ -1,6 +1,6 @@
 import type { MetadataRoute } from 'next';
 import { getAds } from '@/lib/api/ad';
-import { getOffices } from '@/lib/api/office';
+import { getOffices, officeHref } from '@/lib/api/office';
 import { SITE_URL } from '@/lib/seo';
 
 export const revalidate = 3600;
@@ -56,7 +56,7 @@ async function getOfficeEntries(): Promise<MetadataRoute.Sitemap> {
     totalPages = result.totalPages;
     for (const office of result.offices) {
       entries.push({
-        url: `${SITE_URL}/offices/${office._id}`,
+        url: `${SITE_URL}${officeHref(office)}`,
         changeFrequency: 'weekly',
         priority: 0.6,
       });

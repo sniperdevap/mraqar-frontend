@@ -8,14 +8,16 @@ import {
   prefetchWithinBudget,
 } from '@/lib/query-prefetch';
 import type { GetAdsParams } from '@/types/ad';
+import type { GetOfficeByIdResult } from '@/lib/api/office';
+import { permanentRedirect } from 'next/navigation';
 
 type OfficeDetailProps = {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: string; locale: string }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
 export default async function OfficeDetail({ params, searchParams }: OfficeDetailProps) {
-  const { id } = await params;
+  const { id, locale: routeLocale } = await params;
   const rawSearchParams = await searchParams;
   const locale = await getLocale();
   const queryClient = createServerQueryClient();
@@ -36,6 +38,17 @@ export default async function OfficeDetail({ params, searchParams }: OfficeDetai
     ],
     400,
   );
+
+  // Legacy ObjectId links redirect to the public-id URL (same as ads).
+  const canonicalId = queryClient.getQueryData<{ pages: GetOfficeByIdResult[] }>([
+    'office',
+    'infinite',
+    id,
+    filters,
+  ])?.pages?.[0]?.office?.publicId;
+  if (canonicalId && String(canonicalId) !== id) {
+    permanentRedirect(`/${routeLocale}/offices/${canonicalId}`);
+  }
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

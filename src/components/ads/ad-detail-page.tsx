@@ -48,6 +48,7 @@ import { useAdStore } from "@/lib/store/ad-store";
 import { DetailAd, GetAdsParams, GetAdsResult } from "@/types/ad";
 import Image from "next/image";
 import { formatAdPrice } from "@/lib/utils/format";
+import { officeHref } from "@/lib/api/office";
 
 interface AdDetailPageProps {
   adId: string;
@@ -474,7 +475,7 @@ ${window.location.href}`);
                 tabIndex={ad.isOffice ? 0 : undefined}
                 onClick={() => {
                   if (ad.isOffice && ad.user?._id) {
-                    router.push(`/offices/${ad.user._id}`);
+                    router.push(officeHref(ad.user));
                   }
                 }}
                 onKeyDown={(event) => {
@@ -484,7 +485,7 @@ ${window.location.href}`);
                     (event.key === "Enter" || event.key === " ")
                   ) {
                     event.preventDefault();
-                    router.push(`/offices/${ad.user._id}`);
+                    router.push(officeHref(ad.user));
                   }
                 }}
               >

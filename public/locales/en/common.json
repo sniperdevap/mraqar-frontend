@@ -174,7 +174,18 @@
     "selectAreas": "Select Areas",
     "priceRange": "Price Range (KWD)",
     "from": "From",
-    "to": "To"
+    "to": "To",
+    "seo": {
+      "heading": "{propertyType} {purpose} in {area}",
+      "description": "Browse {propertyType} {purpose} listings in {area} on Mr Aqar — updated prices, photos and details.",
+      "allProperties": "Properties",
+      "kuwait": "Kuwait",
+      "purposeSale": "For Sale",
+      "purposeRent": "For Rent",
+      "purposeExchange": "For Exchange",
+      "purposeAny": "For Sale & Rent",
+      "breadcrumb": "Breadcrumb"
+    }
   },
   "errors": {
     "NETWORK_ERROR": "Network error. Please check your connection and try again.",

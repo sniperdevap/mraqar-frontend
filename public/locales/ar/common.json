@@ -174,7 +174,18 @@
     "selectAreas": "اختر المناطق",
     "priceRange": "نطاق السعر (د.ك)",
     "from": "من",
-    "to": "إلى"
+    "to": "إلى",
+    "seo": {
+      "heading": "{propertyType} {purpose} في {area}",
+      "description": "تصفح إعلانات {propertyType} {purpose} في {area} على مستر عقار — أسعار وصور وتفاصيل محدثة يومياً.",
+      "allProperties": "عقارات",
+      "kuwait": "الكويت",
+      "purposeSale": "للبيع",
+      "purposeRent": "للايجار",
+      "purposeExchange": "للبدل",
+      "purposeAny": "للبيع والإيجار",
+      "breadcrumb": "مسار التصفح"
+    }
   },
   "errors": {
     "NETWORK_ERROR": "خطأ في الشبكة. يرجى تحقق من اتصالك وحاول مرة أخرى.",

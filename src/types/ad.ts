@@ -13,6 +13,8 @@ export interface Ad {
   id: number;
   _id: string;
   user: {
+    /** Short id for the owner's office page — see officeHref(). */
+    publicId?: number;
     _id: string;
     name: string;
     phoneNumber: string;

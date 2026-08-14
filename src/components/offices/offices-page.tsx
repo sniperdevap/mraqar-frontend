@@ -13,6 +13,7 @@ const OfficeSearchModal = dynamic(() => import('./office-search-modal').then(mod
 import { useTranslations } from 'next-intl';
 import { useInfiniteOffices } from '@/hooks/use-offices';
 import { useOfficeStore } from '@/lib/store/office-store';
+import { officeHref } from '@/lib/api/office';
 
 export function OfficesPage() {
   const t = useTranslations('office');
@@ -104,7 +105,7 @@ export function OfficesPage() {
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
               {offices.map(office => (
-                <OfficeCard key={office._id} office={office} onClick={() => router.push(`/offices/${office._id}`)} />
+                <OfficeCard key={office._id} office={office} onClick={() => router.push(officeHref(office))} />
               ))}
             </div>
 

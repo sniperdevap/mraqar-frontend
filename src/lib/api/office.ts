@@ -3,6 +3,7 @@ import { API_ENDPOINTS } from '../constants/api';
 import { Ad, GetAdsParams } from '@/types/ad';
 
 export interface Office {
+  publicId?: number;
   _id: string;
   name: string;
   phoneNumber: string;
@@ -14,6 +15,9 @@ export interface Office {
   twitter?: string;
   adsCount?: number;
 }
+
+export const officeHref = (office: { publicId?: number; _id: string }) =>
+  `/offices/${office.publicId ?? office._id}`;
 
 export interface GetOfficesParams {
   page?: number;

@@ -80,7 +80,7 @@ const getRoundedSliderMax = (value: number) => {
   return Math.ceil(value / 10000) * 10000;
 };
 
-export function SearchPage() {
+export function SearchPage({ children }: { children?: React.ReactNode }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { locale, direction } = useLocale();
@@ -882,16 +882,17 @@ export function SearchPage() {
           </div>
 
           <div className="mt-4">
-            <h1 className="text-xl font-bold text-[#243449]">
+            <h2 className="text-xl font-bold text-[#243449]">
               {tSearch("resultsTitle", {
                 count: adsData?.pages[0]?.total || 0,
               })}
-            </h1>
+            </h2>
           </div>
         </div>
       </div>
 
       <div className="mx-auto max-w-4xl px-4 py-2 sm:px-6 lg:px-8">
+        {children}
         {adsLoading ? (
           <div className="grid grid-cols-1 gap-6">
             {[...Array(4)].map((_, i) => (
