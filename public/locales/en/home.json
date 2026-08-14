@@ -27,6 +27,7 @@
     "title": "Latest Listings",
     "latestAds": "Latest Announcements",
     "propertyInKuwait": "{count, plural, =1 {1 Property in Kuwait} other {# Properties in Kuwait}}",
-    "noAds": "No ads available at the moment"
+    "noAds": "No ads available at the moment",
+    "showMore": "Show More"
   }
 }

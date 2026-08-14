@@ -14,10 +14,14 @@ type Props = {
   params: Promise<{ id: string; locale: string }>;
 };
 
+const LEGACY_OBJECT_ID = /^[a-f0-9]{24}$/i;
+
 async function getAdWithinNavigationBudget(
   id: string,
   locale: string,
 ): Promise<DetailAd | null> {
+  if (LEGACY_OBJECT_ID.test(id)) return getCachedServerAdById(id, locale).catch(() => null);
+
   let timeoutId: ReturnType<typeof setTimeout> | undefined;
   try {
     return await Promise.race([

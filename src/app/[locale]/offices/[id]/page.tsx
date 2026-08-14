@@ -11,6 +11,8 @@ import type { GetAdsParams } from '@/types/ad';
 import type { GetOfficeByIdResult } from '@/lib/api/office';
 import { permanentRedirect } from 'next/navigation';
 
+const LEGACY_OBJECT_ID = /^[a-f0-9]{24}$/i;
+
 type OfficeDetailProps = {
   params: Promise<{ id: string; locale: string }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -31,13 +33,18 @@ export default async function OfficeDetail({ params, searchParams }: OfficeDetai
     maxPrice: typeof rawSearchParams.maxPrice === 'string' ? Number(rawSearchParams.maxPrice) : undefined,
   };
 
-  await prefetchWithinBudget(
-    [
-      prefetchPublicMetadata(queryClient, locale),
-      prefetchOfficeDetail(queryClient, id, filters, locale),
-    ],
-    400,
-  );
+  const tasks = [
+    prefetchPublicMetadata(queryClient, locale),
+    prefetchOfficeDetail(queryClient, id, filters, locale),
+  ];
+  // ponytail: legacy ObjectId URLs are rare (old links, crawlers) and must resolve
+  // their canonical redirect, so they wait out the fetch; numeric publicIds — the
+  // path real navigation takes — keep the fast budget.
+  if (LEGACY_OBJECT_ID.test(id)) {
+    await Promise.allSettled(tasks);
+  } else {
+    await prefetchWithinBudget(tasks, 400);
+  }
 
   // Legacy ObjectId links redirect to the public-id URL (same as ads).
   const canonicalId = queryClient.getQueryData<{ pages: GetOfficeByIdResult[] }>([

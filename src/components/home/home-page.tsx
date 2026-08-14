@@ -12,11 +12,10 @@ import {
 } from "@/components/ui/select";
 import dynamic from "next/dynamic";
 import { useTranslations, useLocale } from "@/hooks/use-locale";
-import { Loader } from "../common/loader";
 import { usePropertyTypes, useAreas } from "@/hooks/use-metadata";
 import { useSearchAds } from "@/hooks/use-ads";
 import { useAdStore } from "@/lib/store/ad-store";
-import { useInView } from "react-intersection-observer";
+import Link from "next/link";
 import { Search } from "lucide-react";
 import { HomeAdCard } from "./home-ad-card";
 import { MultiSelect } from "@/components/ui/multi-select";
@@ -59,27 +58,15 @@ export function HomePage() {
   const { data: propertyTypesData, isLoading: propertyTypesLoading } =
     usePropertyTypes();
   const { data: areasData, isLoading: areasLoading } = useAreas();
-  const {
-    data: adsData,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    isLoading: adsLoading,
-  } = useSearchAds({}, adsPerPage);
-  const { ref: prefetchRef, inView } = useInView({
-    threshold: 0,
-    rootMargin: "100px 0px",
-  });
+  // ponytail: home shows the first page only — "show more" hands off to /search
+  // instead of infinite-scrolling the whole catalogue here.
+  const { data: adsData, isLoading: adsLoading } = useSearchAds({}, adsPerPage);
 
   const propertyTypes = propertyTypesData || [];
   const areas = areasData || [];
   const ads = useMemo(
     () => adsData?.pages.flatMap((page) => page.ads) ?? [],
     [adsData?.pages],
-  );
-  const prefetchTriggerIndex = Math.max(
-    0,
-    ads.length - Math.ceil(adsPerPage / 2),
   );
   const isLoading = propertyTypesLoading || areasLoading;
   const [hasSetAdsForPage, setHasSetAdsForPage] = useState<number[]>([]);
@@ -95,12 +82,6 @@ export function HomePage() {
       });
     }
   }, [adsData?.pages, hasSetAdsForPage, setAds]);
-
-  useEffect(() => {
-    if (inView && hasNextPage && !isFetchingNextPage) {
-      fetchNextPage();
-    }
-  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const clamp = (value: number, min: number, max: number) =>
     Math.min(Math.max(value, min), max);
@@ -457,24 +438,16 @@ export function HomePage() {
             <>
               <div className="flex flex-col gap-2.5">
                 {ads.map((ad, index) => (
-                  <div
-                    key={ad.id}
-                    ref={
-                      hasNextPage && index === prefetchTriggerIndex
-                        ? prefetchRef
-                        : undefined
-                    }
-                  >
-                    <HomeAdCard ad={ad} priority={index < 4} />
-                  </div>
+                  <HomeAdCard key={ad.id} ad={ad} priority={index < 4} />
                 ))}
               </div>
 
-              {isFetchingNextPage && (
-                <div className="flex justify-center mt-8 py-2">
-                  <Loader size="sm" />
-                </div>
-              )}
+              <Link
+                href={`/${locale}/search`}
+                className="mt-4 flex h-12 w-full items-center justify-center rounded-full border border-primary bg-white text-base font-semibold text-[#e11d1d] transition-colors hover:bg-primary/5"
+              >
+                {t("latestListings.showMore")}
+              </Link>
             </>
           ) : (
             <div className="text-center py-12">

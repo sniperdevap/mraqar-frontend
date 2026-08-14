@@ -16,8 +16,8 @@ export interface Office {
   adsCount?: number;
 }
 
-export const officeHref = (office: { publicId?: number; _id: string }) =>
-  `/offices/${office.publicId ?? office._id}`;
+export const officeHref = (office: { publicId?: number }) =>
+  office.publicId ? `/offices/${office.publicId}` : '/offices';
 
 export interface GetOfficesParams {
   page?: number;
