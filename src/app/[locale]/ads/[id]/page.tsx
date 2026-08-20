@@ -105,9 +105,6 @@ export default async function AdDetail({ params }: Props) {
     requestHeaders.get("x-real-ip") ||
     undefined;
 
-  // A prefetch has nobody waiting on it — take the time to build a complete
-  // page so opening the card later needs no second render. Real navigations
-  // keep the budget so a slow backend can't stall the transition.
   const canonicalAd: DetailAd | null = isPrefetch
     ? await getCachedServerAdById(id, locale).catch(() => null)
     : await getAdWithinNavigationBudget(id, locale);
