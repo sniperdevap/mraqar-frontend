@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { BuySubscription } from './components/buy-subscription';
 import { Metadata } from 'next';
 
@@ -7,5 +8,9 @@ export const metadata: Metadata = {
 };
 
 export default function BuySubscriptionPage() {
-  return <BuySubscription />;
+  return (
+    <Suspense>
+      <BuySubscription />
+    </Suspense>
+  );
 }

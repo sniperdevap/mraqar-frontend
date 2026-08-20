@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -15,7 +15,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { createContact, deleteAccount } from '@/lib/api/account';
 import { useAuthStore } from '@/lib/store/auth-store';
 
-export default function ContactPage() {
+function ContactForm() {
   const t = useTranslations('common.contact');
   const { direction } = useLocale();
   const searchParams = useSearchParams();
@@ -183,5 +183,13 @@ export default function ContactPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ContactPage() {
+  return (
+    <Suspense>
+      <ContactForm />
+    </Suspense>
   );
 }

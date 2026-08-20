@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -10,7 +10,7 @@ import { AuthInfoSection } from "@/components/auth/auth-info-section";
 import { AuthFooter } from "@/components/dashboard/auth-footer";
 import { Button } from "@/components/ui/button";
 
-export default function VerifyEmailPage() {
+function VerifyEmailContent() {
   const t = useTranslations("auth.verifyEmail");
   const tInfo = useTranslations("auth.info");
   const tSignin = useTranslations("auth.signin");
@@ -155,5 +155,13 @@ export default function VerifyEmailPage() {
 
       <AuthFooter />
     </div>
+  );
+}
+
+export default function VerifyEmailPage() {
+  return (
+    <Suspense>
+      <VerifyEmailContent />
+    </Suspense>
   );
 }

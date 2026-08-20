@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { AdminCoupons } from '@/components/admin/admin-coupons';
 import { Metadata } from 'next';
 
@@ -7,5 +8,9 @@ export const metadata: Metadata = {
 };
 
 export default function AdminCouponsPage() {
-  return <AdminCoupons />;
+  return (
+    <Suspense>
+      <AdminCoupons />
+    </Suspense>
+  );
 }

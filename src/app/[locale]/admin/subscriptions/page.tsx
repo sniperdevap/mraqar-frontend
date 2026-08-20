@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { AdminSubscriptions } from '@/components/admin/admin-subscriptions';
 import { Metadata } from 'next';
 
@@ -7,5 +8,9 @@ export const metadata: Metadata = {
 };
 
 export default function AdminSubscriptionsPage() {
-  return <AdminSubscriptions />;
+  return (
+    <Suspense>
+      <AdminSubscriptions />
+    </Suspense>
+  );
 }
