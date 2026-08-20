@@ -390,13 +390,7 @@ ${window.location.href}`);
     window.location.href = `tel:${phoneNumber}`;
   };
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center ">
-        <Loader />
-      </div>
-    );
-  }
+  if (isLoading) return null;
 
   if (!ad) {
     return (
@@ -568,6 +562,7 @@ ${window.location.href}`);
                   }
                   fill
                   sizes="(min-width: 640px) 160px, 128px"
+                  priority
                   className="object-cover"
                 />
                 {heroMedia?.type === "video" && (

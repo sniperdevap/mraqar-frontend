@@ -61,8 +61,7 @@ export const useAdById = (id: string, initialData?: DetailAd) => {
     queryFn: () => getAdById(id),
     enabled: !!id,
     initialData: initialData,
-    // Paint cached ad instantly, but always refetch so the view count is current.
-    staleTime: 0,
-    refetchOnMount: 'always',
+    initialDataUpdatedAt: 0,
+    staleTime: 30 * 1000,
   });
 };

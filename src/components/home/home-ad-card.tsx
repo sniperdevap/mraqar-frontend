@@ -279,7 +279,7 @@ function HomeAdCardBase({
       <>
         <Link
           href={href}
-          prefetch={false}
+          prefetch
           ref={setPrefetchTarget}
           onMouseEnter={prefetchNow}
           onFocus={prefetchNow}
@@ -304,7 +304,7 @@ function HomeAdCardBase({
     >
       <Link
         href={href}
-        prefetch={false}
+        prefetch
         ref={setPrefetchTarget}
         onMouseEnter={prefetchNow}
         onFocus={prefetchNow}

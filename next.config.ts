@@ -41,10 +41,27 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: remotePatterns as RemotePattern[],
     formats: ["image/avif", "image/webp"],
+    minimumCacheTTL: 60 * 60 * 24 * 30,
+  },
+  async headers() {
+    return [
+      {
+        source: "/_next/image",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
+        ],
+      },
+      {
+        source: "/_next/static/:path*",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
+        ],
+      },
+    ];
   },
   experimental: {
     staleTimes: {
-      dynamic: 60,
+      dynamic: 180,
       static: 300,
     },
     optimizePackageImports: [

@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+import type { PrefetchKind } from "next/dist/client/components/router-reducer/router-reducer-types";
+const FULL: { kind: PrefetchKind } = { kind: "full" as PrefetchKind };
 
 const PREFETCH_TTL_MS = 60_000;
 const PREFETCH_BURST_SIZE = 2;
@@ -53,7 +55,7 @@ export function useRoutePrefetch(route: string, enabled = true) {
     if (!enabled || isFresh(route)) return;
     queuedRoutes.delete(route);
     prefetchedAt.set(route, Date.now());
-    router.prefetch(route);
+    router.prefetch(route, FULL);
   }, [enabled, route, router]);
 
   const setPrefetchTarget = useCallback(
@@ -68,7 +70,7 @@ export function useRoutePrefetch(route: string, enabled = true) {
       observerRef.current = new IntersectionObserver(
         entries => {
           if (!entries.some(entry => entry.isIntersecting)) return;
-          enqueuePrefetch(route, () => router.prefetch(route));
+          enqueuePrefetch(route, () => router.prefetch(route, FULL));
           observerRef.current?.disconnect();
           observerRef.current = null;
         },
