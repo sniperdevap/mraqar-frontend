@@ -1,6 +1,12 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
 import Cookies from 'js-cookie';
 import { ROUTES } from '@/constants/routes';
+import AR_API_MESSAGES from '../../../public/locales/ar/api.json';
+
+const translateApiMessage = (message: string): string => {
+  if ((Cookies.get('NEXT_LOCALE') ?? 'ar') !== 'ar') return message;
+  return (AR_API_MESSAGES as Record<string, string>)[message] ?? message;
+};
 
 // Custom params serializer to handle arrays properly (without brackets)
 const paramsSerializer = (params: Record<string, unknown>): string => {
@@ -196,7 +202,7 @@ const axiosWrapper = async <T = unknown>(
     // Extract error message from backend response
     if (axiosError.response?.data) {
       const errorData = axiosError.response.data;
-      const errorMessage = errorData.message || 'An error occurred';
+      const errorMessage = translateApiMessage(errorData.message || 'An error occurred');
       const error = new Error(errorMessage);
       // Attach error code to preserve it
       if (errorData.code) {
@@ -208,21 +214,27 @@ const axiosWrapper = async <T = unknown>(
 
     // Handle network errors or other axios errors
     if (axiosError.message) {
-      throw new Error(axiosError.message);
+      throw new Error(translateApiMessage(axiosError.message));
     }
 
-    throw new Error('Network error occurred');
+    throw new Error(translateApiMessage('Network error occurred'));
   }
 };
 
 // Utility function to extract error message from axios errors
-export const getErrorMessage = (error: unknown, defaultMessage = 'An error occurred'): string => {
+export const getErrorMessage = (error: unknown, defaultMessage = translateApiMessage('An error occurred')): string => {
   if (error instanceof AxiosError && error.response?.data?.message) {
     const { message, data } = error.response.data;
     const issues = Array.isArray(data)
-      ? data.map((issue: { path?: unknown[]; message?: string }) => (issue?.path?.length ? `${issue.path[issue.path.length - 1]}: ${issue.message}` : issue?.message)).filter(Boolean)
+      ? data
+          .map((issue: { path?: unknown[]; message?: string }) => {
+            const text = issue?.message ? translateApiMessage(issue.message) : undefined;
+            return issue?.path?.length ? `${issue.path[issue.path.length - 1]}: ${text}` : text;
+          })
+          .filter(Boolean)
       : [];
-    return issues.length ? `${message} — ${issues.join(', ')}` : message;
+    const translated = translateApiMessage(message);
+    return issues.length ? `${translated} — ${issues.join(', ')}` : translated;
   }
   if (error instanceof Error) {
     return error.message;

@@ -111,7 +111,7 @@ export function OTPVerificationForm() {
       }
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Verification failed",
+        error instanceof Error ? error.message : t("failed"),
       );
     } finally {
       setLoading(false);
