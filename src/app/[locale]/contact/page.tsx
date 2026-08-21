@@ -17,6 +17,7 @@ import { useAuthStore } from '@/lib/store/auth-store';
 
 function ContactForm() {
   const t = useTranslations('common.contact');
+  const tMessages = useTranslations('common.messages');
   const { direction } = useLocale();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -68,7 +69,7 @@ function ContactForm() {
       }
     } catch (error) {
       console.error('Error submitting form:', error);
-      toast.error('Something went wrong. Please try again.');
+      toast.error(tMessages('somethingWentWrong'));
     }
   };
 

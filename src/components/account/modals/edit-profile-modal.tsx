@@ -38,6 +38,7 @@ export function EditProfileModal({
   onSuccess,
 }: EditProfileModalProps) {
   const t = useTranslations("common.account");
+  const tMessages = useTranslations("common.messages");
   const [formData, setFormData] = useState<UpdateProfileRequest>({
     name: profile.name,
     phoneNumber: profile.phoneNumber,
@@ -71,7 +72,7 @@ export function EditProfileModal({
     if (!file) return;
 
     if (file.size > 5 * 1024 * 1024) {
-      toast.error("Image size must be less than 5MB");
+      toast.error(tMessages("imageTooLarge"));
       return;
     }
 
@@ -100,7 +101,7 @@ export function EditProfileModal({
           avatarUrl = uploaded.url;
         } catch (error) {
           console.error("Failed to upload image:", error);
-          toast.error("Failed to upload image");
+          toast.error(tMessages("imageUploadFailed"));
           setIsLoading(false);
           return;
         }

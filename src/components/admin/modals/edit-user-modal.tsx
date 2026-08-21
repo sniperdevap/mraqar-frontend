@@ -53,7 +53,7 @@ export function EditUserModal({ isOpen, onClose, user }: EditUserModalProps) {
     if (!file) return;
 
     if (file.size > 5 * 1024 * 1024) {
-      toast.error("Image size must be less than 5MB");
+      toast.error(tCommon("messages.imageTooLarge"));
       return;
     }
 
@@ -87,7 +87,7 @@ export function EditUserModal({ isOpen, onClose, user }: EditUserModalProps) {
           avatarUrl = uploaded.url;
         } catch (error) {
           console.error("Failed to upload image:", error);
-          toast.error("Failed to upload image");
+          toast.error(tCommon("messages.imageUploadFailed"));
           setIsUpdatingUser(false);
           return;
         }

@@ -87,10 +87,7 @@ export function LoginForm() {
       // Check if error code is EMAIL_NOT_VERIFIED
       const errorCode = getErrorCode(error);
       if (errorCode === "PHONE_NOT_VERIFIED") {
-        const errorMessage = getErrorMessage(
-          error,
-          "Your phone number is not verified. Please check your phone for verification code.",
-        );
+        const errorMessage = getErrorMessage(error, t("phoneNotVerified"));
         const toastId = toast.error(
           <span>
             {errorMessage}{" "}
@@ -110,7 +107,7 @@ export function LoginForm() {
                 textAlign: "left",
               }}
             >
-              Resend Now
+              {t("resendNow")}
             </button>
           </span>,
           {

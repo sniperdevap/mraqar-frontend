@@ -45,7 +45,7 @@ export function AccountInfoTab() {
       });
 
       if (response.success) {
-        toast.success('Password updated successfully!');
+        toast.success(t('messages.passwordUpdated'));
         form.reset({
           email: '',
           currentPassword: '',

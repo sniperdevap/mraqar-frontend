@@ -25,6 +25,7 @@ export function SearchAdCard({ ad, onClick }: SearchAdCardProps) {
   const { isAuthenticated } = useAuthStore();
   const queryClient = useQueryClient();
   const t = useTranslations("common.ads");
+  const tMessages = useTranslations("common.messages");
 
   const [isFavorite, setIsFavorite] = React.useState(ad.isFav || false);
   const [isLoadingFav, setIsLoadingFav] = React.useState(false);
@@ -52,7 +53,7 @@ export function SearchAdCard({ ad, onClick }: SearchAdCardProps) {
       queryClient.invalidateQueries({ queryKey: ["ads"] });
     } catch (error) {
       console.error("Failed to toggle favorite:", error);
-      toast.error("Operation failed");
+      toast.error(tMessages("operationFailed"));
     } finally {
       setIsLoadingFav(false);
     }

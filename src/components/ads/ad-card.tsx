@@ -53,6 +53,7 @@ export function AdCard({
   const isLastViewed = useIsLastViewedAd(variant === "admin" ? undefined : ad.id);
   const t = useTranslations("common.ads");
   const tButtons = useTranslations("common.buttons");
+  const tMessages = useTranslations("common.messages");
   const [isFavorite, setIsFavorite] = React.useState(ad.isFav || false);
   const [isLoadingFav, setIsLoadingFav] = React.useState(false);
 
@@ -79,7 +80,7 @@ export function AdCard({
       query.invalidateQueries({ queryKey: ["ads"] });
     } catch (error) {
       console.error("Failed to toggle favorite:", error);
-      toast.error("Operation failed");
+      toast.error(tMessages("operationFailed"));
     } finally {
       setIsLoadingFav(false);
     }

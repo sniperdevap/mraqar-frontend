@@ -34,7 +34,13 @@
     "loading": "Loading...",
     "noData": "No data available",
     "error": "An error occurred",
-    "success": "Success"
+    "success": "Success",
+    "somethingWentWrong": "Something went wrong. Please try again.",
+    "actionFailed": "Action failed. Please try again.",
+    "operationFailed": "Operation failed",
+    "imageTooLarge": "Image size must be less than 5MB",
+    "imageUploadFailed": "Failed to upload image",
+    "passwordUpdated": "Password updated successfully"
   },
   "ads": {
     "activated": "The ad has been activated successfully",

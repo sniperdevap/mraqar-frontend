@@ -34,7 +34,13 @@
     "loading": "جاري التحميل...",
     "noData": "لا توجد بيانات متاحة",
     "error": "حدث خطأ",
-    "success": "نجح"
+    "success": "نجح",
+    "somethingWentWrong": "حدث خطأ ما، يرجى المحاولة مرة أخرى.",
+    "actionFailed": "تعذر تنفيذ العملية، يرجى المحاولة مرة أخرى.",
+    "operationFailed": "فشلت العملية",
+    "imageTooLarge": "يجب أن يكون حجم الصورة أقل من 5 ميجابايت",
+    "imageUploadFailed": "فشل رفع الصورة",
+    "passwordUpdated": "تم تحديث كلمة المرور بنجاح"
   },
   "ads": {
     "activated": "تم تفعيل الإعلان بنجاح",

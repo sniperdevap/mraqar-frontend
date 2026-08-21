@@ -48,7 +48,7 @@ export function BuySubscription() {
             }, 3000);
             return;
           } else {
-            toast.error('Failed to verify subscription. Please contact support.');
+            toast.error(t('verifySubFailed'));
             return;
           }
         }
@@ -61,15 +61,15 @@ export function BuySubscription() {
           Cookies.set('auth-user', JSON.stringify(userData), { expires: 7 });
         }
         setShowSuccess(true);
-        toast.success('Subscription activated successfully!');
+        toast.success(t('successTitle'));
         setIsVerifying(false);
       } catch (error) {
-        toast.error(getErrorMessage(error, 'Failed to verify subscription. Please contact support.'));
+        toast.error(getErrorMessage(error, t('verifySubFailed')));
         router.replace('/auth/buy-subscription');
         setIsVerifying(false);
       }
     },
-    [router]
+    [router, t]
   );
 
   useEffect(() => {
@@ -81,7 +81,7 @@ export function BuySubscription() {
           setSubscriptionPlan(response.data.plan);
         }
       } catch (error) {
-        toast.error(getErrorMessage(error, 'Failed to load subscription plan'));
+        toast.error(getErrorMessage(error, t('errorLoading')));
       } finally {
         setIsLoadingPlan(false);
       }
@@ -96,7 +96,7 @@ export function BuySubscription() {
     const canceled = searchParams.get('canceled');
 
     if (canceled === 'true') {
-      toast.error('Payment was canceled. Please try again.');
+      toast.error(t('paymentCanceled'));
       // Clean up URL
       router.replace('/auth/buy-subscription');
       return;
@@ -132,7 +132,7 @@ export function BuySubscription() {
       // Redirect to Stripe checkout
       window.location.href = result.checkoutUrl;
     } catch (error) {
-      toast.error(getErrorMessage(error, 'Failed to create checkout session. Please try again.'));
+      toast.error(getErrorMessage(error, t('createSessionFailed')));
       setIsSubscribing(false);
     }
   };
