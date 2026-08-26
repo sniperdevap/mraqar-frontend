@@ -32,6 +32,7 @@ interface HomeAdCardProps {
   variant?: "default" | "my-ad";
   onAction?: (action: "edit" | "refresh" | "view", ad: Ad) => void;
   priority?: boolean;
+  trackLastViewed?: boolean;
 }
 
 function HomeAdCardBase({
@@ -40,13 +41,14 @@ function HomeAdCardBase({
   variant = "default",
   onAction,
   priority = false,
+  trackLastViewed = true,
 }: HomeAdCardProps) {
   const { locale, direction } = useLocale();
   const t = useTranslations("common.ads");
   const tButtons = useTranslations("common.buttons");
   const href = `/ads/${ad.id}`;
   const { setPrefetchTarget, prefetchNow } = useRoutePrefetch(href);
-  const isLastViewed = useIsLastViewedAd(ad.id);
+  const isLastViewed = useIsLastViewedAd(trackLastViewed ? ad.id : undefined);
   const [shareUrl, setShareUrl] = React.useState<string | null>(null);
 
   const title =

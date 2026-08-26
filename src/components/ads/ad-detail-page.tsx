@@ -720,6 +720,7 @@ ${window.location.href}`);
                     >
                       <HomeAdCard
                         ad={similarAd}
+                        trackLastViewed={false}
                         onClick={() => router.push(`/ads/${similarAd.id}`)}
                       />
                     </div>
