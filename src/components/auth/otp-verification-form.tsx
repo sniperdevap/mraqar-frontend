@@ -21,7 +21,7 @@ import {
 import { verifyOTP, resendOTP } from "@/lib/api/auth";
 import { useAuthStore } from "@/lib/store/auth-store";
 import { InputOTP } from "@/components/ui/input-otp";
-import { getErrorMessage } from "@/lib/utils/api";
+import { getErrorMessage, AUTH_COOKIE_DAYS } from "@/lib/utils/api";
 import { OTPInputContext } from "input-otp";
 import { cn } from "@/lib/utils";
 
@@ -93,8 +93,8 @@ export function OTPVerificationForm() {
       } else {
         const userWithSubs = response.user;
 
-        Cookies.set("auth-token", response.token, { expires: 7 });
-        Cookies.set("auth-user", JSON.stringify(userWithSubs), { expires: 7 });
+        Cookies.set("auth-token", response.token, { expires: AUTH_COOKIE_DAYS });
+        Cookies.set("auth-user", JSON.stringify(userWithSubs), { expires: AUTH_COOKIE_DAYS });
         useAuthStore.setState({
           user: userWithSubs,
           isAuthenticated: true,

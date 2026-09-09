@@ -32,6 +32,8 @@ const paramsSerializer = (params: Record<string, unknown>): string => {
   return searchParams.toString();
 };
 
+export const AUTH_COOKIE_DAYS = 400;
+
 // Create axios instance with base configuration
 export const axiosInstance: AxiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
@@ -48,6 +50,10 @@ axiosInstance.interceptors.request.use(
     const token = Cookies.get('auth-token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+      // Push the expiry back out on every call so the session keeps rolling.
+      Cookies.set('auth-token', token, { expires: AUTH_COOKIE_DAYS });
+      const authUser = Cookies.get('auth-user');
+      if (authUser) Cookies.set('auth-user', authUser, { expires: AUTH_COOKIE_DAYS });
     }
     const locale = Cookies.get('NEXT_LOCALE');
     if (locale) {

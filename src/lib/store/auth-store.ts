@@ -6,6 +6,7 @@ import Cookies from 'js-cookie';
 import { AuthState } from '@/types/auth';
 import { login as loginAPI, signup as signupAPI } from '@/lib/api/auth';
 import { getMySubscriptions } from '@/lib/api/subscription-plan';
+import { AUTH_COOKIE_DAYS } from '@/lib/utils/api';
 
 export const useAuthStore = create<AuthState>()(
   persist(
@@ -25,9 +26,9 @@ export const useAuthStore = create<AuthState>()(
           // Remove manual fetch to optimize login speed
           const userWithSubs = userData;
 
-          // Set cookies that expire in 7 days (matching backend token expiry)
-          Cookies.set('auth-token', token, { expires: 7 });
-          Cookies.set('auth-user', JSON.stringify(userWithSubs), { expires: 7 });
+
+          Cookies.set('auth-token', token, { expires: AUTH_COOKIE_DAYS });
+          Cookies.set('auth-user', JSON.stringify(userWithSubs), { expires: AUTH_COOKIE_DAYS });
 
           set({
             user: userWithSubs,
@@ -82,7 +83,7 @@ export const useAuthStore = create<AuthState>()(
           const subscriptions = await getMySubscriptions();
           const updatedUser = { ...user, subscriptions };
 
-          Cookies.set('auth-user', JSON.stringify(updatedUser), { expires: 7 });
+          Cookies.set('auth-user', JSON.stringify(updatedUser), { expires: AUTH_COOKIE_DAYS });
           set({ user: updatedUser });
         } catch (error) {
           console.error('Failed to refresh subscriptions:', error);

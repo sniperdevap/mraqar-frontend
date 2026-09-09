@@ -13,7 +13,7 @@ import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { AuthFooter } from '@/components/dashboard/auth-footer';
 import { createCheckoutSession, verifySession } from '@/lib/api/subscription';
 import { getSubscriptionPlan, SubscriptionPlan } from '@/lib/api/settings';
-import { getErrorMessage } from '@/lib/utils/api';
+import { getErrorMessage, AUTH_COOKIE_DAYS } from '@/lib/utils/api';
 import { useAuthStore } from '@/lib/store/auth-store';
 import { useTranslations } from 'next-intl';
 
@@ -58,7 +58,7 @@ export function BuySubscription() {
           const userData = JSON.parse(authUserCookie);
           userData.subscriptionId = response.data.subscriptionId;
           // userData.subscription = response.data.user.subscription as Subscription;
-          Cookies.set('auth-user', JSON.stringify(userData), { expires: 7 });
+          Cookies.set('auth-user', JSON.stringify(userData), { expires: AUTH_COOKIE_DAYS });
         }
         setShowSuccess(true);
         toast.success(t('successTitle'));
