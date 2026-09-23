@@ -168,6 +168,16 @@ export function Navbar() {
     window.location.href = "/";
   };
 
+  const pathnameWithoutLocale = pathname?.replace(/^\/(en|ar)/, "") || "/";
+  const isHomePage = pathnameWithoutLocale === "/" || pathnameWithoutLocale === "";
+
+  const handleHomeNavClick = (e: React.MouseEvent) => {
+    if (isHomePage) {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
   return (
     <>
       {/* Desktop Navbar */}
@@ -467,6 +477,7 @@ export function Navbar() {
               <Link
                 key={item.href || "menu"}
                 href={item.href || "/menu"}
+                onClick={item.href === "/" ? handleHomeNavClick : undefined}
                 className={cn(
                   "relative flex flex-col items-center gap-1.5 py-1.5 rounded-2xl transition-all duration-300",
                   isActive
