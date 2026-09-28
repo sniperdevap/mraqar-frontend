@@ -6,30 +6,8 @@ export interface UpdatePasswordRequest {
   newPassword: string;
 }
 
-export interface UpdateSubscriptionAmountRequest {
-  amount: number;
-}
-
-export interface SubscriptionPlan {
-  _id: string;
-  name: string;
-  price: number;
-  stripeProductId: string;
-  stripePriceId: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
 export const updatePassword = async (data: UpdatePasswordRequest): Promise<ApiResponse<void>> => {
   return await axiosWrapper<void>('put', API_ENDPOINTS.SETTINGS.UPDATE_PASSWORD, data);
-};
-
-export const getSubscriptionPlan = async (): Promise<ApiResponse<{ plan: SubscriptionPlan | null }>> => {
-  return await axiosWrapper('get', API_ENDPOINTS.SUBSCRIPTION_PLAN.GET);
-};
-
-export const updateSubscriptionAmount = async (data: UpdateSubscriptionAmountRequest): Promise<ApiResponse<{ plan: SubscriptionPlan }>> => {
-  return await axiosWrapper('put', API_ENDPOINTS.SUBSCRIPTION_PLAN.UPDATE_AMOUNT, data);
 };
 
 export interface AppSettings {

@@ -14,7 +14,6 @@ export interface Subscription {
   canceledAt?: string;
   planType: string;
   isActive: boolean;
-  stripeSubscriptionId: string;
   userId: string;
   createdAt?: string;
   updatedAt?: string;

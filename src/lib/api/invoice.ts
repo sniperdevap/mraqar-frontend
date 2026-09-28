@@ -3,7 +3,6 @@ import { API_ENDPOINTS } from '../constants/api';
 
 export interface InvoiceSubscription {
   _id: string;
-  stripeSubscriptionId: string;
   startDate: string;
   endDate: string;
   status: string;
@@ -15,14 +14,12 @@ export interface InvoiceCoupon {
   couponId: string;
   code: string;
   discountValue: number;
-  stripeCouponId: string;
 }
 
 export interface Invoice {
   _id: string;
   userId: string;
   subscriptionId: InvoiceSubscription | string;
-  stripeInvoiceId: string;
   amount: number;
   invoiceUrl: string;
   createdDate: string;

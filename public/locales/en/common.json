@@ -678,12 +678,10 @@
     "subscriptionFailed": "Subscription failed",
     "empty": "Empty",
     "discountPercent": "{percent}% Discount",
-    "knet": "KNET",
     "all": "All",
     "premiumAdPlan": "Premium Ad Plan",
     "officesPlan": "Offices Plan",
     "plans": "Plans",
-    "couponMessage": "Use coupon code: {code} – to save {percent}% on the plan price.",
     "discountLabel": "{percent}% Discount",
     "failedToLoadPlans": "Failed to load plans",
     "forHelpContactUs": "For help kindly contact us",
@@ -692,7 +690,27 @@
     "premiumVisibility": "Premium visibility boost",
     "seats": "{count} seats",
     "duration": "{months} months",
-    "total": "Amount Due"
+    "total": "Amount Due",
+    "planDuration": "Plan duration",
+    "premiumAds": "Premium Ads",
+    "premiumAdsSub": "Number of premium credits",
+    "totalAmount": "Total amount",
+    "featureCredits": "{count} premium ad credits",
+    "featurePinned": "Your ads will be pinned and won't get removed",
+    "featureVisibility": "Maximum visibility in search results",
+    "featureCalls": "Get more calls from potential clients",
+    "perCredit": "per credit",
+    "buyCreditsTitle": "Buy credits for your ads",
+    "buyCreditsSub": "Select how many credits you want to purchase.",
+    "numberOfCredits": "Number of Credits",
+    "numberOfCreditsSub": "Select how many premium credits you want to purchase.",
+    "totalPrice": "Total Price",
+    "amountToPay": "Amount to pay",
+    "eachCreditCosts": "Each credit costs",
+    "buyCredits": "Buy Credits",
+    "featureCreditRate": "1 credit = {price} KWD",
+    "credits": "Credits",
+    "knet": "KNET"
   },
   "copyright": {
     "title": "Copyright Notice",
@@ -732,5 +750,22 @@
         "addressLine2": "Alarbeed Building 4, Office 7"
       }
     }
+  },
+  "payment": {
+    "successTitle": "Payment successful",
+    "successBody": "Your plan is now active and the ad credits have been added to your account.",
+    "pendingTitle": "Payment is being confirmed",
+    "pendingBody": "We haven't received confirmation yet. Your credits will be added automatically once it arrives — no need to pay again.",
+    "failedTitle": "Payment failed",
+    "cancelledTitle": "Payment cancelled",
+    "failedBody": "No money was taken. You can try again.",
+    "amount": "Amount",
+    "receipt": "Receipt No.",
+    "reference": "Reference",
+    "errorCode": "Error code",
+    "goToAccount": "Go to my account",
+    "backToPlans": "Back to plans",
+    "plan": "Plan",
+    "credits": "Credits"
   }
 }
