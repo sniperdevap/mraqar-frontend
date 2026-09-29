@@ -5,7 +5,7 @@ export interface SubscriptionPlan {
   _id: string;
   name: string;
   nameAr: string;
-  planType: 'office-plan';
+  planType: 'office-plan' | 'daily-plan';
   description: string;
   price: number;
   numberOfMonths: number;
@@ -55,6 +55,7 @@ export const getMySubscriptions = async (): Promise<UserSubscription[]> => {
 
 export interface RemainingAdCreditsResponse {
   officeCredits: number;
+  dailyCredits: number;
   totalCredits: number;
 }
 

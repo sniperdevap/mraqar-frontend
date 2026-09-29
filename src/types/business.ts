@@ -8,7 +8,6 @@ export interface BusinessApiResponse {
   isActive: boolean;
   subscription?: {
     _id: string;
-    stripeSubscriptionId: string;
     startDate: string;
     endDate: string;
     status: string;

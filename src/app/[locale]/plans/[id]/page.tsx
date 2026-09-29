@@ -1,14 +1,21 @@
-import { PlanViewPage } from '@/components/plans/plan-view-page';
-import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
-import { getLocale } from 'next-intl/server';
+import { PlanViewPage } from "@/components/plans/plan-view-page";
+import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
+import { getLocale } from "next-intl/server";
 import {
   createServerQueryClient,
   prefetchSubscriptionPlan,
   prefetchWithinBudget,
-} from '@/lib/query-prefetch';
+} from "@/lib/query-prefetch";
 
-export default async function PlanView({ params }: { params: Promise<{ id: string }> }) {
+export default async function PlanView({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ qty?: string }>;
+}) {
   const { id } = await params;
+  const { qty } = await searchParams;
   const locale = await getLocale();
   const queryClient = createServerQueryClient();
 
@@ -19,7 +26,7 @@ export default async function PlanView({ params }: { params: Promise<{ id: strin
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <PlanViewPage planId={id} />
+      <PlanViewPage planId={id} initialQty={Number(qty) || 1} />
     </HydrationBoundary>
   );
 }

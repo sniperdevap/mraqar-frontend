@@ -26,20 +26,6 @@ export const API_ENDPOINTS = {
     VIEW: (id: string) => `/ads/${id}/view`,
     REPOST: (id: number) => `/ads/${id}/repost`,
   },
-  // Subscription endpoints
-  SUBSCRIPTION: {
-    CREATE_CHECKOUT_SESSION: '/subscriptions/create-checkout-session',
-    VERIFY_SESSION: '/subscriptions/verify-session',
-    GET_ALL: '/subscriptions',
-    GET_CURRENT: '/subscriptions/current',
-    CANCEL: '/subscriptions/cancel',
-    RENEW: '/subscriptions/renew',
-    GET_PAYMENT_METHODS: '/subscriptions/payment-methods',
-    CREATE_SETUP_INTENT: '/subscriptions/payment-methods/setup-intent',
-    ATTACH_PAYMENT_METHOD: '/subscriptions/payment-methods/attach',
-    UPDATE_DEFAULT_PAYMENT_METHOD: '/subscriptions/payment-methods/default',
-    DELETE_PAYMENT_METHOD: '/subscriptions/payment-methods',
-  },
   // User/Business endpoints
   USER: {
     GET_ALL_BUSINESSES: '/users/businesses',
@@ -49,6 +35,11 @@ export const API_ENDPOINTS = {
   // Invoice endpoints
   INVOICE: {
     GET_USER_INVOICES: '/invoices',
+  },
+  // Payment endpoints
+  PAYMENT: {
+    CHECKOUT: '/payments/checkout',
+    MY_PAYMENTS: '/payments/my-payments',
   },
   // Coupon endpoints
   COUPON: {
@@ -66,10 +57,8 @@ export const API_ENDPOINTS = {
   },
   // Subscription plan endpoints
   SUBSCRIPTION_PLAN: {
-    GET: '/subscription-plans',
     GET_ALL: '/subscription-plans',
     GET_BY_ID: (id: string) => `/subscription-plans/${id}`,
-    UPDATE_AMOUNT: '/subscription-plans/update-amount',
     SUBSCRIBE: '/subscriptions/subscribe',
     MY_SUBSCRIPTIONS: '/subscriptions/my-subscriptions',
     REMAINING_CREDITS: '/subscriptions/remaining-credits',

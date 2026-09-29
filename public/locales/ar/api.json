@@ -68,7 +68,6 @@
   "Plan not found": "لم يتم العثور على الخطة",
   "Invalid plan ID": "معرّف الخطة غير صالح",
   "Only office plans are supported": "يتم دعم خطط المكاتب فقط",
-  "You have reached the maximum purchase limit for this plan": "لقد وصلت إلى الحد الأقصى لشراء هذه الخطة",
   "Invalid period. Use weekly, monthly, or yearly.": "الفترة غير صالحة. استخدم أسبوعي أو شهري أو سنوي.",
   "Coupon not found": "لم يتم العثور على الكوبون",
   "Invalid coupon code": "رمز الكوبون غير صالح",

@@ -676,12 +676,10 @@
     "subscriptionFailed": "فشل الاشتراك",
     "empty": "فارغ",
     "discountPercent": "خصم {percent}%",
-    "knet": "كي نت",
     "all": "الكل",
     "premiumAdPlan": "باقة الإعلانات المميزة",
     "officesPlan": "باقة المكاتب",
     "plans": "الباقات",
-    "couponMessage": "استخدم كود الخصم: {code} – لتوفير {percent}% من سعر الباقة.",
     "discountLabel": "خصم {percent}%",
     "failedToLoadPlans": "فشل تحميل الباقات",
     "forHelpContactUs": "للمساعدة يرجى التواصل معنا",
@@ -690,7 +688,27 @@
     "premiumVisibility": "تعزيز الرؤية المميزة",
     "seats": "{count} مقاعد",
     "duration": "{months} شهور",
-    "total": "المبلغ المستحق"
+    "total": "المبلغ المستحق",
+    "planDuration": "مدة الخطة",
+    "premiumAds": "الإعلانات المميزة",
+    "premiumAdsSub": "عدد الأرصدة المميزة",
+    "totalAmount": "المبلغ الإجمالي",
+    "featureCredits": "{count} رصيد إعلان مميز",
+    "featurePinned": "سيتم تثبيت إعلاناتك ولن تُحذف",
+    "featureVisibility": "أعلى ظهور في نتائج البحث",
+    "featureCalls": "احصل على مكالمات أكثر من العملاء المحتملين",
+    "perCredit": "لكل رصيد",
+    "buyCreditsTitle": "اشترِ رصيداً لإعلاناتك",
+    "buyCreditsSub": "اختر عدد الأرصدة التي تريد شراءها.",
+    "numberOfCredits": "عدد الأرصدة",
+    "numberOfCreditsSub": "اختر عدد الأرصدة المميزة التي تريد شراءها.",
+    "totalPrice": "السعر الإجمالي",
+    "amountToPay": "المبلغ المطلوب",
+    "eachCreditCosts": "سعر الرصيد الواحد",
+    "buyCredits": "شراء الأرصدة",
+    "featureCreditRate": "رصيد واحد = {price} د.ك",
+    "credits": "الأرصدة",
+    "knet": "كي نت"
   },
   "copyright": {
     "title": "إشعار حقوق النشر",
@@ -730,5 +748,22 @@
         "addressLine2": "مبنى العريبيد 4، مكتب 7"
       }
     }
+  },
+  "payment": {
+    "successTitle": "تم الدفع بنجاح",
+    "successBody": "تم تفعيل خطتك وإضافة رصيد الإعلانات إلى حسابك.",
+    "pendingTitle": "جارٍ تأكيد الدفع",
+    "pendingBody": "لم يصلنا التأكيد بعد. سيُضاف الرصيد تلقائياً عند وصوله، لا داعي للدفع مرة أخرى.",
+    "failedTitle": "فشلت عملية الدفع",
+    "cancelledTitle": "تم إلغاء الدفع",
+    "failedBody": "لم يتم خصم أي مبلغ. يمكنك المحاولة مرة أخرى.",
+    "amount": "المبلغ",
+    "receipt": "رقم الإيصال",
+    "reference": "المرجع",
+    "errorCode": "رمز الخطأ",
+    "goToAccount": "الذهاب إلى حسابي",
+    "backToPlans": "العودة إلى الخطط",
+    "plan": "الخطة",
+    "credits": "الأرصدة"
   }
 }
