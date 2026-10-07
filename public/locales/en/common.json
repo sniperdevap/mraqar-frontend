@@ -160,7 +160,11 @@
     "repostAdDescription": "Repost this ad to move it back to the top of the listings? One credit will be deducted.",
     "repostedSuccessfully": "Ad reposted successfully",
     "failedToRepost": "Failed to repost the ad",
-    "repostCooldown": "You can repost this ad once every 24 hours"
+    "repostCooldown": "You can repost this ad once every 24 hours",
+    "normalAdsLeft": "{remaining} normal ads left",
+    "adType": "Ad Type",
+    "normalAd": "Normal Ad",
+    "premiumAd": "Premium Ad"
   },
   "search": {
     "title": "Search Results",
@@ -596,7 +600,8 @@
     "exchange": "Exchange",
     "completed": "Completed",
     "cancelled": "Cancelled",
-    "deleteAccount": "Delete Account"
+    "deleteAccount": "Delete Account",
+    "loading": "Loading..."
   },
   "evaluation": {
     "title": "Property Evaluation Services",
@@ -681,6 +686,7 @@
     "all": "All",
     "premiumAdPlan": "Premium Ad Plan",
     "officesPlan": "Offices Plan",
+    "premTag": "Prem",
     "plans": "Plans",
     "discountLabel": "{percent}% Discount",
     "failedToLoadPlans": "Failed to load plans",
@@ -710,7 +716,12 @@
     "buyCredits": "Buy Credits",
     "featureCreditRate": "1 credit = {price} KWD",
     "credits": "Credits",
-    "knet": "KNET"
+    "knet": "KNET",
+    "normalAdsCount": "{count} Ads",
+    "freeAds": "Free Ads",
+    "normalAdsRemaining": "You have {count} normal ads left. You can get more once they are used up.",
+    "receiveNormalAds": "You will receive {count} normal ads.",
+    "freePlanClaimed": "Your free normal ads have been added!"
   },
   "copyright": {
     "title": "Copyright Notice",

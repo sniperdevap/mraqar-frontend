@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Plus, Eye, EyeOff, Loader2, Upload, Check } from 'lucide-react';
+import { Plus, Eye, EyeOff, Loader2, Upload, Check, Crown, FileText } from 'lucide-react';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { useTranslations, useLocale } from '@/hooks/use-locale';
@@ -32,7 +32,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, rectSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { getRemainingAdCredits } from '@/lib/api/subscription-plan';
+import { getRemainingAdCredits, RemainingAdCreditsResponse } from '@/lib/api/subscription-plan';
 
 interface MediaItem {
   id: string;
@@ -154,7 +154,7 @@ export function CreateAdForm({ initialData, mode = 'create', onSuccess, requireC
   const isLoadingMetadata = propertyTypesLoading || areasLoading;
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<Record<number, number>>({});
-  const [remainingCredits, setRemainingCredits] = useState<number | null>(null);
+  const [remainingCredits, setRemainingCredits] = useState<RemainingAdCreditsResponse | null>(null);
   const [isCreateAccessResolved, setIsCreateAccessResolved] = useState(mode !== 'create' || !requireCreditsForCreate);
   const [isLeavingAfterSuccess, setIsLeavingAfterSuccess] = useState(false);
   const hasTriggeredCreateAccessRedirectRef = useRef(false);
@@ -323,7 +323,10 @@ export function CreateAdForm({ initialData, mode = 'create', onSuccess, requireC
     let isMounted = true;
     getRemainingAdCredits()
       .then(data => {
-        if (isMounted) setRemainingCredits(data.totalCredits);
+        if (!isMounted) return;
+        setRemainingCredits(data);
+        // Start on whichever ad type the user can still afford, premium first.
+        form.setValue('premiumAd', data.premiumCredits > 0);
       })
       .catch(() => {
         if (isMounted) setRemainingCredits(null);
@@ -583,6 +586,10 @@ export function CreateAdForm({ initialData, mode = 'create', onSuccess, requireC
         description: values.description,
         media: finalMediaIds.filter((id): id is string => Boolean(id)),
       };
+      // Without the ad type picker (admin posting for a user) the backend picks the credit itself.
+      if (mode === 'create' && !requireCreditsForCreate) {
+        delete (adData as Partial<typeof adData>).premiumAd;
+      }
 
       if (mode === 'edit' && initialData) {
         await updateAd(initialData.id, adData, user?.role === 'super_admin' ? initialData.user?._id : undefined);
@@ -611,7 +618,9 @@ export function CreateAdForm({ initialData, mode = 'create', onSuccess, requireC
     } catch (error) {
       const errorCode = getErrorCode(error);
 
-      if (errorCode === 'INSUFFICIENT_CREDITS' || errorCode === 'NO_SUBSCRIPTION') {
+      if (errorCode === 'NO_PREMIUM_CREDITS' || errorCode === 'NO_NORMAL_CREDITS') {
+        toast.error(getErrorMessage(error));
+      } else if (errorCode === 'INSUFFICIENT_CREDITS' || errorCode === 'NO_SUBSCRIPTION') {
         toast.error(tAds('noSubscription'));
       } else {
         toast.error(getErrorMessage(error || t(`ads.failedTo${mode === 'edit' ? 'Update' : 'Create'}Ad`)));
@@ -746,11 +755,50 @@ export function CreateAdForm({ initialData, mode = 'create', onSuccess, requireC
                 </div>
 
                 {mode === 'create' && (
-                  <p className="text-xs font-semibold text-red-500 text-right">
-                    {t('ads.creditsLeft', {
-                      remaining: remainingCredits ?? '--',
-                    })}
-                  </p>
+                  <div className="text-xs font-semibold text-right space-y-0.5">
+                    <p className="text-red-500">{t('ads.creditsLeft', { remaining: remainingCredits?.premiumCredits ?? '--' })}</p>
+                    <p className="text-primary-dark">{t('ads.normalAdsLeft', { remaining: remainingCredits?.normalCredits ?? '--' })}</p>
+                  </div>
+                )}
+
+                {mode === 'create' && requireCreditsForCreate && (
+                  <FormField
+                    control={form.control}
+                    name="premiumAd"
+                    render={({ field }) => (
+                      <FormItem className="space-y-2 md:space-y-3">
+                        <FormLabel className="font-medium">{t('ads.adType')}</FormLabel>
+                        <FormControl>
+                          <Tabs value={field.value ? 'premium' : 'normal'} onValueChange={val => field.onChange(val === 'premium')} className="w-full">
+                            <TabsList className="grid w-full grid-cols-2 h-auto bg-white border border-gray-200 p-1 rounded-xl">
+                              <TabsTrigger
+                                value="normal"
+                                disabled={!remainingCredits?.normalCredits}
+                                className="h-full min-w-0 flex-col gap-0.5 whitespace-normal leading-tight rounded-lg py-2 px-1 text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-sm transition-all"
+                              >
+                                <span className="flex items-center gap-1.5 font-semibold">
+                                  <FileText className="w-4 h-4" />
+                                  {t('ads.normalAd')}
+                                </span>
+                                <span className="text-[10px] sm:text-xs opacity-80">{t('ads.normalAdsLeft', { remaining: remainingCredits?.normalCredits ?? '--' })}</span>
+                              </TabsTrigger>
+                              <TabsTrigger
+                                value="premium"
+                                disabled={!remainingCredits?.premiumCredits}
+                                className="h-full min-w-0 flex-col gap-0.5 whitespace-normal leading-tight rounded-lg py-2 px-1 text-xs sm:text-sm data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-sm transition-all"
+                              >
+                                <span className="flex items-center gap-1.5 font-semibold">
+                                  <Crown className="w-4 h-4" />
+                                  {t('ads.premiumAd')}
+                                </span>
+                                <span className="text-[10px] sm:text-xs opacity-80">{t('ads.creditsLeft', { remaining: remainingCredits?.premiumCredits ?? '--' })}</span>
+                              </TabsTrigger>
+                            </TabsList>
+                          </Tabs>
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
                 )}
 
                 {/* Purpose */}
