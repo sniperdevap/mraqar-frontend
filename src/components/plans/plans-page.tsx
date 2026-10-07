@@ -1,14 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Crown, Zap } from "lucide-react";
+import { Crown, Loader2, Tag, Zap } from "lucide-react";
+import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { useTranslations, useLocale } from "@/hooks/use-locale";
 import { useSubscriptionPlans } from "@/hooks/use-plans";
 import { CreditStepper } from "./credit-stepper";
 import { PlanType } from "@/lib/utils/constant";
+import { SubscriptionPlan } from "@/lib/api/subscription-plan";
+import { createCheckout } from "@/lib/api/payment";
+import { getErrorMessage } from "@/lib/utils/api";
+import { useAuthStore } from "@/lib/store/auth-store";
 
 export function PlansPage() {
   const router = useRouter();
@@ -16,22 +22,206 @@ export function PlansPage() {
   const { locale } = useLocale();
   const { data: plans = [], isLoading } = useSubscriptionPlans();
 
-  const [tab, setTab] = useState<"all" | PlanType>("all");
   const [quantities, setQuantities] = useState<Record<string, number>>({});
+  const [claimingPlanId, setClaimingPlanId] = useState<string | null>(null);
+  const queryClient = useQueryClient();
+  const { user, isAuthenticated, refreshSubscriptions } = useAuthStore();
+
+  // Free normal ads can only be claimed again once the previous batch is used up.
+  const normalCreditsLeft =
+    user?.subscriptions
+      ?.filter((sub) => sub.planType === PlanType.NORMAL)
+      .reduce((sum, sub) => sum + (sub.credits || 0), 0) ?? 0;
+
+  // The cookie copy of the user's subscriptions can be stale, so refresh it before deciding.
+  useEffect(() => {
+    if (isAuthenticated) refreshSubscriptions();
+  }, [isAuthenticated, refreshSubscriptions]);
+
+  const claimNormalPlan = async (planId: string) => {
+    if (!isAuthenticated) {
+      toast.info(t("ads.loginRequired"));
+      router.push("/auth/signin");
+      return;
+    }
+
+    setClaimingPlanId(planId);
+    try {
+      await createCheckout(planId);
+      toast.success(t("plan.freePlanClaimed"));
+      await refreshSubscriptions();
+      queryClient.invalidateQueries({ queryKey: ["my-subscriptions"] });
+    } catch (error) {
+      toast.error(getErrorMessage(error) || t("plan.subscriptionFailed"));
+    } finally {
+      setClaimingPlanId(null);
+    }
+  };
 
   const openPlan = (planId: string) => {
     const qty = quantities[planId];
     router.push(qty > 1 ? `/plans/${planId}?qty=${qty}` : `/plans/${planId}`);
   };
 
-  const visiblePlans = plans.filter(
-    (plan) => tab === "all" || plan.planType === tab,
-  );
-  const tabs = [
-    { value: "all" as const, label: t("plan.all") },
-    { value: PlanType.DAILY, label: t("plan.premiumAdPlan") },
-    { value: PlanType.OFFICE, label: t("plan.officesPlan") },
-  ];
+  const normalPlans = plans.filter((plan) => plan.planType === PlanType.NORMAL);
+  const dailyPlans = plans.filter((plan) => plan.planType === PlanType.DAILY);
+  const officePlans = plans.filter((plan) => plan.planType === PlanType.OFFICE);
+
+  const renderNormalPlan = (plan: SubscriptionPlan) => {
+    const hasNormalAdsLeft = normalCreditsLeft > 0;
+    const isClaiming = claimingPlanId === plan._id;
+
+    return (
+      <div
+        key={plan._id}
+        className="bg-white rounded-xl p-4 sm:p-5 border border-gray-100 shadow-sm flex flex-col h-full"
+      >
+        <div className="mb-3 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-1.5 min-w-0">
+            <div className="w-1 h-4 bg-primary rounded-full shrink-0"></div>
+            <h3 className="text-sm sm:text-base font-bold text-primary-dark truncate">
+              {locale === "ar" ? plan.nameAr : plan.name}
+            </h3>
+            <span className="shrink-0 text-xs sm:text-sm font-medium text-gray-400">
+              {t("plan.normalAdsCount", { count: plan.adCredits })}
+            </span>
+          </div>
+          <span className="shrink-0 inline-flex items-center gap-1.5 rounded-lg bg-[#ffae1a] px-3 py-1.5 text-xs sm:text-sm font-bold text-white shadow-sm">
+            {t("plan.freeAds")}
+            <Tag size={14} className="fill-current" />
+          </span>
+        </div>
+
+        <p className="flex-1 mb-4 text-[11px] sm:text-xs font-medium text-gray-500">
+          {hasNormalAdsLeft
+            ? t("plan.normalAdsRemaining", { count: normalCreditsLeft })
+            : t("plan.receiveNormalAds", { count: plan.adCredits })}
+        </p>
+
+        <Button
+          onClick={() => claimNormalPlan(plan._id)}
+          disabled={hasNormalAdsLeft || isClaiming}
+          className="w-full mt-auto bg-primary hover:bg-primary/90 text-white font-bold text-sm h-10 rounded-lg shadow-sm"
+        >
+          {isClaiming && <Loader2 className="w-4 h-4 animate-spin" />}
+          {t("plan.subscribeNow")}
+        </Button>
+      </div>
+    );
+  };
+
+  const renderPlan = (plan: SubscriptionPlan) => {
+    const name = locale === "ar" ? plan.nameAr : plan.name;
+    const isDaily = plan.planType === PlanType.DAILY;
+    const qty = quantities[plan._id] || 1;
+
+    return (
+      <div
+        key={plan._id}
+        onClick={() => openPlan(plan._id)}
+        className="group relative bg-white rounded-xl p-4 sm:p-5 border border-gray-100 shadow-sm hover:shadow-lg hover:border-primary/20 transition-all duration-300 cursor-pointer flex flex-col h-full overflow-hidden"
+      >
+        {plan.discount > 0 && (
+          <div className="absolute top-0 end-0 bg-[#ffae1a] text-white px-3 py-1 rounded-bl-xl font-bold text-[9px] sm:text-[11px] shadow-sm z-10">
+            {t("plan.discountLabel", { percent: plan.discount })}
+          </div>
+        )}
+
+        <div className="mb-3 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-1.5 min-w-0">
+            <div className="w-1 h-4 bg-primary rounded-full shrink-0"></div>
+            <h3 className="text-sm sm:text-base font-bold text-primary-dark truncate">
+              {name}
+            </h3>
+            <span className="shrink-0 text-sm sm:text-base font-bold text-primary-dark">
+              {t("plan.premTag")}
+            </span>
+          </div>
+          {!isDaily && (
+            <div className="shrink-0 flex items-baseline gap-1 text-sm sm:text-base font-bold text-primary-dark">
+              <span>{plan.price}</span>
+              <span>{t("currency")}</span>
+            </div>
+          )}
+        </div>
+
+        {isDaily ? (
+          <div className="flex-1 mb-4">
+            <div className="flex items-center gap-2.5 p-2.5 rounded-lg bg-gray-50 border border-gray-100 mb-3">
+              <div className="p-1.5 bg-white rounded-md shadow-sm text-primary shrink-0">
+                <Zap size={14} className="fill-current" />
+              </div>
+              <div>
+                <p className="text-primary-dark font-semibold text-xs">
+                  {t("plan.buyCreditsTitle")}
+                </p>
+                <p className="text-gray-400 text-[10px] sm:text-[11px]">
+                  {t("plan.buyCreditsSub")}
+                </p>
+              </div>
+            </div>
+            <p className="text-[11px] font-semibold text-gray-500 mb-1.5">
+              {t("plan.numberOfCredits")}
+            </p>
+            <div className="flex items-end justify-between gap-2">
+              <CreditStepper
+                value={qty}
+                onChange={(value) =>
+                  setQuantities((prev) => ({ ...prev, [plan._id]: value }))
+                }
+              />
+              <div className="text-end">
+                <p className="text-[10px] sm:text-xs text-gray-400">
+                  {t("plan.totalPrice")}
+                </p>
+                <span className="text-lg font-bold text-primary">
+                  {Number((plan.price * qty).toFixed(3))}
+                </span>
+                <span className="text-[10px] font-bold text-primary ms-0.5">
+                  {t("currency")}
+                </span>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="flex-1 space-y-2 mb-4">
+            <div className="flex items-center gap-2.5 p-2 rounded-lg bg-gray-50 border border-gray-100 transition-colors group-hover:bg-primary/5 group-hover:border-primary/10">
+              <div className="p-1 bg-white rounded-md shadow-sm text-primary shrink-0">
+                <Crown size={14} className="fill-current" />
+              </div>
+              <p className="text-primary-dark font-semibold text-[11px] sm:text-xs leading-snug">
+                {plan.description ||
+                  t("plan.featureCredits", { count: plan.adCredits })}
+              </p>
+            </div>
+            <div className="flex items-start gap-2.5 px-0.5">
+              <div className="mt-0.5 p-0.5 bg-primary/10 rounded-full text-primary shrink-0">
+                <svg
+                  viewBox="0 0 24 24"
+                  width="10"
+                  height="10"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              </div>
+              <p className="text-gray-600 text-[10px] sm:text-[11px] font-medium">
+                {t("plan.premiumVisibility")}
+              </p>
+            </div>
+          </div>
+        )}
+
+        <Button className="w-full mt-auto bg-primary hover:bg-primary/90 text-white font-bold text-sm h-10 rounded-lg shadow-sm">
+          {isDaily ? t("plan.buyCredits") : t("plan.subscribeNow")}
+        </Button>
+      </div>
+    );
+  };
 
   if (isLoading) {
     return (
@@ -103,138 +293,24 @@ export function PlansPage() {
           </Button>
         </div>
 
-        <div className="grid grid-cols-3 gap-1 bg-gray-100 rounded-xl p-1 mb-4">
-          {tabs.map((item) => (
-            <button
-              key={item.value}
-              onClick={() => setTab(item.value)}
-              className={`h-10 rounded-lg text-xs sm:text-sm font-bold transition-colors cursor-pointer ${tab === item.value ? "bg-primary text-white shadow-sm" : "text-gray-500 hover:text-primary-dark"}`}
-            >
-              {item.label}
-            </button>
-          ))}
-        </div>
-
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-          {visiblePlans.map((plan) => {
-            const name = locale === "ar" ? plan.nameAr : plan.name;
-            const isDaily = plan.planType === PlanType.DAILY;
-            const qty = quantities[plan._id] || 1;
-
-            return (
-              <div
-                key={plan._id}
-                onClick={() => openPlan(plan._id)}
-                className="group relative bg-white rounded-xl p-4 sm:p-5 border border-gray-100 shadow-sm hover:shadow-lg hover:border-primary/20 transition-all duration-300 cursor-pointer flex flex-col h-full overflow-hidden"
-              >
-                {plan.discount > 0 && (
-                  <div className="absolute top-0 end-0 bg-[#ffae1a] text-white px-3 py-1 rounded-bl-xl font-bold text-[9px] sm:text-[11px] shadow-sm z-10">
-                    {t("plan.discountLabel", { percent: plan.discount })}
-                  </div>
-                )}
-
-                <div className="mb-3 flex items-start justify-between gap-2">
-                  <div className="flex items-center gap-1.5 min-w-0 pt-1">
-                    <div className="w-1 h-4 bg-primary rounded-full shrink-0"></div>
-                    <h3 className="text-sm sm:text-base font-bold text-primary-dark truncate">
-                      {name}
-                    </h3>
-                  </div>
-                  <div className="text-end shrink-0">
-                    <span className="text-xl sm:text-2xl font-bold text-primary-dark tracking-tighter">
-                      {plan.price}
-                    </span>
-                    <span className="text-[10px] sm:text-xs font-semibold text-gray-400 ms-0.5">
-                      {t("currency")}
-                    </span>
-                    {isDaily && (
-                      <p className="text-[10px] sm:text-xs text-gray-400">
-                        {t("plan.perCredit")}
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                {isDaily ? (
-                  <div className="flex-1 mb-4">
-                    <div className="flex items-center gap-2.5 p-2.5 rounded-lg bg-gray-50 border border-gray-100 mb-3">
-                      <div className="p-1.5 bg-white rounded-md shadow-sm text-primary shrink-0">
-                        <Zap size={14} className="fill-current" />
-                      </div>
-                      <div>
-                        <p className="text-primary-dark font-semibold text-xs">
-                          {t("plan.buyCreditsTitle")}
-                        </p>
-                        <p className="text-gray-400 text-[10px] sm:text-[11px]">
-                          {t("plan.buyCreditsSub")}
-                        </p>
-                      </div>
-                    </div>
-                    <p className="text-[11px] font-semibold text-gray-500 mb-1.5">
-                      {t("plan.numberOfCredits")}
-                    </p>
-                    <div className="flex items-end justify-between gap-2">
-                      <CreditStepper
-                        value={qty}
-                        onChange={(value) =>
-                          setQuantities((prev) => ({
-                            ...prev,
-                            [plan._id]: value,
-                          }))
-                        }
-                      />
-                      <div className="text-end">
-                        <p className="text-[10px] sm:text-xs text-gray-400">
-                          {t("plan.totalPrice")}
-                        </p>
-                        <span className="text-lg font-bold text-primary">
-                          {Number((plan.price * qty).toFixed(3))}
-                        </span>
-                        <span className="text-[10px] font-bold text-primary ms-0.5">
-                          {t("currency")}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="flex-1 space-y-2 mb-4">
-                    <div className="flex items-center gap-2.5 p-2 rounded-lg bg-gray-50 border border-gray-100 transition-colors group-hover:bg-primary/5 group-hover:border-primary/10">
-                      <div className="p-1 bg-white rounded-md shadow-sm text-primary shrink-0">
-                        <Crown size={14} className="fill-current" />
-                      </div>
-                      <p className="text-primary-dark font-semibold text-[11px] sm:text-xs leading-snug">
-                        {t("plan.featureCredits", { count: plan.adCredits })}
-                      </p>
-                    </div>
-                    <div className="flex items-start gap-2.5 px-0.5">
-                      <div className="mt-0.5 p-0.5 bg-primary/10 rounded-full text-primary shrink-0">
-                        <svg
-                          viewBox="0 0 24 24"
-                          width="10"
-                          height="10"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="3"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <polyline points="20 6 9 17 4 12" />
-                        </svg>
-                      </div>
-                      <p className="text-gray-600 text-[10px] sm:text-[11px] font-medium">
-                        {t("plan.premiumVisibility")}
-                      </p>
-                    </div>
-                  </div>
-                )}
-
-                <Button className="w-full mt-auto bg-primary hover:bg-primary/90 text-white font-bold text-sm h-10 rounded-lg shadow-sm">
-                  {isDaily ? t("plan.buyCredits") : t("plan.subscribeNow")}
-                </Button>
-              </div>
-            );
-          })}
+          {normalPlans.map(renderNormalPlan)}
+          {dailyPlans.map(renderPlan)}
         </div>
+
+        {officePlans.length > 0 && (
+          <>
+            <div className="mt-6 mb-3 flex items-center gap-2.5 rounded-xl bg-gradient-to-r from-primary to-primary/80 px-4 py-3 text-white shadow-sm">
+              <Crown size={20} className="fill-current shrink-0" />
+              <h2 className="text-base sm:text-lg font-bold">
+                {t("plan.officesPlan")}
+              </h2>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+              {officePlans.map(renderPlan)}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

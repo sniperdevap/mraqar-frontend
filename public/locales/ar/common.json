@@ -160,7 +160,11 @@
     "repostAdDescription": "إعادة نشر هذا الإعلان لنقله إلى أعلى القائمة؟ سيتم خصم رصيد واحد.",
     "repostedSuccessfully": "تمت إعادة نشر الإعلان بنجاح",
     "failedToRepost": "فشلت إعادة نشر الإعلان",
-    "repostCooldown": "يمكنك إعادة نشر هذا الإعلان مرة واحدة كل ٢٤ ساعة"
+    "repostCooldown": "يمكنك إعادة نشر هذا الإعلان مرة واحدة كل ٢٤ ساعة",
+    "normalAdsLeft": "متبقي {remaining} اعلان عادي",
+    "adType": "نوع الإعلان",
+    "normalAd": "إعلان عادي",
+    "premiumAd": "إعلان مميز"
   },
   "search": {
     "title": "نتائج البحث",
@@ -594,7 +598,8 @@
     "completed": "مكتمل",
     "cancelled": "ملغي",
     "deleteAccount": "حذف الحساب",
-    "deleteSuccessMessage": "تم حذف حسابك بنجاح."
+    "deleteSuccessMessage": "تم حذف حسابك بنجاح.",
+    "loading": "جاري التحميل..."
   },
   "evaluation": {
     "title": "خدمات تقييم العقارات",
@@ -679,6 +684,7 @@
     "all": "الكل",
     "premiumAdPlan": "باقة الإعلانات المميزة",
     "officesPlan": "باقة المكاتب",
+    "premTag": "مميز",
     "plans": "الباقات",
     "discountLabel": "خصم {percent}%",
     "failedToLoadPlans": "فشل تحميل الباقات",
@@ -708,7 +714,12 @@
     "buyCredits": "شراء الأرصدة",
     "featureCreditRate": "رصيد واحد = {price} د.ك",
     "credits": "الأرصدة",
-    "knet": "كي نت"
+    "knet": "كي نت",
+    "normalAdsCount": "{count} إعلانات",
+    "freeAds": "إعلانات مجانية",
+    "normalAdsRemaining": "متبقي لديك {count} إعلانات عادية. يمكنك الحصول على المزيد بعد استخدامها.",
+    "receiveNormalAds": "ستحصل على {count} إعلانات عادية.",
+    "freePlanClaimed": "تمت إضافة إعلاناتك العادية المجانية!"
   },
   "copyright": {
     "title": "إشعار حقوق النشر",

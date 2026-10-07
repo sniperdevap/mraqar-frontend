@@ -5,6 +5,7 @@ import { format } from 'date-fns';
 import { useTranslations } from 'next-intl';
 import { useLocale } from '@/hooks/use-locale';
 import { useMySubscriptions } from '@/hooks/use-account';
+import { PlanType } from '@/lib/utils/constant';
 
 const formatSubscriptionDate = (value: string | Date) => {
   const date = new Date(value);
@@ -48,7 +49,9 @@ export function AdBalanceTab() {
                   <CheckCircle2 className="text-primary-dark w-5 h-5" />
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-[10px] font-bold text-gray-400 uppercase tracking-tight mb-0.5">{t('premiumProperties')}</span>
+                  <span className="text-[10px] font-bold text-gray-400 uppercase tracking-tight mb-0.5">
+                    {sub.planType === PlanType.NORMAL ? t('normalProperties') : t('premiumProperties')}
+                  </span>
                   <span className="text-xl font-semibold text-primary-dark leading-none">{sub.credits || 0}</span>
                 </div>
               </div>

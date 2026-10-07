@@ -11,6 +11,8 @@ export function ConditionalLayout({ children }: { children: React.ReactNode }) {
   const pathnameWithoutLocale = pathname?.replace(/^\/(en|ar)/, '') || '/';
   const isAdminRoute = pathnameWithoutLocale.startsWith('/admin');
   const isHomePage = pathnameWithoutLocale === '/' || pathnameWithoutLocale === '';
+  // Its fixed button overlaps the action buttons on the plans and ad form pages.
+  const hideScrollToTop = isHomePage || /^\/(plans|ads\/create|ads\/edit)(\/|$)/.test(pathnameWithoutLocale);
 
   if (isAdminRoute) {
     // Admin pages get rendered without navbar/footer — their own layout handles everything
@@ -21,7 +23,7 @@ export function ConditionalLayout({ children }: { children: React.ReactNode }) {
     <>
       <Navbar />
       <DynamicMainPadding>{children}</DynamicMainPadding>
-      {!isHomePage && <ScrollToTop />}
+      {!hideScrollToTop && <ScrollToTop />}
       <Footer />
     </>
   );
