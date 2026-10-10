@@ -28,7 +28,8 @@
     "viewMore": "View More",
     "scrollToTop": "Scroll to top",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "tryAgain": "Try again"
   },
   "messages": {
     "loading": "Loading...",
