@@ -434,7 +434,7 @@ export function Navbar() {
 
       {/* Mobile Bottom Navbar */}
       {showStandardNav && !isAdDetailPage && !isKeyboardOpen && (
-        <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-lg flex items-center justify-around py-2 px-4 z-50 rounded-t-[32px] shadow-[0_-8px_30px_rgba(0,0,0,0.06)] h-[4.5rem] border-t border-gray-100/50 pb-[env(safe-area-inset-bottom)] [transform:translateZ(0)] will-change-auto">
+        <nav className="lg:hidden fixed bottom-0 left-0 right-0 grid grid-cols-5 items-center px-2 pt-1 pb-[calc(env(safe-area-inset-bottom)+0.5rem)] min-h-[4.5rem] z-50 bg-white rounded-t-[28px] shadow-[0_-8px_28px_rgba(0,0,0,0.16),0_-2px_6px_rgba(0,0,0,0.08)] [transform:translateZ(0)]">
           {[
             { href: "/", icon: Home, label: t("nav.home") },
             { href: "/offices", icon: MapPin, label: t("nav.offices") },
@@ -446,7 +446,7 @@ export function Navbar() {
               return (
                 <div
                   key="central"
-                  className="relative flex items-center justify-center w-16 h-full"
+                  className="w-full flex items-center justify-center"
                 >
                   <button
                     type="button"
@@ -455,12 +455,12 @@ export function Navbar() {
                     onFocus={prefetchCreateAd}
                     onTouchStart={prefetchCreateAd}
                     aria-label={t("nav.addFreeAd")}
-                    className="absolute -top-[34px] focus:outline-none z-50 transition-transform duration-200 hover:scale-[1.08] active:scale-90"
+                    className="-translate-y-2.5 touch-manipulation focus:outline-none"
                   >
-                    <div className="flex items-center justify-center w-[50px] h-[50px] rounded-full bg-primary shadow-[0_8px_16px_rgba(225,29,29,0.3)] cursor-pointer transition-all duration-300 hover:shadow-[0_8px_20px_rgba(225,29,29,0.45)]">
+                    <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary shadow-[0_4px_12px_rgba(0,0,0,0.13)] cursor-pointer transition-transform duration-150 active:scale-95">
                       <Plus
-                        size={26}
-                        strokeWidth={3.5}
+                        size={22}
+                        strokeWidth={2.75}
                         className="text-white"
                         aria-hidden="true"
                       />
@@ -479,32 +479,23 @@ export function Navbar() {
                 href={item.href || "/menu"}
                 onClick={item.href === "/" ? handleHomeNavClick : undefined}
                 className={cn(
-                  "relative flex flex-col items-center gap-1.5 py-1.5 rounded-2xl transition-all duration-300",
-                  isActive
-                    ? "text-primary-blue bg-primary/10 px-4"
-                    : "text-[#555555] hover:text-[#555555] px-3",
+                  "touch-manipulation w-full flex flex-col items-center justify-center rounded-2xl transition-colors duration-150",
+                  isActive ? "text-primary-dark" : "text-[#3A3A3A]",
                 )}
               >
                 <div
                   className={cn(
-                    "z-10 transition-transform duration-200 active:scale-90",
-                    isActive && "scale-110 -translate-y-0.5",
+                    "flex flex-col items-center gap-1.5 rounded-2xl px-3.5 py-1.5 transition-all duration-200 active:scale-90",
+                    isActive && "scale-110 bg-primary/10",
                   )}
                 >
                   {Icon ? (
-                    <Icon size={22} strokeWidth={isActive ? 2.5 : 2} />
+                    <Icon size={22} strokeWidth={isActive ? 2 : 1.75} />
                   ) : null}
+                  <span className="text-[10px] leading-none font-medium whitespace-nowrap">
+                    {item.label}
+                  </span>
                 </div>
-                <span
-                  className={cn(
-                    "text-[10px] z-10 font-bold transition-all duration-300",
-                    isActive
-                      ? "text-primary-blue opacity-100"
-                      : "text-[#555555]",
-                  )}
-                >
-                  {item.label}
-                </span>
               </Link>
             );
           })}
