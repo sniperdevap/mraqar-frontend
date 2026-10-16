@@ -133,7 +133,8 @@ const icons: Record<string, string> = {
         </button>
         <!-- Logo in the centre -->
         <a href="/" class="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center" aria-label={t.siteName}>
-          <img src="/aqar-new-logo-nav.webp" alt="Mr Aqar مستر عقار" width="80" height="52" class="h-12 w-auto" fetchpriority="high" />
+          <img src="/aqar-new-logo-nav.webp" alt="Mr Aqar مستر عقار" width="80" height="52" class="logo-light h-12 w-auto" fetchpriority="high" />
+          <img src="/aqar-new-logo-nav-dark.webp" alt="Mr Aqar مستر عقار" width="80" height="52" class="logo-dark h-12 w-auto" />
         </a>
         {back && (
           <button type="button" class="z-10 ms-auto flex size-10 items-center justify-center rounded-xl text-ink hover:bg-canvas lg:hidden" aria-label={lang === "ar" ? "رجوع" : "Back"} data-back>
@@ -157,7 +158,8 @@ const icons: Record<string, string> = {
       <aside class="drawer-panel absolute inset-y-0 right-0 flex w-[82%] max-w-[360px] flex-col bg-white shadow-2xl" dir={dir} role="dialog" aria-modal="true" aria-label={t.menu} style="padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px)">
         <div class="flex items-center justify-between px-4 pt-4 pb-3">
           <a href="/" class="flex items-center gap-2.5">
-            <img src="/aqar-new-logo-nav.webp" alt="" width="62" height="40" class="h-10 w-auto" />
+            <img src="/aqar-new-logo-nav.webp" alt="" width="62" height="40" class="logo-light h-10 w-auto" />
+            <img src="/aqar-new-logo-nav-dark.webp" alt="" width="62" height="40" class="logo-dark h-10 w-auto" />
             <span class="text-[17px] font-bold">{t.siteName}</span>
           </a>
           <button type="button" class="flex size-11 items-center justify-center rounded-full bg-canvas text-ink/70 hover:bg-line" aria-label={t.closeMenu} data-drawer-close>
@@ -331,7 +333,7 @@ const icons: Record<string, string> = {
       const applyTheme = (mode: string) => {
         if (mode === "dark") document.documentElement.dataset.theme = "dark"; else delete document.documentElement.dataset.theme;
         themeBtns.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.themeSet === mode)));
-        document.querySelector('meta[name="theme-color"]')?.setAttribute("content", mode === "dark" ? "#161a21" : "#ffffff");
+        document.querySelector('meta[name="theme-color"]')?.setAttribute("content", mode === "dark" ? "#17212b" : "#ffffff");
       };
       applyTheme(document.documentElement.dataset.theme === "dark" ? "dark" : "light");
       themeBtns.forEach((b) => b.addEventListener("click", () => {
