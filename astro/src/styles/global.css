@@ -20,6 +20,8 @@
   --color-gold: #d49a39;
   --color-gold-soft: #fff4d6;
   --color-wa: #16a34a;
+  --color-surface: #ffffff;
+  --color-night: #221c1a;
 }
 
 html { -webkit-text-size-adjust: 100%; }
@@ -51,3 +53,29 @@ h1, h2, h3 { text-wrap: balance; }
 .prose-ar th, .prose-ar td { border: 1px solid var(--color-line); padding: .55em .75em; text-align: start; }
 .prose-ar th { background: #fafafa; }
 .prose-ar blockquote { border-inline-start: 3px solid var(--color-brand); padding-inline-start: 1em; color: var(--color-ink-2); }
+
+/* Dark mode (toggle in the side menu). Tokens flip; hard-coded white surfaces follow. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-ink: #f1ede9;
+  --color-ink-2: #d6cfc9;
+  --color-muted: #a39b94;
+  --color-line: #36302d;
+  --color-soft: #2c2725;
+  --color-canvas: #151211;
+  --color-surface: #1e1a18;
+  --color-brand-soft: #3a1b1b;
+  --color-gold-soft: #3a2f17;
+}
+:root[data-theme="dark"] .bg-white { background-color: var(--color-surface); }
+:root[data-theme="dark"] .bg-white\/95 { background-color: color-mix(in srgb, var(--color-surface) 95%, transparent); }
+:root[data-theme="dark"] .bg-ink { background-color: #f1ede9; color: #151211; }
+:root[data-theme="dark"] .text-white.bg-ink, :root[data-theme="dark"] .bg-ink .text-white { color: #151211; }
+:root[data-theme="dark"] select, :root[data-theme="dark"] input, :root[data-theme="dark"] textarea { color: var(--color-ink); }
+:root[data-theme="dark"] .bg-amber-50 { background-color: #2f2614; color: #f3d9a4; }
+:root[data-theme="dark"] .text-amber-900 { color: #f3d9a4; }
+:root[data-theme="dark"] .bg-\[\#f1efed\] { background-color: #262120; }
+/* Dark mode: keep text on gold surfaces readable, and give the logo a light plate. */
+:root[data-theme="dark"] .bg-gold-soft .text-\[\#4a3200\], :root[data-theme="dark"] .bg-gold-soft.text-\[\#4a3200\],
+:root[data-theme="dark"] [class*="bg-gold-soft"].text-\[\#4a3200\] { color: #f3d9a4; }
+:root[data-theme="dark"] img[src*="aqar-new-logo-nav"] { background: #fff; border-radius: 10px; padding: 2px 6px; }

@@ -82,6 +82,10 @@ const icons: Record<string, string> = {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#ffffff" />
+    <script is:inline>
+      // Apply the saved theme before the page paints (no white flash in dark mode).
+      try { if (localStorage.getItem("theme") === "dark") document.documentElement.dataset.theme = "dark"; } catch (e) {}
+    </script>
     <title>{fullTitle}</title>
     {description && <meta name="description" content={description} />}
     <link rel="canonical" href={canonicalUrl} />
@@ -177,6 +181,14 @@ const icons: Record<string, string> = {
             <svg class="text-ink/50 rtl:rotate-180" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
           </a>
           <div class="flex gap-3">
+            <div class="flex h-13 shrink-0 items-center gap-1 rounded-2xl bg-canvas p-1" role="group" aria-label={lang === "ar" ? "المظهر" : "Theme"}>
+              <button type="button" class="flex h-full w-11 items-center justify-center rounded-xl text-muted aria-pressed:bg-surface aria-pressed:text-gold aria-pressed:shadow-sm" data-theme-set="light" aria-pressed="true" aria-label={lang === "ar" ? "الوضع الفاتح" : "Light mode"}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+              </button>
+              <button type="button" class="flex h-full w-11 items-center justify-center rounded-xl text-muted aria-pressed:bg-surface aria-pressed:text-ink aria-pressed:shadow-sm" data-theme-set="dark" aria-pressed="false" aria-label={lang === "ar" ? "الوضع الداكن" : "Dark mode"}>
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+              </button>
+            </div>
             <form method="post" action="/api/lang" class="flex-1">
               <input type="hidden" name="lang" value={lang === "ar" ? "en" : "ar"} />
               <input type="hidden" name="back" value={Astro.url.pathname + Astro.url.search} />
@@ -198,7 +210,7 @@ const icons: Record<string, string> = {
     </main>
 
     {!hideFooter && (
-      <footer class:list={["bg-ink text-white", bottomBar && "pb-20 lg:pb-0"]}>
+      <footer class:list={["bg-night text-white", bottomBar && "pb-20 lg:pb-0"]}>
         <div class="mx-auto max-w-6xl px-5 pt-12 pb-8 lg:px-8">
           <div class="grid grid-cols-2 gap-x-6 gap-y-10 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr] lg:gap-x-10">
             <div class="col-span-2 lg:col-span-1">
@@ -290,6 +302,20 @@ const icons: Record<string, string> = {
         const fromHere = document.referrer && new URL(document.referrer).origin === location.origin;
         if (fromHere && history.length > 1) history.back(); else location.href = "/";
       });
+
+      // Light / dark switch in the side menu (remembered per browser).
+      const themeBtns = document.querySelectorAll<HTMLButtonElement>("[data-theme-set]");
+      const applyTheme = (mode: string) => {
+        if (mode === "dark") document.documentElement.dataset.theme = "dark"; else delete document.documentElement.dataset.theme;
+        themeBtns.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.themeSet === mode)));
+        document.querySelector('meta[name="theme-color"]')?.setAttribute("content", mode === "dark" ? "#1e1a18" : "#ffffff");
+      };
+      applyTheme(document.documentElement.dataset.theme === "dark" ? "dark" : "light");
+      themeBtns.forEach((b) => b.addEventListener("click", () => {
+        const mode = b.dataset.themeSet!;
+        applyTheme(mode);
+        try { localStorage.setItem("theme", mode); } catch {}
+      }));
 
       // App banner: Play Store on Android, App Store otherwise; hidden once closed.
       const banner = document.getElementById("app-banner");
