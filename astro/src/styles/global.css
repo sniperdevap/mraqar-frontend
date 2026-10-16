@@ -7,16 +7,16 @@
 
 @theme {
   --font-sans: "Cairo", system-ui, -apple-system, "Segoe UI", Tahoma, sans-serif;
-  --color-brand: #e11d1d;
-  --color-brand-dark: #b91616;
-  --color-brand-deep: #b3151b;
-  --color-brand-soft: #fdecec;
+  --color-brand: #d9363e;
+  --color-brand-dark: #bd2c33;
+  --color-brand-deep: #1d2738;
+  --color-brand-soft: #fbeeee;
   --color-ink: #322825;
   --color-ink-2: #4a423e;
   --color-muted: #686461;
-  --color-line: #e9e6e3;
+  --color-line: #e7e8ec;
   --color-soft: #eceaed;
-  --color-canvas: #f4f4f4;
+  --color-canvas: #f5f6f8;
   --color-gold: #d49a39;
   --color-gold-soft: #fff4d6;
   --color-wa: #16a34a;
@@ -65,8 +65,8 @@ h1, h2, h3 { text-wrap: balance; }
   --color-soft: #242f3d;
   --color-canvas: #0e1621;
   --color-surface: #17212b;
-  --color-brand: #ef3b3b;
-  --color-brand-deep: #ff6b6b;
+  --color-brand: #e5484d;
+  --color-brand-deep: #f5f5f5;
   --color-brand-soft: #2b1d26;
   --color-gold-soft: #2a2a1f;
 }
@@ -94,3 +94,4 @@ h1, h2, h3 { text-wrap: balance; }
 :root[data-theme="dark"] .logo-light { display: none; }
 :root[data-theme="dark"] .logo-dark { display: block; }
 :root[data-theme="dark"] .bg-white\/90 { background-color: rgba(23, 33, 43, .85); }
+:root[data-theme="dark"] .from-white { --tw-gradient-from: var(--color-canvas); }

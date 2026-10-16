@@ -22,7 +22,7 @@ const img = first ? mediaUrl(first, true) : "";
 const excerpt = (ad.description || "").replace(/\s+/g, " ").trim();
 const Heading = headingLevel;
 ---
-<article class:list={["group relative isolate flex min-h-[120px] overflow-hidden rounded-[18px] border bg-white transition-shadow hover:shadow-[0_6px_20px_rgba(50,40,37,0.08)]", featured ? "border-brand/25" : "border-line"]}>
+<article class:list={["group relative isolate flex min-h-[120px] overflow-hidden rounded-[18px] border bg-white transition-shadow hover:shadow-[0_6px_20px_rgba(50,40,37,0.08)]", "border-line"]}>
   <a href={href} class="absolute inset-0 z-20 rounded-[18px]" aria-label={title} data-astro-prefetch></a>
 
   <div class="relative w-[92px] shrink-0 bg-[#f1efed]">
