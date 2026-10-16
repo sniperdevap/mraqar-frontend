@@ -326,6 +326,14 @@ const icons: Record<string, string> = {
       };
       const nav = performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined;
       if (nav?.type === "back_forward") requestAnimationFrame(returnToLastAd);
+      // Opening a page (not Back/Forward) always starts at the top, even in browsers
+      // that try to restore an old scroll position.
+      else if (!location.hash) {
+        if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+        const toTop = () => window.scrollTo(0, 0);
+        toTop(); requestAnimationFrame(toTop); window.addEventListener("load", toTop, { once: true });
+        setTimeout(() => { if ("scrollRestoration" in history) history.scrollRestoration = "auto"; }, 800);
+      }
       window.addEventListener("pageshow", (e) => { if ((e as PageTransitionEvent).persisted) returnToLastAd(); });
 
       // Light / dark switch in the side menu (remembered per browser).
