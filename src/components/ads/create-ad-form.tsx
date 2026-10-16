@@ -520,10 +520,14 @@ export function CreateAdForm({ initialData, mode = 'create', onSuccess, requireC
 
             // Compress image before uploading
             if (item.type === 'image') {
+              // WebP at 1600px is ~3x smaller than the old 1 MB JPEG target and looks the same
+              // on phones, so photos upload much faster on mobile data.
               const options = {
-                maxSizeMB: 1,
-                maxWidthOrHeight: 1920,
+                maxSizeMB: 0.5,
+                maxWidthOrHeight: 1600,
                 useWebWorker: true,
+                fileType: 'image/webp',
+                initialQuality: 0.82,
               };
               try {
                 const { default: imageCompression } = await import('browser-image-compression');

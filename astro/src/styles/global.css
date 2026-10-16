@@ -115,3 +115,7 @@ h1, h2, h3 { text-wrap: balance; }
   border: 1px solid color-mix(in srgb, #c97f08 80%, #fff); border-inline-start: 0;
   border-start-end-radius: 999px; border-end-end-radius: 999px;
 }
+
+/* Smooth scrolling on long lists: off-screen cards skip layout and paint until needed. */
+.ad-row { content-visibility: auto; contain-intrinsic-size: auto 122px; }
+html { -webkit-tap-highlight-color: transparent; }
