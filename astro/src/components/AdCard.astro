@@ -22,9 +22,15 @@ const img = first ? mediaUrl(first, true) : "";
 const excerpt = (ad.description || "").replace(/\s+/g, " ").trim();
 const Heading = headingLevel;
 ---
-<article class:list={["group relative isolate flex min-h-[120px] overflow-hidden rounded-[18px] border bg-white transition-shadow hover:shadow-[0_6px_20px_rgba(50,40,37,0.08)]", "border-line"]}>
+<article class:list={["group relative isolate flex min-h-[120px] overflow-hidden rounded-[18px] border bg-white shadow-[0_2px_10px_rgba(50,40,37,0.07)] transition-shadow hover:shadow-[0_8px_24px_rgba(50,40,37,0.12)]", featured ? "ad-featured" : "border-line"]}>
   <a href={href} class="absolute inset-0 z-20 rounded-[18px]" aria-label={title} data-astro-prefetch></a>
 
+  {featured && (
+    <span class="ad-ribbon">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9.94 14.06A2 2 0 0 0 8.5 12.62L2.37 11.04a.5.5 0 0 1 0-.96L8.5 8.5a2 2 0 0 0 1.44-1.44l1.58-6.13a.5.5 0 0 1 .96 0l1.58 6.13A2 2 0 0 0 15.5 8.5l6.13 1.58a.5.5 0 0 1 0 .96L15.5 12.62a2 2 0 0 0-1.44 1.44l-1.58 6.13a.5.5 0 0 1-.96 0z"/></svg>
+      {t.featured}
+    </span>
+  )}
   <div class="relative w-[92px] shrink-0 bg-[#f1efed]">
     {img ? (
       <img src={img} alt="" width="92" height="120" class="absolute inset-0 size-full object-cover" loading={eager ? "eager" : "lazy"} decoding="async" fetchpriority={eager ? "high" : "auto"} />
@@ -34,12 +40,6 @@ const Heading = headingLevel;
         <span class="text-[10px] font-bold text-muted/80">{lang === "ar" ? "بدون صورة" : "No photo"}</span>
       </span>
     )}
-    {featured && (
-      <span class="absolute top-1.5 start-1.5 z-10 flex items-center gap-[3px] rounded-full bg-white/90 py-[2px] ps-1 pe-1.5 text-[10px] font-bold leading-4 text-brand shadow-[0_1px_4px_rgba(0,0,0,0.15)] backdrop-blur-sm">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 7.5 7.5 11 12 4l4.5 7L21 7.5 19 18H5z"/></svg>
-        {t.featured}
-      </span>
-    )}
   </div>
 
   <div class="flex min-w-0 flex-1 flex-col justify-center p-2 ps-3 sm:px-[18px] sm:py-2.5">
@@ -47,9 +47,9 @@ const Heading = headingLevel;
     <div class="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1">
       <span class="inline-flex items-baseline gap-1">
         {value ? (
-          <><span class="text-[16px] font-extrabold text-brand-deep sm:text-[18px]">{value.toLocaleString("en-US")}</span><span class="text-[12px] font-semibold text-muted">{unit}{ad.purpose === "rent" ? ` / ${t.monthly}` : ""}</span></>
+          <><span class="text-[14px] font-extrabold text-brand-deep sm:text-[16px]">{value.toLocaleString("en-US")}</span><span class="text-[11px] font-semibold text-muted">{unit}{ad.purpose === "rent" ? ` / ${t.monthly}` : ""}</span></>
         ) : (
-          <><span class="text-[14px] font-extrabold text-brand-deep">{t.priceOnRequest}</span>{ad.purpose === "rent" && <span class="text-[12px] font-semibold text-muted"> / {t.monthly}</span>}</>
+          <><span class="text-[13px] font-extrabold text-brand-deep">{t.priceOnRequest}</span>{ad.purpose === "rent" && <span class="text-[12px] font-semibold text-muted"> / {t.monthly}</span>}</>
         )}
       </span>
       <span class="inline-flex items-center gap-1 text-[12px] font-semibold text-muted">

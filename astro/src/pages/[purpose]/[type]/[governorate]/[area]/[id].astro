@@ -105,8 +105,14 @@ Astro.response.headers.set("Cache-Control", "public, max-age=0, s-maxage=60, sta
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
           <time datetime={ad.createdAt} title={postedOn}>{timeAgo(ad.createdAt, lang)}</time>
         </span>
-        <span>{t.adNo}: {ad.id}</span>
-        {typeof ad.views === "number" && ad.views > 0 && <span>{ad.views} {t.views}</span>}
+        <span class="inline-flex items-center gap-1">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 9h16M4 15h16M10 3 8 21M16 3l-2 18"/></svg>
+          {t.adNo}: {ad.id}
+        </span>
+        <span class="inline-flex items-center gap-1">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+          {(Number(ad.views) || 0).toLocaleString("en-US")} {t.views}
+        </span>
       </p>
       <div class="mt-3 flex flex-wrap items-center gap-2.5">
         <p class="text-[18px] font-extrabold text-brand-deep">
@@ -114,8 +120,8 @@ Astro.response.headers.set("Cache-Control", "public, max-age=0, s-maxage=60, sta
           {ad.purpose === "rent" && <span class="ms-1 text-[15px] font-bold text-muted">/ {t.monthly}</span>}
         </p>
         {featured && (
-          <span class="inline-flex items-center gap-1 rounded-full bg-brand px-2.5 py-0.5 text-[12px] font-bold text-white">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 7.5 7.5 11 12 4l4.5 7L21 7.5 19 18H5z"/><rect x="5" y="19.5" width="14" height="2" rx="1"/></svg>
+          <span class="inline-flex items-center gap-1 rounded-full border border-[#e0a83a] bg-gradient-to-l from-[#f7d371] to-[#dc980f] px-2.5 py-0.5 text-[12px] font-extrabold text-[#4a3200]">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9.94 14.06A2 2 0 0 0 8.5 12.62L2.37 11.04a.5.5 0 0 1 0-.96L8.5 8.5a2 2 0 0 0 1.44-1.44l1.58-6.13a.5.5 0 0 1 .96 0l1.58 6.13A2 2 0 0 0 15.5 8.5l6.13 1.58a.5.5 0 0 1 0 .96L15.5 12.62a2 2 0 0 0-1.44 1.44l-1.58 6.13a.5.5 0 0 1-.96 0z"/></svg>
             {t.featured}
           </span>
         )}

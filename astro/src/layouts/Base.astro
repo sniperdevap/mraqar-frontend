@@ -288,6 +288,18 @@ const icons: Record<string, string> = {
     )}
 
     <script>
+      // Tapping Home (logo or bottom nav) while already on the home page glides back to the top.
+      document.addEventListener("click", (e) => {
+        const a = (e.target as HTMLElement | null)?.closest?.("a") as HTMLAnchorElement | null;
+        if (!a || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey) return;
+        const target = a.dataset.real || new URL(a.href, location.href).pathname;
+        const here = document.documentElement.dataset.path || location.pathname;
+        const isHome = (p: string) => p === "/" || p === "/en" || p === "/en/" || /(^|\/)home\.html$/.test(p);
+        if (isHome(target) && isHome(here)) {
+          e.preventDefault();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+      });
       const drawer = document.getElementById("drawer")!;
       const opener = document.querySelector<HTMLButtonElement>("[data-drawer-open]");
       const setOpen = (open: boolean) => {

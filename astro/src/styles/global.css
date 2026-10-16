@@ -95,3 +95,23 @@ h1, h2, h3 { text-wrap: balance; }
 :root[data-theme="dark"] .logo-dark { display: block; }
 :root[data-theme="dark"] .bg-white\/90 { background-color: rgba(23, 33, 43, .85); }
 :root[data-theme="dark"] .from-white { --tw-gradient-from: var(--color-canvas); }
+
+/* Featured listing: gold frame, gold edge bar and ribbon */
+.ad-featured {
+  --g1: #f6d583; --g2: #eab030; --g3: #fae7b4; --g4: #d18a0a; --gd: #c97f08;
+  border-width: 1.6px; border-color: transparent;
+  background: linear-gradient(var(--color-surface), var(--color-surface)) padding-box,
+    linear-gradient(135deg, var(--g1), var(--g2) 35%, var(--g3) 62%, var(--g4)) border-box;
+}
+.ad-featured::before {
+  content: ""; position: absolute; inset-inline-start: 0; top: 0; bottom: 0; z-index: 15; width: 6px;
+  background: linear-gradient(180deg, #f7c948, var(--g2) 55%, var(--gd));
+}
+.ad-ribbon {
+  position: absolute; inset-inline-start: -1px; top: .9rem; z-index: 20; pointer-events: none;
+  display: inline-flex; align-items: center; gap: .25rem; min-height: 1.7rem;
+  padding: .34rem .58rem .34rem .5rem; font-size: .68rem; font-weight: 800; line-height: 1.1;
+  color: #4a3200; background: linear-gradient(90deg, #f7d371, #dc980f);
+  border: 1px solid color-mix(in srgb, #c97f08 80%, #fff); border-inline-start: 0;
+  border-start-end-radius: 999px; border-end-end-radius: 999px;
+}
