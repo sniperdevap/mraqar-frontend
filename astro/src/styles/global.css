@@ -57,25 +57,35 @@ h1, h2, h3 { text-wrap: balance; }
 /* Dark mode (toggle in the side menu). Tokens flip; hard-coded white surfaces follow. */
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --color-ink: #f1ede9;
-  --color-ink-2: #d6cfc9;
-  --color-muted: #a39b94;
-  --color-line: #36302d;
-  --color-soft: #2c2725;
-  --color-canvas: #151211;
-  --color-surface: #1e1a18;
-  --color-brand-soft: #3a1b1b;
-  --color-gold-soft: #3a2f17;
+  --color-ink: #eef0f4;
+  --color-ink-2: #c9ced8;
+  --color-muted: #98a0ad;
+  --color-line: #262b35;
+  --color-soft: #1f242d;
+  --color-canvas: #0e1116;
+  --color-surface: #161a21;
+  --color-brand: #ef3b3b;
+  --color-brand-deep: #ff6b6b;
+  --color-brand-soft: #2a1618;
+  --color-gold-soft: #2a2414;
 }
 :root[data-theme="dark"] .bg-white { background-color: var(--color-surface); }
 :root[data-theme="dark"] .bg-white\/95 { background-color: color-mix(in srgb, var(--color-surface) 95%, transparent); }
-:root[data-theme="dark"] .bg-ink { background-color: #f1ede9; color: #151211; }
-:root[data-theme="dark"] .text-white.bg-ink, :root[data-theme="dark"] .bg-ink .text-white { color: #151211; }
+:root[data-theme="dark"] .bg-ink { background-color: #eef0f4; color: #0e1116; }
+:root[data-theme="dark"] .text-white.bg-ink, :root[data-theme="dark"] .bg-ink .text-white { color: #0e1116; }
 :root[data-theme="dark"] select, :root[data-theme="dark"] input, :root[data-theme="dark"] textarea { color: var(--color-ink); }
 :root[data-theme="dark"] .bg-amber-50 { background-color: #2f2614; color: #f3d9a4; }
 :root[data-theme="dark"] .text-amber-900 { color: #f3d9a4; }
-:root[data-theme="dark"] .bg-\[\#f1efed\] { background-color: #262120; }
+:root[data-theme="dark"] .bg-\[\#f1efed\] { background-color: #1c2029; }
 /* Dark mode: keep text on gold surfaces readable, and give the logo a light plate. */
 :root[data-theme="dark"] .bg-gold-soft .text-\[\#4a3200\], :root[data-theme="dark"] .bg-gold-soft.text-\[\#4a3200\],
 :root[data-theme="dark"] [class*="bg-gold-soft"].text-\[\#4a3200\] { color: #f3d9a4; }
-:root[data-theme="dark"] img[src*="aqar-new-logo-nav"] { background: #fff; border-radius: 10px; padding: 2px 6px; }
+:root[data-theme="dark"] header img[src*="aqar-new-logo-nav"], :root[data-theme="dark"] aside img[src*="aqar-new-logo-nav"], :root[data-theme="dark"] footer img[src*="aqar-new-logo-nav"] { background: #f4f5f7; border-radius: 10px; padding: 3px 7px; }
+:root[data-theme="dark"] article img[src*="aqar-new-logo-nav"] { filter: grayscale(1) brightness(2); opacity: .2; }
+:root[data-theme="dark"] .shadow-sm, :root[data-theme="dark"] [class*="shadow-["] { --tw-shadow-color: rgba(0,0,0,.45); }
+:root[data-theme="dark"] .bg-night { background-color: #0a0c10; }
+:root[data-theme="dark"] .border-gray-200 { border-color: var(--color-line); }
+:root[data-theme="dark"] .to-\[\#fff6f5\] { --tw-gradient-to: #1d1719; }
+:root[data-theme="dark"] .from-white { --tw-gradient-from: var(--color-surface); }
+:root[data-theme="dark"] [class*="bg-white/"] { background-color: color-mix(in srgb, var(--color-surface) 92%, transparent); }
+:root[data-theme="dark"] img[src*="DefaultAdImage"] { filter: brightness(.82); }

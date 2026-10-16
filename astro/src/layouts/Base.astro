@@ -303,12 +303,35 @@ const icons: Record<string, string> = {
         if (fromHere && history.length > 1) history.back(); else location.href = "/";
       });
 
+      // Back from an ad → land on that ad in the list, briefly highlighted.
+      const AD_LINK = /^\/(sale|rent|exchange)\/[^/]+\/[^/]+\/[^/]+\/\d+$/;
+      document.addEventListener("click", (e) => {
+        const a = (e.target as HTMLElement).closest<HTMLAnchorElement>("a[href]");
+        if (!a) return;
+        const path = a.dataset.real || new URL(a.href, location.href).pathname;
+        if (!AD_LINK.test(path)) return;
+        try { sessionStorage.setItem("lastAd", JSON.stringify({ from: location.pathname + location.search, ad: path })); } catch {}
+      }, true);
+      const returnToLastAd = () => {
+        let saved: { from: string; ad: string } | null = null;
+        try { saved = JSON.parse(sessionStorage.getItem("lastAd") || "null"); } catch {}
+        if (!saved || saved.from !== location.pathname + location.search) return;
+        const link = [...document.querySelectorAll<HTMLAnchorElement>("a[href]")].find((x) => (x.dataset.real || new URL(x.href, location.href).pathname) === saved!.ad);
+        const card = link?.closest("article") || link;
+        if (!card) return;
+        card.scrollIntoView({ block: "center" });
+        card.animate([{ boxShadow: "0 0 0 3px rgba(225,29,29,.55)" }, { boxShadow: "0 0 0 0 rgba(225,29,29,0)" }], { duration: 1600, easing: "ease-out" });
+      };
+      const nav = performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined;
+      if (nav?.type === "back_forward") requestAnimationFrame(returnToLastAd);
+      window.addEventListener("pageshow", (e) => { if ((e as PageTransitionEvent).persisted) returnToLastAd(); });
+
       // Light / dark switch in the side menu (remembered per browser).
       const themeBtns = document.querySelectorAll<HTMLButtonElement>("[data-theme-set]");
       const applyTheme = (mode: string) => {
         if (mode === "dark") document.documentElement.dataset.theme = "dark"; else delete document.documentElement.dataset.theme;
         themeBtns.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.themeSet === mode)));
-        document.querySelector('meta[name="theme-color"]')?.setAttribute("content", mode === "dark" ? "#1e1a18" : "#ffffff");
+        document.querySelector('meta[name="theme-color"]')?.setAttribute("content", mode === "dark" ? "#161a21" : "#ffffff");
       };
       applyTheme(document.documentElement.dataset.theme === "dark" ? "dark" : "light");
       themeBtns.forEach((b) => b.addEventListener("click", () => {
