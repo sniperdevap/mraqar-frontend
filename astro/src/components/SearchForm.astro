@@ -13,27 +13,19 @@ const purposes = [["sale", t.sale], ["rent", t.rent], ["exchange", t.exchange]] 
 const areaData = areas.map((a) => ({ id: String(a.id), l: lang === "ar" ? a.labelAr : a.label, g: lang === "ar" ? a.governorateAr : a.governorate }));
 const chosen = areaData.filter((a) => selectedAreas.includes(a.id));
 ---
-<form action="/search" method="get" class:list={["space-y-3.5", !compact && "rounded-3xl border border-line bg-white p-4 shadow-[0_10px_30px_rgba(16,24,40,0.06)] sm:p-5"]} data-search-form>
-  <fieldset class="grid grid-cols-3 gap-1 rounded-2xl bg-canvas p-1">
-    <legend class="sr-only">{t.sale} / {t.rent} / {t.exchange}</legend>
-    {purposes.map(([v, label]) => (
-      <label class="cursor-pointer">
-        <input type="radio" name="purpose" value={v} class="peer sr-only" checked={purpose === v} />
-        <span class="flex h-11 items-center justify-center rounded-xl text-[15px] text-muted transition-all peer-checked:bg-white peer-checked:font-semibold peer-checked:text-ink peer-checked:shadow-sm peer-focus-visible:outline-2 peer-focus-visible:outline-brand">{label}</span>
-      </label>
-    ))}
-  </fieldset>
+<form action="/search" method="get" class:list={["flex flex-col gap-3.5", !compact && "rounded-[28px] border border-line/70 bg-white p-5 shadow-[0_12px_40px_rgba(16,24,40,0.07)] sm:p-6"]} data-search-form>
 
   <!-- Area picker: type to search, grouped by governorate, several at once -->
-  <div class="relative" data-area-picker data-placeholder={t.allAreas}>
-    <div class="flex min-h-13 w-full cursor-text flex-wrap items-center gap-1.5 rounded-xl border border-line bg-white px-3.5 py-2 transition-colors focus-within:border-brand" data-area-box>
+  <div class="relative" data-area-picker data-placeholder={t.typeArea}>
+    <div class="flex min-h-14 w-full cursor-text flex-wrap items-center gap-1.5 rounded-2xl border border-gray-200 bg-white ps-11 pe-3.5 py-2 transition-colors focus-within:border-brand" data-area-box>
+      <svg class="pointer-events-none absolute start-4 top-[18px] text-ink/70" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>
       {chosen.map((a) => (
         <span class="inline-flex items-center gap-1 rounded-lg bg-brand-soft px-2.5 py-1 text-[14px] text-ink" data-chip={a.id}>{a.l}
           <button type="button" class="text-muted hover:text-brand" data-remove={a.id} aria-label="×">×</button>
           <input type="hidden" name="area" value={a.id} />
         </span>
       ))}
-      <input type="text" autocomplete="off" class="min-w-[8rem] flex-1 border-0 bg-transparent text-[16px] outline-none placeholder:text-gray-400" placeholder={chosen.length ? "" : t.allAreas} aria-label={t.allAreas} data-area-input />
+      <input type="text" autocomplete="off" class="min-w-[8rem] flex-1 border-0 bg-transparent text-[16px] outline-none placeholder:text-gray-400" placeholder={chosen.length ? "" : t.typeArea} aria-label={t.allAreas} data-area-input />
       <svg class="pointer-events-none shrink-0 text-gray-400" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
     </div>
     <div class="absolute inset-x-0 top-full z-20 mt-1.5 hidden max-h-80 overflow-y-auto rounded-2xl border border-line bg-white py-1.5 shadow-[0_12px_32px_rgba(16,24,40,0.12)]" role="listbox" data-area-list></div>
@@ -41,21 +33,31 @@ const chosen = areaData.filter((a) => selectedAreas.includes(a.id));
   </div>
 
   <div class="relative">
-    <select name="propertyType" class="h-13 w-full appearance-none rounded-xl border border-line bg-white px-3.5 text-[16px] text-ink outline-none focus:border-brand" aria-label={t.propertyType}>
+    <svg class="pointer-events-none absolute start-4 top-1/2 -translate-y-1/2 text-ink/70" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="1.5"/><path d="M9 7h1.5M13.5 7H15M9 11h1.5M13.5 11H15M9 15h1.5M13.5 15H15"/></svg>
+    <select name="propertyType" class="h-14 w-full appearance-none rounded-2xl border border-gray-200 bg-white ps-11 pe-10 text-[16px] text-ink outline-none focus:border-brand" aria-label={t.propertyType}>
       <option value="">{t.propertyType}</option>
       {types.map((ty) => <option value={String(ty.id)} selected={propertyType === String(ty.id)}>{lang === "ar" ? ty.labelAr : ty.label}</option>)}
     </select>
     <svg class="pointer-events-none absolute end-3.5 top-1/2 -translate-y-1/2 text-gray-400" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
   </div>
 
+  <fieldset class="grid grid-cols-3 gap-1 rounded-2xl bg-[#ececef] p-1.5">
+    <legend class="sr-only">{t.sale} / {t.rent} / {t.exchange}</legend>
+    {purposes.map(([v, label]) => (
+      <label class="cursor-pointer">
+        <input type="radio" name="purpose" value={v} class="peer sr-only" checked={purpose === v} />
+        <span class="flex h-11 items-center justify-center rounded-xl text-[15px] text-ink/80 transition-all peer-checked:bg-white peer-checked:font-semibold peer-checked:text-ink peer-checked:shadow-sm peer-focus-visible:outline-2 peer-focus-visible:outline-brand">{label}</span>
+      </label>
+    ))}
+  </fieldset>
   {showPrice && (
     <div class="grid grid-cols-2 gap-3">
-      <input type="number" inputmode="numeric" name="minPrice" value={minPrice} placeholder={t.priceFrom} class="h-13 rounded-xl border border-line bg-white px-3.5 text-[16px] outline-none focus:border-brand" />
-      <input type="number" inputmode="numeric" name="maxPrice" value={maxPrice} placeholder={t.priceTo} class="h-13 rounded-xl border border-line bg-white px-3.5 text-[16px] outline-none focus:border-brand" />
+      <input type="number" inputmode="numeric" name="minPrice" value={minPrice} placeholder={t.priceFrom} class="h-14 rounded-2xl border border-gray-200 bg-white px-4 text-[16px] outline-none focus:border-brand" />
+      <input type="number" inputmode="numeric" name="maxPrice" value={maxPrice} placeholder={t.priceTo} class="h-14 rounded-2xl border border-gray-200 bg-white px-4 text-[16px] outline-none focus:border-brand" />
     </div>
   )}
 
-  <button class="flex h-13 w-full items-center justify-center gap-2 rounded-xl bg-brand text-[16px] font-semibold text-white shadow-[0_8px_20px_rgba(225,29,29,0.22)] transition-colors hover:bg-brand-dark active:scale-[0.99]">
+  <button class="flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-brand text-[16.5px] font-bold text-white transition-colors hover:bg-brand-dark active:scale-[0.99]">
     <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
     {t.searchBtn}
   </button>

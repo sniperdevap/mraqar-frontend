@@ -1,8 +1,11 @@
-@import "@fontsource-variable/alexandria";
+@import "@fontsource/ibm-plex-sans-arabic/400.css";
+@import "@fontsource/ibm-plex-sans-arabic/500.css";
+@import "@fontsource/ibm-plex-sans-arabic/600.css";
+@import "@fontsource/ibm-plex-sans-arabic/700.css";
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Alexandria Variable", "Alexandria", Tahoma, "Segoe UI", system-ui, sans-serif;
+  --font-sans: "IBM Plex Sans Arabic", Tahoma, "Segoe UI", system-ui, sans-serif;
   --color-brand: #e11d1d;
   --color-brand-dark: #b91616;
   --color-brand-soft: #fdecec;
@@ -22,7 +25,7 @@ h1, h2, h3 { text-wrap: balance; }
 
 /* Drawer */
 .drawer[data-open="false"] { pointer-events: none; }
-.drawer[data-open="false"] .drawer-panel { transform: translateX(-100%); } /* panel opens from the left, next to the menu icon */
+.drawer[data-open="false"] .drawer-panel { transform: translateX(100%); } /* panel slides in from the right, like Awwad's */
 .drawer[data-open="false"] .drawer-scrim { opacity: 0; }
 .drawer-panel, .drawer-scrim { transition: transform .28s cubic-bezier(.2,.8,.2,1), opacity .28s ease; }
 

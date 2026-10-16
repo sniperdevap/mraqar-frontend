@@ -20,18 +20,17 @@ const description = lang === "ar"
   : "Search thousands of properties in Kuwait for sale, rent and exchange: apartments, houses, land, buildings and chalets. Post your ad for free on Mr Aqar.";
 ---
 <Base title={title} description={description} canonical="/" active="home">
-  <section class="relative overflow-hidden bg-white">
-    <div class="pointer-events-none absolute inset-x-0 -top-24 h-72 bg-[radial-gradient(60%_60%_at_50%_0%,rgba(225,29,29,0.10),transparent_70%)]" aria-hidden="true"></div>
-    <div class="relative mx-auto max-w-2xl px-4 pt-6 pb-7 sm:pt-10">
-      <h1 class="text-center text-[25px] font-bold leading-[1.45] sm:text-[32px]">{t.heroTitle}</h1>
-      <p class="mx-auto mt-2 max-w-lg text-center text-[14.5px] leading-7 text-muted sm:text-[16px]">{t.heroSub}</p>
-      <div class="mt-5"><SearchForm lang={lang} areas={areas} types={types} purpose="sale" /></div>
+  <section class="relative overflow-hidden bg-canvas">
+        <div class="relative mx-auto max-w-xl px-5 pt-9 pb-10 sm:pt-14">
+      <h1 class="text-center text-[28px] font-bold leading-[1.45] sm:text-[34px]">{t.heroTitle}</h1>
+      <p class="mx-auto mt-3 max-w-lg text-center text-[15.5px] leading-7 text-ink-2">{t.heroSub}</p>
+      <div class="mt-7"><SearchForm lang={lang} areas={areas} types={types} /></div>
     </div>
   </section>
 
   <section class="mx-auto max-w-6xl px-4 pt-8 pb-12 sm:px-6">
     <div class="mb-4 flex items-end justify-between">
-      <h2 class="text-[20px] font-bold">{t.latest}</h2>
+      <h2 class="text-[18px] font-bold">{t.latest}</h2>
       <a href="/search" class="text-[14.5px] font-semibold text-brand">{t.showMore}</a>
     </div>
     {latest?.ads.length ? (
