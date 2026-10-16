@@ -19,7 +19,7 @@ export interface Ad {
   id: number; _id: string; user: AdUser; purpose: "sale" | "rent" | "exchange";
   propertyType: PropertyType; area: Partial<Area> & { id: number; label: string; labelAr: string; value: string };
   price: number; priceUnit?: "kd" | "thousand"; phoneNumber: string; isPhoneHidden: boolean; alternativePhoneNumber?: string;
-  premiumAd?: boolean; isPremium?: boolean; description: string; media: Media[];
+  premiumAd?: boolean; isPremium?: boolean; premiumExpiresAt?: string; description: string; media: Media[];
   status: "active" | "inactive" | "sold"; views?: number; createdAt: string; updatedAt: string; isOffice?: boolean;
 }
 export interface AdsPage { ads: Ad[]; total: number; page: number; totalPages: number }
@@ -98,6 +98,14 @@ export async function postContact(body: { fullName: string; email: string; subje
     signal: AbortSignal.timeout(6000),
   });
   if (!res.ok) throw new ApiError(res.status, `API ${res.status} for /contact`);
+}
+
+/** Featured (premium) ads keep the badge and top spot for 14 days. */
+export const PREMIUM_DAYS = 14;
+export function isFeatured(ad: Pick<Ad, "premiumAd" | "isPremium" | "premiumExpiresAt" | "createdAt">, now = Date.now()): boolean {
+  if (!(ad.premiumAd || ad.isPremium)) return false;
+  if (ad.premiumExpiresAt) return +new Date(ad.premiumExpiresAt) > now;
+  return now - +new Date(ad.createdAt) < PREMIUM_DAYS * 24 * 3600 * 1000;
 }
 
 /** Absolute URL for an ad photo or video thumbnail. */

@@ -5,7 +5,7 @@
  */
 import Base from "@/layouts/Base.astro";
 import AdCard from "@/components/AdCard.astro";
-import { ApiError, getAd, getAds, getAreas, mediaUrl, countAdView } from "@/lib/api";
+import { ApiError, getAd, getAds, getAreas, mediaUrl, countAdView, isFeatured } from "@/lib/api";
 import { adHref, findArea, AD_PURPOSES } from "@/lib/ad-url";
 import { adTitle, dict, formatPrice, getLang, timeAgo, waNumber } from "@/lib/i18n";
 import { adJsonLd } from "@/lib/ad-page";
@@ -84,7 +84,7 @@ const metaDescription = (lang === "en" && /[\u0600-\u06ff]/.test(desc)
   ? `${title}${gov ? `, ${gov}` : ""}, Kuwait${price ? ` — ${price}${ad.purpose === "rent" ? " per month" : ""}` : ""}. Ad #${ad.id}${ad.media?.length ? ` with ${ad.media.length} photo${ad.media.length > 1 ? "s" : ""}` : ""}. Call or WhatsApp the advertiser directly on Mr Aqar.`
   : `${title}${price ? ` — ${price}${ad.purpose === "rent" ? ` ${t.monthly}` : ""}` : ""}. ${desc}`).slice(0, 158);
 const sold = ad.status !== "active";
-const featured = ad.isPremium || ad.premiumAd;
+const featured = isFeatured(ad);
 const value = Number(ad.price || 0);
 const unit = ad.priceUnit === "thousand" ? (lang === "ar" ? "الف" : "K") : lang === "ar" ? "د.ك" : "KD";
 // Show the real posted date too, so what Google reads matches what people see.

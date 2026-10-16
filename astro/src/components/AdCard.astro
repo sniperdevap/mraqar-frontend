@@ -5,7 +5,7 @@
  * two-line description. The whole row is one link.
  */
 import type { Ad, Area, Lang } from "@/lib/api";
-import { mediaUrl } from "@/lib/api";
+import { mediaUrl, isFeatured } from "@/lib/api";
 import { adHref } from "@/lib/ad-url";
 import { adTitle, timeAgo, dict } from "@/lib/i18n";
 
@@ -16,7 +16,7 @@ const href = adHref(ad, areas);
 const title = adTitle(ad, lang);
 const value = Number(ad.price || 0);
 const unit = ad.priceUnit === "thousand" ? (lang === "ar" ? "الف" : "K") : lang === "ar" ? "د.ك" : "KD";
-const featured = ad.isPremium || ad.premiumAd;
+const featured = isFeatured(ad);
 const first = ad.media?.[0];
 const img = first ? mediaUrl(first, true) : "";
 const excerpt = (ad.description || "").replace(/\s+/g, " ").trim();

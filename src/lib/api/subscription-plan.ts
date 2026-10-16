@@ -34,6 +34,19 @@ export const subscribeToPlan = async (planId: string, coupon?: string): Promise<
   return response.data;
 };
 
+/**
+ * Starts a plan purchase. Free plans (or 100% coupons) are granted at once; paid
+ * plans return a MyFatoorah payment page URL (KNET, cards, Apple Pay) to open.
+ */
+export type CheckoutResult =
+  | { free: true; subscription: UserSubscription }
+  | { free: false; paymentId: string; trackId: string; url: string };
+
+export const startCheckout = async (planId: string, coupon?: string, quantity = 1): Promise<CheckoutResult> => {
+  const response = await axiosWrapper<CheckoutResult>('post', API_ENDPOINTS.SUBSCRIPTION_PLAN.CHECKOUT, { planId, coupon, quantity });
+  return response.data;
+};
+
 export interface UserSubscription {
   user: string;
   plan: SubscriptionPlan;

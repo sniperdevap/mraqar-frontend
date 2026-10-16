@@ -72,6 +72,7 @@ export const API_ENDPOINTS = {
     GET_BY_ID: (id: string) => `/subscription-plans/${id}`,
     UPDATE_AMOUNT: '/subscription-plans/update-amount',
     SUBSCRIBE: '/subscriptions/subscribe',
+    CHECKOUT: '/payments/checkout',
     MY_SUBSCRIPTIONS: '/subscriptions/my-subscriptions',
     REMAINING_CREDITS: '/subscriptions/remaining-credits',
   },

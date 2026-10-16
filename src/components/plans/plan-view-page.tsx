@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { ArrowLeft, X, CheckCircle, Tag, Calendar, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { subscribeToPlan } from '@/lib/api/subscription-plan';
+import { startCheckout } from '@/lib/api/subscription-plan';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@/lib/utils/api';
 import { PlanType } from '@/lib/utils/constant';
@@ -63,7 +63,12 @@ export function PlanViewPage({ planId }: PlanViewPageProps) {
 
     try {
       if (plan) {
-        await subscribeToPlan(plan._id, discount !== null ? discountCode : undefined);
+        const checkout = await startCheckout(plan._id, discount !== null ? discountCode : undefined);
+        if (!checkout.free) {
+          // Paid plan: continue on MyFatoorah (KNET / card). It returns to /payment/result.
+          window.location.href = checkout.url;
+          return;
+        }
         if (plan?.planType === PlanType.OFFICE && plan.price === 0) {
           toast.success(t('plan.officePlanActivated'));
         } else {
