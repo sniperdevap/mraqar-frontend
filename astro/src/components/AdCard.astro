@@ -22,7 +22,7 @@ const img = first ? mediaUrl(first, true) : "";
 const excerpt = (ad.description || "").replace(/\s+/g, " ").trim();
 const Heading = headingLevel;
 ---
-<article class:list={["group relative isolate flex min-h-[120px] overflow-hidden rounded-[18px] border bg-white transition-shadow hover:shadow-[0_6px_20px_rgba(50,40,37,0.08)]", featured ? "border-brand/35 bg-gradient-to-l from-white to-[#fff6f5]" : "border-line"]}>
+<article class:list={["group relative isolate flex min-h-[120px] overflow-hidden rounded-[18px] border bg-white transition-shadow hover:shadow-[0_6px_20px_rgba(50,40,37,0.08)]", featured ? "border-brand/25" : "border-line"]}>
   <a href={href} class="absolute inset-0 z-20 rounded-[18px]" aria-label={title} data-astro-prefetch></a>
 
   <div class="relative w-[92px] shrink-0 bg-[#f1efed]">
@@ -35,8 +35,8 @@ const Heading = headingLevel;
       </span>
     )}
     {featured && (
-      <span class="absolute inset-x-1.5 bottom-1.5 z-10 flex items-center justify-center gap-1 rounded-full bg-brand py-[3px] text-[11px] font-bold text-white shadow-[0_2px_8px_rgba(225,29,29,0.35)]">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 7.5 7.5 11 12 4l4.5 7L21 7.5 19 18H5z"/><rect x="5" y="19.5" width="14" height="2" rx="1"/></svg>
+      <span class="absolute top-1.5 start-1.5 z-10 flex items-center gap-[3px] rounded-full bg-white/90 py-[2px] ps-1 pe-1.5 text-[10px] font-bold leading-4 text-brand shadow-[0_1px_4px_rgba(0,0,0,0.15)] backdrop-blur-sm">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 7.5 7.5 11 12 4l4.5 7L21 7.5 19 18H5z"/></svg>
         {t.featured}
       </span>
     )}

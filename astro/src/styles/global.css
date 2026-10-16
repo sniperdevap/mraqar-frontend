@@ -93,3 +93,4 @@ h1, h2, h3 { text-wrap: balance; }
 .logo-dark { display: none; }
 :root[data-theme="dark"] .logo-light { display: none; }
 :root[data-theme="dark"] .logo-dark { display: block; }
+:root[data-theme="dark"] .bg-white\/90 { background-color: rgba(23, 33, 43, .85); }
