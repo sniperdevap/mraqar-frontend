@@ -29,16 +29,10 @@ const jsonLd = latest?.ads.length ? [{
 <Base title={title} description={description} canonical="/" jsonLd={jsonLd} active="home">
   <section class="relative overflow-hidden bg-gradient-to-b from-white to-canvas">
         <div class="relative mx-auto max-w-lg px-5 pt-8 pb-8 sm:pt-12">
-      <a href="/auth/signin?next=/ads/create" class="group mx-auto mb-4 flex w-fit items-center gap-2 rounded-full border border-line bg-white py-1 ps-1 pe-3 text-[12.5px] font-bold text-ink shadow-[0_4px_14px_rgba(50,40,37,0.07)] transition hover:border-brand/40">
-        <span class="flex items-center gap-1 rounded-full bg-brand px-2.5 py-1 text-[11.5px] font-extrabold text-white">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/><path d="M12 13v5M9.5 15.5h5"/></svg>
-          {lang === "ar" ? "جديد" : "New"}
-        </span>
-        <span>{lang === "ar" ? "منصة عقارية كويتية" : "A Kuwaiti property platform"}</span>
-        <span class="h-3.5 w-px bg-line" aria-hidden="true"></span>
-        <span class="text-brand">{lang === "ar" ? "انشر إعلانك مجانًا" : "Post your ad free"}</span>
-        <svg class="text-brand transition-transform group-hover:-translate-x-0.5 ltr:rotate-180 ltr:group-hover:translate-x-0.5" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg>
-      </a>
+      <p class="mx-auto mb-4 flex w-fit items-center gap-1.5 rounded-full border border-line bg-white px-3.5 py-1.5 text-[12.5px] font-bold text-ink shadow-[0_4px_14px_rgba(50,40,37,0.06)]">
+        <svg class="text-brand" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9.94 14.06A2 2 0 0 0 8.5 12.62L2.37 11.04a.5.5 0 0 1 0-.96L8.5 8.5a2 2 0 0 0 1.44-1.44l1.58-6.13a.5.5 0 0 1 .96 0l1.58 6.13A2 2 0 0 0 15.5 8.5l6.13 1.58a.5.5 0 0 1 0 .96L15.5 12.62a2 2 0 0 0-1.44 1.44l-1.58 6.13a.5.5 0 0 1-.96 0z"/><path d="M19 3v4M17 5h4" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>
+        {lang === "ar" ? "مدعوم بتقنيات الذكاء الاصطناعي" : "Powered by AI technology"}
+      </p>
       <h1 class="text-center text-[24px] font-extrabold leading-[30px] sm:text-[32px] sm:leading-[42px]">{t.heroTitle}</h1>
       <p class="mx-auto mt-2 max-w-lg text-center text-[14px] leading-6 text-muted">{t.heroSub}</p>
       <div class="mt-6"><SearchForm lang={lang} areas={areas} types={types} /></div>
