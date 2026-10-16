@@ -31,7 +31,7 @@ const chosen = areaData.filter((a) => selectedAreas.includes(a.id));
     {purposes.map(([v, label]) => (
       <label class="cursor-pointer">
         <input type="radio" name="purpose" value={v} class="peer sr-only" checked={purpose === v} />
-        <span class="flex h-9 items-center justify-center rounded-xl text-[14px] font-medium text-ink transition-all peer-checked:bg-white peer-checked:font-semibold peer-checked:text-ink peer-checked:shadow-sm peer-focus-visible:outline-2 peer-focus-visible:outline-brand">{label}</span>
+        <span class="flex h-9 items-center justify-center rounded-xl text-[14px] font-medium text-ink transition-all peer-checked:bg-surface peer-checked:font-semibold peer-checked:text-ink peer-checked:shadow-sm peer-focus-visible:outline-2 peer-focus-visible:outline-brand">{label}</span>
       </label>
     ))}
   </fieldset>

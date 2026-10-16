@@ -133,7 +133,7 @@ const chip = (name: string, value: string, label: string) => ({ name, value, lab
               {[chip("purpose", "buy", ar ? "شراء" : "Buy"), chip("purpose", "rent", ar ? "إيجار" : "Rent"), chip("purpose", "exchange", ar ? "بدل" : "Exchange")].map((c) => (
                 <label class="cursor-pointer">
                   <input type="radio" name={c.name} value={c.value} checked={c.on} class="peer sr-only" />
-                  <span class="flex h-10 items-center justify-center rounded-xl text-[14px] font-semibold text-ink transition peer-checked:bg-white peer-checked:font-extrabold peer-checked:shadow-sm peer-focus-visible:ring-2 peer-focus-visible:ring-brand">{c.label}</span>
+                  <span class="flex h-10 items-center justify-center rounded-xl text-[14px] font-semibold text-ink transition peer-checked:bg-surface peer-checked:font-extrabold peer-checked:shadow-sm peer-focus-visible:ring-2 peer-focus-visible:ring-brand">{c.label}</span>
                 </label>
               ))}
             </div>
