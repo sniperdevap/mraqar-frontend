@@ -168,7 +168,7 @@ const icons: Record<string, string> = {
         </div>
         <nav class="flex-1 overflow-y-auto px-3 pb-3" aria-label={t.menu}>
           {drawerItems.map((l) => (
-            <a href={l.href} target={l.ext ? "_blank" : undefined} rel={l.ext ? "noopener" : undefined}
+            <a href={l.href} target={l.ext ? "_blank" : undefined} rel={l.ext ? "noopener" : undefined} data-app-link={l.k === "app" ? "" : undefined}
               class:list={["mb-1 flex h-14 items-center gap-3.5 rounded-2xl px-4 text-[17px] font-semibold transition-colors", active === l.k ? "bg-brand-soft text-brand" : "text-ink hover:bg-canvas"]}
               aria-current={active === l.k ? "page" : undefined}>
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="shrink-0" aria-hidden="true" set:html={l.icon} />
@@ -368,7 +368,7 @@ const icons: Record<string, string> = {
       try { dismissed = localStorage.getItem("appBannerClosed") === "1"; } catch {}
       if (banner && !dismissed) {
         banner.hidden = false;
-        if (/android/i.test(navigator.userAgent)) banner.querySelector<HTMLAnchorElement>("[data-app-link]")!.href = "https://play.google.com/store/apps/details?id=com.mraqar.app";
+        if (/android/i.test(navigator.userAgent)) document.querySelectorAll<HTMLAnchorElement>("[data-app-link]").forEach((a) => { a.href = "https://play.google.com/store/apps/details?id=com.mraqar.app&hl=en"; });
         banner.querySelector("[data-banner-close]")?.addEventListener("click", () => {
           banner.hidden = true;
           try { localStorage.setItem("appBannerClosed", "1"); } catch {}

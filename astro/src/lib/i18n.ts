@@ -97,7 +97,7 @@ export function timeAgo(date: string, lang: Lang): string {
 
 export const SUPPORT_PHONE = "+96590078005";
 export const SUPPORT_WA = "https://wa.me/96590078005";
-export const APP_STORE = "https://apps.apple.com/kw/app/mr-aqar-%D9%85%D8%B3%D8%AA%D8%B1-%D8%B9%D9%82%D8%A7%D8%B1/id6786697649";
-export const PLAY_STORE = "https://play.google.com/store/apps/details?id=com.mraqar.app";
+export const APP_STORE = "https://apps.apple.com/us/app/mr-aqar-%D9%85%D8%B3%D8%AA%D8%B1-%D8%B9%D9%82%D8%A7%D8%B1/id6786697649";
+export const PLAY_STORE = "https://play.google.com/store/apps/details?id=com.mraqar.app&hl=en";
 
 export const waNumber = (phone?: string) => (phone || "").replace(/\D/g, "").replace(/^00/, "");
