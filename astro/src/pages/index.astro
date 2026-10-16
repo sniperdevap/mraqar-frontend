@@ -21,23 +21,25 @@ const description = lang === "ar"
 ---
 <Base title={title} description={description} canonical="/" active="home">
   <section class="relative overflow-hidden bg-canvas">
-        <div class="relative mx-auto max-w-xl px-5 pt-9 pb-10 sm:pt-14">
-      <h1 class="text-center text-[28px] font-bold leading-[1.45] sm:text-[34px]">{t.heroTitle}</h1>
-      <p class="mx-auto mt-3 max-w-lg text-center text-[15.5px] leading-7 text-ink-2">{t.heroSub}</p>
-      <div class="mt-7"><SearchForm lang={lang} areas={areas} types={types} /></div>
+        <div class="relative mx-auto max-w-lg px-5 pt-8 pb-8 sm:pt-12">
+      <h1 class="text-center text-[24px] font-extrabold leading-[30px] sm:text-[32px] sm:leading-[42px]">{t.heroTitle}</h1>
+      <p class="mx-auto mt-2 max-w-lg text-center text-[14px] leading-6 text-muted">{t.heroSub}</p>
+      <div class="mt-6"><SearchForm lang={lang} areas={areas} types={types} /></div>
     </div>
   </section>
 
-  <section class="mx-auto max-w-6xl px-4 pt-8 pb-12 sm:px-6">
-    <div class="mb-4 flex items-end justify-between">
-      <h2 class="text-[18px] font-bold">{t.latest}</h2>
-      <a href="/search" class="text-[14.5px] font-semibold text-brand">{t.showMore}</a>
+  <section class="mx-auto max-w-6xl px-5 pt-6 pb-12">
+    <h2 class="text-center text-[20px] font-extrabold md:text-[24px]">{lang === "ar" ? "أحدث إعلانات العقارات" : "Latest property ads"}</h2>
+    <div class="mx-auto mt-2 h-1 w-16 rounded-full bg-brand" aria-hidden="true"></div>
+    <div class="mt-6">
+      {latest?.ads.length ? (
+        <div class="mx-auto grid w-full min-w-0 max-w-[52rem] grid-cols-1 gap-2">
+          {latest.ads.map((ad, i) => <AdCard ad={ad} areas={areas} lang={lang} eager={i < 3} />)}
+        </div>
+      ) : <p class="mx-auto max-w-[52rem] rounded-[18px] border border-dashed border-line bg-white p-10 text-center text-muted">{t.noAds}</p>}
     </div>
-    {latest?.ads.length ? (
-      <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {latest.ads.map((ad, i) => <AdCard ad={ad} areas={areas} lang={lang} eager={i < 2} />)}
-      </div>
-    ) : <p class="rounded-2xl border border-dashed border-line bg-white p-10 text-center text-muted">{t.noAds}</p>}
-    <a href="/search" class="mx-auto mt-8 flex h-13 max-w-sm items-center justify-center rounded-xl border border-brand text-[15.5px] font-semibold text-brand hover:bg-brand-soft">{t.showMore}</a>
+    <div class="mt-6 text-center">
+      <a href="/search" class="inline-flex h-12 items-center rounded-full bg-soft px-7 text-[15px] font-bold text-ink hover:bg-line">{t.showMore}</a>
+    </div>
   </section>
 </Base>

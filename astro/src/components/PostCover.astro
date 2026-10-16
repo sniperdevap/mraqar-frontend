@@ -1,0 +1,22 @@
+---
+/** Drawn cover for articles without a photo: one look per category, in the brand colours. */
+import type { Category } from "@/lib/blog";
+interface Props { category: Category; cover?: string; alt: string; class?: string; eager?: boolean }
+const { category, cover, alt, class: cls = "", eager = false } = Astro.props;
+const look: Record<Category, { from: string; to: string; icon: string }> = {
+  renting: { from: "#fdecec", to: "#fbd5d5", icon: '<path d="M10 40 32 22l22 18v24H40V48H24v16H10z"/><circle cx="46" cy="18" r="5"/>' },
+  buying: { from: "#fff4d6", to: "#ffe3a3", icon: '<path d="M8 62V30l16-10 16 10v32M40 62V20l16-8v50"/><path d="M16 38h8M16 48h8M48 30h4M48 40h4M48 50h4"/>' },
+  areas: { from: "#e6f4ef", to: "#c9e9dd", icon: '<path d="M32 60s18-15 18-30a18 18 0 0 0-36 0c0 15 18 30 18 30z"/><circle cx="32" cy="30" r="6"/>' },
+  selling: { from: "#eef0ff", to: "#d9ddff", icon: '<rect x="12" y="14" width="40" height="44" rx="4"/><path d="M20 26h24M20 36h24M20 46h14"/>' },
+  safety: { from: "#fff1e6", to: "#ffd9bd", icon: '<path d="M32 8 12 16v14c0 14 9 24 20 28 11-4 20-14 20-28V16z"/><path d="m24 32 6 6 11-12"/>' },
+};
+const l = look[category];
+---
+{cover ? (
+  <img src={cover} alt={alt} width="700" height="352" class={`object-cover ${cls}`} loading={eager ? "eager" : "lazy"} decoding="async" />
+) : (
+  <div class={`relative flex items-center justify-center overflow-hidden ${cls}`} style={`background: linear-gradient(135deg, ${l.from}, ${l.to})`} role="img" aria-label={alt}>
+    <svg width="76" height="76" viewBox="0 0 64 64" fill="none" stroke="#322825" stroke-opacity=".55" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={l.icon} />
+    <img src="/aqar-new-logo-nav.webp" alt="" width="46" height="30" class="absolute bottom-3 start-3 h-auto w-11 opacity-70" loading="lazy" />
+  </div>
+)}

@@ -41,7 +41,8 @@ const govName = lang === "ar" ? fullArea?.governorateAr : fullArea?.governorate;
 const typeName = lang === "ar" ? ad.propertyType?.labelAr : ad.propertyType?.label;
 const purposeName = (t as Record<string, string>)[ad.purpose];
 const photos = (ad.media || []).map((m) => ({ src: mediaUrl(m), video: m.type === "video" ? mediaUrl({ ...m, type: "image" }) : null, poster: mediaUrl(m, true) }));
-if (!photos.length) photos.push({ src: "/DefaultAdImage.jpeg", video: null, poster: "/DefaultAdImage.jpeg" });
+const hasPhotos = photos.length > 0;
+const ogImage = hasPhotos && photos[0].poster.startsWith("http") ? photos[0].poster : `${site}/aqar-new-logo.png`;
 const phone = ad.isPhoneHidden ? "" : ad.phoneNumber || ad.user?.phoneNumber || "";
 const waText = encodeURIComponent(`${lang === "ar" ? "مرحبًا، أستفسر عن إعلانك في مستر عقار" : "Hello, I'm asking about your ad on Mr Aqar"}\n${title}\n${url}`);
 const waLink = phone ? `https://wa.me/${waNumber(phone)}?text=${waText}` : "";
@@ -49,6 +50,9 @@ const shareText = encodeURIComponent(`${title} — ${price || ""}`);
 const desc = (ad.description || "").replace(/\s+/g, " ").trim();
 const metaDescription = `${title}${price ? ` — ${price}${ad.purpose === "rent" ? ` ${t.monthly}` : ""}` : ""}. ${desc}`.slice(0, 158);
 const sold = ad.status !== "active";
+const featured = ad.isPremium || ad.premiumAd;
+const value = Number(ad.price || 0);
+const unit = ad.priceUnit === "thousand" ? (lang === "ar" ? "الف" : "K") : lang === "ar" ? "د.ك" : "KD";
 // Show the real posted date too, so what Google reads matches what people see.
 const postedOn = new Intl.DateTimeFormat(lang === "ar" ? "ar-KW-u-nu-latn" : "en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Kuwait" }).format(new Date(ad.createdAt));
 
@@ -58,129 +62,160 @@ const similar = await getAds({ page: 1, limit: 7, purpose: ad.purpose, propertyT
 
 Astro.response.headers.set("Cache-Control", "public, max-age=0, s-maxage=60, stale-while-revalidate=300");
 ---
-<Base title={title} description={metaDescription} canonical={canonical} image={photos[0].poster.startsWith("http") ? photos[0].poster : `${site}${photos[0].poster}`} noindex={sold} jsonLd={adJsonLd(ad, areas, lang, site)} bottomBar={false}>
+<Base title={title} description={metaDescription} canonical={canonical} image={ogImage} noindex={sold} jsonLd={adJsonLd(ad, areas, lang, site)} bottomBar={false} back hideFooter>
   <Fragment slot="head">
     <meta property="og:type" content="product" />
     <meta property="article:published_time" content={ad.createdAt} />
     <meta property="article:modified_time" content={ad.createdAt} />
-    {price && <meta property="product:price:amount" content={String(ad.price)} />}
-    {price && <meta property="product:price:currency" content="KWD" />}
-    <link rel="preload" as="image" href={photos[0].poster} fetchpriority="high" />
+    {value > 0 && <meta property="product:price:amount" content={String(ad.price)} />}
+    {value > 0 && <meta property="product:price:currency" content="KWD" />}
+    {hasPhotos && <link rel="preload" as="image" href={photos[0].poster} fetchpriority="high" />}
   </Fragment>
 
-  <article class="mx-auto max-w-3xl pb-28 lg:pb-12">
-    <!-- Gallery: swipe on phones -->
-    <div class="relative bg-black/5 lg:mt-6 lg:overflow-hidden lg:rounded-3xl">
-      <div class="flex snap-x snap-mandatory overflow-x-auto [scrollbar-width:none]" data-gallery dir="ltr">
-        {photos.map((p, i) => (
-          <div class="w-full shrink-0 snap-center">
-            {p.video ? (
-              <video src={p.video} poster={p.poster} controls playsinline preload="none" class="aspect-[16/10] max-h-[440px] w-full bg-black object-contain"></video>
-            ) : (
-              <img src={p.src} alt={i === 0 ? title : `${title} — ${i + 1}`} width="1200" height="750" class="aspect-[16/10] max-h-[440px] w-full object-cover" loading={i === 0 ? "eager" : "lazy"} fetchpriority={i === 0 ? "high" : "auto"} decoding="async" />
-            )}
-          </div>
-        ))}
+  <article class="mx-auto max-w-[52rem] px-5 pt-5 pb-48">
+    <header>
+      <div class="flex items-start gap-3">
+        <h1 class="flex-1 text-[24px] font-extrabold leading-[34px]">{title}</h1>
+        <div class="flex shrink-0 gap-2 pt-0.5">
+          <button type="button" class="flex size-10 items-center justify-center rounded-full bg-soft text-ink hover:bg-line" aria-label={t.share} data-open="share">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg>
+          </button>
+          <a href="/auth/signin" class="flex size-10 items-center justify-center rounded-full bg-soft text-ink hover:bg-line" aria-label={lang === "ar" ? "أضف للمفضلة" : "Save"}>
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M12 21s-7-4.4-9.3-9A5.3 5.3 0 0 1 12 6.5 5.3 5.3 0 0 1 21.3 12C19 16.6 12 21 12 21z"/></svg>
+          </a>
+        </div>
       </div>
-      {photos.length > 1 && <span class="absolute bottom-3 left-3 rounded-full bg-black/60 px-3 py-1 text-[13px] text-white" dir="ltr" data-gallery-count>1 / {photos.length}</span>}
-    </div>
-
-    <div class="space-y-5 px-4 pt-5 lg:px-0">
-      <nav class="text-[13px] text-muted" aria-label="Breadcrumb">
-        <ol class="flex flex-wrap items-center gap-1.5">
-          <li><a href="/" class="hover:text-brand">{t.breadcrumbHome}</a></li>
-          <li aria-hidden="true">/</li>
-          <li><a href={`/search?purpose=${ad.purpose}`} class="hover:text-brand">{purposeName}</a></li>
-          {typeName && <><li aria-hidden="true">/</li><li><a href={`/search?purpose=${ad.purpose}&propertyType=${ad.propertyType.id}`} class="hover:text-brand">{typeName}</a></li></>}
-          {areaName && <><li aria-hidden="true">/</li><li><a href={`/search?purpose=${ad.purpose}&propertyType=${ad.propertyType?.id}&area=${ad.area.id}`} class="hover:text-brand">{areaName}</a></li></>}
-        </ol>
-      </nav>
-
-      <header>
-        <h1 class="text-[24px] font-bold leading-[1.55] sm:text-[28px]">{title}</h1>
-        <p class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[13.5px] text-muted">
-          <time datetime={ad.createdAt} title={postedOn}>{timeAgo(ad.createdAt, lang)} · {postedOn}</time>
-          <span aria-hidden="true">·</span><span>{t.adNo} <b class="font-semibold text-ink">{ad.id}</b></span>
-          {typeof ad.views === "number" && ad.views > 0 && <><span aria-hidden="true">·</span><span>{ad.views} {t.views}</span></>}
+      <p class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] font-semibold text-muted">
+        <span class="inline-flex items-center gap-1">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          <time datetime={ad.createdAt} title={postedOn}>{timeAgo(ad.createdAt, lang)}</time>
+        </span>
+        <span>{t.adNo}: {ad.id}</span>
+        {typeof ad.views === "number" && ad.views > 0 && <span>{ad.views} {t.views}</span>}
+      </p>
+      <div class="mt-3 flex flex-wrap items-center gap-2.5">
+        <p class="text-[18px] font-extrabold text-brand-deep">
+          {value ? <>{value.toLocaleString("en-US")}<span class="ms-1 text-[14px] font-bold">{unit}</span></> : t.priceOnRequest}
+          {ad.purpose === "rent" && <span class="ms-1 text-[15px] font-bold text-muted">/ {t.monthly}</span>}
         </p>
-        <p class="mt-4 text-[28px] font-bold text-brand">
-          {price ? <>{price}{ad.purpose === "rent" && <span class="text-[16px] font-medium text-muted"> / {t.monthly}</span>}</> : <span class="text-[18px] text-muted">{t.priceOnRequest}</span>}
-        </p>
-      </header>
+        {featured && (
+          <span class="inline-flex items-center gap-1 rounded-full border border-gold bg-gold-soft px-2.5 py-0.5 text-[12px] font-extrabold text-[#4a3200]">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9.94 14.06A2 2 0 0 0 8.5 12.62L2.37 11.04a.5.5 0 0 1 0-.96L8.5 8.5a2 2 0 0 0 1.44-1.44l1.58-6.13a.5.5 0 0 1 .96 0l1.58 6.13a2 2 0 0 0 1.44 1.44l6.13 1.58a.5.5 0 0 1 0 .96l-6.13 1.58a2 2 0 0 0-1.44 1.44l-1.58 6.13a.5.5 0 0 1-.96 0z"/></svg>{t.featured}
+          </span>
+        )}
+      </div>
+    </header>
 
-      <ul class="flex flex-wrap gap-2 text-[14px]">
-        {[purposeName, typeName, areaName, govName].filter(Boolean).map((x) => <li class="rounded-full bg-white px-3.5 py-1.5 ring-1 ring-line">{x}</li>)}
-      </ul>
-
-      {desc && (
-        <section class="rounded-2xl bg-white p-5 ring-1 ring-line">
-          <h2 class="mb-2.5 text-[17px] font-bold">{t.description}</h2>
-          <p class="whitespace-pre-line text-[15.5px] leading-8 text-ink-2">{ad.description}</p>
-        </section>
-      )}
-
-      <section class="rounded-2xl bg-white p-5 ring-1 ring-line" id="contact">
-        <h2 class="text-[17px] font-bold">{t.contactAdvertiser}</h2>
-        <div class="mt-3 flex items-center gap-3">
-          <span class="flex size-12 items-center justify-center rounded-full bg-brand-soft text-[18px] font-bold text-brand">{(ad.user?.name || "؟").trim().charAt(0)}</span>
-          <div class="min-w-0">
-            {ad.user?.publicId ? <a href={`/offices/${ad.user.publicId}`} class="block truncate text-[16px] font-semibold hover:text-brand">{ad.user.name}</a> : <p class="truncate text-[16px] font-semibold">{ad.user?.name}</p>}
-            <p class="text-[13px] text-muted">{t.adNo}: {ad.id}</p>
-          </div>
-        </div>
-        <div class="mt-4 grid grid-cols-2 gap-3">
-          {phone ? <a href={`tel:${phone}`} class="flex h-13 items-center justify-center gap-2 rounded-xl bg-brand text-[15.5px] font-semibold text-white hover:bg-brand-dark">{t.callNow}</a> : null}
-          {waLink ? <a href={waLink} target="_blank" rel="noopener" class:list={["flex h-13 items-center justify-center gap-2 rounded-xl bg-wa text-[15.5px] font-semibold text-white", !phone && "col-span-2"]}>{t.whatsapp}</a> : null}
-        </div>
-      </section>
-
-      <aside class="flex gap-3 rounded-2xl bg-amber-50 p-4 text-[14px] leading-7 text-amber-900 ring-1 ring-amber-200" role="note">
-        <svg class="mt-1 shrink-0" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3 2 21h20L12 3z"/><path d="M12 10v5M12 18h.01"/></svg>
-        <p><b class="font-semibold">{t.safetyTitle}: </b>{t.safety}</p>
-      </aside>
-
-      <section class="rounded-2xl bg-white p-5 ring-1 ring-line">
-        <h2 class="mb-3 text-[17px] font-bold">{t.share}</h2>
-        <div class="grid grid-cols-4 gap-2 text-center text-[12.5px]">
-          <a href={`https://wa.me/?text=${shareText}%0A${encodeURIComponent(url)}`} target="_blank" rel="noopener" class="rounded-xl bg-canvas py-3 hover:bg-brand-soft">{t.whatsapp}</a>
-          <a href={`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${shareText}`} target="_blank" rel="noopener" class="rounded-xl bg-canvas py-3 hover:bg-brand-soft">{t.telegram}</a>
-          <a href={`https://x.com/intent/post?url=${encodeURIComponent(url)}&text=${shareText}`} target="_blank" rel="noopener" class="rounded-xl bg-canvas py-3 hover:bg-brand-soft">X</a>
-          <button type="button" class="rounded-xl bg-canvas py-3 hover:bg-brand-soft" data-copy={url} data-copied={t.copied}>{t.copyLink}</button>
-        </div>
-      </section>
-
-      <details class="rounded-2xl bg-white ring-1 ring-line">
-        <summary class="flex h-13 cursor-pointer list-none items-center gap-2 px-5 text-[15px] text-muted hover:text-brand">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 22V4a1 1 0 0 1 1-1h11l-2 4 2 4H5"/></svg>{t.report}
-        </summary>
-        <form method="post" action={`/api/report/${ad.id}`} class="space-y-3 border-t border-line p-5" data-report>
-          <div class="grid grid-cols-2 gap-2">
-            {[["fraud", t.reportFraud], ["wrong", t.reportWrong], ["sold", t.reportSold], ["other", t.reportOther]].map(([v, l], i) => (
-              <label class="cursor-pointer"><input type="radio" name="reason" value={v} class="peer sr-only" checked={i === 0} /><span class="flex h-11 items-center justify-center rounded-xl ring-1 ring-line text-[14px] peer-checked:bg-brand-soft peer-checked:text-brand peer-checked:ring-brand">{l}</span></label>
+    <!-- Photos: swipe on phones -->
+    <div class="relative mt-4 overflow-hidden rounded-[20px] bg-[#ecebe9]">
+      {hasPhotos ? (
+        <>
+          <div class="flex snap-x snap-mandatory overflow-x-auto [scrollbar-width:none]" data-gallery dir="ltr">
+            {photos.map((p, i) => (
+              <div class="w-full shrink-0 snap-center">
+                {p.video ? (
+                  <video src={p.video} poster={p.poster} controls playsinline preload="none" class="aspect-[35/24] w-full bg-black object-contain"></video>
+                ) : (
+                  <img src={p.src} alt={i === 0 ? title : `${title} — ${i + 1}`} width="1050" height="720" class="aspect-[35/24] w-full object-cover" loading={i === 0 ? "eager" : "lazy"} fetchpriority={i === 0 ? "high" : "auto"} decoding="async" />
+                )}
+              </div>
             ))}
           </div>
-          <textarea name="details" rows="3" maxlength="500" placeholder={t.reportDetails} class="w-full rounded-xl p-3 text-[16px] ring-1 ring-line outline-none focus:ring-brand"></textarea>
-          <button class="h-12 w-full rounded-xl bg-ink text-[15px] font-semibold text-white">{t.sendReport}</button>
-          <p class="hidden text-center text-[14px] text-wa" data-report-done>{t.reportThanks}</p>
-        </form>
-      </details>
-
-      {similar.length > 0 && (
-        <section class="pt-3">
-          <h2 class="mb-3.5 text-[20px] font-bold">{t.similar}</h2>
-          <div class="grid gap-5 sm:grid-cols-2">{similar.map((s) => <AdCard ad={s} areas={areas} lang={lang} />)}</div>
-        </section>
+          {photos.length > 1 && <span class="absolute bottom-3 left-3 rounded-full bg-black/60 px-3 py-1 text-[12.5px] font-semibold text-white" dir="ltr" data-gallery-count>1 / {photos.length}</span>}
+        </>
+      ) : (
+        <div class="flex aspect-[35/24] w-full flex-col items-center justify-center gap-2">
+          <img src="/aqar-new-logo-nav.webp" alt="" width="80" height="52" class="h-auto w-20 opacity-20" />
+          <span class="text-[16px] font-bold text-muted/80">{lang === "ar" ? "بدون صورة" : "No photo"}</span>
+        </div>
       )}
     </div>
+
+    {ad.description && <p class="mt-5 whitespace-pre-line text-[15.5px] leading-8 text-ink">{ad.description}</p>}
+
+    <aside class="mt-6 flex gap-2.5 rounded-2xl border border-gold/60 bg-gold-soft/70 p-4 text-[13px] font-bold leading-6 text-[#4a3200]" role="note">
+      <svg class="mt-0.5 shrink-0" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+      <p>{t.safety}</p>
+    </aside>
+
+    {ad.user?.name && (
+      <a href={ad.user.publicId ? `/offices/${ad.user.publicId}` : "#"} class="mt-4 flex items-center gap-3 rounded-2xl border border-line bg-white p-3.5">
+        <span class="flex size-11 items-center justify-center rounded-full bg-brand-soft text-[17px] font-extrabold text-brand-deep">{ad.user.name.trim().charAt(0)}</span>
+        <span class="min-w-0 flex-1">
+          <span class="block truncate text-[15px] font-bold">{ad.user.name}</span>
+          <span class="block text-[12.5px] font-semibold text-muted">{t.contactAdvertiser}</span>
+        </span>
+        <svg class="text-muted rtl:rotate-180" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+      </a>
+    )}
+
+    {similar.length > 0 && (
+      <section class="mt-9">
+        <h2 class="text-[18px] font-extrabold">{t.similar}</h2>
+        <div class="mt-3 grid grid-cols-1 gap-2">{similar.map((s) => <AdCard ad={s} areas={areas} lang={lang} />)}</div>
+      </section>
+    )}
   </article>
 
-  <!-- Sticky contact bar on phones -->
-  <div class="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-white/95 px-4 pt-3 backdrop-blur lg:hidden" style="padding-bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px))">
-    <div class="mx-auto grid max-w-3xl grid-cols-2 gap-3">
-      {phone ? <a href={`tel:${phone}`} class="flex h-12 items-center justify-center rounded-xl bg-brand text-[15.5px] font-semibold text-white">{t.callNow}</a> : null}
-      {waLink ? <a href={waLink} target="_blank" rel="noopener" class:list={["flex h-12 items-center justify-center rounded-xl bg-wa text-[15.5px] font-semibold text-white", !phone && "col-span-2"]}>{t.whatsapp}</a> : <a href="#contact" class="col-span-2 flex h-12 items-center justify-center rounded-xl bg-ink text-[15.5px] font-semibold text-white">{t.contactAdvertiser}</a>}
+  <!-- Fixed contact bar -->
+  <div class="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-white shadow-[0_-8px_24px_rgba(50,40,37,0.06)]" style="padding-bottom: env(safe-area-inset-bottom, 0px)">
+    <div class="mx-auto max-w-[52rem] px-5 pt-3 pb-2">
+      <div class="flex gap-3">
+        {phone ? (
+          <div class="flex h-14 flex-1 overflow-hidden rounded-2xl bg-brand text-white">
+            <a href={`tel:${phone}`} class="flex flex-1 items-center justify-center gap-2 text-[17px] font-extrabold" dir="ltr">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>
+              {phone.replace(/^\+?965/, "")}
+            </a>
+            <button type="button" class="flex w-14 items-center justify-center border-s border-white/25" aria-label={t.copyLink} data-copy={phone.replace(/^\+?965/, "")} data-copied="✓">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            </button>
+          </div>
+        ) : (
+          <a href={ad.user?.publicId ? `/offices/${ad.user.publicId}` : "/contact"} class="flex h-14 flex-1 items-center justify-center rounded-2xl bg-brand text-[16px] font-extrabold text-white">{t.contactAdvertiser}</a>
+        )}
+        {waLink && (
+          <a href={waLink} target="_blank" rel="noopener" class="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-[#25d366] text-white shadow-[0_8px_20px_rgba(37,211,102,0.35)]" aria-label={t.whatsapp}>
+            <svg width="28" height="28" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg>
+          </a>
+        )}
+      </div>
+      <button type="button" class="mx-auto mt-1.5 flex items-center gap-1.5 py-1 text-[12.5px] font-bold text-muted hover:text-brand" data-open="report">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 22V4a1 1 0 0 1 1-1h11l-2 4 2 4H5"/></svg>{t.report}
+      </button>
     </div>
   </div>
+
+  <!-- Share sheet -->
+  <dialog id="share" class="m-0 mt-auto w-full max-w-none rounded-t-3xl bg-white p-0 backdrop:bg-black/45 sm:m-auto sm:max-w-md sm:rounded-3xl" dir={lang === "ar" ? "rtl" : "ltr"}>
+    <div class="p-5 pb-7">
+      <div class="mx-auto mb-4 h-1.5 w-10 rounded-full bg-line"></div>
+      <p class="text-[17px] font-extrabold">{t.share}</p>
+      <div class="mt-4 grid grid-cols-4 gap-2 text-center text-[12.5px] font-semibold">
+        <a href={`https://wa.me/?text=${shareText}%0A${encodeURIComponent(url)}`} target="_blank" rel="noopener" class="rounded-2xl bg-canvas py-3.5">{t.whatsapp}</a>
+        <a href={`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${shareText}`} target="_blank" rel="noopener" class="rounded-2xl bg-canvas py-3.5">{t.telegram}</a>
+        <a href={`https://x.com/intent/post?url=${encodeURIComponent(url)}&text=${shareText}`} target="_blank" rel="noopener" class="rounded-2xl bg-canvas py-3.5">X</a>
+        <button type="button" class="rounded-2xl bg-canvas py-3.5" data-copy={url} data-copied={t.copied}>{t.copyLink}</button>
+      </div>
+      <form method="dialog" class="mt-4"><button class="h-12 w-full rounded-2xl bg-soft text-[15px] font-bold">{t.cancel}</button></form>
+    </div>
+  </dialog>
+
+  <!-- Report sheet -->
+  <dialog id="report" class="m-0 mt-auto w-full max-w-none rounded-t-3xl bg-white p-0 backdrop:bg-black/45 sm:m-auto sm:max-w-md sm:rounded-3xl" dir={lang === "ar" ? "rtl" : "ltr"}>
+    <form method="post" action={`/api/report/${ad.id}`} class="space-y-3 p-5 pb-7" data-report>
+      <div class="mx-auto mb-2 h-1.5 w-10 rounded-full bg-line"></div>
+      <p class="text-[17px] font-extrabold">{t.report}</p>
+      <div class="grid grid-cols-2 gap-2">
+        {[["fraud", t.reportFraud], ["wrong", t.reportWrong], ["sold", t.reportSold], ["other", t.reportOther]].map(([v, l], i) => (
+          <label class="cursor-pointer"><input type="radio" name="reason" value={v} class="peer sr-only" checked={i === 0} /><span class="flex h-11 items-center justify-center rounded-xl border border-line text-[14px] font-semibold peer-checked:border-brand peer-checked:bg-brand-soft peer-checked:text-brand-deep">{l}</span></label>
+        ))}
+      </div>
+      <textarea name="details" rows="3" maxlength="500" placeholder={t.reportDetails} class="w-full rounded-xl border border-line p-3 text-[16px] outline-none focus:border-brand"></textarea>
+      <button class="h-12 w-full rounded-2xl bg-ink text-[15px] font-bold text-white">{t.sendReport}</button>
+      <p class="hidden text-center text-[14px] font-semibold text-wa" data-report-done>{t.reportThanks}</p>
+    </form>
+  </dialog>
 
   <script>
     const g = document.querySelector<HTMLElement>("[data-gallery]");
@@ -189,8 +224,16 @@ Astro.response.headers.set("Cache-Control", "public, max-age=0, s-maxage=60, sta
       const total = g.children.length;
       g.addEventListener("scroll", () => { c.textContent = `${Math.round(g.scrollLeft / g.clientWidth) + 1} / ${total}`; }, { passive: true });
     }
+    document.querySelectorAll<HTMLButtonElement>("[data-open]").forEach((b) => b.addEventListener("click", async () => {
+      // Native share sheet on phones; our sheet elsewhere.
+      if (b.dataset.open === "share" && navigator.share) {
+        try { await navigator.share({ title: document.title, url: location.href }); return; } catch { /* cancelled */ }
+      }
+      document.querySelector<HTMLDialogElement>(`#${b.dataset.open}`)?.showModal();
+    }));
+    document.querySelectorAll<HTMLDialogElement>("dialog").forEach((d) => d.addEventListener("click", (e) => { if (e.target === d) d.close(); }));
     document.querySelectorAll<HTMLButtonElement>("[data-copy]").forEach((b) => b.addEventListener("click", async () => {
-      try { await navigator.clipboard.writeText(b.dataset.copy!); const old = b.textContent; b.textContent = b.dataset.copied!; setTimeout(() => (b.textContent = old), 1800); } catch { /* clipboard blocked */ }
+      try { await navigator.clipboard.writeText(b.dataset.copy!); const old = b.innerHTML; b.textContent = b.dataset.copied!; setTimeout(() => (b.innerHTML = old), 1600); } catch { /* clipboard blocked */ }
     }));
     document.querySelectorAll<HTMLFormElement>("[data-report]").forEach((f) => f.addEventListener("submit", async (e) => {
       e.preventDefault();

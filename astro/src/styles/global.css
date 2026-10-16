@@ -1,20 +1,24 @@
-@import "@fontsource/ibm-plex-sans-arabic/400.css";
-@import "@fontsource/ibm-plex-sans-arabic/500.css";
-@import "@fontsource/ibm-plex-sans-arabic/600.css";
-@import "@fontsource/ibm-plex-sans-arabic/700.css";
+@import "@fontsource/cairo/400.css";
+@import "@fontsource/cairo/500.css";
+@import "@fontsource/cairo/600.css";
+@import "@fontsource/cairo/700.css";
+@import "@fontsource/cairo/800.css";
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "IBM Plex Sans Arabic", Tahoma, "Segoe UI", system-ui, sans-serif;
+  --font-sans: "Cairo", system-ui, -apple-system, "Segoe UI", Tahoma, sans-serif;
   --color-brand: #e11d1d;
   --color-brand-dark: #b91616;
+  --color-brand-deep: #b3151b;
   --color-brand-soft: #fdecec;
-  --color-ink: #1d2738;
-  --color-ink-2: #4b5563;
-  --color-muted: #6e7180;
-  --color-line: #ececf1;
-  --color-canvas: #f7f7f9;
-  --color-gold: #c59925;
+  --color-ink: #322825;
+  --color-ink-2: #4a423e;
+  --color-muted: #686461;
+  --color-line: #e9e6e3;
+  --color-soft: #eceaed;
+  --color-canvas: #f4f4f4;
+  --color-gold: #d49a39;
+  --color-gold-soft: #fff4d6;
   --color-wa: #16a34a;
 }
 

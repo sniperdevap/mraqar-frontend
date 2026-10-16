@@ -13,8 +13,9 @@ interface Props {
   active?: "home" | "offices" | "blog" | "search" | "add" | "account";
   hideFooter?: boolean;
   bottomBar?: boolean;
+  back?: boolean;
 }
-const { title, description, canonical, image, noindex, jsonLd = [], active, hideFooter = false, bottomBar = true } = Astro.props;
+const { title, description, canonical, image, noindex, jsonLd = [], active, hideFooter = false, bottomBar = true, back = false } = Astro.props;
 const lang = getLang(Astro.cookies);
 const t = dict(lang);
 const dir = lang === "ar" ? "rtl" : "ltr";
@@ -130,6 +131,11 @@ const icons: Record<string, string> = {
         <a href="/" class="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center" aria-label={t.siteName}>
           <img src="/aqar-new-logo-nav.webp" alt="Mr Aqar مستر عقار" width="80" height="52" class="h-12 w-auto" fetchpriority="high" />
         </a>
+        {back && (
+          <button type="button" class="z-10 ms-auto flex size-10 items-center justify-center rounded-xl text-ink hover:bg-canvas lg:hidden" aria-label={lang === "ar" ? "رجوع" : "Back"} data-back>
+            <svg class:list={[lang === "en" && "rotate-180"]} width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+          </button>
+        )}
         <nav class="z-10 ms-auto hidden items-center gap-1 lg:flex" dir={dir} aria-label="Main">
           {[{ href: "/", label: t.home, k: "home" }, { href: "/offices", label: t.offices, k: "offices" }, { href: "/blog", label: t.blog, k: "blog" }].map((l) => (
             <a href={l.href} class:list={["rounded-lg px-3.5 py-2 text-[15px] transition-colors hover:bg-canvas", active === l.k ? "font-semibold text-brand" : "text-ink"]}>{l.label}</a>
@@ -279,6 +285,11 @@ const icons: Record<string, string> = {
       opener?.addEventListener("click", () => setOpen(true));
       drawer.querySelectorAll("[data-drawer-close]").forEach((el) => el.addEventListener("click", () => setOpen(false)));
       document.addEventListener("keydown", (e) => e.key === "Escape" && setOpen(false));
+
+      document.querySelector("[data-back]")?.addEventListener("click", () => {
+        const fromHere = document.referrer && new URL(document.referrer).origin === location.origin;
+        if (fromHere && history.length > 1) history.back(); else location.href = "/";
+      });
 
       // App banner: Play Store on Android, App Store otherwise; hidden once closed.
       const banner = document.getElementById("app-banner");

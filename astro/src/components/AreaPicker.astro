@@ -1,0 +1,83 @@
+---
+import type { Area, Lang } from "@/lib/api";
+import { dict } from "@/lib/i18n";
+interface Props { lang: Lang; areas: Area[]; selected?: string[]; icon?: "pin" | "search" }
+const { lang, areas, selected = [], icon = "pin" } = Astro.props;
+const t = dict(lang);
+const areaData = areas.map((a) => ({ id: String(a.id), l: lang === "ar" ? a.labelAr : a.label, g: lang === "ar" ? a.governorateAr : a.governorate }));
+const chosen = areaData.filter((a) => selected.includes(a.id));
+---
+  <!-- Area picker: type to search, grouped by governorate, several at once -->
+  <div class="relative" data-area-picker data-placeholder={t.typeArea}>
+    <div class="flex min-h-[52px] w-full cursor-text flex-wrap items-center gap-1.5 rounded-2xl border border-line bg-white ps-10 pe-4 py-2 transition-colors focus-within:border-brand" data-area-box>
+      {icon === "pin" ? <svg class="pointer-events-none absolute start-3.5 top-[17px] text-brand-deep" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg> : <svg class="pointer-events-none absolute start-3.5 top-[17px] text-brand-deep" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>}
+      {chosen.map((a) => (
+        <span class="inline-flex items-center gap-1 rounded-lg bg-brand-soft px-2.5 py-1 text-[14px] text-ink" data-chip={a.id}>{a.l}
+          <button type="button" class="text-muted hover:text-brand" data-remove={a.id} aria-label="×">×</button>
+          <input type="hidden" name="area" value={a.id} />
+        </span>
+      ))}
+      <input type="text" autocomplete="off" class="min-w-[6rem] flex-1 border-0 bg-transparent py-1 text-[16px] font-medium outline-none placeholder:text-[14px] placeholder:text-muted" placeholder={chosen.length ? "" : t.typeArea} aria-label={t.allAreas} data-area-input />
+      <svg class="pointer-events-none shrink-0 text-gray-400" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+    </div>
+    <div class="absolute inset-x-0 top-full z-20 mt-1.5 hidden max-h-80 overflow-y-auto rounded-2xl border border-line bg-white py-1.5 shadow-[0_12px_32px_rgba(16,24,40,0.12)]" role="listbox" data-area-list></div>
+    <script type="application/json" data-area-json set:html={JSON.stringify(areaData)}></script>
+  </div>
+
+
+<script>
+  type A = { id: string; l: string; g: string };
+  document.querySelectorAll<HTMLElement>("[data-area-picker]").forEach((root) => {
+    const box = root.querySelector<HTMLElement>("[data-area-box]")!;
+    const input = root.querySelector<HTMLInputElement>("[data-area-input]")!;
+    const list = root.querySelector<HTMLElement>("[data-area-list]")!;
+    const all: A[] = JSON.parse(root.querySelector("[data-area-json]")!.textContent || "[]");
+    const placeholder = root.dataset.placeholder || "";
+    const selected = () => Array.from(box.querySelectorAll<HTMLElement>("[data-chip]")).map((c) => c.dataset.chip!);
+
+    const addChip = (a: A) => {
+      const chip = document.createElement("span");
+      chip.className = "inline-flex items-center gap-1 rounded-lg bg-brand-soft px-2.5 py-1 text-[14px] text-ink";
+      chip.dataset.chip = a.id;
+      chip.append(a.l);
+      const x = document.createElement("button"); x.type = "button"; x.className = "text-muted hover:text-brand"; x.dataset.remove = a.id; x.textContent = "×"; x.setAttribute("aria-label", "×");
+      const h = document.createElement("input"); h.type = "hidden"; h.name = "area"; h.value = a.id;
+      chip.append(" ", x, h);
+      box.insertBefore(chip, input);
+      input.placeholder = "";
+    };
+    const render = () => {
+      const q = input.value.trim().toLowerCase();
+      const sel = selected();
+      const items = all.filter((a) => !sel.includes(a.id) && a.l.toLowerCase().includes(q));
+      list.innerHTML = "";
+      if (!items.length) { list.innerHTML = '<p class="px-4 py-5 text-center text-[14px] text-gray-400">—</p>'; return; }
+      let group = "";
+      for (const a of items) {
+        if (a.g !== group) {
+          group = a.g;
+          const h = document.createElement("p");
+          h.className = "sticky top-0 bg-white/95 px-4 pt-2.5 pb-1 text-[12px] font-semibold text-gray-400";
+          h.textContent = group; list.append(h);
+        }
+        const o = document.createElement("button");
+        o.type = "button"; o.setAttribute("role", "option");
+        o.className = "mx-1.5 flex w-[calc(100%-0.75rem)] rounded-lg px-3 py-2.5 text-start text-[15.5px] hover:bg-brand-soft focus:bg-brand-soft focus:outline-none";
+        o.textContent = a.l;
+        o.addEventListener("click", () => { addChip(a); input.value = ""; close(); });
+        list.append(o);
+      }
+    };
+    const open = () => { list.classList.remove("hidden"); render(); };
+    const close = () => { list.classList.add("hidden"); if (!selected().length) input.placeholder = placeholder; };
+    box.addEventListener("click", (e) => {
+      const rm = (e.target as HTMLElement).closest<HTMLElement>("[data-remove]");
+      if (rm) { box.querySelector(`[data-chip="${rm.dataset.remove}"]`)?.remove(); if (!list.classList.contains("hidden")) render(); else close(); return; }
+      input.focus(); open();
+    });
+    input.addEventListener("focus", open);
+    input.addEventListener("input", render);
+    input.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); list.querySelector<HTMLButtonElement>("[role=option]")?.click(); } if (e.key === "Escape") close(); });
+    document.addEventListener("click", (e) => { if (!root.contains(e.target as Node)) close(); });
+  });
+</script>

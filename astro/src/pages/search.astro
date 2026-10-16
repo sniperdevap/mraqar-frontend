@@ -1,7 +1,7 @@
 ---
 import Base from "@/layouts/Base.astro";
 import AdCard from "@/components/AdCard.astro";
-import SearchForm from "@/components/SearchForm.astro";
+import AreaPicker from "@/components/AreaPicker.astro";
 import { getAds, getAreas, getPropertyTypes } from "@/lib/api";
 import { getLang, dict } from "@/lib/i18n";
 import { pluralSlug } from "@/lib/ad-url";
@@ -16,6 +16,7 @@ const minPrice = q.get("minPrice") || "";
 const maxPrice = q.get("maxPrice") || "";
 const page = Math.max(1, Number(q.get("page") || 1));
 const LIMIT = 20;
+const purposeNames: Record<string, string> = { sale: t.sale, rent: t.rent, exchange: t.exchange };
 
 const [areas, types, result] = await Promise.all([
   getAreas(lang).catch(() => []),
@@ -52,35 +53,59 @@ const jsonLd = [
 ];
 ---
 <Base title={heading} description={description} canonical={canonical} noindex={Boolean(minPrice || maxPrice) || total === 0} jsonLd={jsonLd} active="search">
-  <div class="mx-auto max-w-5xl px-4 pt-6 pb-12 sm:px-6">
-    <nav class="mb-3 text-[13px] text-muted" aria-label="Breadcrumb">
-      <a href="/" class="hover:text-brand">{t.breadcrumbHome}</a>
-      {purpose && <> <span aria-hidden="true">/</span> <a href={`/search?purpose=${purpose}`} class="hover:text-brand">{purposeLabel}</a></>}
-    </nav>
-    <h1 class="text-[22px] font-bold leading-9 sm:text-[26px]">{heading}</h1>
-    <p class="mt-1 text-[14px] text-muted">{total.toLocaleString("en-US")} {t.results}</p>
+  <div class="mx-auto max-w-[52rem] px-5 pt-6 pb-12">
+    <h1 class="text-[22px] font-extrabold leading-8">{area.length || propertyType || purpose ? heading : (lang === "ar" ? "نتائج العقارات" : "Property results")}</h1>
+    <p class="mt-0.5 text-[13px] font-semibold text-muted">{total.toLocaleString("en-US")} {lang === "ar" ? "نتيجة" : "results"}</p>
 
-    <details class="group mt-4 rounded-2xl border border-line bg-white" open={!result?.ads.length}>
-      <summary class="flex h-13 cursor-pointer list-none items-center justify-between px-4 text-[15.5px] font-semibold">
-        <span class="flex items-center gap-2"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg>{t.filters}</span>
-        <svg class="transition-transform group-open:rotate-180" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
-      </summary>
-      <div class="border-t border-line p-4">
-        <SearchForm lang={lang} areas={areas} types={types} purpose={purpose} propertyType={propertyType} selectedAreas={area} minPrice={minPrice} maxPrice={maxPrice} showPrice compact />
-        <a href="/search" class="mt-3 block text-center text-[14px] text-muted hover:text-brand">{t.clear}</a>
+    <form method="get" action="/search" class="mt-4 space-y-3" data-search-form data-autosubmit>
+      <AreaPicker lang={lang} areas={areas} selected={area} icon="search" />
+      <div class="-mx-5 flex gap-2 overflow-x-auto px-5 pb-1 [scrollbar-width:none]">
+        <label class="relative shrink-0">
+          <span class="sr-only">{lang === "ar" ? "الغرض" : "Purpose"}</span>
+          <select name="purpose" class:list={["h-10 appearance-none rounded-full border bg-white ps-4 pe-9 text-[14px] font-bold outline-none", purpose ? "border-brand text-brand-deep" : "border-line text-ink"]}>
+            <option value="">{lang === "ar" ? "الغرض" : "Purpose"}</option>
+            {["sale", "rent", "exchange"].map((v) => <option value={v} selected={purpose === v}>{purposeNames[v]}</option>)}
+          </select>
+          <svg class="pointer-events-none absolute end-3.5 top-1/2 -translate-y-1/2 text-muted" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+        </label>
+        <label class="relative shrink-0">
+          <span class="sr-only">{t.propertyType}</span>
+          <select name="propertyType" class:list={["h-10 appearance-none rounded-full border bg-white ps-4 pe-9 text-[14px] font-medium outline-none", propertyType ? "border-brand text-brand-deep" : "border-line text-ink"]}>
+            <option value="">{t.propertyType}</option>
+            {types.map((ty) => <option value={String(ty.id)} data-slug={ty.label.toLowerCase()} selected={propertyType === String(ty.id)}>{lang === "ar" ? ty.labelAr : ty.label}</option>)}
+          </select>
+          <svg class="pointer-events-none absolute end-3.5 top-1/2 -translate-y-1/2 text-muted" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+        </label>
+        <label class="relative shrink-0">
+          <span class="sr-only">{lang === "ar" ? "السعر" : "Price"}</span>
+          <select name="maxPrice" class:list={["h-10 appearance-none rounded-full border bg-white ps-4 pe-9 text-[14px] font-medium outline-none", maxPrice ? "border-brand text-brand-deep" : "border-line text-ink"]}>
+            <option value="">{lang === "ar" ? "السعر (د.ك)" : "Price (KD)"}</option>
+            {[500, 1000, 100000, 250000, 500000, 1000000].map((v) => <option value={v} selected={maxPrice === String(v)}>{(lang === "ar" ? "حتى " : "Up to ") + v.toLocaleString("en-US")}</option>)}
+          </select>
+          <svg class="pointer-events-none absolute end-3.5 top-1/2 -translate-y-1/2 text-muted" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+        </label>
+        {(purpose || propertyType || area.length || maxPrice) && <a href="/search" class="flex h-10 shrink-0 items-center rounded-full px-3 text-[13.5px] font-semibold text-muted hover:text-brand">{t.clear}</a>}
       </div>
-    </details>
+      <noscript><button class="h-11 w-full rounded-2xl bg-brand text-white">{t.searchBtn}</button></noscript>
+    </form>
 
     {result?.ads.length ? (
-      <div class="mt-6 grid gap-5 sm:grid-cols-2">{result.ads.map((ad, i) => <AdCard ad={ad} areas={areas} lang={lang} eager={i < 2} headingLevel="h2" />)}</div>
-    ) : <p class="mt-6 rounded-2xl border border-dashed border-line bg-white p-10 text-center text-muted">{t.noAds}</p>}
+      <div class="mt-5 grid grid-cols-1 gap-2">{result.ads.map((ad, i) => <AdCard ad={ad} areas={areas} lang={lang} eager={i < 3} headingLevel="h2" />)}</div>
+    ) : <p class="mt-6 rounded-[18px] border border-dashed border-line bg-white p-10 text-center text-muted">{t.noAds}</p>}
 
-    {result && result.totalPages > 1 && (
-      <nav class="mt-7 flex items-center justify-center gap-2" aria-label={t.page}>
-        {page > 1 && <a href={pageHref(page - 1)} rel="prev" class="flex h-11 items-center rounded-xl border border-line bg-white px-4 text-[14.5px]">{t.prev}</a>}
-        <span class="px-3 text-[14px] text-muted">{t.page} {page} / {result.totalPages}</span>
-        {page < result.totalPages && <a href={pageHref(page + 1)} rel="next" class="flex h-11 items-center rounded-xl border border-line bg-white px-4 text-[14.5px]">{t.next}</a>}
-      </nav>
+    {result && page < result.totalPages && (
+      <div class="mt-7 text-center">
+        <a href={pageHref(page + 1)} rel="next" class="inline-flex h-12 items-center rounded-full bg-soft px-7 text-[15px] font-bold text-ink hover:bg-line">{lang === "ar" ? "تحميل المزيد" : "Load more"}</a>
+      </div>
     )}
+    {page > 1 && <p class="mt-3 text-center"><a href={pageHref(page - 1)} rel="prev" class="text-[13.5px] text-muted hover:text-brand">{t.prev}</a></p>}
   </div>
+
+  <script>
+    // Filters apply as soon as they change (area picks submit too).
+    document.querySelectorAll<HTMLFormElement>("[data-autosubmit]").forEach((f) => {
+      f.querySelectorAll("select").forEach((s) => s.addEventListener("change", () => f.requestSubmit()));
+      new MutationObserver(() => f.requestSubmit()).observe(f.querySelector("[data-area-box]")!, { childList: true });
+    });
+  </script>
 </Base>

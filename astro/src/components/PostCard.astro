@@ -1,18 +1,24 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import PostCover from "@/components/PostCover.astro";
 import { CATEGORIES, readingMinutes, formatDate } from "@/lib/blog";
 import { dict } from "@/lib/i18n";
-interface Props { post: CollectionEntry<"blog">; lang: "ar" | "en"; large?: boolean }
-const { post, lang, large = false } = Astro.props;
+interface Props { post: CollectionEntry<"blog">; lang: "ar" | "en"; large?: boolean; eager?: boolean }
+const { post, lang, large = false, eager = false } = Astro.props;
 const t = dict(lang);
 const cat = CATEGORIES[post.data.category][lang];
 ---
-<a href={`/blog/${post.id}`} class:list={["group flex flex-col rounded-3xl bg-white p-5 ring-1 ring-line transition-shadow hover:shadow-[0_10px_30px_rgba(16,24,40,0.08)]", large && "sm:p-7"]}>
-  <span class="w-fit rounded-full bg-brand-soft px-3 py-1 text-[12.5px] font-semibold text-brand">{cat}</span>
-  <h2 class:list={["mt-3 font-bold leading-[1.6] text-ink group-hover:text-brand", large ? "text-[22px] sm:text-[26px]" : "text-[18px]"]}>{post.data.title}</h2>
-  <p class="mt-2 line-clamp-3 text-[14.5px] leading-7 text-muted">{post.data.description}</p>
-  <p class="mt-auto pt-4 text-[13px] text-muted">
-    <time datetime={post.data.publishedAt.toISOString()}>{formatDate(post.data.publishedAt, lang)}</time>
-    <span aria-hidden="true"> · </span>{readingMinutes(post.body)} {t.minRead}
-  </p>
+<a href={`/blog/${post.id}`} class:list={["group flex flex-col overflow-hidden rounded-3xl border border-line bg-white transition-shadow hover:shadow-[0_10px_28px_rgba(50,40,37,0.08)]", large && "sm:col-span-2 sm:flex-row"]}>
+  <PostCover category={post.data.category} cover={post.data.cover} alt={post.data.title} eager={eager}
+    class={large ? "h-44 w-full sm:h-auto sm:w-1/2 sm:min-h-[260px]" : "h-44 w-full"} />
+  <div class:list={["flex flex-1 flex-col p-4", large && "sm:justify-center sm:p-7"]}>
+    <span class="text-[12px] font-bold text-brand-deep">{cat}</span>
+    <h2 class:list={["mt-1 line-clamp-2 font-extrabold text-ink group-hover:text-brand", large ? "text-[18px] leading-7 sm:text-[22px] sm:leading-9" : "text-[16px] leading-6"]}>{post.data.title}</h2>
+    <p class="mt-1.5 line-clamp-2 text-[14px] leading-5 text-muted">{post.data.description}</p>
+    <div class="mt-auto flex items-center gap-2 pt-2.5 text-[12px] font-bold text-muted">
+      <time datetime={post.data.publishedAt.toISOString()}>{formatDate(post.data.publishedAt, lang)}</time>
+      <span aria-hidden="true">·</span>
+      <span>{readingMinutes(post.body)} {t.minRead}</span>
+    </div>
+  </div>
 </a>
