@@ -1,0 +1,430 @@
+{
+ "abdullah-al-salem": {
+  "ar": "يسميها كثيرون «الضاحية». منطقة عائلية مخططة من ستينيات القرن الماضي، قريبة من المدينة القديمة.",
+  "en": "People often call it Al-Dahya, the suburb. It is a planned family district from the 1960s, close to the old city."
+ },
+ "adailiya": {
+  "ar": "حي سكني هادئ داخل العاصمة، خُطط في أوائل الستينيات.",
+  "en": "A quiet inner-city neighbourhood laid out in the early 1960s."
+ },
+ "bneid-al-qar": {
+  "ar": "حي ساحلي قديم بجوار مدينة الكويت، فيه مرسى للقوارب وشوارع عريقة.",
+  "en": "An old seaside quarter beside Kuwait City, with a marina and older streets."
+ },
+ "dahiya": {
+  "ar": "منطقة سكنية من أواخر الخمسينيات، قريبة من المدارس والوزارات.",
+  "en": "A residential area from the late 1950s, close to schools and ministries."
+ },
+ "dasma": {
+  "ar": "من أوائل الضواحي المخططة، فيها فلل وسفارات قريبة.",
+  "en": "One of the earlier planned suburbs, with villas and embassies nearby."
+ },
+ "doha": {
+  "ar": "منطقة في شمال العاصمة تجمع السكن والخدمات، وقريبة من ميناء الدوحة.",
+  "en": "A northern capital district with housing, services, and a link to the port."
+ },
+ "al-faiha": {
+  "ar": "قطع سكنية تكسوها الأشجار، يعود تخطيطها إلى منتصف الخمسينيات.",
+  "en": "Leafy residential blocks dating from the mid-1950s."
+ },
+ "granada": {
+  "ar": "سُميت على اسم غرناطة في الأندلس، وتُكتب في بعض الأوراق الرسمية «غرناطة» أو «قرناطة».",
+  "en": "Named after Granada in Spain. Official papers also spell it Granda or Ghornata."
+ },
+ "al-qibla-jibla": {
+  "ar": "حي قديم في قلب مدينة الكويت، فيه أسواق وشوارع تاريخية.",
+  "en": "An old city quarter in Kuwait City, with markets and historic streets."
+ },
+ "kaifan": {
+  "ar": "ضاحية من منتصف الخمسينيات بين المدينة والشويخ.",
+  "en": "A mid-1950s suburb between the city and Shuwaikh."
+ },
+ "khaldiya": {
+  "ar": "منطقة سكنية في وسط العاصمة من أوائل الستينيات، قريبة من الجامعة والمستشفيات.",
+  "en": "A central residential area from the early 1960s, near the university and hospitals."
+ },
+ "mansouriya": {
+  "ar": "فيها مقر النادي العربي الرياضي، أحد أقدم الأندية في الكويت.",
+  "en": "Home of Al-Arabi Sporting Club, one of the oldest clubs in Kuwait."
+ },
+ "murqab": {
+  "ar": "حي داخل المدينة ملاصق للمركز التجاري لمدينة الكويت.",
+  "en": "An inner-city district beside the commercial core of Kuwait City."
+ },
+ "nahda": {
+  "ar": "كانت تُعرف بشرق الصليبيخات، وهي منطقة سكنية على الطرف الغربي للعاصمة.",
+  "en": "Formerly East Sulaibikhat. A residential area on the western edge of the capital."
+ },
+ "northwest-sulaibikhat": {
+  "ar": "امتداد سكني بجوار الصليبيخات.",
+  "en": "A residential extension beside Sulaibikhat."
+ },
+ "nuzha": {
+  "ar": "ضاحية مخططة من الستينيات، قطعها في الغالب فلل.",
+  "en": "A 1960s planned suburb of villa blocks."
+ },
+ "qadsiya": {
+  "ar": "منطقة سكنية معروفة، وفيها نادي القادسية الرياضي.",
+  "en": "A well-known residential area and home of Qadsia Sporting Club."
+ },
+ "qurtuba": {
+  "ar": "سُميت على اسم قرطبة، وهي منطقة عائلية كبيرة.",
+  "en": "Named after Cordoba. A large family district."
+ },
+ "rawda": {
+  "ar": "منطقة فلل في وسط العاصمة مفضلة لدى العائلات.",
+  "en": "A central villa district popular with families."
+ },
+ "shamiya": {
+  "ar": "من أقدم الضواحي المخططة، يعود تخطيطها إلى منتصف الخمسينيات.",
+  "en": "One of the older planned suburbs, laid out in the mid-1950s."
+ },
+ "sharq": {
+  "ar": "الواجهة البحرية الشرقية لمدينة الكويت، فيها الأسواق والكورنيش والمكاتب.",
+  "en": "The eastern waterfront of Kuwait City, with souqs, the seafront, and offices."
+ },
+ "shuwaikh-residential": {
+  "ar": "منطقة تاريخية يجتمع فيها السكن مع الحرم الجامعي والصناعة القريبة.",
+  "en": "A historic district that now mixes housing with the campus and industry nearby."
+ },
+ "shuwaikh-industrial": {
+  "ar": "أشهر منطقة للصناعات الخفيفة وتجارة الجملة في الكويت.",
+  "en": "Kuwait's best-known light-industrial and wholesale district."
+ },
+ "sulaibikhat": {
+  "ar": "منطقة ساحلية على جون الكويت فيها سكن وعيادات وإطلالة على البحر.",
+  "en": "A coastal district on Kuwait Bay with housing, clinics, and bay views."
+ },
+ "qerawan": {
+  "ar": "منطقة سكنية حديثة سُميت على اسم القيروان.",
+  "en": "A newer residential area named after Kairouan."
+ },
+ "surra": {
+  "ar": "ضاحية عائلية نشطة في العاصمة، قريبة من حولي.",
+  "en": "A busy family suburb in the capital, close to Hawalli."
+ },
+ "yarmouk": {
+  "ar": "قطع سكنية سُميت على اسم معركة اليرموك.",
+  "en": "Residential blocks named after the Yarmouk."
+ },
+ "bayan": {
+  "ar": "تشتهر بقصر بيان الذي يُستقبل فيه الضيوف الرسميون.",
+  "en": "Known for Bayan Palace, where official guests are received."
+ },
+ "jabriya": {
+  "ar": "فيها مستشفيات منها مستشفى مبارك الكبير، وسفارات، وبنك الدم، والحرم الصحي لجامعة الكويت.",
+  "en": "Hospitals, including Mubarak Al-Kabeer Hospital, embassies, the blood bank, and the health campus of Kuwait University."
+ },
+ "rumaithiya": {
+  "ar": "منطقة عائلية ساحلية معروفة بكثرة الحسينيات.",
+  "en": "A coastal family area noted for a large number of husainiyas."
+ },
+ "salam": {
+  "ar": "قطع سكنية في محافظة حولي.",
+  "en": "Residential blocks in Hawalli."
+ },
+ "salwa": {
+  "ar": "منطقة سكنية كبيرة ونشطة بين المدينة والساحل.",
+  "en": "A large, busy residential area between the city and the coast."
+ },
+ "hawalli": {
+  "ar": "مركز المحافظة، ومن أقدم وأكثر المراكز الحضرية حركة في الكويت.",
+  "en": "The governorate seat. One of Kuwait's oldest and busiest urban centres."
+ },
+ "hittin": {
+  "ar": "منطقة سكنية صغيرة في محافظة حولي.",
+  "en": "A compact residential area in Hawalli."
+ },
+ "mishref": {
+  "ar": "منطقة فلل في الداخل خلف سلوى وبيان.",
+  "en": "A villa district inland from Salwa and Bayan."
+ },
+ "salmiya": {
+  "ar": "أهم منطقة تسوق ساحلية في الكويت، فيها المجمعات التجارية والفنادق وكورنيش طويل.",
+  "en": "Kuwait's main seaside shopping district, with malls, hotels, and a long corniche."
+ },
+ "al-shaab-residential": {
+  "ar": "منطقة سكنية على البحر، فيها حديقة شاطئية عامة.",
+  "en": "A seafront residential area with a public beach park."
+ },
+ "al-shuhada": {
+  "ar": "قطع سكنية قريبة من سلام والصديق.",
+  "en": "Residential blocks near Salam and Siddiq."
+ },
+ "sadiq": {
+  "ar": "منطقة سكنية بجوار الشهداء.",
+  "en": "A residential area beside Shuhada."
+ },
+ "zahra": {
+  "ar": "فيها مجمع 360، من أكبر المراكز التجارية في الكويت.",
+  "en": "Home of 360 Mall, one of the largest shopping centres in Kuwait."
+ },
+ "abu-al-hasaniya": {
+  "ar": "تجمع ساحلي على الطرف الجنوبي للمحافظة.",
+  "en": "A coastal settlement on the southern edge of the governorate."
+ },
+ "abu-ftaira": {
+  "ar": "مجتمع ساحلي قديم بجوار مناطق سكنية أحدث.",
+  "en": "An older coastal community beside newer housing."
+ },
+ "adan": {
+  "ar": "ضاحية عائلية كبيرة فيها جمعية تعاونية ومدارس.",
+  "en": "A large family suburb with a co-op and schools."
+ },
+ "qurain": {
+  "ar": "منطقة سكنية رئيسية، ومن أشهر العناوين في المحافظة.",
+  "en": "A major residential area and a main address in the governorate."
+ },
+ "al-qusour": {
+  "ar": "منطقة فلل، واسمها يعني «القصور».",
+  "en": "A villa district. The name means the palaces."
+ },
+ "funaitees": {
+  "ar": "منطقة ساحلية جنوب المدينة.",
+  "en": "A coastal area south of the city."
+ },
+ "al-maseela": {
+  "ar": "نوادٍ شاطئية وقسائم على الواجهة البحرية للخليج.",
+  "en": "Beach clubs and seafront plots along the Gulf."
+ },
+ "al-masayel": {
+  "ar": "قسائم ساحلية ومشاريع شاطئية أحدث.",
+  "en": "Coastal plots and newer beach development."
+ },
+ "mubarak-al-kabeer": {
+  "ar": "مركز المحافظة، سُميت على اسم مبارك الكبير، وهي أحدث المحافظات الست.",
+  "en": "The governorate seat, named after Mubarak the Great. This is the newest of the six governorates."
+ },
+ "sabah-al-salem": {
+  "ar": "من أكبر المناطق السكنية في المحافظة.",
+  "en": "One of the largest residential areas in the governorate."
+ },
+ "subhan": {
+  "ar": "منطقة صناعية ومخازن تخدم جنوب الكويت.",
+  "en": "An industrial and warehouse zone serving southern Kuwait."
+ },
+ "abu-halifa": {
+  "ar": "بلدة ساحلية على الطريق جنوبًا، فيها حديقة شاطئية عامة.",
+  "en": "A coastal town on the road south, with a public beach park."
+ },
+ "mina-abdullah-port": {
+  "ar": "منطقة ميناء صناعي ولتصدير النفط.",
+  "en": "An oil-export and industrial port area."
+ },
+ "ahmadi": {
+  "ar": "مركز المحافظة، مدينة النفط التاريخية التي بُنيت حول صناعة البترول في الكويت.",
+  "en": "The governorate seat. The historic oil town built around Kuwait's petroleum industry."
+ },
+ "ali-sabah-al-salem-umm-al-haiman": {
+  "ar": "ضاحية جنوبية كبيرة كانت تُعرف سابقًا بأم الهيمان.",
+  "en": "A large southern suburb, formerly known as Um Al-Hayman."
+ },
+ "al-aqila": {
+  "ar": "بلدة سكنية ساحلية بين المدينة والفحيحيل.",
+  "en": "A coastal residential town between the city and Fahaheel."
+ },
+ "bnaider": {
+  "ar": "منطقة ساحلية جنوبية للشاليهات والوصول إلى البحر.",
+  "en": "A southern coastal area used for chalets and sea access."
+ },
+ "al-dhahr": {
+  "ar": "منطقة سكنية داخلية في حزام الأحمدي.",
+  "en": "An inland residential area in the Ahmadi belt."
+ },
+ "fahaheel": {
+  "ar": "بلدة ساحلية تاريخية فيها سوق وكورنيش وارتباط بصناعة النفط.",
+  "en": "A historic coastal town with a souq, a corniche, and oil-industry links."
+ },
+ "fahad-al-ahmad": {
+  "ar": "منطقة سكنية سُميت على اسم الشيخ فهد الأحمد.",
+  "en": "A residential area named after Sheikh Fahad Al-Ahmad."
+ },
+ "hadiya": {
+  "ar": "ضاحية عائلية في حزام الأحمدي.",
+  "en": "A family suburb in the Ahmadi belt."
+ },
+ "jaber-al-ali": {
+  "ar": "منطقة سكنية كبيرة على طريق الساحل الجنوبي.",
+  "en": "A large residential area on the south coast road."
+ },
+ "al-jaliaa": {
+  "ar": "شريط ساحلي جنوبي باتجاه الحدود.",
+  "en": "A southern coastal stretch toward the border side."
+ },
+ "mahboula": {
+  "ar": "بلدة ساحلية مكتظة فيها عمارات سكنية كثيرة.",
+  "en": "A dense coastal town with many apartment blocks."
+ },
+ "mangaf": {
+  "ar": "بلدة سكنية نشطة على طريق الفحيحيل.",
+  "en": "A busy residential town on the Fahaheel road."
+ },
+ "al-wafra-residential": {
+  "ar": "سكن ملحق بمزارع الوفرة.",
+  "en": "Housing attached to the Wafra farms."
+ },
+ "nuwaiseeb": {
+  "ar": "تجمع ساحلي حدودي في أقصى الجنوب.",
+  "en": "A border-side coastal settlement in the far south."
+ },
+ "al-riqqa": {
+  "ar": "منطقة سكنية بين البلدات الساحلية.",
+  "en": "A residential area between the coast towns."
+ },
+ "sabah-al-ahmad-residential": {
+  "ar": "مدينة حديثة جنوب بلدات الأحمدي القديمة.",
+  "en": "A newer city south of the older Ahmadi towns."
+ },
+ "sabah-al-ahmad-sea-city-khiran": {
+  "ar": "مدينة ساحلية من صنع الإنسان فيها بحيرات ومراسٍ للقوارب.",
+  "en": "A man-made coastal city of lagoons and marinas."
+ },
+ "al-sabahiya": {
+  "ar": "بلدة سكنية قديمة بجوار الفحيحيل.",
+  "en": "An older residential town beside Fahaheel."
+ },
+ "shuaiba-industrial": {
+  "ar": "منطقة صناعية ثقيلة وميناء، وفيها أنشطة تكرير.",
+  "en": "A heavy industrial zone and port, including refinery activity."
+ },
+ "wafra-farms": {
+  "ar": "المنطقة الزراعية الرئيسية في الكويت، في الصحراء الجنوبية.",
+  "en": "Kuwait's main farming area, in the southern desert."
+ },
+ "zour": {
+  "ar": "منطقة ساحلية جنوبية فيها مشاريع كهرباء ومنتجعات.",
+  "en": "A southern coastal area with power and resort projects."
+ },
+ "fintas": {
+  "ar": "بلدة على البحر فيها كورنيش، بين المهبولة وأبو حليفة.",
+  "en": "A seafront town with a corniche, between Mahboula and Abu Halifa."
+ },
+ "abdullah-al-mubarak-west-jleeb": {
+  "ar": "تُعرف أيضًا بغرب الجليب، وهي ضاحية كبيرة مخططة.",
+  "en": "Also known as West Jleeb Al-Shuyoukh. A large planned suburb."
+ },
+ "andalus": {
+  "ar": "سُميت على اسم الأندلس.",
+  "en": "Named after Al-Andalus, the Arabic name for Islamic Spain."
+ },
+ "al-areedhiya": {
+  "ar": "تشتهر باستاد جابر الأحمد الدولي.",
+  "en": "Known for Jaber Al-Ahmad International Stadium."
+ },
+ "sevilla": {
+  "ar": "سُميت على اسم إشبيلية، وهي ضاحية عائلية فيها فلل وجمعية تعاونية.",
+  "en": "Named after Seville. A family suburb of villas and a co-op."
+ },
+ "al-dhajeej": {
+  "ar": "منطقة صغيرة قرب جهة المطار في الفروانية.",
+  "en": "A smaller area near the airport side of Farwaniya."
+ },
+ "farwaniya": {
+  "ar": "مركز المحافظة، مركز تجاري وسكني مكتظ على طريق المطار.",
+  "en": "The governorate seat. A dense commercial and residential centre on the airport road."
+ },
+ "al-firdous": {
+  "ar": "قطع سكنية، واسمها يعني «الجنة».",
+  "en": "Residential blocks. The name means paradise."
+ },
+ "jleeb-al-shuyoukh-al-hasawi": {
+  "ar": "من أكثر مناطق الكويت كثافة سكانية، وفيها سوق كبير للشقق.",
+  "en": "One of the most densely populated areas in Kuwait, with a large apartment market."
+ },
+ "khaitan": {
+  "ar": "منطقة سكنية وتجارية نشطة بجوار الفروانية.",
+  "en": "A busy residential and shopping district beside Farwaniya."
+ },
+ "omariya": {
+  "ar": "جيب سكني أهدأ في الفروانية.",
+  "en": "A quieter residential pocket in Farwaniya."
+ },
+ "rabiah": {
+  "ar": "منطقة فلل في الجهة الغربية، واسمها يعني «التلة».",
+  "en": "A villa area on the western side. The name means the hill."
+ },
+ "al-rai": {
+  "ar": "فيها مجمع الأفنيوز، من أكبر المجمعات المغلقة في العالم.",
+  "en": "Home of The Avenues, one of the largest covered malls in the world."
+ },
+ "al-ruqai": {
+  "ar": "منطقة سكنية باتجاه غرب المحافظة.",
+  "en": "A residential area toward the west of the governorate."
+ },
+ "rehab": {
+  "ar": "ضاحية عائلية قريبة من الأندلس وإشبيلية.",
+  "en": "A family suburb near Andalus and Ishbiliya."
+ },
+ "sabah-al-nasser": {
+  "ar": "منطقة سكنية كبيرة غرب جليب الشيوخ.",
+  "en": "A large residential area west of Jleeb Al-Shuyoukh."
+ },
+ "west-abdullah-al-mubarak": {
+  "ar": "الامتداد الغربي لعبدالله المبارك.",
+  "en": "The western extension of Abdullah Al-Mubarak."
+ },
+ "south-abdullah-al-mubarak": {
+  "ar": "الامتداد الجنوبي لعبدالله المبارك.",
+  "en": "The southern extension of Abdullah Al-Mubarak."
+ },
+ "abdali": {
+  "ar": "مزارع الحدود الشمالية، وفيها المنفذ البري الرئيسي باتجاه العراق.",
+  "en": "Northern border farms and the main land crossing toward Iraq."
+ },
+ "mutlaa": {
+  "ar": "أكبر مدينة سكنية جديدة في الكويت، وما زالت قيد البناء في الشمال.",
+  "en": "Kuwait's largest new housing city, still being built in the north."
+ },
+ "kabd": {
+  "ar": "منطقة صحراوية للخدمات والمشاريع خارج المدن.",
+  "en": "A desert district used for services and out-of-town projects."
+ },
+ "amghara-industrial": {
+  "ar": "منطقة صناعية على الطريق بين مدينة الكويت والجهراء.",
+  "en": "An industrial area on the road between Kuwait City and Jahra."
+ },
+ "jahra": {
+  "ar": "مركز المحافظة، بلدة واحة تاريخية على طرف الصحراء، وفيها القصر الأحمر.",
+  "en": "The governorate seat. A historic oasis town at the edge of the desert, site of the Red Palace."
+ },
+ "jahra-industrial": {
+  "ar": "ورش حرفية على طرف بلدة الجهراء.",
+  "en": "Craft workshops on the edge of Jahra town."
+ },
+ "naeem": {
+  "ar": "ضاحية سكنية في الجهراء.",
+  "en": "A residential suburb of Jahra."
+ },
+ "naseem": {
+  "ar": "ضاحية سكنية بجوار النعيم، واسمها يعني «النسمة».",
+  "en": "A residential suburb beside Naeem. The name means the breeze."
+ },
+ "qasr": {
+  "ar": "ضاحية كبيرة في الجهراء، واسمها يعني «القصر».",
+  "en": "A large Jahra suburb. The name means the palace."
+ },
+ "jaber-al-ahmad": {
+  "ar": "مدينة مخططة حديثة على الطريق باتجاه الصبية.",
+  "en": "A newer planned city on the road toward Subiya."
+ },
+ "saad-al-abdullah": {
+  "ar": "مدينة سكنية رئيسية في الجهراء.",
+  "en": "A major residential city in Jahra."
+ },
+ "subiya": {
+  "ar": "الساحل الشمالي، ويرتبط بجسر الشيخ جابر.",
+  "en": "The north shore, linked to the Sheikh Jaber causeway."
+ },
+ "sulabiya": {
+  "ar": "منطقة كبيرة غرب طريق المطار تجمع السكن والخدمات.",
+  "en": "A large area west of the airport road, mixing housing and services."
+ },
+ "taima": {
+  "ar": "ضاحية كبيرة في الجهراء سُميت على اسم واحة تيماء.",
+  "en": "A large Jahra suburb named after the oasis of Tayma."
+ },
+ "al-waha": {
+  "ar": "منطقة سكنية، واسمها يعني «الواحة».",
+  "en": "A residential area. The name means the oasis."
+ }
+}

@@ -58,6 +58,7 @@ const drawerItems = [
   { k: "home", href: "/", label: t.home, icon: '<path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>' },
   { k: "offices", href: "/offices", label: t.offices, icon: '<rect x="5" y="3" width="14" height="18" rx="1.5"/><path d="M9 7h1.5M13.5 7H15M9 11h1.5M13.5 11H15M9 15h1.5M13.5 15H15"/>' },
   { k: "blog", href: "/blog", label: t.blog, icon: '<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h8M8 15h5"/>' },
+  { k: "areas", href: "/areas", label: lang === "ar" ? "دليل المناطق" : "Areas guide", icon: '<path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>' },
   { k: "search", href: "/search", label: t.search, icon: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>' },
   { k: "myads", href: "/account?tab=my-ads", label: lang === "ar" ? "إعلاناتي" : "My ads", icon: '<path d="M12 21s-7-4.4-9.3-9A5.3 5.3 0 0 1 12 6.5 5.3 5.3 0 0 1 21.3 12C19 16.6 12 21 12 21z"/>' },
   { k: "app", href: APP_STORE, ext: true, label: lang === "ar" ? "التطبيق" : "The app", icon: '<rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M11 18h2"/>' },
@@ -239,7 +240,7 @@ const icons: Record<string, string> = {
             <nav aria-label={t.sitePages}>
               <h2 class="mb-4 text-[15px] font-bold">{t.sitePages}</h2>
               <ul class="space-y-3">
-                {[{ h: "/", l: t.home }, { h: "/search?purpose=sale", l: t.sale }, { h: "/search?purpose=rent", l: t.rent }, { h: "/search?purpose=exchange", l: t.exchange }, { h: "/offices", l: t.offices }, { h: "/blog", l: t.blog }, { h: "/about", l: t.about }, { h: "/contact", l: t.contact }, { h: "/privacy", l: t.privacy }, { h: "/terms", l: t.terms }, { h: "/copyright", l: t.copyright }].map((x) => (
+                {[{ h: "/", l: t.home }, { h: "/search?purpose=sale", l: t.sale }, { h: "/search?purpose=rent", l: t.rent }, { h: "/search?purpose=exchange", l: t.exchange }, { h: "/offices", l: t.offices }, { h: "/blog", l: t.blog }, { h: "/areas", l: lang === "ar" ? "دليل المناطق" : "Areas guide" }, { h: "/about", l: t.about }, { h: "/contact", l: t.contact }, { h: "/privacy", l: t.privacy }, { h: "/terms", l: t.terms }, { h: "/copyright", l: t.copyright }].map((x) => (
                   <li><a href={x.h} class="text-[14.5px] text-white/70 hover:text-white">{x.l}</a></li>
                 ))}
               </ul>

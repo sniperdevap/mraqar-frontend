@@ -5,6 +5,7 @@ import AreaPicker from "@/components/AreaPicker.astro";
 import { getAd, getAds, getAreas, getPropertyTypes } from "@/lib/api";
 import { getLang, dict } from "@/lib/i18n";
 import { pluralSlug, adHref } from "@/lib/ad-url";
+import { areaGuidePath } from "@/lib/area-guides";
 
 const lang = getLang(Astro.cookies);
 const t = dict(lang);
@@ -151,7 +152,7 @@ const jsonLd = [
         <div class="mt-5 grid grid-cols-2 gap-x-6 gap-y-6 sm:grid-cols-3">
           {guideAreas.map((a) => (
             <div class="min-w-0">
-              <h3 class="text-[14.5px] font-extrabold text-ink">{lang === "ar" ? `منطقة ${areaName(a)}` : areaName(a)}</h3>
+              <h3 class="text-[14.5px] font-extrabold text-ink"><a href={areaGuidePath(a)} class="hover:text-brand">{lang === "ar" ? `منطقة ${areaName(a)}` : areaName(a)}</a></h3>
               <ul class="mt-2 space-y-2">
                 {linkTypes.map((lt) => (
                   <li><a href={guideHref(a, lt.ty?.id)} class="text-[13px] text-muted hover:text-brand">{lang === "ar" ? `${lt.ar} ${linkPurposeLabel} في ${areaName(a)}` : `${lt.en} ${linkPurposeLabel.toLowerCase()} in ${areaName(a)}`}</a></li>
