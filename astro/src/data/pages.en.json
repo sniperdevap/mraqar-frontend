@@ -1,0 +1,317 @@
+{
+ "about": {
+  "title": "About Mr aqar",
+  "subtitle": "A modern platform for real estate connections in Kuwait",
+  "cardHeader": "About the Platform",
+  "whoWeAre": {
+   "title": "Company Information",
+   "content": "Mr aqar is part of a digital platform developed to support online property marketing in Kuwait. We focus on helping businesses and individuals present their real estate offerings in a more accessible and efficient way using modern technology."
+  },
+  "vision": {
+   "title": "Our Vision",
+   "content": "To simplify how people discover, list, and connect around real estate by providing a reliable and easy-to-use digital environment."
+  },
+  "mission": {
+   "title": "Our Mission",
+   "content": "Our goal is to bridge the gap between property owners, real estate professionals, and seekers by offering tools that make listing, searching, and communication smooth and transparent."
+  },
+  "howItWorks": {
+   "title": "How the Platform Works",
+   "owners": {
+    "title": "For Property Owners",
+    "content": "Owners and real estate offices can create listings, manage their properties, and communicate directly with interested users through the platform."
+   },
+   "seekers": {
+    "title": "For Property Seekers",
+    "content": "Users can explore available listings, filter based on their needs, and connect with advertisers to get more details or proceed further."
+   }
+  },
+  "services": {
+   "title": "Key Features",
+   "sell": {
+    "title": "Property Listings",
+    "description": "Easily publish and manage property advertisements."
+   },
+   "rent": {
+    "title": "Rental Listings",
+    "description": "Support for listing rental properties with flexible details."
+   },
+   "support": {
+    "title": "User Support",
+    "description": "Assistance is available to help users navigate and use the platform effectively."
+   },
+   "app": {
+    "title": "Cross-Platform Access",
+    "description": "Accessible on web and mobile devices with a responsive interface."
+   }
+  },
+  "contact": {
+   "title": "Contact Us",
+   "description": "We welcome your feedback and are here to assist you.",
+   "email": "Email",
+   "phone": "Phone",
+   "address": "Address",
+   "addressLine1": "Kuwait / Abu Hasaniya, Block 10, Block 85",
+   "addressLine2": "Alarbeed Building 4, Office 7"
+  }
+ },
+ "terms": {
+  "title": "Terms of Use",
+  "subtitle": "Please review these terms before using our platform",
+  "cardHeader": "Terms and Conditions",
+  "lastUpdated": "Last updated: February 2, 2026",
+  "sections": {
+   "acceptance": {
+    "title": "1. Acceptance of Terms",
+    "content": "By accessing or using Mr aqar, you acknowledge that you have read, understood, and agreed to these Terms of Use. If you do not agree with any part of these terms, you should not use the platform or its services."
+   },
+   "definitions": {
+    "title": "2. Definitions",
+    "service": "Platform: Refers to the Mr aqar website, mobile application, and all related services.",
+    "user": "User: Any person or entity accessing or using the platform, including individuals and real estate offices.",
+    "content": "Content: All listings, text, images, data, or materials published on the platform.",
+    "account": "Account: A registered profile created by a user to access platform features."
+   },
+   "eligibility": {
+    "title": "3. Eligibility",
+    "description": "To use Mr aqar, you confirm that:",
+    "items": [
+     "You are legally capable of entering into binding agreements",
+     "You meet the minimum age requirement under applicable law",
+     "You are not restricted from using such services under relevant regulations",
+     "You provide accurate and truthful information during registration"
+    ]
+   },
+   "registration": {
+    "title": "4. Account Responsibilities",
+    "description": "When creating and maintaining an account, you agree to:",
+    "items": [
+     "Provide up-to-date and correct information",
+     "Keep your login credentials secure and confidential",
+     "Inform us immediately of any unauthorized access to your account",
+     "Update your details whenever necessary",
+     "Accept responsibility for all activities performed under your account"
+    ]
+   },
+   "use": {
+    "title": "5. Acceptable Use",
+    "description": "You agree to use the platform responsibly. The following activities are not allowed:",
+    "items": [
+     "Violating applicable laws or regulations",
+     "Posting false, misleading, or harmful content",
+     "Attempting to gain unauthorized access to the system",
+     "Disrupting or interfering with platform functionality",
+     "Using the platform outside its intended purpose without permission",
+     "Infringing on intellectual property or legal rights of others"
+    ]
+   },
+   "property": {
+    "title": "6. Intellectual Property",
+    "content": "All platform elements, including design, branding, and system content, are owned or licensed by Mr aqar and are protected by applicable laws. You may not copy, reuse, or distribute any material without prior written approval."
+   },
+   "user_content": {
+    "title": "7. User Content",
+    "description": "By submitting content to the platform, you agree that:",
+    "items": [
+     "You are responsible for the accuracy and legality of your content",
+     "Your content does not violate the rights of others",
+     "Mr aqar may display or manage your content for platform operation",
+     "We may remove or modify content that violates these terms or policies"
+    ]
+   },
+   "transactions": {
+    "title": "8. User Transactions",
+    "content": "Mr aqar acts as a listing and communication platform only. We are not involved in agreements, negotiations, or payments between users. Users are responsible for verifying all details before completing any transaction."
+   },
+   "paid_services": {
+    "title": "9. Paid Features",
+    "description": "Certain features may require payment:",
+    "items": [
+     "Fees are clearly displayed before purchase",
+     "Payments are generally non-refundable unless stated otherwise",
+     "Pricing may change at any time",
+     "We reserve the right to modify or discontinue paid features"
+    ]
+   },
+   "termination": {
+    "title": "10. Suspension or Termination",
+    "content": "We may suspend or terminate access to your account if there is a violation of these terms or misuse of the platform. You may also stop using the platform at any time."
+   },
+   "disclaimer": {
+    "title": "11. Disclaimer",
+    "content": "The platform is provided on an \"as available\" basis. We do not guarantee uninterrupted access or the accuracy of all content. Use of the platform is at your own discretion and risk."
+   },
+   "limitation": {
+    "title": "12. Limitation of Liability",
+    "content": "Mr aqar is not liable for any indirect, incidental, or consequential damages resulting from the use of the platform or reliance on its content."
+   },
+   "compensation": {
+    "title": "13. Indemnification",
+    "content": "You agree to indemnify and hold Mr aqar harmless from any claims, damages, or expenses arising from your misuse of the platform or violation of these terms."
+   },
+   "law": {
+    "title": "14. Governing Law",
+    "content": "These terms are governed by applicable laws, and any disputes will be handled by the competent courts in the relevant jurisdiction."
+   },
+   "amendments": {
+    "title": "15. Updates to Terms",
+    "content": "We may revise these terms from time to time. Continued use of the platform after updates means you accept the revised terms."
+   },
+   "contact": {
+    "title": "16. Contact",
+    "description": "For questions or concerns regarding these terms, please contact us:",
+    "email": "Email: contact@aqar.com",
+    "phone": "Phone: +96590078005",
+    "address": "Address",
+    "addressLine1": "Kuwait / Abu Hasaniya, Block 10, Block 85",
+    "addressLine2": "Alarbeed Building 4, Office 7"
+   }
+  }
+ },
+ "privacy": {
+  "title": "Privacy Policy",
+  "subtitle": "Your privacy matters to us, and we are committed to handling your data responsibly",
+  "cardHeader": "Privacy Policy and Data Handling",
+  "lastUpdated": "Last updated: February 2, 2026",
+  "sections": {
+   "intro": {
+    "title": "1. Introduction",
+    "content": "Mr aqar is committed to respecting your privacy and protecting the personal information you share with us. This Privacy Policy outlines how we collect, use, manage, and safeguard your data when you interact with our platform and services."
+   },
+   "collection": {
+    "title": "2. Information We Collect",
+    "description": "To operate effectively, we may collect different categories of information:",
+    "personal": "Personal Details: Information such as your name, email, phone number, and any details you provide while creating an account or using our services.",
+    "usage": "Activity Data: Information about how you browse, search, or interact with features on our platform.",
+    "technical": "Device & Technical Data: This includes IP address, device type, browser details, and system information.",
+    "cookies": "Cookies & Similar Technologies: Small data files used to remember preferences and enhance your browsing experience."
+   },
+   "use": {
+    "title": "3. How We Use Your Information",
+    "description": "We process your information for purposes such as:",
+    "items": [
+     "Delivering and maintaining platform functionality",
+     "Improving features and overall user experience",
+     "Responding to your messages, requests, or support needs",
+     "Sending relevant notifications, updates, or offers",
+     "Analyzing usage trends to enhance performance",
+     "Meeting legal or regulatory obligations"
+    ]
+   },
+   "sharing": {
+    "title": "4. Information Sharing",
+    "description": "We respect your privacy and do not trade your personal data. Information may only be shared in limited situations such as:",
+    "items": [
+     "With trusted partners who assist in running our services",
+     "When required by applicable laws or legal authorities",
+     "To protect the security, rights, or safety of our platform and users",
+     "With your explicit permission when necessary"
+    ]
+   },
+   "security": {
+    "title": "5. Data Security",
+    "content": "We apply appropriate technical and organizational measures to help protect your personal data from unauthorized access, misuse, or loss. While we strive to use commercially acceptable methods to secure information, no digital system can guarantee absolute security."
+   },
+   "rights": {
+    "title": "6. Your Rights",
+    "description": "Depending on applicable regulations, you may have the following rights:",
+    "access": "Access: You can request a copy of the personal data we hold about you.",
+    "correction": "Correction: You can ask us to update or fix inaccurate or incomplete information.",
+    "deletion": "Deletion: You can request removal of your personal data under certain conditions.",
+    "transfer": "Data Portability: You may request your data in a structured, commonly used format.",
+    "object": "Objection: You may object to certain types of data processing where applicable."
+   },
+   "cookies_info": {
+    "title": "7. Cookies and Tracking",
+    "content": "Our platform uses cookies and related technologies to improve usability, remember preferences, and understand user behavior. You can manage or disable cookies through your browser settings at any time."
+   },
+   "retention": {
+    "title": "8. Data Retention",
+    "content": "We retain personal information only for as long as it is necessary to fulfill the purposes described in this policy, unless a longer retention period is required or permitted by law. When no longer needed, data is securely deleted or anonymized."
+   },
+   "changes": {
+    "title": "9. Updates to This Policy",
+    "content": "We may revise this Privacy Policy occasionally to reflect updates in our services, legal requirements, or operational practices. Any changes will be posted on this page with a revised date."
+   },
+   "contact": {
+    "title": "10. Contact Us",
+    "description": "If you have questions, feedback, or concerns regarding this Privacy Policy or how your data is handled, please reach out to us:",
+    "email": "Email: contact@aqar.com",
+    "phone": "Phone: +96590078005",
+    "address": "Address",
+    "addressLine1": "Kuwait / Abu Hasaniya, Block 10, Block 85",
+    "addressLine2": "Alarbeed Building 4, Office 7"
+   }
+  }
+ },
+ "copyright": {
+  "title": "Copyright Notice",
+  "subtitle": "Please review our copyright policy",
+  "cardHeader": "Copyright Notice",
+  "lastUpdated": "Last updated: July 2, 2026",
+  "sections": {
+   "notice": {
+    "content": "© 2026 MR AQAR. All Rights Reserved."
+   },
+   "ownership": {
+    "title": "1. Ownership of Content",
+    "content": "The content, design, layout, graphics, logos, trademarks, photographs, text, software, databases, and all other materials available on the MR AQAR website and mobile applications are the exclusive property of MR AQAR or its licensors and are protected by applicable copyright, trademark, and intellectual property laws."
+   },
+   "restrictions": {
+    "title": "2. Restrictions on Use",
+    "content": "No part of this website or its content may be copied, reproduced, modified, republished, uploaded, posted, transmitted, distributed, sold, licensed, or exploited in any form or by any means without the prior written consent of MR AQAR, except where expressly permitted by applicable law."
+   },
+   "permittedUse": {
+    "title": "3. Permitted Use",
+    "content": "Users may access and use this website solely for lawful personal and commercial real estate purposes in accordance with our Terms of Use. Any unauthorized use, including data scraping, automated data collection, reverse engineering, duplication of listings, misuse of trademarks, or infringement of intellectual property rights, is strictly prohibited and may result in legal action."
+   },
+   "rights": {
+    "title": "4. Reservation of Rights",
+    "content": "MR AQAR reserves the right to update, modify, suspend, or remove any content or functionality at any time without prior notice. All third-party trademarks, logos, and property listings remain the property of their respective owners."
+   },
+   "acknowledgment": {
+    "title": "5. Acknowledgment",
+    "content": "By accessing or using the MR AQAR website or mobile applications, you acknowledge and agree to respect all applicable intellectual property rights and comply with all relevant laws and regulations."
+   },
+   "contact": {
+    "title": "6. Copyright Inquiries",
+    "description": "For copyright inquiries, licensing requests, or reports of intellectual property infringement, please contact MR AQAR through the official contact information provided on this website.",
+    "email": "Email: contact@aqar.com",
+    "address": "Address",
+    "addressLine1": "Kuwait / Abu Hasaniya, Block 10, Block 85",
+    "addressLine2": "Alarbeed Building 4, Office 7"
+   }
+  }
+ },
+ "contact": {
+  "title": "Contact Us",
+  "description": "We'd love to hear from you, send us a message and we'll respond as soon as possible",
+  "formTitle": "Contact Us",
+  "fullName": "Full Name",
+  "email": "Email",
+  "subject": "Subject",
+  "message": "Message",
+  "fullNamePlaceholder": "Enter your full name",
+  "emailPlaceholder": "Enter your email",
+  "subjectPlaceholder": "Select subject...",
+  "messagePlaceholder": "Write your message here...",
+  "sendButton": "Send Message",
+  "successMessage": "Message sent successfully!",
+  "deleteSuccessMessage": "Your account has been deleted successfully.",
+  "subjects": {
+   "general": "General Inquiry",
+   "support": "Technical Support",
+   "listing": "Property Listing",
+   "partnership": "Partnership",
+   "feedback": "Feedback",
+   "other": "Other",
+   "deleteAccount": "Delete Account"
+  },
+  "validation": {
+   "fullName": "Full name must be at least 2 characters",
+   "email": "Please enter a valid email address",
+   "subject": "Please select a subject",
+   "message": "Message must be at least 10 characters"
+  }
+ }
+}

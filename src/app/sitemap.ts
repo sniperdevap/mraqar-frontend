@@ -49,7 +49,9 @@ async function getActiveAdEntries(): Promise<MetadataRoute.Sitemap> {
     for (const ad of result.ads) {
       entries.push({
         url: `${SITE_URL}${adHref(ad, areas)}`,
-        lastModified: ad.updatedAt,
+        // posted / re-posted date: updatedAt also changes on every view, which
+        // told Google old ads were new
+        lastModified: ad.createdAt,
         changeFrequency: 'daily',
         priority: 0.7,
         ...(adImage(ad) ? { images: [adImage(ad) as string] } : {}),

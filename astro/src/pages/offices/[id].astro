@@ -1,0 +1,65 @@
+---
+import Base from "@/layouts/Base.astro";
+import AdCard from "@/components/AdCard.astro";
+import OfficeAvatar from "@/components/OfficeAvatar.astro";
+import { ApiError, getAreas, getOffice } from "@/lib/api";
+import { getLang, dict, waNumber } from "@/lib/i18n";
+
+const lang = getLang(Astro.cookies);
+const t = dict(lang);
+const { id } = Astro.params as { id: string };
+const page = Math.max(1, Number(Astro.url.searchParams.get("page") || 1));
+const purpose = Astro.url.searchParams.get("purpose") || "";
+let data;
+try {
+  data = await getOffice(id, { page, limit: 20, purpose: purpose || undefined }, lang);
+} catch (err) {
+  if (err instanceof ApiError && err.status === 404) return Astro.rewrite("/404");
+  throw err;
+}
+const areas = await getAreas(lang).catch(() => []);
+const o = data.office;
+const site = Astro.site!.origin;
+const title = lang === "ar" ? `${o.name} — مكتب عقاري في الكويت` : `${o.name} — real estate office in Kuwait`;
+const description = lang === "ar"
+  ? `تصفح ${data.totalAds} إعلانًا من ${o.name} للبيع والإيجار والبدل في الكويت، وتواصل مباشرة عبر الاتصال أو واتساب.`
+  : `Browse ${data.totalAds} ads from ${o.name} for sale, rent and exchange in Kuwait, and contact them directly by phone or WhatsApp.`;
+const jsonLd = [{
+  "@context": "https://schema.org", "@type": "RealEstateAgent", name: o.name, url: `${site}/offices/${o.publicId}`,
+  ...(o.phoneNumber ? { telephone: o.phoneNumber } : {}), areaServed: { "@type": "Country", name: "Kuwait" },
+  ...(o.description ? { description: o.description } : {}),
+}];
+const tabs = [["", lang === "ar" ? "الكل" : "All"], ["sale", t.sale], ["rent", t.rent], ["exchange", t.exchange]] as const;
+Astro.response.headers.set("Cache-Control", "public, max-age=0, s-maxage=60, stale-while-revalidate=300");
+---
+<Base title={title} description={description} canonical={`/offices/${o.publicId}`} jsonLd={jsonLd} active="offices">
+  <section class="border-b border-line bg-white">
+    <div class="mx-auto max-w-3xl px-4 pt-7 pb-6">
+      <a href="/offices" class="text-[14px] text-muted hover:text-brand">← {t.offices}</a>
+      <div class="mt-4 flex items-center gap-4">
+        <OfficeAvatar name={o.name} avatar={o.avatar} size="lg" />
+        <div class="min-w-0">
+          <h1 class="truncate text-[24px] font-bold">{o.name}</h1>
+          <p class="mt-1 text-[14.5px] text-muted">{data.totalAds.toLocaleString("en-US")} {t.adsCount}</p>
+        </div>
+      </div>
+      {o.description && <p class="mt-4 whitespace-pre-line text-[15px] leading-7 text-ink-2">{o.description}</p>}
+      {o.phoneNumber && (
+        <div class="mt-5 grid grid-cols-2 gap-3">
+          <a href={`tel:${o.phoneNumber}`} class="flex h-12 items-center justify-center rounded-xl bg-brand text-[15px] font-semibold text-white">{t.callNow}</a>
+          <a href={`https://wa.me/${waNumber(o.phoneNumber)}`} target="_blank" rel="noopener" class="flex h-12 items-center justify-center rounded-xl bg-wa text-[15px] font-semibold text-white">{t.whatsapp}</a>
+        </div>
+      )}
+    </div>
+  </section>
+  <div class="mx-auto max-w-3xl px-4 py-6">
+    <div class="mb-4 flex items-center justify-between gap-3">
+      <h2 class="text-[19px] font-bold">{t.officeAds}</h2>
+    </div>
+    <nav class="mb-4 flex gap-2 overflow-x-auto [scrollbar-width:none]">
+      {tabs.map(([v, l]) => <a href={`/offices/${o.publicId}${v ? `?purpose=${v}` : ""}`} class:list={["shrink-0 rounded-full px-4 py-2 text-[14px] ring-1", purpose === v ? "bg-ink text-white ring-ink" : "bg-white text-ink ring-line"]}>{l}</a>)}
+    </nav>
+    {data.ads.length ? <div class="space-y-3.5">{data.ads.map((ad) => <AdCard ad={ad} areas={areas} lang={lang} headingLevel="h3" />)}</div>
+      : <p class="rounded-2xl border border-dashed border-line bg-white p-10 text-center text-muted">{t.noAds}</p>}
+  </div>
+</Base>

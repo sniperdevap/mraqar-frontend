@@ -1,0 +1,202 @@
+---
+/**
+ * SEO ad page: /{purpose}/{type}/{governorate}/{area}/{id}
+ * e.g. /rent/apartments/hawalli-governorate/salwa/4071
+ */
+import Base from "@/layouts/Base.astro";
+import AdCard from "@/components/AdCard.astro";
+import { ApiError, getAd, getAds, getAreas, mediaUrl, countAdView } from "@/lib/api";
+import { adHref, findArea, AD_PURPOSES } from "@/lib/ad-url";
+import { adTitle, dict, formatPrice, getLang, timeAgo, waNumber } from "@/lib/i18n";
+import { adJsonLd } from "@/lib/ad-page";
+
+const lang = getLang(Astro.cookies);
+const t = dict(lang);
+const { purpose, type, governorate, area, id } = Astro.params as Record<string, string>;
+if (!AD_PURPOSES.includes(purpose as never) || !/^(\d+|[a-f0-9]{24})$/i.test(id)) return Astro.rewrite("/404");
+
+let ad;
+try {
+  ad = await getAd(id, lang);
+} catch (err) {
+  if (err instanceof ApiError && err.status === 404) return Astro.rewrite("/404");
+  throw err; // temporary API failure → 500, so Google retries instead of dropping the page
+}
+const areas = await getAreas(lang).catch(() => []);
+const canonical = adHref(ad, areas);
+if (canonical !== `/${purpose}/${type}/${governorate}/${area}/${id}` && !canonical.startsWith("/ads/")) {
+  return Astro.redirect(canonical, 301);
+}
+
+// Count the view without delaying the page.
+countAdView(id, Astro.request.headers.get("x-forwarded-for") || undefined);
+
+const site = Astro.site!.origin;
+const url = `${site}${canonical}`;
+const title = adTitle(ad, lang);
+const price = formatPrice(ad, lang);
+const fullArea = findArea(ad.area, areas) as { governorate?: string; governorateAr?: string } | undefined;
+const areaName = lang === "ar" ? ad.area.labelAr : ad.area.label;
+const govName = lang === "ar" ? fullArea?.governorateAr : fullArea?.governorate;
+const typeName = lang === "ar" ? ad.propertyType?.labelAr : ad.propertyType?.label;
+const purposeName = (t as Record<string, string>)[ad.purpose];
+const photos = (ad.media || []).map((m) => ({ src: mediaUrl(m), video: m.type === "video" ? mediaUrl({ ...m, type: "image" }) : null, poster: mediaUrl(m, true) }));
+if (!photos.length) photos.push({ src: "/DefaultAdImage.jpeg", video: null, poster: "/DefaultAdImage.jpeg" });
+const phone = ad.isPhoneHidden ? "" : ad.phoneNumber || ad.user?.phoneNumber || "";
+const waText = encodeURIComponent(`${lang === "ar" ? "مرحبًا، أستفسر عن إعلانك في مستر عقار" : "Hello, I'm asking about your ad on Mr Aqar"}\n${title}\n${url}`);
+const waLink = phone ? `https://wa.me/${waNumber(phone)}?text=${waText}` : "";
+const shareText = encodeURIComponent(`${title} — ${price || ""}`);
+const desc = (ad.description || "").replace(/\s+/g, " ").trim();
+const metaDescription = `${title}${price ? ` — ${price}${ad.purpose === "rent" ? ` ${t.monthly}` : ""}` : ""}. ${desc}`.slice(0, 158);
+const sold = ad.status !== "active";
+// Show the real posted date too, so what Google reads matches what people see.
+const postedOn = new Intl.DateTimeFormat(lang === "ar" ? "ar-KW-u-nu-latn" : "en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Kuwait" }).format(new Date(ad.createdAt));
+
+const similar = await getAds({ page: 1, limit: 7, purpose: ad.purpose, propertyType: String(ad.propertyType?.id || ""), status: "active" }, lang)
+  .then((r) => r.ads.filter((x) => x.id !== ad.id).slice(0, 6))
+  .catch(() => []);
+
+Astro.response.headers.set("Cache-Control", "public, max-age=0, s-maxage=60, stale-while-revalidate=300");
+---
+<Base title={title} description={metaDescription} canonical={canonical} image={photos[0].poster.startsWith("http") ? photos[0].poster : `${site}${photos[0].poster}`} noindex={sold} jsonLd={adJsonLd(ad, areas, lang, site)} bottomBar={false}>
+  <Fragment slot="head">
+    <meta property="og:type" content="product" />
+    <meta property="article:published_time" content={ad.createdAt} />
+    <meta property="article:modified_time" content={ad.createdAt} />
+    {price && <meta property="product:price:amount" content={String(ad.price)} />}
+    {price && <meta property="product:price:currency" content="KWD" />}
+    <link rel="preload" as="image" href={photos[0].poster} fetchpriority="high" />
+  </Fragment>
+
+  <article class="mx-auto max-w-3xl pb-28 lg:pb-12">
+    <!-- Gallery: swipe on phones -->
+    <div class="relative bg-black/5 lg:mt-6 lg:overflow-hidden lg:rounded-3xl">
+      <div class="flex snap-x snap-mandatory overflow-x-auto [scrollbar-width:none]" data-gallery dir="ltr">
+        {photos.map((p, i) => (
+          <div class="w-full shrink-0 snap-center">
+            {p.video ? (
+              <video src={p.video} poster={p.poster} controls playsinline preload="none" class="aspect-[4/3] w-full bg-black object-contain"></video>
+            ) : (
+              <img src={p.src} alt={i === 0 ? title : `${title} — ${i + 1}`} width="1200" height="900" class="aspect-[4/3] w-full object-cover" loading={i === 0 ? "eager" : "lazy"} fetchpriority={i === 0 ? "high" : "auto"} decoding="async" />
+            )}
+          </div>
+        ))}
+      </div>
+      {photos.length > 1 && <span class="absolute bottom-3 left-3 rounded-full bg-black/60 px-3 py-1 text-[13px] text-white" dir="ltr" data-gallery-count>1 / {photos.length}</span>}
+    </div>
+
+    <div class="space-y-5 px-4 pt-5 lg:px-0">
+      <nav class="text-[13px] text-muted" aria-label="Breadcrumb">
+        <ol class="flex flex-wrap items-center gap-1.5">
+          <li><a href="/" class="hover:text-brand">{t.breadcrumbHome}</a></li>
+          <li aria-hidden="true">/</li>
+          <li><a href={`/search?purpose=${ad.purpose}`} class="hover:text-brand">{purposeName}</a></li>
+          {typeName && <><li aria-hidden="true">/</li><li><a href={`/search?purpose=${ad.purpose}&propertyType=${ad.propertyType.id}`} class="hover:text-brand">{typeName}</a></li></>}
+          {areaName && <><li aria-hidden="true">/</li><li><a href={`/search?purpose=${ad.purpose}&propertyType=${ad.propertyType?.id}&area=${ad.area.id}`} class="hover:text-brand">{areaName}</a></li></>}
+        </ol>
+      </nav>
+
+      <header>
+        <h1 class="text-[24px] font-bold leading-[1.55] sm:text-[28px]">{title}</h1>
+        <p class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[13.5px] text-muted">
+          <time datetime={ad.createdAt} title={postedOn}>{timeAgo(ad.createdAt, lang)} · {postedOn}</time>
+          <span aria-hidden="true">·</span><span>{t.adNo} <b class="font-semibold text-ink">{ad.id}</b></span>
+          {typeof ad.views === "number" && ad.views > 0 && <><span aria-hidden="true">·</span><span>{ad.views} {t.views}</span></>}
+        </p>
+        <p class="mt-4 text-[28px] font-bold text-brand">
+          {price ? <>{price}{ad.purpose === "rent" && <span class="text-[16px] font-medium text-muted"> / {t.monthly}</span>}</> : <span class="text-[18px] text-muted">{t.priceOnRequest}</span>}
+        </p>
+      </header>
+
+      <ul class="flex flex-wrap gap-2 text-[14px]">
+        {[purposeName, typeName, areaName, govName].filter(Boolean).map((x) => <li class="rounded-full bg-white px-3.5 py-1.5 ring-1 ring-line">{x}</li>)}
+      </ul>
+
+      {desc && (
+        <section class="rounded-2xl bg-white p-5 ring-1 ring-line">
+          <h2 class="mb-2.5 text-[17px] font-bold">{t.description}</h2>
+          <p class="whitespace-pre-line text-[15.5px] leading-8 text-ink-2">{ad.description}</p>
+        </section>
+      )}
+
+      <section class="rounded-2xl bg-white p-5 ring-1 ring-line" id="contact">
+        <h2 class="text-[17px] font-bold">{t.contactAdvertiser}</h2>
+        <div class="mt-3 flex items-center gap-3">
+          <span class="flex size-12 items-center justify-center rounded-full bg-brand-soft text-[18px] font-bold text-brand">{(ad.user?.name || "؟").trim().charAt(0)}</span>
+          <div class="min-w-0">
+            {ad.user?.publicId ? <a href={`/offices/${ad.user.publicId}`} class="block truncate text-[16px] font-semibold hover:text-brand">{ad.user.name}</a> : <p class="truncate text-[16px] font-semibold">{ad.user?.name}</p>}
+            <p class="text-[13px] text-muted">{t.adNo}: {ad.id}</p>
+          </div>
+        </div>
+        <div class="mt-4 grid grid-cols-2 gap-3">
+          {phone ? <a href={`tel:${phone}`} class="flex h-13 items-center justify-center gap-2 rounded-xl bg-brand text-[15.5px] font-semibold text-white hover:bg-brand-dark">{t.callNow}</a> : null}
+          {waLink ? <a href={waLink} target="_blank" rel="noopener" class:list={["flex h-13 items-center justify-center gap-2 rounded-xl bg-wa text-[15.5px] font-semibold text-white", !phone && "col-span-2"]}>{t.whatsapp}</a> : null}
+        </div>
+      </section>
+
+      <aside class="flex gap-3 rounded-2xl bg-amber-50 p-4 text-[14px] leading-7 text-amber-900 ring-1 ring-amber-200" role="note">
+        <svg class="mt-1 shrink-0" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3 2 21h20L12 3z"/><path d="M12 10v5M12 18h.01"/></svg>
+        <p><b class="font-semibold">{t.safetyTitle}: </b>{t.safety}</p>
+      </aside>
+
+      <section class="rounded-2xl bg-white p-5 ring-1 ring-line">
+        <h2 class="mb-3 text-[17px] font-bold">{t.share}</h2>
+        <div class="grid grid-cols-4 gap-2 text-center text-[12.5px]">
+          <a href={`https://wa.me/?text=${shareText}%0A${encodeURIComponent(url)}`} target="_blank" rel="noopener" class="rounded-xl bg-canvas py-3 hover:bg-brand-soft">{t.whatsapp}</a>
+          <a href={`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${shareText}`} target="_blank" rel="noopener" class="rounded-xl bg-canvas py-3 hover:bg-brand-soft">{t.telegram}</a>
+          <a href={`https://x.com/intent/post?url=${encodeURIComponent(url)}&text=${shareText}`} target="_blank" rel="noopener" class="rounded-xl bg-canvas py-3 hover:bg-brand-soft">X</a>
+          <button type="button" class="rounded-xl bg-canvas py-3 hover:bg-brand-soft" data-copy={url} data-copied={t.copied}>{t.copyLink}</button>
+        </div>
+      </section>
+
+      <details class="rounded-2xl bg-white ring-1 ring-line">
+        <summary class="flex h-13 cursor-pointer list-none items-center gap-2 px-5 text-[15px] text-muted hover:text-brand">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 22V4a1 1 0 0 1 1-1h11l-2 4 2 4H5"/></svg>{t.report}
+        </summary>
+        <form method="post" action={`/api/report/${ad.id}`} class="space-y-3 border-t border-line p-5" data-report>
+          <div class="grid grid-cols-2 gap-2">
+            {[["fraud", t.reportFraud], ["wrong", t.reportWrong], ["sold", t.reportSold], ["other", t.reportOther]].map(([v, l], i) => (
+              <label class="cursor-pointer"><input type="radio" name="reason" value={v} class="peer sr-only" checked={i === 0} /><span class="flex h-11 items-center justify-center rounded-xl ring-1 ring-line text-[14px] peer-checked:bg-brand-soft peer-checked:text-brand peer-checked:ring-brand">{l}</span></label>
+            ))}
+          </div>
+          <textarea name="details" rows="3" maxlength="500" placeholder={t.reportDetails} class="w-full rounded-xl p-3 text-[16px] ring-1 ring-line outline-none focus:ring-brand"></textarea>
+          <button class="h-12 w-full rounded-xl bg-ink text-[15px] font-semibold text-white">{t.sendReport}</button>
+          <p class="hidden text-center text-[14px] text-wa" data-report-done>{t.reportThanks}</p>
+        </form>
+      </details>
+
+      {similar.length > 0 && (
+        <section class="pt-3">
+          <h2 class="mb-3.5 text-[20px] font-bold">{t.similar}</h2>
+          <div class="space-y-3.5">{similar.map((s) => <AdCard ad={s} areas={areas} lang={lang} />)}</div>
+        </section>
+      )}
+    </div>
+  </article>
+
+  <!-- Sticky contact bar on phones -->
+  <div class="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-white/95 px-4 pt-3 backdrop-blur lg:hidden" style="padding-bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px))">
+    <div class="mx-auto grid max-w-3xl grid-cols-2 gap-3">
+      {phone ? <a href={`tel:${phone}`} class="flex h-12 items-center justify-center rounded-xl bg-brand text-[15.5px] font-semibold text-white">{t.callNow}</a> : null}
+      {waLink ? <a href={waLink} target="_blank" rel="noopener" class:list={["flex h-12 items-center justify-center rounded-xl bg-wa text-[15.5px] font-semibold text-white", !phone && "col-span-2"]}>{t.whatsapp}</a> : <a href="#contact" class="col-span-2 flex h-12 items-center justify-center rounded-xl bg-ink text-[15.5px] font-semibold text-white">{t.contactAdvertiser}</a>}
+    </div>
+  </div>
+
+  <script>
+    const g = document.querySelector<HTMLElement>("[data-gallery]");
+    const c = document.querySelector<HTMLElement>("[data-gallery-count]");
+    if (g && c) {
+      const total = g.children.length;
+      g.addEventListener("scroll", () => { c.textContent = `${Math.round(g.scrollLeft / g.clientWidth) + 1} / ${total}`; }, { passive: true });
+    }
+    document.querySelectorAll<HTMLButtonElement>("[data-copy]").forEach((b) => b.addEventListener("click", async () => {
+      try { await navigator.clipboard.writeText(b.dataset.copy!); const old = b.textContent; b.textContent = b.dataset.copied!; setTimeout(() => (b.textContent = old), 1800); } catch { /* clipboard blocked */ }
+    }));
+    document.querySelectorAll<HTMLFormElement>("[data-report]").forEach((f) => f.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      await fetch(f.action, { method: "POST", body: new FormData(f) }).catch(() => undefined);
+      f.querySelector("button")!.setAttribute("disabled", "");
+      f.querySelector("[data-report-done]")!.classList.remove("hidden");
+    }));
+  </script>
+</Base>

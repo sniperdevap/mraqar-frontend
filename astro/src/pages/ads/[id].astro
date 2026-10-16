@@ -1,0 +1,17 @@
+---
+// Legacy /ads/{id} links (old site, apps, Google) → permanent redirect to the SEO URL.
+import { ApiError, getAd, getAreas } from "@/lib/api";
+import { adHref } from "@/lib/ad-url";
+import { getLang } from "@/lib/i18n";
+const lang = getLang(Astro.cookies);
+const { id } = Astro.params as { id: string };
+try {
+  const [ad, areas] = await Promise.all([getAd(id, lang), getAreas(lang).catch(() => [])]);
+  const target = adHref(ad, areas);
+  if (!target.startsWith("/ads/")) return Astro.redirect(target, 301);
+} catch (err) {
+  if (err instanceof ApiError && err.status === 404) return Astro.rewrite("/404");
+  throw err;
+}
+return Astro.rewrite("/404");
+---

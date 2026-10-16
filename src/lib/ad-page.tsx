@@ -130,8 +130,9 @@ async function adStructuredData(ad: DetailAd, locale: string) {
       description: cleanDescription(ad.description, adTitle(ad, locale)),
       url,
       image: adImageUrl(ad),
+      // posted / re-posted date only: updatedAt also changes on every view
       datePosted: ad.createdAt,
-      ...(ad.updatedAt ? { dateModified: ad.updatedAt } : {}),
+      dateModified: ad.createdAt,
       contentLocation: {
         "@type": "Place",
         name: [areaName, govName, isAr ? "الكويت" : "Kuwait"].filter(Boolean).join(isAr ? "، " : ", "),

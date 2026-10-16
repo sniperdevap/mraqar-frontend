@@ -1,0 +1,33 @@
+---
+/** Renders an info page (about, terms, privacy, copyright) from the site's existing texts. */
+import Base from "@/layouts/Base.astro";
+import ar from "@/data/pages.ar.json";
+import en from "@/data/pages.en.json";
+import { getLang } from "@/lib/i18n";
+
+interface Props { page: "about" | "terms" | "privacy" | "copyright"; path: string }
+const { page, path } = Astro.props;
+const lang = getLang(Astro.cookies);
+const data = (lang === "en" ? en : ar)[page] as Record<string, any>;
+const SKIP = new Set(["title", "subtitle", "cardHeader", "lastUpdated", "sections"]);
+const sections: Array<[string, any]> = Object.entries(data.sections ?? Object.fromEntries(Object.entries(data).filter(([k]) => !SKIP.has(k))));
+const isObj = (v: unknown): v is Record<string, any> => !!v && typeof v === "object" && !Array.isArray(v);
+---
+<Base title={data.title} description={data.subtitle} canonical={path}>
+  <div class="mx-auto max-w-2xl px-4 pt-8 pb-14">
+    <h1 class="text-[28px] font-bold">{data.title}</h1>
+    {data.subtitle && <p class="mt-2 text-[16px] leading-8 text-muted">{data.subtitle}</p>}
+    {data.lastUpdated && <p class="mt-2 text-[13.5px] text-muted">{data.lastUpdated}</p>}
+    <div class="prose-ar mt-6 space-y-4 text-[16px] text-ink">
+      {sections.map(([, s]) => isObj(s) ? (
+        <section class="rounded-2xl bg-white p-5 ring-1 ring-line sm:p-6">
+          {s.title && <h2 class="!mt-0">{s.title}</h2>}
+          {Object.entries(s).filter(([k]) => k !== "title").map(([k, v]) =>
+            Array.isArray(v) ? <ul>{v.map((x: string) => <li>{x}</li>)}</ul>
+            : isObj(v) ? <div>{v.title && <h3>{v.title}</h3>}{Object.entries(v).filter(([kk]) => kk !== "title").map(([, vv]) => typeof vv === "string" ? <p>{vv}</p> : null)}</div>
+            : typeof v === "string" ? <p>{v}</p> : null)}
+        </section>
+      ) : typeof s === "string" ? <p>{s}</p> : null)}
+    </div>
+  </div>
+</Base>

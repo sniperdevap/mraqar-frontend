@@ -1,7 +1,7 @@
 /**
  * SEO-friendly ad URLs:
  *   /{purpose}/{property-type-plural}/{governorate}-governorate/{area}/{id}
- *   e.g. /rent/apartments/hawalli-governorate/salwa/4071
+ *   e.g. /rent/apartments/hawalli-governorate/salwa/4071, /rent/offices/asimah-governorate/sharq/4100
  *
  * The numeric id at the end is the only part used to load the ad. The other
  * segments are descriptive keywords; if they don't match the ad's current
@@ -82,11 +82,16 @@ export const findArea = (
   return match ? { ...area, governorate: match.governorate, governorateAr: match.governorateAr } : area;
 };
 
+/** "Al-Asimah Governorate" -> "asimah-governorate", "Hawalli Governorate" -> "hawalli-governorate". */
 export const governorateSlug = (governorate?: string | null): string => {
-  const slug = slugify(governorate);
+  const slug = slugify(governorate).replace(/^al-/, "");
   if (!slug) return "";
   return slug.endsWith("governorate") ? slug : `${slug}-governorate`;
 };
+
+/** Area slug from the area's stable value ("salwa", "sharq"), falling back to its English name. */
+export const areaSlug = (area?: { value?: string; label?: string } | null): string =>
+  firstSlug(area?.value, area?.label).replace(/^al-/, "");
 
 /**
  * Canonical path for an ad. Falls back to /ads/{id} (which redirects) when
@@ -96,11 +101,11 @@ export function adHref(ad: AdUrlInput, areas?: AreaLike[] | null): string {
   const purpose = AD_PURPOSES.includes(ad.purpose as AdPurpose) ? ad.purpose : null;
   const area = findArea(ad.area, areas);
   const type = pluralSlug(ad.propertyType?.label) || pluralSlug(ad.propertyType?.value);
-  const areaSlug = firstSlug(area?.label, area?.value);
+  const areaPart = areaSlug(area);
   const govSlug = governorateSlug(area?.governorate);
 
-  if (!purpose || !type || !areaSlug || !govSlug) return `/ads/${ad.id}`;
-  return `/${purpose}/${type}/${govSlug}/${areaSlug}/${ad.id}`;
+  if (!purpose || !type || !areaPart || !govSlug) return `/ads/${ad.id}`;
+  return `/${purpose}/${type}/${govSlug}/${areaPart}/${ad.id}`;
 }
 
 const AD_ID = "(\\d+|[a-f0-9]{24})";

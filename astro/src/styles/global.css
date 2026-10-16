@@ -1,0 +1,46 @@
+@import "@fontsource-variable/alexandria";
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Alexandria Variable", "Alexandria", Tahoma, "Segoe UI", system-ui, sans-serif;
+  --color-brand: #e11d1d;
+  --color-brand-dark: #b91616;
+  --color-brand-soft: #fdecec;
+  --color-ink: #1d2738;
+  --color-ink-2: #4b5563;
+  --color-muted: #6e7180;
+  --color-line: #ececf1;
+  --color-canvas: #f7f7f9;
+  --color-gold: #c59925;
+  --color-wa: #16a34a;
+}
+
+html { -webkit-text-size-adjust: 100%; }
+body { font-family: var(--font-sans); color: var(--color-ink); background: var(--color-canvas); }
+:focus-visible { outline: 2px solid var(--color-brand); outline-offset: 2px; }
+h1, h2, h3 { text-wrap: balance; }
+
+/* Drawer */
+.drawer[data-open="false"] { pointer-events: none; }
+.drawer[data-open="false"] .drawer-panel { transform: translateX(-100%); } /* panel opens from the left, next to the menu icon */
+.drawer[data-open="false"] .drawer-scrim { opacity: 0; }
+.drawer-panel, .drawer-scrim { transition: transform .28s cubic-bezier(.2,.8,.2,1), opacity .28s ease; }
+
+/* Smooth page changes (browsers that support it) */
+@view-transition { navigation: auto; }
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: .18s; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, ::view-transition-old(root), ::view-transition-new(root) { animation: none !important; transition: none !important; }
+}
+
+.prose-ar p { margin-block: .9em; line-height: 2; }
+.prose-ar h2 { font-size: 1.3rem; font-weight: 700; margin-block: 1.6em .6em; }
+.prose-ar h3 { font-size: 1.1rem; font-weight: 700; margin-block: 1.4em .5em; }
+.prose-ar ul, .prose-ar ol { padding-inline-start: 1.4em; margin-block: .9em; line-height: 2; }
+.prose-ar ul { list-style: disc; } .prose-ar ol { list-style: decimal; }
+.prose-ar a { color: var(--color-brand); text-decoration: underline; text-underline-offset: 3px; }
+.prose-ar table { width: 100%; border-collapse: collapse; margin-block: 1em; font-size: .95rem; }
+.prose-ar th, .prose-ar td { border: 1px solid var(--color-line); padding: .55em .75em; text-align: start; }
+.prose-ar th { background: #fafafa; }
+.prose-ar blockquote { border-inline-start: 3px solid var(--color-brand); padding-inline-start: 1em; color: var(--color-ink-2); }

@@ -1,0 +1,30 @@
+---
+import { getCollection } from "astro:content";
+import Base from "@/layouts/Base.astro";
+import PostCard from "@/components/PostCard.astro";
+import { CATEGORIES } from "@/lib/blog";
+import { getLang, dict } from "@/lib/i18n";
+const lang = getLang(Astro.cookies);
+const t = dict(lang);
+const posts = (await getCollection("blog")).sort((a, b) => +b.data.publishedAt - +a.data.publishedAt);
+const [lead, ...rest] = [...posts.filter((p) => p.data.featured), ...posts.filter((p) => !p.data.featured)];
+const site = Astro.site!.origin;
+const jsonLd = [{ "@context": "https://schema.org", "@type": "Blog", name: t.blogTitle, url: `${site}/blog`, inLanguage: "ar-KW",
+  blogPost: posts.map((p) => ({ "@type": "BlogPosting", headline: p.data.title, url: `${site}/blog/${p.id}`, datePublished: p.data.publishedAt.toISOString() })) }];
+---
+<Base title={t.blogTitle} description={t.blogSub} canonical="/blog" jsonLd={jsonLd} active="blog">
+  <section class="border-b border-line bg-white">
+    <div class="mx-auto max-w-4xl px-4 pt-8 pb-6">
+      <h1 class="text-[28px] font-bold">{t.blogTitle}</h1>
+      <p class="mt-2 max-w-2xl text-[15.5px] leading-7 text-muted">{t.blogSub}</p>
+      <nav class="mt-5 flex gap-2 overflow-x-auto [scrollbar-width:none]">
+        <a href="/blog" class="shrink-0 rounded-full bg-ink px-4 py-2 text-[14px] text-white">{t.allPosts}</a>
+        {Object.entries(CATEGORIES).map(([k, v]) => <a href={`/blog/category/${k}`} class="shrink-0 rounded-full bg-white px-4 py-2 text-[14px] ring-1 ring-line hover:ring-brand">{v[lang]}</a>)}
+      </nav>
+    </div>
+  </section>
+  <div class="mx-auto max-w-4xl space-y-4 px-4 py-7">
+    {lead && <PostCard post={lead} lang={lang} large />}
+    <div class="grid gap-4 sm:grid-cols-2">{rest.map((p) => <PostCard post={p} lang={lang} />)}</div>
+  </div>
+</Base>

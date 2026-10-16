@@ -1,0 +1,18 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { CATEGORIES, readingMinutes, formatDate } from "@/lib/blog";
+import { dict } from "@/lib/i18n";
+interface Props { post: CollectionEntry<"blog">; lang: "ar" | "en"; large?: boolean }
+const { post, lang, large = false } = Astro.props;
+const t = dict(lang);
+const cat = CATEGORIES[post.data.category][lang];
+---
+<a href={`/blog/${post.id}`} class:list={["group flex flex-col rounded-3xl bg-white p-5 ring-1 ring-line transition-shadow hover:shadow-[0_10px_30px_rgba(16,24,40,0.08)]", large && "sm:p-7"]}>
+  <span class="w-fit rounded-full bg-brand-soft px-3 py-1 text-[12.5px] font-semibold text-brand">{cat}</span>
+  <h2 class:list={["mt-3 font-bold leading-[1.6] text-ink group-hover:text-brand", large ? "text-[22px] sm:text-[26px]" : "text-[18px]"]}>{post.data.title}</h2>
+  <p class="mt-2 line-clamp-3 text-[14.5px] leading-7 text-muted">{post.data.description}</p>
+  <p class="mt-auto pt-4 text-[13px] text-muted">
+    <time datetime={post.data.publishedAt.toISOString()}>{formatDate(post.data.publishedAt, lang)}</time>
+    <span aria-hidden="true"> · </span>{readingMinutes(post.body)} {t.minRead}
+  </p>
+</a>

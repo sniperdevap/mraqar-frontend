@@ -1,0 +1,51 @@
+---
+import type { Ad, Area, Lang } from "@/lib/api";
+import { mediaUrl } from "@/lib/api";
+import { adHref } from "@/lib/ad-url";
+import { adTitle, formatPrice, timeAgo, dict } from "@/lib/i18n";
+
+interface Props { ad: Ad; areas: Area[]; lang: Lang; eager?: boolean; headingLevel?: "h2" | "h3" }
+const { ad, areas, lang, eager = false, headingLevel = "h3" } = Astro.props;
+const t = dict(lang);
+const href = adHref(ad, areas);
+const title = adTitle(ad, lang);
+const price = formatPrice(ad, lang);
+const featured = ad.isPremium || ad.premiumAd;
+const first = ad.media?.[0];
+const img = mediaUrl(first, true);
+const isVideo = first?.type === "video";
+const areaName = lang === "ar" ? ad.area?.labelAr : ad.area?.label;
+const excerpt = (ad.description || "").replace(/\s+/g, " ").trim();
+const Heading = headingLevel;
+---
+<a href={href} class="group block rounded-2xl border border-line bg-white p-3.5 transition-shadow hover:shadow-[0_6px_24px_rgba(16,24,40,0.08)] sm:p-4" data-astro-prefetch>
+  <article class="flex gap-3.5 sm:gap-4">
+    <div class="relative size-28 shrink-0 overflow-hidden rounded-xl bg-canvas sm:size-32">
+      <img src={img} alt={title} width="128" height="128" class="size-full object-cover transition-transform duration-300 group-hover:scale-[1.03]" loading={eager ? "eager" : "lazy"} decoding="async" fetchpriority={eager ? "high" : "auto"} />
+      {featured && <span class="absolute top-1.5 start-1.5 rounded-full bg-gold px-2 py-0.5 text-[11px] font-semibold text-white shadow-sm">{t.featured}</span>}
+      {isVideo && (
+        <span class="absolute inset-0 flex items-center justify-center">
+          <span class="flex size-9 items-center justify-center rounded-full bg-black/45 text-white"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4v16l13-8z"/></svg></span>
+        </span>
+      )}
+      {typeof ad.views === "number" && ad.views > 0 && (
+        <span class="absolute bottom-1.5 start-1.5 flex items-center gap-1 rounded-full bg-black/60 px-2 py-0.5 text-[11px] text-white">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>{ad.views}
+        </span>
+      )}
+    </div>
+    <div class="flex min-w-0 flex-1 flex-col">
+      <Heading class="line-clamp-2 text-[16px] font-bold leading-7 text-ink">{title}</Heading>
+      <p class="mt-1 text-[16.5px] font-bold text-brand">
+        {price ? <>{price}{ad.purpose === "rent" && <span class="text-[13px] font-medium text-muted"> / {t.monthly}</span>}</> : <span class="text-[14px] font-medium text-muted">{t.priceOnRequest}</span>}
+      </p>
+      <p class="mt-1 flex items-center gap-1.5 text-[13px] text-muted">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>
+        <span class="truncate">{areaName}</span>
+        <span aria-hidden="true">·</span>
+        <time datetime={ad.createdAt} class="shrink-0">{timeAgo(ad.createdAt, lang)}</time>
+      </p>
+      {excerpt && <p class="mt-1.5 line-clamp-2 text-[13.5px] leading-6 text-ink-2">{excerpt}</p>}
+    </div>
+  </article>
+</a>

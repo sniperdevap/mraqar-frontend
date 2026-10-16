@@ -1,0 +1,16 @@
+---
+import { IMAGE_HOST } from "@/lib/api";
+interface Props { name: string; avatar?: string; size?: "md" | "lg" }
+const { name, avatar, size = "md" } = Astro.props;
+// Stable colour per office so monograms don't all look the same.
+const palette = ["bg-rose-100 text-rose-700", "bg-sky-100 text-sky-700", "bg-emerald-100 text-emerald-700", "bg-amber-100 text-amber-800", "bg-violet-100 text-violet-700", "bg-teal-100 text-teal-700"];
+const hash = [...name].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7);
+const tone = palette[hash % palette.length];
+const src = avatar ? (avatar.startsWith("http") ? avatar : `${IMAGE_HOST}/${avatar.replace(/^\/+/, "")}`) : "";
+const dims = size === "lg" ? "size-20 text-[28px] rounded-3xl" : "size-14 text-[20px] rounded-2xl";
+---
+{src ? (
+  <img src={src} alt={name} width="80" height="80" loading="lazy" class:list={[dims, "shrink-0 object-cover ring-1 ring-line"]} />
+) : (
+  <span class:list={[dims, tone, "flex shrink-0 items-center justify-center font-bold"]} aria-hidden="true">{name.trim().charAt(0).toUpperCase()}</span>
+)}

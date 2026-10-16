@@ -1,0 +1,13 @@
+---
+import Base from "@/layouts/Base.astro";
+import { getLang } from "@/lib/i18n";
+const lang = getLang(Astro.cookies);
+Astro.response.status = 404;
+---
+<Base title={lang === "ar" ? "الصفحة غير موجودة" : "Page not found"} noindex>
+  <div class="mx-auto max-w-md px-4 py-20 text-center">
+    <p class="text-[64px] font-bold text-brand">404</p>
+    <h1 class="mt-2 text-[22px] font-bold">{lang === "ar" ? "هذه الصفحة غير موجودة أو الإعلان تم حذفه" : "This page doesn't exist or the ad was removed"}</h1>
+    <a href="/search" class="mt-7 inline-flex h-12 items-center rounded-xl bg-brand px-6 text-[15px] font-semibold text-white">{lang === "ar" ? "تصفح العقارات" : "Browse properties"}</a>
+  </div>
+</Base>

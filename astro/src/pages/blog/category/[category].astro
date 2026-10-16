@@ -1,0 +1,24 @@
+---
+import { getCollection } from "astro:content";
+import Base from "@/layouts/Base.astro";
+import PostCard from "@/components/PostCard.astro";
+import { CATEGORIES, type Category } from "@/lib/blog";
+import { getLang, dict } from "@/lib/i18n";
+const lang = getLang(Astro.cookies);
+const t = dict(lang);
+const category = Astro.params.category as Category;
+if (!(category in CATEGORIES)) return Astro.rewrite("/404");
+const posts = (await getCollection("blog", (p) => p.data.category === category)).sort((a, b) => +b.data.publishedAt - +a.data.publishedAt);
+const name = CATEGORIES[category][lang];
+---
+<Base title={`${name} — ${t.blogTitle}`} description={`${t.blogTitle}: ${name}`} canonical={`/blog/category/${category}`} active="blog">
+  <div class="mx-auto max-w-4xl px-4 py-8">
+    <a href="/blog" class="text-[14px] text-muted hover:text-brand">← {t.blogTitle}</a>
+    <h1 class="mt-3 text-[26px] font-bold">{name}</h1>
+    <nav class="mt-5 flex gap-2 overflow-x-auto [scrollbar-width:none]">
+      <a href="/blog" class="shrink-0 rounded-full bg-white px-4 py-2 text-[14px] ring-1 ring-line">{t.allPosts}</a>
+      {Object.entries(CATEGORIES).map(([k, v]) => <a href={`/blog/category/${k}`} class:list={["shrink-0 rounded-full px-4 py-2 text-[14px] ring-1", k === category ? "bg-ink text-white ring-ink" : "bg-white ring-line"]}>{v[lang]}</a>)}
+    </nav>
+    <div class="mt-6 grid gap-4 sm:grid-cols-2">{posts.map((p) => <PostCard post={p} lang={lang} />)}</div>
+  </div>
+</Base>

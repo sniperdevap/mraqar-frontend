@@ -1,0 +1,252 @@
+---
+import "@/styles/global.css";
+import { getLang, dict, SUPPORT_WA, SUPPORT_PHONE, APP_STORE, PLAY_STORE } from "@/lib/i18n";
+import { getPropertyTypes } from "@/lib/api";
+
+interface Props {
+  title: string;
+  description?: string;
+  canonical?: string;
+  image?: string;
+  noindex?: boolean;
+  jsonLd?: unknown[];
+  active?: "home" | "offices" | "blog" | "search" | "add" | "account";
+  hideFooter?: boolean;
+  bottomBar?: boolean;
+}
+const { title, description, canonical, image, noindex, jsonLd = [], active, hideFooter = false, bottomBar = true } = Astro.props;
+const lang = getLang(Astro.cookies);
+const t = dict(lang);
+const dir = lang === "ar" ? "rtl" : "ltr";
+const site = Astro.site!.origin;
+const canonicalUrl = canonical ? new URL(canonical, site).href : new URL(Astro.url.pathname, site).href;
+const ogImage = image || `${site}/aqar-new-logo.png`;
+const fullTitle = title.includes(t.siteName) ? title : `${title} | ${t.siteName}`;
+const types = await getPropertyTypes(lang).catch(() => []);
+
+const org = {
+  "@context": "https://schema.org",
+  "@type": "RealEstateAgent",
+  name: "مستر عقار",
+  alternateName: "Mr Aqar",
+  url: site,
+  logo: `${site}/icon-512.png`,
+  image: `${site}/aqar-new-logo.png`,
+  telephone: SUPPORT_PHONE,
+  areaServed: { "@type": "Country", name: "Kuwait" },
+  sameAs: [APP_STORE, PLAY_STORE],
+};
+const website = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "مستر عقار",
+  url: site,
+  inLanguage: ["ar-KW", "en"],
+  potentialAction: { "@type": "SearchAction", target: `${site}/search?q={search_term_string}`, "query-input": "required name=search_term_string" },
+};
+const ld = (d: unknown) => JSON.stringify(d).replace(/</g, "\\u003c");
+
+const navItems = [
+  { key: "home", href: "/", label: t.home, icon: "home" },
+  { key: "offices", href: "/offices", label: t.offices, icon: "building" },
+  { key: "add", href: "/auth/signin?next=/ads/create", label: t.addAd, icon: "plus" },
+  { key: "blog", href: "/blog", label: t.blog, icon: "book" },
+  { key: "account", href: "/auth/signin", label: t.account, icon: "user" },
+] as const;
+const drawerLinks = [
+  { href: "/", label: t.home }, { href: "/search?purpose=sale", label: t.sale }, { href: "/search?purpose=rent", label: t.rent },
+  { href: "/search?purpose=exchange", label: t.exchange }, { href: "/offices", label: t.offices }, { href: "/blog", label: t.blog },
+  { href: "/about", label: t.about }, { href: "/contact", label: t.contact }, { href: "/privacy", label: t.privacy }, { href: "/terms", label: t.terms },
+];
+const icons: Record<string, string> = {
+  home: '<path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+  building: '<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 7h1M14 7h1M9 11h1M14 11h1M10 21v-4h4v4"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  book: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5V21h16"/>',
+  user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c1.6-4 4.6-6 8-6s6.4 2 8 6"/>',
+};
+---
+<!doctype html>
+<html lang={lang} dir={dir}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#ffffff" />
+    <title>{fullTitle}</title>
+    {description && <meta name="description" content={description} />}
+    <link rel="canonical" href={canonicalUrl} />
+    <meta name="robots" content={noindex ? "noindex,follow" : "index,follow,max-image-preview:large"} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="مستر عقار" />
+    <meta property="og:locale" content={lang === "ar" ? "ar_KW" : "en_US"} />
+    <meta property="og:title" content={fullTitle} />
+    {description && <meta property="og:description" content={description} />}
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    {description && <meta name="twitter:description" content={description} />}
+    <meta name="twitter:image" content={ogImage} />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap.xml" />
+    <link rel="alternate" type="application/atom+xml" title="مستر عقار — أحدث الإعلانات" href="/feed.xml" />
+    <script type="application/ld+json" set:html={ld(org)} />
+    <script type="application/ld+json" set:html={ld(website)} />
+    {jsonLd.map((d) => <script type="application/ld+json" set:html={ld(d)} />)}
+    <slot name="head" />
+  </head>
+  <body class="min-h-dvh flex flex-col antialiased">
+    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-line" style="padding-top: env(safe-area-inset-top, 0px)">
+      <div class="mx-auto flex h-16 max-w-6xl items-center gap-3 px-4" dir="ltr">
+        <!-- Menu icon on the left (two lines) -->
+        <button type="button" class="flex size-11 items-center justify-center rounded-xl text-ink hover:bg-canvas" aria-label={t.openMenu} aria-controls="drawer" aria-expanded="false" data-drawer-open>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 9h16M4 15h11"/></svg>
+        </button>
+        <nav class="hidden flex-1 items-center justify-center gap-1 lg:flex" dir={dir} aria-label="Main">
+          {[{ href: "/", label: t.home, k: "home" }, { href: "/offices", label: t.offices, k: "offices" }, { href: "/blog", label: t.blog, k: "blog" }, { href: "/search?purpose=sale", label: t.sale, k: "s" }, { href: "/search?purpose=rent", label: t.rent, k: "r" }].map((l) => (
+            <a href={l.href} class:list={["rounded-lg px-3.5 py-2 text-[15px] transition-colors hover:bg-canvas", active === l.k ? "font-semibold text-brand" : "text-ink"]}>{l.label}</a>
+          ))}
+        </nav>
+        <div class="flex-1 lg:hidden"></div>
+        <a href="/auth/signin?next=/ads/create" class="hidden h-11 items-center gap-2 rounded-xl bg-brand px-4 text-[14.5px] font-semibold text-white hover:bg-brand-dark sm:flex">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>{t.addAd}
+        </a>
+        <a href="/" class="flex shrink-0 items-center" aria-label={t.siteName}>
+          <img src="/aqar-new-logo-nav.webp" alt="Mr Aqar مستر عقار" width="80" height="52" class="h-12 w-auto" fetchpriority="high" />
+        </a>
+      </div>
+    </header>
+
+    <!-- Side menu -->
+    <div id="drawer" class="drawer fixed inset-0 z-50" data-open="false" aria-hidden="true">
+      <div class="drawer-scrim absolute inset-0 bg-black/40" data-drawer-close></div>
+      <aside class="drawer-panel absolute inset-y-0 left-0 flex w-[86%] max-w-sm flex-col bg-white shadow-2xl" dir={dir} role="dialog" aria-modal="true" aria-label={t.menu} style="padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px)">
+        <div class="flex items-center justify-between border-b border-line px-5 py-4">
+          <img src="/aqar-new-logo-nav.webp" alt="Mr Aqar" width="80" height="52" class="h-11 w-auto" />
+          <button type="button" class="flex size-10 items-center justify-center rounded-xl hover:bg-canvas" aria-label={t.closeMenu} data-drawer-close>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+        <div class="flex-1 overflow-y-auto px-5 py-5">
+          <div class="grid grid-cols-2 gap-3">
+            <a href="/auth/signin" class="flex h-12 items-center justify-center rounded-xl bg-brand text-[15px] font-semibold text-white">{t.login}</a>
+            <a href="/auth/signup" class="flex h-12 items-center justify-center rounded-xl border border-line text-[15px] font-semibold">{t.register}</a>
+          </div>
+          <nav class="mt-6 flex flex-col" aria-label={t.menu}>
+            {drawerLinks.map((l) => (
+              <a href={l.href} class="flex min-h-13 items-center justify-between border-b border-line/70 text-[16px] text-ink">
+                <span>{l.label}</span>
+                <svg class="text-gray-300 rtl:rotate-180" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+              </a>
+            ))}
+          </nav>
+          <form method="post" action="/api/lang" class="mt-6">
+            <input type="hidden" name="lang" value={lang === "ar" ? "en" : "ar"} />
+            <input type="hidden" name="back" value={Astro.url.pathname + Astro.url.search} />
+            <button class="flex h-12 w-full items-center justify-between rounded-xl bg-canvas px-4 text-[15px]">
+              <span>{lang === "ar" ? "اللغة" : "Language"}</span><span class="font-semibold">{t.language}</span>
+            </button>
+          </form>
+          <a href={SUPPORT_WA} target="_blank" rel="noopener" class="mt-3 flex h-12 items-center gap-3 rounded-xl bg-wa/10 px-4 text-[15px] font-medium text-wa">
+            <svg width="20" height="20" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6z"/></svg>
+            {t.support}
+          </a>
+        </div>
+      </aside>
+    </div>
+
+    <main class:list={["flex-1", bottomBar && "pb-24 lg:pb-0"]}>
+      <slot />
+    </main>
+
+    {!hideFooter && (
+      <footer class:list={["bg-ink text-white", bottomBar && "pb-20 lg:pb-0"]}>
+        <div class="mx-auto max-w-6xl px-5 pt-12 pb-8 lg:px-8">
+          <div class="grid grid-cols-2 gap-x-6 gap-y-10 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr] lg:gap-x-10">
+            <div class="col-span-2 lg:col-span-1">
+              <a href="/" class="inline-flex items-center gap-3">
+                <span class="flex size-12 items-center justify-center rounded-2xl bg-white p-1.5"><img src="/aqar-new-logo-nav.webp" alt="" width="40" height="26" class="h-auto w-10" loading="lazy" /></span>
+                <span class="text-xl font-bold">{t.siteName}</span>
+              </a>
+              <p class="mt-4 max-w-sm text-[14.5px] leading-7 text-white/70">{t.footerAbout}</p>
+              <div class="mt-5 flex gap-2.5">
+                <a href={SUPPORT_WA} target="_blank" rel="noopener" aria-label={t.whatsapp} class="flex size-11 items-center justify-center rounded-xl bg-white/[0.08] hover:bg-white/15">
+                  <svg width="20" height="20" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157z"/></svg>
+                </a>
+                <a href={`tel:${SUPPORT_PHONE}`} aria-label={t.callNow} class="flex size-11 items-center justify-center rounded-xl bg-white/[0.08] hover:bg-white/15">
+                  <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>
+                </a>
+              </div>
+            </div>
+            <nav aria-label={t.propertyTypes}>
+              <h2 class="mb-4 text-[15px] font-bold">{t.propertyTypes}</h2>
+              <ul class="space-y-3">
+                {types.map((ty) => <li><a href={`/search?propertyType=${ty.id}`} class="text-[14.5px] text-white/70 hover:text-white">{lang === "ar" ? ty.labelAr : ty.label}</a></li>)}
+              </ul>
+            </nav>
+            <nav aria-label={t.sitePages}>
+              <h2 class="mb-4 text-[15px] font-bold">{t.sitePages}</h2>
+              <ul class="space-y-3">
+                {[{ h: "/", l: t.home }, { h: "/search?purpose=sale", l: t.sale }, { h: "/search?purpose=rent", l: t.rent }, { h: "/search?purpose=exchange", l: t.exchange }, { h: "/offices", l: t.offices }, { h: "/blog", l: t.blog }, { h: "/about", l: t.about }, { h: "/contact", l: t.contact }, { h: "/privacy", l: t.privacy }, { h: "/terms", l: t.terms }, { h: "/copyright", l: t.copyright }].map((x) => (
+                  <li><a href={x.h} class="text-[14.5px] text-white/70 hover:text-white">{x.l}</a></li>
+                ))}
+              </ul>
+            </nav>
+            <div class="col-span-2 lg:col-span-1">
+              <h2 class="mb-4 text-[15px] font-bold">{t.getApp}</h2>
+              <div class="grid grid-cols-2 gap-3 lg:grid-cols-1">
+                {[{ h: APP_STORE, n: "App Store" }, { h: PLAY_STORE, n: "Google Play" }].map((s) => (
+                  <a href={s.h} target="_blank" rel="noopener" class="flex h-14 items-center gap-3 rounded-2xl bg-white/[0.08] px-4 hover:bg-white/15">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4v16l13-8z"/></svg>
+                    <span class="leading-tight"><span class="block text-[11.5px] text-white/70">{t.downloadOn}</span><span class="block text-[15px] font-semibold">{s.n}</span></span>
+                  </a>
+                ))}
+              </div>
+              <a href={SUPPORT_WA} target="_blank" rel="noopener" class="mt-3 flex items-center gap-3 rounded-2xl border border-white/10 px-4 py-3.5 hover:bg-white/[0.06]">
+                <span class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-brand"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"/></svg></span>
+                <span class="leading-tight"><span class="block text-[13px] text-white/70">{t.needHelp}</span><span class="block text-[15px] font-semibold">{t.support}</span></span>
+              </a>
+            </div>
+          </div>
+          <p class="mt-10 border-t border-white/10 pt-6 text-center text-[13px] text-white/60">© {new Date().getFullYear()} {t.siteName} — {t.rights}</p>
+        </div>
+      </footer>
+    )}
+
+    {bottomBar && (
+      <nav class="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-white/95 backdrop-blur lg:hidden" style="padding-bottom: env(safe-area-inset-bottom, 0px)" aria-label="Bottom">
+        <div class="mx-auto grid max-w-lg grid-cols-5 px-2">
+          {navItems.map((n) => n.key === "add" ? (
+            <a href={n.href} class="flex flex-col items-center justify-center py-1.5" aria-label={n.label}>
+              <span class="-mt-5 flex size-13 items-center justify-center rounded-full bg-brand text-white shadow-[0_6px_16px_rgba(225,29,29,.35)]">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true" set:html={icons[n.icon]} />
+              </span>
+              <span class="mt-1 text-[11.5px] font-medium text-ink">{n.label}</span>
+            </a>
+          ) : (
+            <a href={n.href} class:list={["flex flex-col items-center justify-center gap-1 py-2.5 text-[11.5px]", active === n.key ? "font-semibold text-brand" : "text-muted"]} aria-current={active === n.key ? "page" : undefined}>
+              <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons[n.icon]} />
+              {n.label}
+            </a>
+          ))}
+        </div>
+      </nav>
+    )}
+
+    <script>
+      const drawer = document.getElementById("drawer")!;
+      const opener = document.querySelector<HTMLButtonElement>("[data-drawer-open]");
+      const setOpen = (open: boolean) => {
+        drawer.dataset.open = String(open);
+        drawer.setAttribute("aria-hidden", String(!open));
+        opener?.setAttribute("aria-expanded", String(open));
+        document.documentElement.style.overflow = open ? "hidden" : "";
+      };
+      opener?.addEventListener("click", () => setOpen(true));
+      drawer.querySelectorAll("[data-drawer-close]").forEach((el) => el.addEventListener("click", () => setOpen(false)));
+      document.addEventListener("keydown", (e) => e.key === "Escape" && setOpen(false));
+    </script>
+  </body>
+</html>
