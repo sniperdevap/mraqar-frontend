@@ -18,7 +18,6 @@ const title = lang === "ar" ? "مستر عقار | عقارات الكويت ل�
 const description = lang === "ar"
   ? "ابحث في آلاف العقارات في الكويت للبيع والإيجار والبدل: شقق، بيوت، أراضٍ، عمارات وشاليهات. أضف إعلانك مجانًا عبر مستر عقار."
   : "Search thousands of properties in Kuwait for sale, rent and exchange: apartments, houses, land, buildings and chalets. Post your ad for free on Mr Aqar.";
-const popular = types.slice(0, 8);
 ---
 <Base title={title} description={description} canonical="/" active="home">
   <section class="relative overflow-hidden bg-white">
@@ -27,24 +26,19 @@ const popular = types.slice(0, 8);
       <h1 class="text-center text-[25px] font-bold leading-[1.45] sm:text-[32px]">{t.heroTitle}</h1>
       <p class="mx-auto mt-2 max-w-lg text-center text-[14.5px] leading-7 text-muted sm:text-[16px]">{t.heroSub}</p>
       <div class="mt-5"><SearchForm lang={lang} areas={areas} types={types} purpose="sale" /></div>
-      <nav class="mt-5 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none]" aria-label={t.propertyTypes}>
-        {popular.map((ty) => (
-          <a href={`/search?propertyType=${ty.id}`} class="shrink-0 rounded-full border border-line bg-white px-4 py-2 text-[14px] text-ink hover:border-brand hover:text-brand">{lang === "ar" ? ty.labelAr : ty.label}</a>
-        ))}
-      </nav>
     </div>
   </section>
 
-  <section class="mx-auto max-w-2xl px-4 pt-7 pb-10">
+  <section class="mx-auto max-w-6xl px-4 pt-8 pb-12 sm:px-6">
     <div class="mb-4 flex items-end justify-between">
       <h2 class="text-[20px] font-bold">{t.latest}</h2>
       <a href="/search" class="text-[14.5px] font-semibold text-brand">{t.showMore}</a>
     </div>
     {latest?.ads.length ? (
-      <div class="space-y-3.5">
+      <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {latest.ads.map((ad, i) => <AdCard ad={ad} areas={areas} lang={lang} eager={i < 2} />)}
       </div>
     ) : <p class="rounded-2xl border border-dashed border-line bg-white p-10 text-center text-muted">{t.noAds}</p>}
-    <a href="/search" class="mt-5 flex h-13 items-center justify-center rounded-xl border border-brand text-[15.5px] font-semibold text-brand hover:bg-brand-soft">{t.showMore}</a>
+    <a href="/search" class="mx-auto mt-8 flex h-13 max-w-sm items-center justify-center rounded-xl border border-brand text-[15.5px] font-semibold text-brand hover:bg-brand-soft">{t.showMore}</a>
   </section>
 </Base>

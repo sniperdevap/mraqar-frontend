@@ -75,9 +75,9 @@ Astro.response.headers.set("Cache-Control", "public, max-age=0, s-maxage=60, sta
         {photos.map((p, i) => (
           <div class="w-full shrink-0 snap-center">
             {p.video ? (
-              <video src={p.video} poster={p.poster} controls playsinline preload="none" class="aspect-[4/3] w-full bg-black object-contain"></video>
+              <video src={p.video} poster={p.poster} controls playsinline preload="none" class="aspect-[16/10] max-h-[440px] w-full bg-black object-contain"></video>
             ) : (
-              <img src={p.src} alt={i === 0 ? title : `${title} — ${i + 1}`} width="1200" height="900" class="aspect-[4/3] w-full object-cover" loading={i === 0 ? "eager" : "lazy"} fetchpriority={i === 0 ? "high" : "auto"} decoding="async" />
+              <img src={p.src} alt={i === 0 ? title : `${title} — ${i + 1}`} width="1200" height="750" class="aspect-[16/10] max-h-[440px] w-full object-cover" loading={i === 0 ? "eager" : "lazy"} fetchpriority={i === 0 ? "high" : "auto"} decoding="async" />
             )}
           </div>
         ))}
@@ -168,7 +168,7 @@ Astro.response.headers.set("Cache-Control", "public, max-age=0, s-maxage=60, sta
       {similar.length > 0 && (
         <section class="pt-3">
           <h2 class="mb-3.5 text-[20px] font-bold">{t.similar}</h2>
-          <div class="space-y-3.5">{similar.map((s) => <AdCard ad={s} areas={areas} lang={lang} />)}</div>
+          <div class="grid gap-5 sm:grid-cols-2">{similar.map((s) => <AdCard ad={s} areas={areas} lang={lang} />)}</div>
         </section>
       )}
     </div>
