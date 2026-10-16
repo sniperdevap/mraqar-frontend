@@ -66,11 +66,12 @@ export const metadata: Metadata = {
   },
 };
 
+// Pinch-zoom stays enabled: blocking it fails Google's accessibility checks.
+// iOS input auto-zoom is avoided by keeping form inputs at >=16px instead.
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
+  themeColor: "#e11d1d",
 };
 
 export default async function RootLayout({

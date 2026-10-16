@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import createMiddleware from 'next-intl/middleware';
 import { routing } from './i18n/routing';
+import { isAdDetailPath } from './lib/ad-url';
 
 // Configuration for public and auth routes
 // Routes accessible by everyone (authenticated and unauthenticated)
@@ -43,7 +44,8 @@ export function middleware(request: NextRequest) {
   const authToken = request.cookies.get('auth-token')?.value;
   const pathnameWithoutLocale = pathname.replace(/^\/(en|ar)/, '') || '/';
 
-  const isPublicRoute = PUBLIC_ROUTES.some(route => {
+  // SEO ad pages: /{purpose}/{type}/{governorate}/{area}/{id}
+  const isPublicRoute = isAdDetailPath(pathnameWithoutLocale) || PUBLIC_ROUTES.some(route => {
     if (route === '/') return pathnameWithoutLocale === route;
 
     // Handle specific routes

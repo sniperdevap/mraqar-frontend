@@ -49,6 +49,7 @@ import { DetailAd, GetAdsParams, GetAdsResult } from "@/types/ad";
 import Image from "next/image";
 import { formatAdPrice } from "@/lib/utils/format";
 import { officeHref } from "@/lib/api/office";
+import { useAdHrefBuilder } from "@/hooks/use-ad-href";
 
 interface AdDetailPageProps {
   adId: string;
@@ -56,6 +57,7 @@ interface AdDetailPageProps {
 
 export function AdDetailPage({ adId }: AdDetailPageProps) {
   const router = useRouter();
+  const adPath = useAdHrefBuilder();
   const { isAuthenticated, user } = useAuthStore();
   const { locale, direction } = useLocale();
   const t = useTranslations("common.ads");
@@ -721,7 +723,7 @@ ${window.location.href}`);
                       <HomeAdCard
                         ad={similarAd}
                         trackLastViewed={false}
-                        onClick={() => router.push(`/ads/${similarAd.id}`)}
+                        onClick={() => router.push(adPath(similarAd))}
                       />
                     </div>
                   ))}

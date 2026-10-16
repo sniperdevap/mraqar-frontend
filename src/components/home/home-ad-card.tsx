@@ -10,6 +10,7 @@ import { useLocale, useTranslations } from "@/hooks/use-locale";
 import { formatAdPrice, formatDistanceToNow } from "@/lib/utils/format";
 import { useRoutePrefetch } from "@/hooks/use-route-prefetch";
 import { useIsLastViewedAd, LAST_VIEWED_ATTR } from "@/hooks/use-last-viewed-ad";
+import { useAdHref } from "@/hooks/use-ad-href";
 
 const MyAdActions = dynamic(() =>
   import("./my-ad-actions").then((mod) => mod.MyAdActions),
@@ -46,7 +47,7 @@ function HomeAdCardBase({
   const { locale, direction } = useLocale();
   const t = useTranslations("common.ads");
   const tButtons = useTranslations("common.buttons");
-  const href = `/ads/${ad.id}`;
+  const href = useAdHref(ad);
   const { setPrefetchTarget, prefetchNow } = useRoutePrefetch(href);
   const isLastViewed = useIsLastViewedAd(trackLastViewed ? ad.id : undefined);
   const [shareUrl, setShareUrl] = React.useState<string | null>(null);

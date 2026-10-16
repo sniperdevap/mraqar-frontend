@@ -15,8 +15,31 @@ let queueScheduled = false;
 const isFresh = (route: string) =>
   Date.now() - (prefetchedAt.get(route) || 0) < PREFETCH_TTL_MS;
 
+// Viewport prefetches wait until the page has loaded and the browser has had
+// a moment to settle, so they don't compete with the first screen for the
+// network and main thread (they were adding ~150-300ms of blocking time on
+// mid-range phones). Hover/touch prefetches (prefetchNow) are not delayed.
+const SETTLE_AFTER_LOAD_MS = 1200;
+let pageSettled = false;
+let waitingForSettle = false;
+
+const whenPageSettled = (run: () => void) => {
+  if (pageSettled) return run();
+  if (waitingForSettle) return;
+  waitingForSettle = true;
+  const settle = () =>
+    window.setTimeout(() => {
+      pageSettled = true;
+      waitingForSettle = false;
+      run();
+    }, SETTLE_AFTER_LOAD_MS);
+  if (document.readyState === "complete") settle();
+  else window.addEventListener("load", settle, { once: true });
+};
+
 const scheduleQueue = () => {
   if (queueScheduled || queue.length === 0) return;
+  if (!pageSettled) return whenPageSettled(scheduleQueue);
   queueScheduled = true;
 
   const flush = () => {

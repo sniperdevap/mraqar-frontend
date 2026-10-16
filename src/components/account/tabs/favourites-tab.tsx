@@ -10,10 +10,12 @@ const Loader = dynamic(() => import('@/components/common/loader').then(mod => mo
 import { useTranslations } from 'next-intl';
 import { useQueryClient } from '@tanstack/react-query';
 import { useFavorites } from '@/hooks/use-account';
+import { useAdHrefBuilder } from "@/hooks/use-ad-href";
 
 export function FavouritesTab() {
   const t = useTranslations('common.account');
   const router = useRouter();
+  const adPath = useAdHrefBuilder();
   const queryClient = useQueryClient();
   const [currentPage, setCurrentPage] = useState(1);
   const adsPerPage = 12;
@@ -34,7 +36,7 @@ export function FavouritesTab() {
         <>
           <div className="flex flex-col gap-4">
             {adsData.ads.map(ad => (
-              <AdCard key={ad.id} ad={ad} onClick={() => router.push(`/ads/${ad.id}`)} />
+              <AdCard key={ad.id} ad={ad} onClick={() => router.push(adPath(ad))} />
             ))}
           </div>
 

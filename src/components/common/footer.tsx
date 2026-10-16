@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { isAdDetailPath } from "@/lib/ad-url";
 
 export function Footer() {
   const t = useTranslations("common.footer");
@@ -45,7 +46,8 @@ export function Footer() {
   const isUploadPage =
     pathname.includes("/ads/create") ||
     pathname.includes("/ads/edit") ||
-    pathname.includes("/ads/");
+    pathname.includes("/ads/") ||
+    isAdDetailPath(pathname);
 
   if (isUploadPage) {
     return null;

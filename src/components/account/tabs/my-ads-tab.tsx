@@ -22,11 +22,13 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useMyAds } from "@/hooks/use-account";
 import { useAdStore } from "@/lib/store/ad-store";
 import { useEffect } from "react";
+import { useAdHrefBuilder } from "@/hooks/use-ad-href";
 
 export function MyAdsTab() {
   const { direction } = useLocale();
   const t = useTranslations("common.account");
   const router = useRouter();
+  const adPath = useAdHrefBuilder();
   const queryClient = useQueryClient();
   const [statusFilter, setStatusFilter] = useState<string>("all");
 
@@ -56,7 +58,7 @@ export function MyAdsTab() {
     } else if (action === "edit") {
       router.push(`/ads/edit/${ad.id}`);
     } else if (action === "view") {
-      router.push(`/ads/${ad.id}`);
+      router.push(adPath(ad));
     }
   };
 

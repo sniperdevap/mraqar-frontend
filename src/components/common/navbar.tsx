@@ -21,6 +21,7 @@ import { useTranslations, useLocale } from "@/hooks/use-locale";
 import { LanguageSwitcher } from "@/components/common/language-switcher";
 import { cn } from "@/lib/utils";
 import { getUnreadNotificationCount } from "@/lib/api/account";
+import { isAdDetailPath } from "@/lib/ad-url";
 
 export function Navbar() {
   const router = useRouter();
@@ -108,10 +109,7 @@ export function Navbar() {
   // (pathname?.startsWith('/offices/') && pathname?.split('/').length === 3);
 
   // Hide bottom navbar on ad detail pages
-  const isAdDetailPage =
-    pathname?.startsWith("/ads/") &&
-    pathname?.split("/").length === 3 &&
-    pathname?.split("/")[2] !== "create";
+  const isAdDetailPage = isAdDetailPath(pathname);
   const isSearchPage = pathname === "/search";
   const showStandardNav = !isSpecialRoute;
   const showTopNavbar = showStandardNav;
@@ -145,7 +143,7 @@ export function Navbar() {
     if (pathname === "/ads/create") return t("ads.createListing");
     if (pathname?.startsWith("/ads/edit/")) return t("ads.editAd");
     if (pathname?.startsWith("/offices/")) return t("ads.officeDetails");
-    if (pathname?.startsWith("/ads/")) return t("ads.adDetails");
+    if (isAdDetailPath(pathname)) return t("ads.adDetails");
     return "";
   };
 

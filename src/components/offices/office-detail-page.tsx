@@ -31,6 +31,7 @@ import { formatDisplayPhone } from "@/lib/utils";
 import { usePropertyTypes, useAreas } from "@/hooks/use-metadata";
 import { useInfiniteOfficeById } from "@/hooks/use-offices";
 import { useOfficeStore } from "@/lib/store/office-store";
+import { useAdHrefBuilder } from "@/hooks/use-ad-href";
 
 interface OfficeDetailPageProps {
   officeId: string;
@@ -38,6 +39,7 @@ interface OfficeDetailPageProps {
 
 export function OfficeDetailPage({ officeId }: OfficeDetailPageProps) {
   const router = useRouter();
+  const adPath = useAdHrefBuilder();
   const searchParams = useSearchParams();
   const { locale, direction } = useLocale();
   const t = useTranslations("office");
@@ -360,7 +362,7 @@ export function OfficeDetailPage({ officeId }: OfficeDetailPageProps) {
               <HomeAdCard
                 key={ad.id}
                 ad={ad}
-                onClick={() => router.push(`/ads/${ad.id}`)}
+                onClick={() => router.push(adPath(ad))}
               />
             ))}
           </div>

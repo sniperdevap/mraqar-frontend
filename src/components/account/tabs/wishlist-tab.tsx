@@ -17,11 +17,13 @@ import { useTranslations } from 'next-intl';
 import { useLocale } from '@/hooks/use-locale';
 import { useQueryClient } from '@tanstack/react-query';
 import { useWishlists } from '@/hooks/use-account';
+import { useAdHrefBuilder } from "@/hooks/use-ad-href";
 
 export function WishlistTab() {
   const t = useTranslations('common.account');
   const { locale } = useLocale();
   const router = useRouter();
+  const adPath = useAdHrefBuilder();
   const queryClient = useQueryClient();
   const [activeStatus, setActiveStatus] = useState<'active' | 'completed' | 'cancelled'>('active');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -146,7 +148,7 @@ export function WishlistTab() {
                 {wish.matchedAd && (
                   <div className="pt-4 border-t border-gray-200">
                     <p className="text-sm text-gray-600 mb-2">{t('matchedAd')}</p>
-                    <AdCard ad={wish.matchedAd} onClick={() => router.push(`/ads/${wish.matchedAd?.id}`)} />
+                    <AdCard ad={wish.matchedAd} onClick={() => wish.matchedAd && router.push(adPath(wish.matchedAd))} />
                   </div>
                 )}
               </div>

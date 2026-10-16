@@ -27,6 +27,7 @@ import { useAuthStore } from "@/lib/store/auth-store";
 import { useRoutePrefetch } from "@/hooks/use-route-prefetch";
 import { useIsLastViewedAd, LAST_VIEWED_ATTR } from "@/hooks/use-last-viewed-ad";
 import { formatAdPrice } from "@/lib/utils/format";
+import { useAdHref } from "@/hooks/use-ad-href";
 
 interface AdCardProps {
   ad: Ad;
@@ -46,8 +47,9 @@ export function AdCard({
   const { locale, direction } = useLocale();
   const { isAuthenticated } = useAuthStore();
   const query = useQueryClient();
+  const adPath = useAdHref(ad);
   const { setPrefetchTarget, prefetchNow } = useRoutePrefetch(
-    `/ads/${ad.id}`,
+    adPath,
     variant !== "admin",
   );
   const isLastViewed = useIsLastViewedAd(variant === "admin" ? undefined : ad.id);

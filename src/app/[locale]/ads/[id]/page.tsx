@@ -1,138 +1,41 @@
-import { AdDetailPage } from "@/components/ads/ad-detail-page";
-import { Metadata } from "next";
-import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
-import { getLocale } from "next-intl/server";
-import { createServerQueryClient } from "@/lib/query-prefetch";
-import { getCachedServerAdById, countServerAdView } from "@/lib/api/server";
-import type { DetailAd } from "@/types/ad";
-import { permanentRedirect } from "next/navigation";
-import { after } from "next/server";
-import { headers, cookies } from "next/headers";
-import { SITE_URL } from "@/lib/seo";
+import type { Metadata } from "next";
+import { notFound, permanentRedirect } from "next/navigation";
+import { setRequestLocale } from "next-intl/server";
+import { AdDetailView, buildAdMetadata, canonicalAdPath, loadAd } from "@/lib/ad-page";
+import { getCachedServerAdById } from "@/lib/api/server";
 
 type Props = {
   params: Promise<{ id: string; locale: string }>;
 };
 
-const LEGACY_OBJECT_ID = /^[a-f0-9]{24}$/i;
-
-async function getAdWithinNavigationBudget(
-  id: string,
-  locale: string,
-): Promise<DetailAd | null> {
-  if (LEGACY_OBJECT_ID.test(id)) return getCachedServerAdById(id, locale).catch(() => null);
-
-  let timeoutId: ReturnType<typeof setTimeout> | undefined;
-  try {
-    return await Promise.race([
-      getCachedServerAdById(id, locale).catch(() => null),
-      new Promise<null>(resolve => {
-        timeoutId = setTimeout(() => resolve(null), 180);
-      }),
-    ]);
-  } finally {
-    if (timeoutId) clearTimeout(timeoutId);
-  }
-}
-
+/**
+ * Legacy ad URL (/ads/{id}). Permanently redirects to the SEO URL
+ * (/{purpose}/{type}/{governorate}/{area}/{id}) so existing links, shares and
+ * Google's index carry over. If the ad can't be loaded right now, the page
+ * still renders here instead of failing.
+ */
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id, locale } = await params;
-  try {
-    const ad = await getCachedServerAdById(id, locale);
-    if (!ad) return {};
-
-    const title = `${ad.purpose === "sale" ? "للبيع" : ad.purpose === "rent" ? "للايجار" : "للبدل"} ${ad.propertyType?.labelAr || ad.propertyType?.label || "عقار"} في ${ad.area?.labelAr || ad.area?.label || "المنطقة"}`;
-
-    const imageHost = (process.env.NEXT_PUBLIC_IMAGE_HOST || "").trim();
-    const firstMedia = ad.media && ad.media.length > 0 ? ad.media[0] : null;
-    let imageUrl = `${SITE_URL}/images/aqar-new-logo.png`;
-
-    if (firstMedia) {
-      const mediaPath =
-        firstMedia.type === "video"
-          ? firstMedia.thumbnail || firstMedia.url
-          : firstMedia.url;
-      imageUrl = mediaPath.startsWith("http")
-        ? mediaPath
-        : `${imageHost}${mediaPath.startsWith("/") ? "" : "/"}${mediaPath}`;
-    }
-
-    const ogImage = `${SITE_URL}/_next/image?url=${encodeURIComponent(imageUrl)}&w=640&q=70`;
-
-    const description = ad.description
-      ? ad.description.substring(0, 160)
-      : title;
-    const shareUrl = `${SITE_URL}/ads/${id}`;
-
-    return {
-      title,
-      description,
-      alternates: {
-        canonical: shareUrl,
-      },
-      openGraph: {
-        title,
-        description,
-        url: shareUrl,
-        siteName: "مستر عقار",
-        images: [{ url: ogImage, alt: title }],
-        type: "website",
-      },
-      twitter: {
-        card: "summary_large_image",
-        title,
-        description,
-        images: [{ url: ogImage, alt: title }],
-      },
-    };
-  } catch {
-    return {
-      title: "Ad Detail",
-    };
-  }
+  return buildAdMetadata(await loadAd(id, locale), locale);
 }
 
-export default async function AdDetail({ params }: Props) {
-  const { id, locale: routeLocale } = await params;
-  const locale = await getLocale();
-  const queryClient = createServerQueryClient();
+export default async function LegacyAdDetail({ params }: Props) {
+  const { id, locale } = await params;
+  setRequestLocale(locale);
 
-  // Skip Next.js Link hover/viewport prefetch requests — only count real page loads.
-  const requestHeaders = await headers();
-  const isPrefetch = requestHeaders.has("next-router-prefetch");
-  const forwardedFor =
-    requestHeaders.get("x-forwarded-for") ||
-    requestHeaders.get("x-real-ip") ||
-    undefined;
-
-  const canonicalAd: DetailAd | null = isPrefetch
-    ? await getCachedServerAdById(id, locale).catch(() => null)
-    : await getAdWithinNavigationBudget(id, locale);
-
-  if (canonicalAd && String(canonicalAd.id) !== id) {
-    permanentRedirect(`/${routeLocale}/ads/${canonicalAd.id}`);
+  let ad = null;
+  try {
+    ad = await getCachedServerAdById(id, locale);
+  } catch (err) {
+    // Deleted ad → real 404. Any other API failure → still render the page
+    // and let the client retry, as before.
+    if (err instanceof Error && /status 404/.test(err.message)) notFound();
+  }
+  if (ad) {
+    const target = await canonicalAdPath(ad, locale);
+    // Legacy 24-char ids and fallback paths both resolve to the canonical numeric URL.
+    if (target !== `/ads/${id}`) permanentRedirect(target);
   }
 
-  if (canonicalAd) {
-    queryClient.setQueryData(["ad", id], canonicalAd);
-  }
-
-  if (!isPrefetch) {
-    const token = (await cookies()).get("auth-token")?.value;
-    after(
-      countServerAdView(id, locale, forwardedFor, token).catch((err) => {
-        // Best-effort — a missed view count shouldn't matter.
-        console.error("[view-count] failed", { id }, err);
-      }),
-    );
-  }
-
-  // Similar ads load client-side with ad-derived filters (purpose/type/area),
-  // so an SSR prefetch keyed on {} never matches — dropped to save its blocking time.
-
-  return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <AdDetailPage adId={id} />
-    </HydrationBoundary>
-  );
+  return <AdDetailView id={id} ad={ad} locale={locale} />;
 }
