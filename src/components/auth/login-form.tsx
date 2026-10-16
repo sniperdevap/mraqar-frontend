@@ -80,20 +80,22 @@ export function LoginForm() {
 
         <form onSubmit={form.handleSubmit(onSubmit)} className="mt-6 space-y-4" noValidate>
           <div>
-            <PhoneField placeholder={c.phone} invalid={!!errors.phoneNumber} {...form.register("phoneNumber")} />
+            <label className="mb-1.5 block text-[13.5px] font-bold text-gray-800">{c.phone}</label>
+            <PhoneField placeholder="9xxxxxxx" invalid={!!errors.phoneNumber} {...form.register("phoneNumber")} />
             {errors.phoneNumber && <p className="mt-1.5 text-[12.5px] text-red-500">{ar ? "أدخل رقم الموبايل من 8 أرقام" : errors.phoneNumber.message}</p>}
           </div>
           <div>
-            <PasswordField placeholder={c.password} autoComplete="current-password" invalid={!!errors.password} {...form.register("password")} />
+            <label className="mb-1.5 block text-[13.5px] font-bold text-gray-800">{c.password}</label>
+            <PasswordField placeholder={ar ? "أدخل كلمة السر" : "Enter your password"} autoComplete="current-password" invalid={!!errors.password} {...form.register("password")} />
             {errors.password && <p className="mt-1.5 text-[12.5px] text-red-500">{ar ? "أدخل كلمة السر" : errors.password.message}</p>}
           </div>
 
           <button
             type="submit"
             disabled={busy}
-            className="flex h-[56px] w-full items-center justify-center gap-2 rounded-2xl bg-primary text-[17px] font-extrabold text-white shadow-[0_10px_24px_rgba(225,29,29,0.22)] transition hover:brightness-95 active:scale-[0.99] disabled:opacity-60"
+            className="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-primary text-[15px] font-bold text-white transition hover:brightness-95 active:scale-[0.99] disabled:opacity-60"
           >
-            <UserRound size={20} />
+            <UserRound size={17} />
             {busy ? t("submitting") : ar ? "دخول" : "Sign in"}
           </button>
         </form>

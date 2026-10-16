@@ -128,7 +128,7 @@ export function SignupForm() {
               <span title={L.accountInfo} className="text-gray-400"><Info size={16} /></span>
             </p>
             <div className="grid grid-cols-2 gap-3">
-              {typeCard("individual", L.individual, <UserRound size={20} />)}
+              {typeCard("individual", L.individual, <UserRound size={17} />)}
               {typeCard("office", L.office, <Building2 size={20} />, L.needsLicense)}
             </div>
           </div>
@@ -184,9 +184,9 @@ export function SignupForm() {
           <button
             type="submit"
             disabled={busy}
-            className="flex h-[56px] w-full items-center justify-center gap-2 rounded-2xl bg-primary text-[17px] font-extrabold text-white shadow-[0_10px_24px_rgba(225,29,29,0.22)] transition hover:brightness-95 active:scale-[0.99] disabled:opacity-60"
+            className="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-primary text-[15px] font-bold text-white transition hover:brightness-95 active:scale-[0.99] disabled:opacity-60"
           >
-            <Plus size={20} strokeWidth={2.6} />
+            <Plus size={17} strokeWidth={2.6} />
             {busy ? t("submitting") : L.submit}
           </button>
         </form>

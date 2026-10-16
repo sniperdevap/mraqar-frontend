@@ -119,3 +119,6 @@ h1, h2, h3 { text-wrap: balance; }
 /* Smooth scrolling on long lists: off-screen cards skip layout and paint until needed. */
 .ad-row { content-visibility: auto; contain-intrinsic-size: auto 122px; }
 html { -webkit-tap-highlight-color: transparent; }
+
+.prose-ar img { width: 100%; height: auto; border-radius: 20px; margin: 1.5rem 0 .5rem; }
+.prose-ar img + em, .prose-ar p > em:only-child { display: block; font-size: 13px; color: var(--color-muted); }

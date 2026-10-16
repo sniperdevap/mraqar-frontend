@@ -1,6 +1,7 @@
 ---
 title: "قبل أن تستأجر شقة في الكويت: ١٠ أمور تتحقق منها قبل التوقيع"
 description: "قائمة عملية تراجعها قبل استئجار شقة في الكويت: المعاينة، العقد، التأمين، الخدمات، والموقف — حتى لا تتفاجأ بعد الانتقال."
+cover: /blog/rent-apartment-checklist.webp
 category: renting
 publishedAt: 2026-10-10
 featured: true

@@ -1,6 +1,7 @@
 ---
 title: "كيف تحمي نفسك من الاحتيال في الإعلانات العقارية"
 description: "علامات تكشف الإعلان العقاري المزيف، وخطوات بسيطة تحميك قبل التواصل مع المعلن أو دفع أي مبلغ."
+cover: /blog/avoid-property-scams.webp
 category: safety
 publishedAt: 2026-10-08
 featured: true

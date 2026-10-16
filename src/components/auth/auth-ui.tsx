@@ -16,13 +16,13 @@ import { getErrorMessage } from "@/lib/utils/api";
 import type { User } from "@/types/auth";
 
 export const fieldClass =
-  "h-[54px] w-full rounded-2xl border border-gray-200 bg-white px-4 text-[15px] text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-primary focus:ring-4 focus:ring-primary/10 aria-[invalid=true]:border-red-400";
+  "h-12 w-full rounded-xl border border-gray-300 bg-white px-3.5 text-[15px] font-semibold text-gray-900 outline-none transition placeholder:font-normal placeholder:text-gray-500 focus:border-primary focus:ring-4 focus:ring-primary/10 aria-[invalid=true]:border-red-400";
 
 export const PhoneField = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement> & { invalid?: boolean }>(
   function PhoneField({ invalid, className = "", ...props }, ref) {
     return (
       <div className="flex gap-2" dir="ltr">
-        <span className="flex h-[54px] shrink-0 items-center gap-1.5 rounded-2xl border border-gray-200 bg-gray-50 px-3.5 text-[14px] font-bold text-gray-800">
+        <span className="flex h-12 shrink-0 items-center gap-1.5 rounded-xl border border-gray-300 bg-gray-50 px-3 text-[14px] font-bold text-gray-800">
           <span className="text-[11px] font-extrabold text-gray-500">KW</span>+965
         </span>
         <input
@@ -115,7 +115,7 @@ export function GoogleButton({ label, onCredential, locale }: { label: string; o
       <button
         type="button"
         onClick={() => { if (!clientId) toast.info(locale === "ar" ? "الدخول عبر Google سيتوفر قريبًا" : "Google sign-in is coming soon"); }}
-        className="flex h-[52px] w-full items-center justify-center gap-3 rounded-2xl border border-gray-200 bg-white text-[15px] font-bold text-gray-900 transition hover:bg-gray-50 active:scale-[0.99]"
+        className="flex h-11 w-full items-center justify-center gap-2.5 rounded-xl border border-gray-300 bg-white text-[14.5px] font-bold text-gray-900 transition hover:bg-gray-50 active:scale-[0.99]"
       >
         <GoogleMark />
         {label}
