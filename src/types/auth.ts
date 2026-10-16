@@ -45,7 +45,9 @@ export interface AuthState {
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (phoneNumber: string, password: string) => Promise<boolean>;
-  signup: (payload: { name: string; phoneNumber: string; password: string; avatar: string }) => Promise<boolean>;
+  signup: (payload: import('@/lib/api/auth').SignupRequest) => Promise<boolean>;
+  /** Stores a session returned by the API (password or Google sign-in). */
+  setSession: (token: string, user: User) => void;
   logout: () => void;
   setLoading: (loading: boolean) => void;
   refreshSubscriptions: () => Promise<void>;

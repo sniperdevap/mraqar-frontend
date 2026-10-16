@@ -43,22 +43,23 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
-      signup: async (payload: { name: string; phoneNumber: string; password: string; avatar: string }): Promise<boolean> => {
+      signup: async (payload): Promise<boolean> => {
         set({ isLoading: true });
 
         try {
-          await signupAPI({
-            name: payload.name,
-            phoneNumber: payload.phoneNumber,
-            password: payload.password,
-            avatar: payload.avatar,
-          });
+          await signupAPI(payload);
           set({ isLoading: false });
           return true;
         } catch (error) {
           set({ isLoading: false });
           throw error;
         }
+      },
+
+      setSession: (token, user) => {
+        Cookies.set('auth-token', token, { expires: AUTH_COOKIE_DAYS });
+        Cookies.set('auth-user', JSON.stringify(user), { expires: AUTH_COOKIE_DAYS });
+        set({ user, isAuthenticated: true, isLoading: false });
       },
 
       logout: () => {

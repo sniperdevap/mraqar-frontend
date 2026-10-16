@@ -8,12 +8,33 @@ export interface LoginRequest {
   password: string;
 }
 
+export type AccountType = 'individual' | 'office';
+export type UserType = 'personal' | 'owner' | 'marketer';
+
 export interface SignupRequest {
   name: string;
   phoneNumber: string;
   password: string;
-  avatar: string;
+  avatar?: string;
+  email?: string;
+  accountType?: AccountType;
+  userType?: UserType;
+  licenseNumber?: string;
 }
+
+export interface GoogleSigninRequest {
+  credential: string;
+  phoneNumber?: string;
+  name?: string;
+  accountType?: AccountType;
+  userType?: UserType;
+  licenseNumber?: string;
+}
+
+/** Either a signed-in session, or a request for the phone number to finish a new account. */
+export type GoogleSigninResponse =
+  | { token: string; user: User; needsPhone?: undefined }
+  | { needsPhone: true; email: string; name: string };
 
 // Response Types
 export interface LoginResponse {
@@ -58,6 +79,11 @@ export const login = async (data: LoginRequest): Promise<LoginResponse> => {
 
 export const signup = async (data: SignupRequest): Promise<SignupResponse> => {
   const response = await axiosWrapper<SignupResponse>('post', API_ENDPOINTS.AUTH.SIGNUP, data);
+  return response.data;
+};
+
+export const googleSignin = async (data: GoogleSigninRequest): Promise<GoogleSigninResponse> => {
+  const response = await axiosWrapper<GoogleSigninResponse>('post', API_ENDPOINTS.AUTH.GOOGLE, data);
   return response.data;
 };
 

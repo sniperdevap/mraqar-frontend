@@ -122,8 +122,8 @@ const jsonLd = [
         <svg class="pointer-events-none absolute start-3.5 top-1/2 -translate-y-1/2 text-muted" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
         <input type="search" name="q" value={text} enterkeyhint="search" maxlength="60" autocomplete="off"
           placeholder={lang === "ar" ? "ابحث بكلمة أو رقم الإعلان" : "Keyword or ad number"}
-          class:list={["h-11 w-full rounded-2xl border bg-white ps-10 pe-24 text-[14.5px] outline-none placeholder:text-muted/80 focus:border-brand", text ? "border-brand" : "border-line"]} />
-        <button class="absolute end-1.5 top-1/2 h-8 -translate-y-1/2 rounded-xl bg-brand px-4 text-[13px] font-bold text-white hover:bg-brand-dark">{t.searchBtn}</button>
+          class:list={["h-11 w-full rounded-2xl border bg-white ps-10 pe-20 text-[14.5px] outline-none placeholder:text-muted/80 focus:border-brand", text ? "border-brand" : "border-line"]} />
+        <button class="absolute end-2 top-1/2 h-7 -translate-y-1/2 rounded-lg bg-brand px-3 text-[12.5px] font-bold leading-7 text-white hover:bg-brand-dark">{t.searchBtn}</button>
       </label>
     </form>
 
