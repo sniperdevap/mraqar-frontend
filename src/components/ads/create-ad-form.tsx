@@ -155,6 +155,7 @@ export function CreateAdForm({ initialData, mode = 'create', onSuccess, requireC
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<Record<number, number>>({});
   const [remainingCredits, setRemainingCredits] = useState<number | null>(null);
+  const [creditSplit, setCreditSplit] = useState<{ premium: number; normal: number } | null>(null);
   const [isCreateAccessResolved, setIsCreateAccessResolved] = useState(mode !== 'create' || !requireCreditsForCreate);
   const [isLeavingAfterSuccess, setIsLeavingAfterSuccess] = useState(false);
   const hasTriggeredCreateAccessRedirectRef = useRef(false);
@@ -323,7 +324,10 @@ export function CreateAdForm({ initialData, mode = 'create', onSuccess, requireC
     let isMounted = true;
     getRemainingAdCredits()
       .then(data => {
-        if (isMounted) setRemainingCredits(data.totalCredits);
+        if (!isMounted) return;
+        setRemainingCredits(data.totalCredits);
+        const d = data as unknown as { premiumCredits?: number; normalCredits?: number; officeCredits?: number; dailyCredits?: number };
+        setCreditSplit({ premium: d.premiumCredits ?? (d.officeCredits ?? 0) + (d.dailyCredits ?? 0), normal: d.normalCredits ?? 0 });
       })
       .catch(() => {
         if (isMounted) setRemainingCredits(null);
@@ -750,11 +754,22 @@ export function CreateAdForm({ initialData, mode = 'create', onSuccess, requireC
                 </div>
 
                 {mode === 'create' && (
-                  <p className="text-xs font-semibold text-red-500 text-right">
-                    {t('ads.creditsLeft', {
-                      remaining: remainingCredits ?? '--',
-                    })}
-                  </p>
+                  <div className="flex items-center gap-3 rounded-2xl border border-gray-200 bg-white p-3">
+                    <div className="flex flex-1 flex-wrap items-center gap-2">
+                      <span className="text-[13px] font-bold text-gray-700">{locale === 'ar' ? 'رصيدك:' : 'Your balance:'}</span>
+                      <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-3 py-1 text-[13px] font-extrabold text-amber-800 ring-1 ring-amber-200">
+                        ★ {creditSplit ? creditSplit.premium : remainingCredits ?? '--'} {locale === 'ar' ? 'مميز' : 'premium'}
+                      </span>
+                      {creditSplit && (
+                        <span className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-3 py-1 text-[13px] font-bold text-gray-700">
+                          {creditSplit.normal} {locale === 'ar' ? 'عادي' : 'regular'}
+                        </span>
+                      )}
+                    </div>
+                    <a href="/plans" className="shrink-0 rounded-full bg-primary/10 px-3 py-1.5 text-[12.5px] font-bold text-primary hover:bg-primary/15">
+                      {locale === 'ar' ? 'شراء رصيد' : 'Buy credits'}
+                    </a>
+                  </div>
                 )}
 
                 {/* Purpose */}
