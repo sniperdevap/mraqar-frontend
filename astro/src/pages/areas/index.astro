@@ -4,7 +4,7 @@ import { getAreas } from "@/lib/api";
 import { getLang, dict } from "@/lib/i18n";
 import { areaGuidePath, byGovernorate } from "@/lib/area-guides";
 
-const lang = getLang(Astro.cookies);
+const lang = getLang(Astro.cookies, Astro.locals);
 const t = dict(lang);
 const areas = await getAreas(lang).catch(() => []);
 if (!areas.length) return new Response(null, { status: 500 });
@@ -15,7 +15,7 @@ const title = lang === "ar" ? "دليل مناطق الكويت" : "Kuwait areas
 const description = lang === "ar"
   ? `دليل ${areas.length} منطقة في محافظات الكويت الست: نبذة عن كل منطقة، وأحدث عقاراتها للبيع والإيجار على مستر عقار.`
   : `A guide to ${areas.length} areas across Kuwait's six governorates, with the latest property for sale and rent in each on Mr Aqar.`;
-const site = Astro.site!.origin;
+const site = Astro.site!.origin + (Astro.locals.lang === "en" ? "/en" : "");
 const jsonLd = [
   { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [
     { "@type": "ListItem", position: 1, name: t.breadcrumbHome, item: site },

@@ -89,6 +89,17 @@ export const getOffices = (params: { page?: number; limit?: number; search?: str
 export const getOffice = (id: string, params: { page?: number; limit?: number; purpose?: string; propertyType?: string; area?: string[] }, lang: Lang) =>
   get<OfficeDetail>(`/offices/${id}`, params as Query, { lang, ttl: 60 });
 
+/** Saves a message in the admin contact inbox (also used for property requests). */
+export async function postContact(body: { fullName: string; email: string; subject: string; message: string; action?: string }) {
+  const res = await fetch(`${API_URL}/contact`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    body: JSON.stringify(body),
+    signal: AbortSignal.timeout(6000),
+  });
+  if (!res.ok) throw new ApiError(res.status, `API ${res.status} for /contact`);
+}
+
 /** Absolute URL for an ad photo or video thumbnail. */
 export function mediaUrl(m?: Media | null, preferThumb = false): string {
   if (!m) return "/DefaultAdImage.jpeg";

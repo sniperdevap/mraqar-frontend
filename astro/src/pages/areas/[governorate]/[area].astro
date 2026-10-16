@@ -6,7 +6,7 @@ import { getLang, dict } from "@/lib/i18n";
 import { governorateSlug, areaSlug } from "@/lib/ad-url";
 import { areaGuidePath, areaBlurb } from "@/lib/area-guides";
 
-const lang = getLang(Astro.cookies);
+const lang = getLang(Astro.cookies, Astro.locals);
 const t = dict(lang);
 const { governorate, area: areaParam } = Astro.params;
 const [areas, types] = await Promise.all([getAreas(lang).catch(() => []), getPropertyTypes(lang).catch(() => [])]);
@@ -41,7 +41,7 @@ const blurb = areaBlurb(area, lang);
 const description = lang === "ar"
   ? `${blurb} تعرّف على منطقة ${name} في ${gov} وتصفح أحدث العقارات للبيع والإيجار فيها على مستر عقار.`.slice(0, 165)
   : `${blurb} Browse the latest property for sale and rent in ${name} on Mr Aqar.`.slice(0, 165);
-const site = Astro.site!.origin;
+const site = Astro.site!.origin + (Astro.locals.lang === "en" ? "/en" : "");
 const path = areaGuidePath(area);
 const jsonLd = [
   { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [

@@ -7,7 +7,7 @@ import { getLang } from "@/lib/i18n";
 
 interface Props { page: "about" | "terms" | "privacy" | "copyright"; path: string }
 const { page, path } = Astro.props;
-const lang = getLang(Astro.cookies);
+const lang = getLang(Astro.cookies, Astro.locals);
 const data = (lang === "en" ? en : ar)[page] as Record<string, any>;
 const SKIP = new Set(["title", "subtitle", "cardHeader", "lastUpdated", "sections"]);
 const sections: Array<[string, any]> = Object.entries(data.sections ?? Object.fromEntries(Object.entries(data).filter(([k]) => !SKIP.has(k))));

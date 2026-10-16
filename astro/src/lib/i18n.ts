@@ -2,10 +2,16 @@ import type { AstroCookies } from "astro";
 import type { Ad, Lang } from "./api";
 
 /** Arabic by default; English when the visitor chose it (same cookie the Next.js site used). */
-export function getLang(cookies: AstroCookies): Lang {
-  const v = cookies.get("lang")?.value || cookies.get("NEXT_LOCALE")?.value;
-  return v === "en" ? "en" : "ar";
+/** Page language comes from the URL (/en/… is English), set by the middleware. */
+export function getLang(_cookies: AstroCookies, locals?: { lang?: Lang }): Lang {
+  return locals?.lang === "en" ? "en" : "ar";
 }
+
+/** The same page in the other language: /x <-> /en/x. */
+export const localePath = (path: string, lang: Lang) => {
+  const bare = path === "/en" ? "/" : path.startsWith("/en/") ? path.slice(3) : path;
+  return lang === "en" ? `/en${bare === "/" ? "" : bare}` : bare;
+};
 
 const ar = {
   siteName: "مستر عقار",

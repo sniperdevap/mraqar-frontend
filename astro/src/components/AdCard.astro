@@ -33,7 +33,7 @@ const Heading = headingLevel;
   )}
   <div class="relative w-[92px] shrink-0 bg-[#f1efed]">
     {img ? (
-      <img src={img} alt="" width="92" height="120" class="absolute inset-0 size-full object-cover" loading={eager ? "eager" : "lazy"} decoding="async" fetchpriority={eager ? "high" : "auto"} />
+      <img src={img} alt={title} width="92" height="120" class="absolute inset-0 size-full object-cover" loading={eager ? "eager" : "lazy"} decoding="async" fetchpriority={eager ? "high" : "auto"} />
     ) : (
       <span class="absolute inset-0 flex flex-col items-center justify-center gap-1 text-center">
         <img src="/aqar-new-logo-nav.webp" alt="" width="40" height="26" class="h-auto w-10 opacity-25" loading="lazy" />

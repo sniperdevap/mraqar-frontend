@@ -9,8 +9,10 @@ import { ApiError, getAd, getAds, getAreas, mediaUrl, countAdView } from "@/lib/
 import { adHref, findArea, AD_PURPOSES } from "@/lib/ad-url";
 import { adTitle, dict, formatPrice, getLang, timeAgo, waNumber } from "@/lib/i18n";
 import { adJsonLd } from "@/lib/ad-page";
+import { areaGuidePath } from "@/lib/area-guides";
+import type { Area } from "@/lib/api";
 
-const lang = getLang(Astro.cookies);
+const lang = getLang(Astro.cookies, Astro.locals);
 const t = dict(lang);
 const { purpose, type, governorate, area, id } = Astro.params as Record<string, string>;
 if (!AD_PURPOSES.includes(purpose as never) || !/^(\d+|[a-f0-9]{24})$/i.test(id)) return Astro.rewrite("/404");
@@ -31,10 +33,22 @@ if (canonical !== `/${purpose}/${type}/${governorate}/${area}/${id}` && !canonic
 // Count the view without delaying the page.
 countAdView(id, Astro.request.headers.get("x-forwarded-for") || undefined);
 
-const site = Astro.site!.origin;
+const site = Astro.site!.origin + (Astro.locals.lang === "en" ? "/en" : "");
 const url = `${site}${canonical}`;
 const title = adTitle(ad, lang);
 const price = formatPrice(ad, lang);
+// Many ads share a heading ("شقة للإيجار في سلوى"), so the page title adds the price and ad number.
+const seoTitle = lang === "ar"
+  ? `${title}${price ? ` بسعر ${price}` : ""} – إعلان ${ad.id}`
+  : `${title}${price ? ` for ${price}` : ""} – Ad ${ad.id}`;
+const typeQ = ad.propertyType?.id ? `&propertyType=${ad.propertyType.id}` : "";
+const crumbs = [
+  { name: t.breadcrumbHome, href: "/" },
+  { name: (t as Record<string, string>)[ad.purpose], href: `/search?purpose=${ad.purpose}` },
+  ...(ad.propertyType ? [{ name: lang === "ar" ? ad.propertyType.labelAr : ad.propertyType.label, href: `/search?purpose=${ad.purpose}${typeQ}` }] : []),
+  ...(ad.area?.id ? [{ name: lang === "ar" ? ad.area.labelAr : ad.area.label, href: `/search?purpose=${ad.purpose}${typeQ}&area=${ad.area.id}` }] : []),
+];
+const guideArea = areas.find((a) => a.id === ad.area?.id) as Area | undefined;
 const fullArea = findArea(ad.area, areas) as { governorate?: string; governorateAr?: string } | undefined;
 const areaName = lang === "ar" ? ad.area.labelAr : ad.area.label;
 const govName = lang === "ar" ? fullArea?.governorateAr : fullArea?.governorate;
@@ -42,7 +56,7 @@ const typeName = lang === "ar" ? ad.propertyType?.labelAr : ad.propertyType?.lab
 const purposeName = (t as Record<string, string>)[ad.purpose];
 const photos = (ad.media || []).map((m) => ({ src: mediaUrl(m), video: m.type === "video" ? mediaUrl({ ...m, type: "image" }) : null, poster: mediaUrl(m, true) }));
 const hasPhotos = photos.length > 0;
-const ogImage = hasPhotos && photos[0].poster.startsWith("http") ? photos[0].poster : `${site}/aqar-new-logo.png`;
+const ogImage = hasPhotos && photos[0].poster.startsWith("http") ? photos[0].poster : `${Astro.site!.origin}/aqar-new-logo.png`;
 // Same rule as the current site: the button shows and dials the advertiser's number,
 // or their alternative number when they chose to hide the main one.
 const phone = (ad.isPhoneHidden && ad.alternativePhoneNumber ? ad.alternativePhoneNumber : ad.phoneNumber) || ad.user?.phoneNumber || "";
@@ -63,7 +77,12 @@ const shareTargets = [
   { kind: "native", label: lang === "ar" ? "المزيد" : "More", bg: "#eceaed", fg: "#322825", icon: '<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>' },
 ];
 const desc = (ad.description || "").replace(/\s+/g, " ").trim();
-const metaDescription = `${title}${price ? ` — ${price}${ad.purpose === "rent" ? ` ${t.monthly}` : ""}` : ""}. ${desc}`.slice(0, 158);
+// English pages get an English description even when the ad text is Arabic.
+const metaArea = areas.find((a) => a.id === ad.area?.id) || fullArea;
+const gov = lang === "ar" ? metaArea?.governorateAr : metaArea?.governorate;
+const metaDescription = (lang === "en" && /[\u0600-\u06ff]/.test(desc)
+  ? `${title}${gov ? `, ${gov}` : ""}, Kuwait${price ? ` — ${price}${ad.purpose === "rent" ? " per month" : ""}` : ""}. Ad #${ad.id}${ad.media?.length ? ` with ${ad.media.length} photo${ad.media.length > 1 ? "s" : ""}` : ""}. Call or WhatsApp the advertiser directly on Mr Aqar.`
+  : `${title}${price ? ` — ${price}${ad.purpose === "rent" ? ` ${t.monthly}` : ""}` : ""}. ${desc}`).slice(0, 158);
 const sold = ad.status !== "active";
 const featured = ad.isPremium || ad.premiumAd;
 const value = Number(ad.price || 0);
@@ -77,17 +96,22 @@ const similar = await getAds({ page: 1, limit: 7, purpose: ad.purpose, propertyT
 
 Astro.response.headers.set("Cache-Control", "public, max-age=0, s-maxage=60, stale-while-revalidate=300");
 ---
-<Base title={title} description={metaDescription} canonical={canonical} image={ogImage} noindex={sold} jsonLd={adJsonLd(ad, areas, lang, site)} bottomBar={false} back hideFooter>
+<Base title={seoTitle} description={metaDescription} canonical={canonical} image={{ url: ogImage, alt: title }} type="product" publishedTime={ad.createdAt} modifiedTime={ad.createdAt} noindex={sold} jsonLd={adJsonLd(ad, areas, lang, site)} bottomBar={false} back hideFooter>
   <Fragment slot="head">
-    <meta property="og:type" content="product" />
-    <meta property="article:published_time" content={ad.createdAt} />
-    <meta property="article:modified_time" content={ad.createdAt} />
     {value > 0 && <meta property="product:price:amount" content={String(ad.price)} />}
     {value > 0 && <meta property="product:price:currency" content="KWD" />}
     {hasPhotos && <link rel="preload" as="image" href={photos[0].poster} fetchpriority="high" />}
   </Fragment>
 
-  <article class="mx-auto max-w-[52rem] px-5 pt-5 pb-48">
+  <article class="mx-auto max-w-[52rem] px-5 pt-4 pb-48">
+    <nav class="mb-3 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-[12.5px] font-semibold text-muted" aria-label={lang === "ar" ? "مسار التنقل" : "Breadcrumb"}>
+      {crumbs.map((c, i) => (
+        <>
+          {i > 0 && <span aria-hidden="true">›</span>}
+          <a href={c.href} class="hover:text-brand">{c.name}</a>
+        </>
+      ))}
+    </nav>
     <header>
       <div class="flex items-start gap-3">
         <h1 class="flex-1 text-[24px] font-extrabold leading-[34px]">{title}</h1>
@@ -169,6 +193,22 @@ Astro.response.headers.set("Cache-Control", "public, max-age=0, s-maxage=60, sta
         </span>
         <svg class="text-muted rtl:rotate-180" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
       </a>
+    )}
+
+    {ad.area?.id && (
+      <nav class="mt-6 flex flex-wrap gap-2" aria-label={lang === "ar" ? "روابط ذات صلة" : "Related links"}>
+        <a href={`/search?purpose=${ad.purpose}${typeQ}&area=${ad.area.id}`} class="rounded-full border border-line bg-white px-3.5 py-1.5 text-[13px] font-bold text-ink hover:border-brand hover:text-brand">
+          {lang === "ar" ? `${ad.propertyType?.labelAr || "عقارات"} ${t[ad.purpose]} في ${ad.area.labelAr}` : `More ${(ad.propertyType?.label || "property").toLowerCase()} ${t[ad.purpose].toLowerCase()} in ${ad.area.label}`}
+        </a>
+        <a href={`/search?area=${ad.area.id}`} class="rounded-full border border-line bg-white px-3.5 py-1.5 text-[13px] font-bold text-ink hover:border-brand hover:text-brand">
+          {lang === "ar" ? `كل العقارات في ${ad.area.labelAr}` : `All property in ${ad.area.label}`}
+        </a>
+        {guideArea?.governorate && (
+          <a href={areaGuidePath(guideArea)} class="rounded-full border border-line bg-white px-3.5 py-1.5 text-[13px] font-bold text-ink hover:border-brand hover:text-brand">
+            {lang === "ar" ? `دليل منطقة ${ad.area.labelAr}` : `${ad.area.label} area guide`}
+          </a>
+        )}
+      </nav>
     )}
 
     {similar.length > 0 && (

@@ -5,7 +5,7 @@ import OfficeAvatar from "@/components/OfficeAvatar.astro";
 import { ApiError, getAreas, getOffice } from "@/lib/api";
 import { getLang, dict, waNumber } from "@/lib/i18n";
 
-const lang = getLang(Astro.cookies);
+const lang = getLang(Astro.cookies, Astro.locals);
 const t = dict(lang);
 const { id } = Astro.params as { id: string };
 const page = Math.max(1, Number(Astro.url.searchParams.get("page") || 1));
@@ -19,7 +19,7 @@ try {
 }
 const areas = await getAreas(lang).catch(() => []);
 const o = data.office;
-const site = Astro.site!.origin;
+const site = Astro.site!.origin + (Astro.locals.lang === "en" ? "/en" : "");
 const title = lang === "ar" ? `${o.name} — مكتب عقاري في الكويت` : `${o.name} — real estate office in Kuwait`;
 const description = lang === "ar"
   ? `تصفح ${data.totalAds} إعلانًا من ${o.name} للبيع والإيجار والبدل في الكويت، وتواصل مباشرة عبر الاتصال أو واتساب.`

@@ -7,7 +7,7 @@ import { getLang, dict } from "@/lib/i18n";
 import { pluralSlug, adHref } from "@/lib/ad-url";
 import { areaGuidePath } from "@/lib/area-guides";
 
-const lang = getLang(Astro.cookies);
+const lang = getLang(Astro.cookies, Astro.locals);
 const t = dict(lang);
 const q = Astro.url.searchParams;
 const purpose = ["sale", "rent", "exchange"].includes(q.get("purpose") || "") ? q.get("purpose")! : "";
@@ -77,14 +77,19 @@ const guideHref = (a: (typeof areas)[number], tyId?: number) => {
   return `/search?${s}`;
 };
 
-const site = Astro.site!.origin;
+const site = Astro.site!.origin + (Astro.locals.lang === "en" ? "/en" : "");
 const crumbs = [{ name: t.breadcrumbHome, item: site }, ...(purpose ? [{ name: purposeLabel, item: `${site}/search?purpose=${purpose}` }] : []), { name: heading, item: `${site}${canonical}` }];
 const jsonLd = [
   { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: crumbs.map((c, i) => ({ "@type": "ListItem", position: i + 1, name: c.name, item: c.item })) },
 ];
 ---
-<Base title={heading} description={description} canonical={canonical} noindex={Boolean(minPrice || maxPrice || text) || total === 0} jsonLd={jsonLd} active="search">
+<Base title={heading} description={description} canonical={canonical} noindex={Boolean(minPrice || maxPrice || text) || area.length > 1 || total === 0 || (result ? page > result.totalPages : false)} jsonLd={jsonLd} active="search">
   <div class="mx-auto max-w-[52rem] px-5 pt-6 pb-12">
+    <nav class="mb-2 flex flex-wrap items-center gap-x-1.5 text-[12.5px] font-semibold text-muted" aria-label={lang === "ar" ? "مسار التنقل" : "Breadcrumb"}>
+      <a href="/" class="hover:text-brand">{t.breadcrumbHome}</a>
+      {purpose && <><span aria-hidden="true">›</span><a href={`/search?purpose=${purpose}`} class="hover:text-brand">{purposeLabel}</a></>}
+      {(area.length || propertyType) && <><span aria-hidden="true">›</span><span aria-current="page">{heading}</span></>}
+    </nav>
     <h1 class="text-[22px] font-extrabold leading-8">{area.length || propertyType || purpose ? heading : (lang === "ar" ? "نتائج العقارات" : "Property results")}</h1>
     <p class="mt-0.5 text-[13px] font-semibold text-muted">{total.toLocaleString("en-US")} {lang === "ar" ? "نتيجة" : "results"}</p>
 

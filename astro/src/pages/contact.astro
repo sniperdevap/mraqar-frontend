@@ -3,7 +3,7 @@ import Base from "@/layouts/Base.astro";
 import ar from "@/data/pages.ar.json";
 import en from "@/data/pages.en.json";
 import { getLang, dict, SUPPORT_PHONE, SUPPORT_WA } from "@/lib/i18n";
-const lang = getLang(Astro.cookies);
+const lang = getLang(Astro.cookies, Astro.locals);
 const t = dict(lang);
 const c = (lang === "en" ? en : ar).contact;
 ---

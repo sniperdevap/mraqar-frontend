@@ -1,0 +1,190 @@
+---
+/**
+ * "Request a property": a visitor who can't find what they want leaves their
+ * contact details and requirements. Saved through the API's contact endpoint
+ * (action "property_request") so it appears in the admin contact inbox.
+ * Works without JavaScript: the form posts back to this page.
+ */
+import Base from "@/layouts/Base.astro";
+import { getAreas, getPropertyTypes, postContact } from "@/lib/api";
+import { getLang, dict } from "@/lib/i18n";
+import { byGovernorate } from "@/lib/area-guides";
+
+const lang = getLang(Astro.cookies, Astro.locals);
+const t = dict(lang);
+const ar = lang === "ar";
+const [areas, types] = await Promise.all([getAreas(lang).catch(() => []), getPropertyTypes(lang).catch(() => [])]);
+const groups = byGovernorate(areas);
+
+type Values = Record<string, string>;
+let values: Values = { purpose: "rent", contactBy: "whatsapp" };
+let errors: Record<string, string> = {};
+let sent = false;
+let failed = false;
+
+if (Astro.request.method === "POST") {
+  const fd = await Astro.request.formData();
+  values = Object.fromEntries([...fd.entries()].map(([k, v]) => [k, String(v).trim().slice(0, 1000)]));
+  if (values.website) return Astro.redirect("/request-property", 303); // honeypot
+  const phone = (values.phone || "").replace(/\D/g, "");
+  if (!values.name) errors.name = ar ? "اكتب اسمك" : "Enter your name";
+  if (!/^\d{8}$/.test(phone)) errors.phone = ar ? "رقم الموبايل من 8 أرقام" : "8-digit mobile number";
+  if (values.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) errors.email = ar ? "بريد غير صحيح" : "Invalid email";
+  if (values.contactBy === "email" && !values.email) errors.email = ar ? "أدخل بريدك للتواصل عبره" : "Add your email to be contacted by email";
+  if (!Object.keys(errors).length) {
+    const type = types.find((x) => String(x.id) === values.propertyType);
+    const area = areas.find((x) => String(x.id) === values.area);
+    const purposeName = { buy: "شراء", rent: "إيجار", exchange: "بدل" }[values.purpose] || values.purpose;
+    const contactName = { call: "اتصال", whatsapp: "واتساب", email: "بريد إلكتروني" }[values.contactBy] || values.contactBy;
+    const message = [
+      `طلب عقار من الموقع`,
+      `الاسم: ${values.name}`,
+      `الموبايل: +965${phone}`,
+      values.email && `البريد: ${values.email}`,
+      `طريقة التواصل: ${contactName}`,
+      `الغرض: ${purposeName}`,
+      `نوع العقار: ${type?.labelAr || "أي نوع"}`,
+      `المنطقة: ${area ? `${area.labelAr} (${area.governorateAr})` : "أي منطقة"}`,
+      values.bedrooms && `عدد الغرف: ${values.bedrooms}`,
+      (values.budgetMin || values.budgetMax) && `الميزانية: ${values.budgetMin || "—"} إلى ${values.budgetMax || "—"} د.ك`,
+      values.notes && `ملاحظات: ${values.notes}`,
+    ].filter(Boolean).join("\n");
+    try {
+      await postContact({ fullName: values.name, email: values.email || `+965${phone}`, subject: `طلب عقار: ${type?.labelAr || "عقار"} ${purposeName} — ${area?.labelAr || "أي منطقة"}`, message, action: "property_request" });
+      sent = true;
+    } catch {
+      failed = true;
+    }
+  }
+}
+
+const title = ar ? "اطلب عقارك في الكويت" : "Request a property in Kuwait";
+const description = ar
+  ? "لم تجد العقار المناسب؟ أرسل طلبك لمستر عقار بالمنطقة ونوع العقار والميزانية، وسنتواصل معك عبر الاتصال أو واتساب."
+  : "Can't find the right property? Tell Mr Aqar the area, type and budget you want and we'll contact you by phone or WhatsApp.";
+const site = Astro.site!.origin + (lang === "en" ? "/en" : "");
+const jsonLd = [{ "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [
+  { "@type": "ListItem", position: 1, name: t.breadcrumbHome, item: site },
+  { "@type": "ListItem", position: 2, name: title, item: `${site}/request-property` } ] }];
+
+const field = "h-[52px] w-full rounded-2xl border border-line bg-white px-4 text-[15px] text-ink outline-none transition focus:border-brand focus:ring-4 focus:ring-brand/10";
+const chip = (name: string, value: string, label: string) => ({ name, value, label, on: values[name] === value });
+---
+<Base title={title} description={description} canonical="/request-property" noindex={Astro.request.method === "POST"} jsonLd={jsonLd} active="search">
+  <div class="mx-auto max-w-[40rem] px-4 pt-5 pb-14">
+    <nav class="text-[12.5px] font-semibold text-muted" aria-label="breadcrumb"><a href="/" class="hover:text-brand">{t.breadcrumbHome}</a> <span aria-hidden="true">›</span> <span>{title}</span></nav>
+    <h1 class="mt-2 text-[24px] font-extrabold leading-9">{title}</h1>
+    <p class="mt-1.5 text-[14.5px] leading-7 text-muted">
+      {ar ? "لم تجد ما تبحث عنه؟ أخبرنا بمتطلباتك وسيتواصل معك فريق مستر عقار لمساعدتك في إيجاد العقار المناسب." : "Didn't find it? Tell us what you need and the Mr Aqar team will help you find the right property."}
+    </p>
+
+    {sent ? (
+      <section class="mt-6 rounded-[22px] border border-line bg-white p-7 text-center shadow-[0_8px_28px_rgba(50,40,37,0.07)]" role="status">
+        <span class="mx-auto flex size-14 items-center justify-center rounded-full bg-[#e8f8ee] text-[#16a34a]">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>
+        </span>
+        <h2 class="mt-4 text-[20px] font-extrabold">{ar ? "تم استلام طلبك" : "Request received"}</h2>
+        <p class="mt-2 text-[14.5px] leading-7 text-muted">{ar ? "شكرًا لثقتك بمستر عقار! سيتواصل معك فريقنا قريبًا عبر وسيلة التواصل التي اخترتها." : "Thanks for trusting Mr Aqar! Our team will contact you soon the way you chose."}</p>
+        <div class="mt-6 flex flex-wrap justify-center gap-2.5">
+          <a href="/" class="flex h-11 items-center rounded-full bg-brand px-6 text-[14.5px] font-bold text-white">{ar ? "العودة للرئيسية" : "Back to home"}</a>
+          <a href="/request-property" class="flex h-11 items-center rounded-full bg-soft px-6 text-[14.5px] font-bold text-ink">{ar ? "إرسال طلب آخر" : "Send another request"}</a>
+        </div>
+      </section>
+    ) : (
+      <form method="post" class="mt-6 space-y-5" novalidate>
+        {failed && <p class="rounded-2xl bg-brand/10 p-3.5 text-[14px] font-semibold text-brand" role="alert">{ar ? "تعذر إرسال الطلب الآن، حاول مرة أخرى أو تواصل معنا عبر واتساب." : "We couldn't send your request right now. Please try again or message us on WhatsApp."}</p>}
+        <input type="text" name="website" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
+
+        <section class="space-y-3.5 rounded-[22px] border border-line bg-white p-5 shadow-[0_2px_10px_rgba(50,40,37,0.05)]">
+          <h2 class="flex items-center gap-2 text-[16px] font-extrabold"><span class="flex size-7 items-center justify-center rounded-full bg-brand text-[13px] text-white">1</span>{ar ? "بيانات التواصل" : "Your contact details"}</h2>
+          <div>
+            <input name="name" value={values.name} placeholder={ar ? "الاسم" : "Name"} autocomplete="name" class={field} aria-invalid={errors.name ? "true" : undefined} />
+            {errors.name && <p class="mt-1.5 text-[12.5px] text-brand">{errors.name}</p>}
+          </div>
+          <div>
+            <div class="flex gap-2" dir="ltr">
+              <span class="flex h-[52px] shrink-0 items-center gap-1.5 rounded-2xl border border-line bg-soft px-3.5 text-[14px] font-bold"><span class="text-[11px] text-muted">KW</span>+965</span>
+              <input name="phone" value={values.phone} inputmode="numeric" maxlength="8" autocomplete="tel-national" placeholder={ar ? "رقم الموبايل" : "Mobile number"} class={field} aria-invalid={errors.phone ? "true" : undefined} />
+            </div>
+            {errors.phone && <p class="mt-1.5 text-[12.5px] text-brand">{errors.phone}</p>}
+          </div>
+          <div>
+            <input name="email" type="email" dir="ltr" value={values.email} autocomplete="email" placeholder={ar ? "البريد الإلكتروني (اختياري)" : "Email (optional)"} class={`${field} text-start`} aria-invalid={errors.email ? "true" : undefined} />
+            {errors.email && <p class="mt-1.5 text-[12.5px] text-brand">{errors.email}</p>}
+          </div>
+          <fieldset>
+            <legend class="mb-2 text-[13.5px] font-bold text-muted">{ar ? "طريقة التواصل المفضّلة" : "Preferred contact"}</legend>
+            <div class="grid grid-cols-3 gap-2">
+              {[chip("contactBy", "call", ar ? "اتصال" : "Call"), chip("contactBy", "whatsapp", ar ? "واتساب" : "WhatsApp"), chip("contactBy", "email", ar ? "بريد" : "Email")].map((c) => (
+                <label class="cursor-pointer">
+                  <input type="radio" name={c.name} value={c.value} checked={c.on} class="peer sr-only" />
+                  <span class="flex h-11 items-center justify-center rounded-xl border border-line text-[14px] font-bold text-ink transition peer-checked:border-brand peer-checked:bg-brand/[0.06] peer-checked:text-brand peer-focus-visible:ring-2 peer-focus-visible:ring-brand">{c.label}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+        </section>
+
+        <section class="space-y-3.5 rounded-[22px] border border-line bg-white p-5 shadow-[0_2px_10px_rgba(50,40,37,0.05)]">
+          <h2 class="flex items-center gap-2 text-[16px] font-extrabold"><span class="flex size-7 items-center justify-center rounded-full bg-brand text-[13px] text-white">2</span>{ar ? "ما الذي تبحث عنه؟" : "What are you looking for?"}</h2>
+          <fieldset>
+            <legend class="mb-2 text-[13.5px] font-bold text-muted">{ar ? "الغرض" : "Purpose"}</legend>
+            <div class="grid grid-cols-3 gap-1 rounded-2xl bg-soft p-1">
+              {[chip("purpose", "buy", ar ? "شراء" : "Buy"), chip("purpose", "rent", ar ? "إيجار" : "Rent"), chip("purpose", "exchange", ar ? "بدل" : "Exchange")].map((c) => (
+                <label class="cursor-pointer">
+                  <input type="radio" name={c.name} value={c.value} checked={c.on} class="peer sr-only" />
+                  <span class="flex h-10 items-center justify-center rounded-xl text-[14px] font-semibold text-ink transition peer-checked:bg-white peer-checked:font-extrabold peer-checked:shadow-sm peer-focus-visible:ring-2 peer-focus-visible:ring-brand">{c.label}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+          <label class="block">
+            <span class="mb-1.5 block text-[13.5px] font-bold text-muted">{t.propertyType}</span>
+            <select name="propertyType" class={`${field} appearance-none`}>
+              <option value="">{ar ? "أي نوع" : "Any type"}</option>
+              {types.map((ty) => <option value={String(ty.id)} selected={values.propertyType === String(ty.id)}>{ar ? ty.labelAr : ty.label}</option>)}
+            </select>
+          </label>
+          <label class="block">
+            <span class="mb-1.5 block text-[13.5px] font-bold text-muted">{ar ? "المنطقة" : "Area"}</span>
+            <select name="area" class={`${field} appearance-none`}>
+              <option value="">{ar ? "أي منطقة" : "Any area"}</option>
+              {groups.map((g) => (
+                <optgroup label={ar ? g.govAr : g.gov}>
+                  {g.areas.map((a) => <option value={String(a.id)} selected={values.area === String(a.id)}>{ar ? a.labelAr : a.label}</option>)}
+                </optgroup>
+              ))}
+            </select>
+          </label>
+          <div class="grid grid-cols-3 gap-2">
+            <label class="block">
+              <span class="mb-1.5 block text-[13.5px] font-bold text-muted">{ar ? "الغرف" : "Rooms"}</span>
+              <select name="bedrooms" class={`${field} appearance-none px-3`}>
+                <option value="">{ar ? "أي" : "Any"}</option>
+                {["1", "2", "3", "4", "5+"].map((n) => <option value={n} selected={values.bedrooms === n}>{n}</option>)}
+              </select>
+            </label>
+            <label class="block">
+              <span class="mb-1.5 block text-[13.5px] font-bold text-muted">{ar ? "الميزانية من" : "Budget from"}</span>
+              <input name="budgetMin" inputmode="numeric" value={values.budgetMin} placeholder={ar ? "د.ك" : "KD"} class={`${field} px-3`} />
+            </label>
+            <label class="block">
+              <span class="mb-1.5 block text-[13.5px] font-bold text-muted">{ar ? "إلى" : "To"}</span>
+              <input name="budgetMax" inputmode="numeric" value={values.budgetMax} placeholder={ar ? "د.ك" : "KD"} class={`${field} px-3`} />
+            </label>
+          </div>
+          <label class="block">
+            <span class="mb-1.5 block text-[13.5px] font-bold text-muted">{ar ? "ملاحظات (اختياري)" : "Notes (optional)"}</span>
+            <textarea name="notes" rows="3" maxlength="800" placeholder={ar ? "مثال: دور أرضي، قريب من مدرسة، موقف خاص…" : "e.g. ground floor, near a school, private parking…"} class={`${field} h-auto py-3 leading-7`}>{values.notes}</textarea>
+          </label>
+        </section>
+
+        <button class="flex h-[56px] w-full items-center justify-center gap-2 rounded-2xl bg-brand text-[17px] font-extrabold text-white shadow-[0_10px_24px_rgba(217,54,62,0.22)] transition hover:bg-brand-dark active:scale-[0.99]">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/></svg>
+          {ar ? "أرسل الطلب" : "Send request"}
+        </button>
+        <p class="text-center text-[12.5px] text-muted">{ar ? "نستخدم بياناتك للتواصل معك بخصوص طلبك فقط." : "We only use your details to contact you about this request."}</p>
+      </form>
+    )}
+  </div>
+</Base>

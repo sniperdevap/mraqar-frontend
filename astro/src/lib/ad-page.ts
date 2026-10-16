@@ -21,12 +21,15 @@ export function adJsonLd(ad: Ad, areas: Area[], lang: Lang, site: string) {
     ...(areaName ? [{ name: areaName, item: `${base}${typeQ}&area=${ad.area.id}` }] : []),
     { name: adTitle(ad, lang), item: url },
   ];
+  const amount = ad.priceUnit === "thousand" ? ad.price * 1000 : ad.price;
   const images = (ad.media || []).filter((m) => m.type === "image").map((m) => mediaUrl(m)).slice(0, 10);
   return [
     { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: crumbs.map((c, i) => ({ "@type": "ListItem", position: i + 1, name: c.name, item: c.item })) },
     {
       "@context": "https://schema.org",
       "@type": "RealEstateListing",
+      "@id": `${url}#listing`,
+      inLanguage: lang === "ar" ? "ar-KW" : "en",
       name: adTitle(ad, lang),
       description: (ad.description || adTitle(ad, lang)).slice(0, 500),
       url,
@@ -43,11 +46,12 @@ export function adJsonLd(ad: Ad, areas: Area[], lang: Lang, site: string) {
       },
       offers: {
         "@type": "Offer",
-        price: ad.priceUnit === "thousand" ? ad.price * 1000 : ad.price,
-        priceCurrency: "KWD",
-        ...(ad.purpose === "rent" ? { priceSpecification: { "@type": "UnitPriceSpecification", price: ad.price, priceCurrency: "KWD", unitCode: "MON" } } : {}),
+        ...(amount > 0 ? { price: amount, priceCurrency: "KWD" } : {}),
+        ...(ad.purpose === "rent" && amount > 0 ? { priceSpecification: { "@type": "UnitPriceSpecification", price: amount, priceCurrency: "KWD", unitCode: "MON", unitText: "monthly" } } : {}),
+        businessFunction: ad.purpose === "rent" ? "http://purl.org/goodrelations/v1#LeaseOut" : "http://purl.org/goodrelations/v1#Sell",
+        url,
         availability: ad.status === "active" ? "https://schema.org/InStock" : "https://schema.org/SoldOut",
-        seller: { "@type": ad.isOffice ? "RealEstateAgent" : "Person", name: ad.user?.name },
+        seller: { "@type": ad.isOffice ? "RealEstateAgent" : "Person", name: ad.user?.name, ...(ad.isOffice && ad.user?.publicId ? { url: `${site}/offices/${ad.user.publicId}` } : {}) },
       },
     },
   ];

@@ -1,0 +1,145 @@
+---
+import Base from "@/layouts/Base.astro";
+import GoogleAuth from "@/components/GoogleAuth.astro";
+import { getLang } from "@/lib/i18n";
+import { apiPost, kwPhone, setSession, safeNext } from "@/lib/auth";
+
+const lang = getLang(Astro.cookies, Astro.locals);
+const ar = lang === "ar";
+const next = safeNext(Astro.url.searchParams.get("next"));
+let v: Record<string, string> = { accountType: "individual", userType: "personal" };
+const errors: Record<string, string> = {};
+let error = "";
+
+const L = ar
+  ? { req: "مطلوب", phone: "رقم الموبايل من 8 أرقام", pass: "6 أحرف على الأقل", email: "بريد غير صحيح", exists: "هذا الرقم مسجل من قبل، سجّل الدخول", fail: "تعذر إنشاء الحساب الآن، حاول مرة أخرى" }
+  : { req: "Required", phone: "8-digit mobile number", pass: "At least 6 characters", email: "Invalid email", exists: "This number already has an account, please sign in", fail: "Couldn't create the account right now, please try again" };
+
+if (Astro.request.method === "POST") {
+  const fd = await Astro.request.formData();
+  v = Object.fromEntries([...fd.entries()].map(([k, x]) => [k, String(x).trim().slice(0, 300)]));
+  const phoneNumber = kwPhone(v.phone || "");
+  if (!v.name) errors.name = L.req;
+  if (!phoneNumber) errors.phone = L.phone;
+  if ((v.password || "").length < 6) errors.password = L.pass;
+  if (v.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.email)) errors.email = L.email;
+  if (v.accountType === "office" && !v.licenseNumber) errors.licenseNumber = L.req;
+  if (!Object.keys(errors).length) {
+    const office = v.accountType === "office";
+    const r = await apiPost("/users/signup", {
+      name: v.name, phoneNumber, password: v.password, email: v.email || undefined,
+      accountType: office ? "office" : "individual", userType: office ? undefined : v.userType || "personal",
+      licenseNumber: office ? v.licenseNumber : undefined,
+    }, lang);
+    if (r.ok) {
+      const s = await apiPost("/users/signin", { phoneNumber, password: v.password }, lang);
+      if (s.ok && s.data?.token) {
+        setSession(Astro.cookies, s.data.token, s.data.user, Astro.url.protocol === "https:" || Astro.request.headers.get("x-forwarded-proto") === "https");
+        return Astro.redirect(next, 303);
+      }
+      return Astro.redirect(`/auth/signin${next !== "/" ? `?next=${encodeURIComponent(next)}` : ""}`, 303);
+    }
+    error = r.status === 400 && /exist|registered/i.test(r.message || "") ? L.exists : L.fail;
+  }
+}
+const office = v.accountType === "office";
+const field = "h-[54px] w-full rounded-2xl border border-line bg-white px-4 text-[15px] text-ink outline-none transition placeholder:text-muted/80 focus:border-brand focus:ring-4 focus:ring-brand/10";
+const roles = [["personal", ar ? "شخصي" : "Personal"], ["owner", ar ? "مالك عقار" : "Property owner"], ["marketer", ar ? "مسوق لمكتب أو شركة" : "Marketer for an office or company"]];
+---
+<Base title={ar ? "إنشاء حساب جديد" : "Create an account"} description={ar ? "أنشئ حسابك المجاني في مستر عقار كفرد أو مكتب عقاري وابدأ نشر إعلاناتك." : "Create your free Mr Aqar account as an individual or a real estate office and start posting ads."} canonical="/auth/signup" noindex active="account">
+  <div class="flex justify-center px-4 pt-6 pb-14 md:pt-10">
+    <div class="w-full max-w-[520px] rounded-[28px] border border-line bg-white p-5 shadow-[0_18px_48px_rgba(50,40,37,0.08)] md:p-8">
+      <h1 class="text-center text-[26px] font-extrabold md:text-[28px]">{ar ? "إنشاء حساب جديد" : "Create a new account"}</h1>
+      {error && <p class="mt-5 rounded-2xl bg-brand/10 p-3 text-center text-[14px] font-semibold text-brand" role="alert">{error}</p>}
+
+      <form id="signup" method="post" class="mt-6 space-y-4" novalidate data-signup>
+        <fieldset>
+          <legend class="mb-2.5 flex items-center gap-1.5 text-[14.5px] font-extrabold">{ar ? "اختر نوع الحساب" : "Choose account type"} <span class="text-brand">*</span>
+            <span class="text-muted" title={ar ? "الفرد ينشر إعلاناته باسمه. المكتب أو الشركة يحصل على صفحة في دليل المكاتب." : "Individuals post in their own name. Offices get a page in the directory."}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
+            </span>
+          </legend>
+          <div class="grid grid-cols-2 gap-3">
+            {[["individual", ar ? "فرد" : "Individual", '<circle cx="12" cy="8" r="4"/><path d="M4 21c1.6-4 4.6-6 8-6s6.4 2 8 6"/>', ""], ["office", ar ? "مكتب أو شركة عقارية" : "Office or company", '<rect x="5" y="3" width="14" height="18" rx="1.5"/><path d="M9 7h1.5M13.5 7H15M9 11h1.5M13.5 11H15M9 15h1.5M13.5 15H15"/>', ar ? "يتطلب رقم ترخيص" : "Licence required"]].map(([val, label, icon, note]) => (
+              <label class="cursor-pointer">
+                <input type="radio" name="accountType" value={val} checked={v.accountType === val} class="peer sr-only" data-account />
+                <span class="flex min-h-[96px] flex-col items-start gap-2.5 rounded-2xl border border-line p-3.5 transition peer-checked:border-brand peer-checked:bg-brand/[0.05] peer-checked:ring-1 peer-checked:ring-brand peer-focus-visible:ring-2 sm:flex-row sm:items-center sm:gap-3 sm:p-4">
+                  <span class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-soft text-muted">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" set:html={icon} />
+                  </span>
+                  <span>
+                    <span class="block text-[15.5px] font-extrabold leading-6">{label}</span>
+                    {note && <span class="mt-1 inline-block whitespace-nowrap rounded-md bg-gold-soft px-2 py-0.5 text-[11.5px] font-bold text-[#7a5200]">{note}</span>}
+                  </span>
+                </span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+
+        <fieldset class:list={["rounded-2xl border border-line p-3", office && "hidden"]} data-individual>
+          <legend class="px-1.5 text-[14px] font-extrabold">{ar ? "ما صفتك الأساسية؟" : "What describes you best?"} <span class="text-brand">*</span></legend>
+          <div class="space-y-2">
+            {roles.map(([val, label]) => (
+              <label class="flex h-12 cursor-pointer items-center gap-3 rounded-xl border border-line px-3.5 text-[14.5px] font-bold has-[:checked]:border-brand has-[:checked]:bg-brand/[0.05]">
+                <input type="radio" name="userType" value={val} checked={(v.userType || "personal") === val} class="size-4 accent-[#d9363e]" />
+                {label}
+              </label>
+            ))}
+          </div>
+        </fieldset>
+
+        <div class:list={[!office && "hidden"]} data-office>
+          <input name="licenseNumber" value={v.licenseNumber} placeholder={ar ? "رقم ترخيص المكتب" : "Office licence number"} class={field} />
+          {errors.licenseNumber && <p class="mt-1.5 text-[12.5px] text-brand">{errors.licenseNumber}</p>}
+        </div>
+        <div>
+          <input name="name" value={v.name} autocomplete="name" placeholder={ar ? "الاسم أو اسم المكتب/الشركة" : "Name, or office/company name"} class={field} />
+          {errors.name && <p class="mt-1.5 text-[12.5px] text-brand">{errors.name}</p>}
+        </div>
+        <div>
+          <div class="flex gap-2" dir="ltr">
+            <span class="flex h-[54px] shrink-0 items-center gap-1.5 rounded-2xl border border-line bg-soft px-3.5 text-[14px] font-bold"><span class="text-[11px] text-muted">KW</span>+965</span>
+            <input name="phone" value={v.phone} inputmode="numeric" maxlength="8" autocomplete="tel-national" placeholder={ar ? "رقم الموبايل" : "Mobile number"} class={field} />
+          </div>
+          {errors.phone && <p class="mt-1.5 text-[12.5px] text-brand">{errors.phone}</p>}
+        </div>
+        <div>
+          <input name="email" type="email" dir="ltr" value={v.email} autocomplete="email" placeholder={ar ? "البريد الإلكتروني (اختياري)" : "Email (optional)"} class={`${field} text-start`} />
+          {errors.email && <p class="mt-1.5 text-[12.5px] text-brand">{errors.email}</p>}
+        </div>
+        <div>
+          <div class="relative">
+            <input name="password" type="password" autocomplete="new-password" placeholder={ar ? "كلمة السر" : "Password"} class={`${field} pe-12`} data-pass />
+            <button type="button" class="absolute end-3 top-1/2 -translate-y-1/2 rounded-lg p-1.5 text-muted hover:text-ink" aria-label={ar ? "إظهار كلمة السر" : "Show password"} data-eye>
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+          {errors.password && <p class="mt-1.5 text-[12.5px] text-brand">{errors.password}</p>}
+        </div>
+
+        <button class="flex h-[56px] w-full items-center justify-center gap-2 rounded-2xl bg-brand text-[17px] font-extrabold text-white shadow-[0_10px_24px_rgba(217,54,62,0.22)] transition hover:bg-brand-dark active:scale-[0.99]">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          {ar ? "إنشاء الحساب" : "Create account"}
+        </button>
+      </form>
+
+      <div class="mt-5 flex items-center gap-3 text-[13px] font-semibold text-muted" role="separator"><span class="h-px flex-1 bg-line"></span>{ar ? "أو" : "or"}<span class="h-px flex-1 bg-line"></span></div>
+      <div class="mt-5"><GoogleAuth lang={lang} next={next} form="signup" /></div>
+
+      <p class="mt-6 text-center text-[15px] font-semibold text-muted">{ar ? "لديك حساب بالفعل؟" : "Already have an account?"} <a href={`/auth/signin${next !== "/" ? `?next=${encodeURIComponent(next)}` : ""}`} class="font-extrabold text-brand hover:underline">{ar ? "سجّل الدخول" : "Sign in"}</a></p>
+    </div>
+  </div>
+  <script>
+    document.querySelectorAll<HTMLButtonElement>("[data-eye]").forEach((b) => b.addEventListener("click", () => {
+      const i = b.parentElement!.querySelector<HTMLInputElement>("[data-pass]")!;
+      i.type = i.type === "password" ? "text" : "password";
+    }));
+    const form = document.querySelector<HTMLFormElement>("[data-signup]");
+    form?.querySelectorAll<HTMLInputElement>("[data-account]").forEach((r) => r.addEventListener("change", () => {
+      const office = r.value === "office" && r.checked;
+      form.querySelector("[data-individual]")!.classList.toggle("hidden", office);
+      form.querySelector("[data-office]")!.classList.toggle("hidden", !office);
+    }));
+  </script>
+</Base>

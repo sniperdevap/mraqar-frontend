@@ -1,63 +1,87 @@
 ---
 import "@/styles/global.css";
-import { getLang, dict, SUPPORT_WA, SUPPORT_PHONE, APP_STORE, PLAY_STORE } from "@/lib/i18n";
-import { getPropertyTypes } from "@/lib/api";
+import { getLang, dict, localePath, SUPPORT_WA, SUPPORT_PHONE, APP_STORE, PLAY_STORE } from "@/lib/i18n";
+import { getPropertyTypes, IMAGE_HOST } from "@/lib/api";
+import SEO, { type SeoImage } from "@/components/SEO.astro";
 
 interface Props {
   title: string;
   description?: string;
   canonical?: string;
-  image?: string;
+  /** Social image: a URL (shown at its natural size) or an object with width/height/alt. */
+  image?: string | SeoImage;
+  type?: "website" | "article" | "product";
+  publishedTime?: string;
+  modifiedTime?: string;
   noindex?: boolean;
   jsonLd?: unknown[];
   active?: "home" | "offices" | "blog" | "search" | "add" | "account";
   hideFooter?: boolean;
   bottomBar?: boolean;
   back?: boolean;
+  /** Content exists only in Arabic (blog posts): canonical points to the Arabic URL, no English alternate. */
+  arOnly?: boolean;
 }
-const { title, description, canonical, image, noindex, jsonLd = [], active, hideFooter = false, bottomBar = true, back = false } = Astro.props;
-const lang = getLang(Astro.cookies);
+const { title, description, canonical, image, noindex, jsonLd = [], active, hideFooter = false, bottomBar = true, back = false, arOnly = false, type = "website", publishedTime, modifiedTime } = Astro.props;
+const lang = getLang(Astro.cookies, Astro.locals);
 const t = dict(lang);
 const dir = lang === "ar" ? "rtl" : "ltr";
 const site = Astro.site!.origin;
-const canonicalUrl = canonical ? new URL(canonical, site).href : new URL(Astro.url.pathname, site).href;
-const ogImage = image || `${site}/aqar-new-logo.png`;
-const fullTitle = title.includes(t.siteName) ? title : `${title} | ${t.siteName}`;
+const seoImage: SeoImage | undefined = typeof image === "string" ? { url: image } : image;
+const imageOrigin = IMAGE_HOST ? new URL(IMAGE_HOST).origin : "";
+// Signed in (same cookie as the Next app): account links go to the account page.
+const signedIn = Boolean(Astro.cookies.get("auth-token")?.value);
+const accountHref = signedIn ? "/account" : "/auth/signin";
+const addHref = signedIn ? "/ads/create" : "/auth/signin?next=/ads/create";
 const types = await getPropertyTypes(lang).catch(() => []);
 
+// Site-wide schema: the company (real details from the contact page) and site search.
 const org = {
   "@context": "https://schema.org",
   "@type": "RealEstateAgent",
-  name: "مستر عقار",
-  alternateName: "Mr Aqar",
+  "@id": `${site}/#organization`,
+  name: lang === "ar" ? "مستر عقار" : "Mr Aqar",
+  alternateName: lang === "ar" ? "Mr Aqar" : "مستر عقار",
   url: site,
-  logo: `${site}/icon-512.png`,
-  image: `${site}/aqar-new-logo.png`,
+  logo: { "@type": "ImageObject", url: `${site}/icon-512.png`, width: 512, height: 512 },
+  image: `${site}/og-default.jpg`,
   telephone: SUPPORT_PHONE,
-  areaServed: { "@type": "Country", name: "Kuwait" },
-  sameAs: [APP_STORE, PLAY_STORE],
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: lang === "ar" ? "قطعة 10، مبنى العريبيد 4، مكتب 7" : "Block 10, Al-Araibid Building 4, Office 7",
+    addressLocality: lang === "ar" ? "أبو الحصانية" : "Abu Al-Hasaniya",
+    addressRegion: lang === "ar" ? "محافظة مبارك الكبير" : "Mubarak Al-Kabeer Governorate",
+    addressCountry: "KW",
+  },
+  contactPoint: [{ "@type": "ContactPoint", telephone: SUPPORT_PHONE, contactType: "customer support", areaServed: "KW", availableLanguage: ["ar", "en"] }],
+  areaServed: { "@type": "Country", name: lang === "ar" ? "الكويت" : "Kuwait" },
+  sameAs: ["https://www.instagram.com/mr_aqar", APP_STORE, PLAY_STORE],
 };
+const homeUrl = lang === "ar" ? site : site + "/en";
 const website = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  name: "مستر عقار",
-  url: site,
-  inLanguage: ["ar-KW", "en"],
-  potentialAction: { "@type": "SearchAction", target: `${site}/search?q={search_term_string}`, "query-input": "required name=search_term_string" },
+  "@id": `${site}/#website`,
+  name: lang === "ar" ? "مستر عقار" : "Mr Aqar",
+  url: homeUrl,
+  inLanguage: lang === "ar" ? "ar-KW" : "en",
+  publisher: { "@id": `${site}/#organization` },
+  potentialAction: { "@type": "SearchAction", target: { "@type": "EntryPoint", urlTemplate: homeUrl + "/search?q={search_term_string}" }, "query-input": "required name=search_term_string" },
 };
 const ld = (d: unknown) => JSON.stringify(d).replace(/</g, "\\u003c");
 
 const navItems = [
   { key: "home", href: "/", label: t.home, icon: "home" },
   { key: "offices", href: "/offices", label: t.offices, icon: "building" },
-  { key: "add", href: "/auth/signin?next=/ads/create", label: t.addAd, icon: "plus" },
+  { key: "add", href: addHref, label: t.addAd, icon: "plus" },
   { key: "search", href: "/search", label: t.search, icon: "search" },
-  { key: "account", href: "/auth/signin", label: t.account, icon: "user" },
+  { key: "account", href: accountHref, label: t.account, icon: "user" },
 ] as const;
 const drawerItems = [
   { k: "home", href: "/", label: t.home, icon: '<path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>' },
   { k: "offices", href: "/offices", label: t.offices, icon: '<rect x="5" y="3" width="14" height="18" rx="1.5"/><path d="M9 7h1.5M13.5 7H15M9 11h1.5M13.5 11H15M9 15h1.5M13.5 15H15"/>' },
   { k: "blog", href: "/blog", label: t.blog, icon: '<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h8M8 15h5"/>' },
+  { k: "request", href: "/request-property", label: lang === "ar" ? "اطلب عقارك" : "Request a property", icon: '<path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 13h6M9 17h4"/>' },
   { k: "areas", href: "/areas", label: lang === "ar" ? "دليل المناطق" : "Areas guide", icon: '<path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>' },
   { k: "search", href: "/search", label: t.search, icon: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>' },
   { k: "myads", href: "/account?tab=my-ads", label: lang === "ar" ? "إعلاناتي" : "My ads", icon: '<path d="M12 21s-7-4.4-9.3-9A5.3 5.3 0 0 1 12 6.5 5.3 5.3 0 0 1 21.3 12C19 16.6 12 21 12 21z"/>' },
@@ -87,29 +111,13 @@ const icons: Record<string, string> = {
       // Apply the saved theme before the page paints (no white flash in dark mode).
       try { if (localStorage.getItem("theme") === "dark") document.documentElement.dataset.theme = "dark"; } catch (e) {}
     </script>
-    <title>{fullTitle}</title>
-    {description && <meta name="description" content={description} />}
-    <link rel="canonical" href={canonicalUrl} />
-    <meta name="robots" content={noindex ? "noindex,follow" : "index,follow,max-image-preview:large"} />
-    <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="مستر عقار" />
-    <meta property="og:locale" content={lang === "ar" ? "ar_KW" : "en_US"} />
-    <meta property="og:title" content={fullTitle} />
-    {description && <meta property="og:description" content={description} />}
-    <meta property="og:url" content={canonicalUrl} />
-    <meta property="og:image" content={ogImage} />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={fullTitle} />
-    {description && <meta name="twitter:description" content={description} />}
-    <meta name="twitter:image" content={ogImage} />
+    <SEO title={title} description={description || t.heroSub} lang={lang} path={canonical} noindex={noindex} arOnly={arOnly} type={type} image={seoImage} publishedTime={publishedTime} modifiedTime={modifiedTime} jsonLd={[org, website, ...jsonLd]} />
+    {imageOrigin && <link rel="preconnect" href={imageOrigin} crossorigin />}
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="sitemap" href="/sitemap.xml" />
     <link rel="alternate" type="application/atom+xml" title="مستر عقار — أحدث الإعلانات" href="/feed.xml" />
-    <script type="application/ld+json" set:html={ld(org)} />
-    <script type="application/ld+json" set:html={ld(website)} />
-    {jsonLd.map((d) => <script type="application/ld+json" set:html={ld(d)} />)}
     <slot name="head" />
   </head>
   <body class="min-h-dvh flex flex-col antialiased">
@@ -146,7 +154,7 @@ const icons: Record<string, string> = {
           {[{ href: "/", label: t.home, k: "home" }, { href: "/offices", label: t.offices, k: "offices" }, { href: "/blog", label: t.blog, k: "blog" }].map((l) => (
             <a href={l.href} class:list={["rounded-lg px-3.5 py-2 text-[15px] transition-colors hover:bg-canvas", active === l.k ? "font-semibold text-brand" : "text-ink"]}>{l.label}</a>
           ))}
-          <a href="/auth/signin?next=/ads/create" class="ms-2 flex h-11 items-center gap-2 rounded-xl bg-brand px-4 text-[14.5px] font-semibold text-white hover:bg-brand-dark">
+          <a href={addHref} class="ms-2 flex h-11 items-center gap-2 rounded-xl bg-brand px-4 text-[14.5px] font-semibold text-white hover:bg-brand-dark">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>{t.addAd}
           </a>
         </nav>
@@ -178,7 +186,7 @@ const icons: Record<string, string> = {
           ))}
         </nav>
         <div class="space-y-3 border-t border-line px-4 pt-4 pb-4">
-          <a href="/auth/signin" class="flex h-14 items-center gap-3.5 rounded-2xl bg-canvas px-4 text-[16px] font-semibold">
+          <a href={accountHref} class="flex h-14 items-center gap-3.5 rounded-2xl bg-canvas px-4 text-[16px] font-semibold">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.6-4 4.6-6 8-6s6.4 2 8 6"/></svg>
             <span class="flex-1">{t.account}</span>
             <svg class="text-ink/50 rtl:rotate-180" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
@@ -192,15 +200,12 @@ const icons: Record<string, string> = {
                 <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
               </button>
             </div>
-            <form method="post" action="/api/lang" class="flex-1">
-              <input type="hidden" name="lang" value={lang === "ar" ? "en" : "ar"} />
-              <input type="hidden" name="back" value={Astro.url.pathname + Astro.url.search} />
-              <button class="flex h-13 w-full items-center justify-center gap-2.5 rounded-2xl bg-canvas text-[15.5px] font-bold" aria-label={t.language}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
-                {t.langCode}
-              </button>
-            </form>
-            <a href="/auth/signin" class="flex h-13 w-14 items-center justify-center rounded-2xl bg-canvas" aria-label={t.login}>
+            <a href={site + localePath(Astro.url.pathname + Astro.url.search, lang === "ar" ? "en" : "ar")} hreflang={lang === "ar" ? "en" : "ar"} lang={lang === "ar" ? "en" : "ar"} data-lang-switch={lang === "ar" ? "en" : "ar"}
+              class="flex h-13 flex-1 items-center justify-center gap-2.5 rounded-2xl bg-canvas text-[15.5px] font-bold" aria-label={t.language}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
+              {t.langCode}
+            </a>
+            <a href={accountHref} class="flex h-13 w-14 items-center justify-center rounded-2xl bg-canvas" aria-label={t.login}>
               <svg class="rtl:rotate-180" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>
             </a>
           </div>
@@ -240,7 +245,7 @@ const icons: Record<string, string> = {
             <nav aria-label={t.sitePages}>
               <h2 class="mb-4 text-[15px] font-bold">{t.sitePages}</h2>
               <ul class="space-y-3">
-                {[{ h: "/", l: t.home }, { h: "/search?purpose=sale", l: t.sale }, { h: "/search?purpose=rent", l: t.rent }, { h: "/search?purpose=exchange", l: t.exchange }, { h: "/offices", l: t.offices }, { h: "/blog", l: t.blog }, { h: "/areas", l: lang === "ar" ? "دليل المناطق" : "Areas guide" }, { h: "/about", l: t.about }, { h: "/contact", l: t.contact }, { h: "/privacy", l: t.privacy }, { h: "/terms", l: t.terms }, { h: "/copyright", l: t.copyright }].map((x) => (
+                {[{ h: "/", l: t.home }, { h: "/search?purpose=sale", l: t.sale }, { h: "/search?purpose=rent", l: t.rent }, { h: "/search?purpose=exchange", l: t.exchange }, { h: "/offices", l: t.offices }, { h: "/blog", l: t.blog }, { h: "/areas", l: lang === "ar" ? "دليل المناطق" : "Areas guide" }, { h: "/request-property", l: lang === "ar" ? "اطلب عقارك" : "Request a property" }, { h: "/about", l: t.about }, { h: "/contact", l: t.contact }, { h: "/privacy", l: t.privacy }, { h: "/terms", l: t.terms }, { h: "/copyright", l: t.copyright }].map((x) => (
                   <li><a href={x.h} class="text-[14.5px] text-white/70 hover:text-white">{x.l}</a></li>
                 ))}
               </ul>
@@ -289,6 +294,9 @@ const icons: Record<string, string> = {
     )}
 
     <script>
+      // Language switch is a plain link (crawlable); remember the choice for next visits.
+      document.querySelectorAll<HTMLAnchorElement>("[data-lang-switch]").forEach((a) =>
+        a.addEventListener("click", () => { document.cookie = `lang=${a.dataset.langSwitch}; path=/; max-age=31536000; samesite=lax`; }));
       // Tapping Home (logo or bottom nav) while already on the home page glides back to the top.
       document.addEventListener("click", (e) => {
         const a = (e.target as HTMLElement | null)?.closest?.("a") as HTMLAnchorElement | null;
