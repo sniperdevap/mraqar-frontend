@@ -132,7 +132,7 @@ const icons: Record<string, string> = {
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 9h16M4 15h16"/></svg>
         </button>
         <!-- Logo in the centre -->
-        <a href="/" class="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center" aria-label={t.siteName}>
+        <a href="/" data-home class="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center" aria-label={t.siteName}>
           <img src="/aqar-new-logo-nav.webp" alt="Mr Aqar مستر عقار" width="80" height="52" class="logo-light h-12 w-auto" fetchpriority="high" />
           <img src="/aqar-new-logo-nav-dark.webp" alt="Mr Aqar مستر عقار" width="80" height="52" class="logo-dark h-12 w-auto" />
         </a>
@@ -312,9 +312,16 @@ const icons: Record<string, string> = {
       drawer.querySelectorAll("[data-drawer-close]").forEach((el) => el.addEventListener("click", () => setOpen(false)));
       document.addEventListener("keydown", (e) => e.key === "Escape" && setOpen(false));
 
+      // Back: step back inside the site when we came from one of our pages,
+      // otherwise go to the home page (same link as the logo).
+      let pagesSeen = 0;
+      try { pagesSeen = Number(sessionStorage.getItem("mrPages") || 0) + 1; sessionStorage.setItem("mrPages", String(pagesSeen)); } catch {}
       document.querySelector("[data-back]")?.addEventListener("click", () => {
-        const fromHere = document.referrer && new URL(document.referrer).origin === location.origin;
-        if (fromHere && history.length > 1) history.back(); else location.href = "/";
+        let fromHere = pagesSeen > 1;
+        try { if (document.referrer && new URL(document.referrer).origin === location.origin) fromHere = true; } catch {}
+        if (fromHere && history.length > 1) { history.back(); return; }
+        const home = document.querySelector<HTMLAnchorElement>("a[data-home]");
+        location.href = home?.href || "/";
       });
 
       // Back from an ad → land on that ad in the list, briefly highlighted.
