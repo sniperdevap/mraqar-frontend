@@ -18,7 +18,7 @@ export interface AdUser { publicId?: number; _id: string; name: string; phoneNum
 export interface Ad {
   id: number; _id: string; user: AdUser; purpose: "sale" | "rent" | "exchange";
   propertyType: PropertyType; area: Partial<Area> & { id: number; label: string; labelAr: string; value: string };
-  price: number; priceUnit?: "kd" | "thousand"; phoneNumber: string; isPhoneHidden: boolean;
+  price: number; priceUnit?: "kd" | "thousand"; phoneNumber: string; isPhoneHidden: boolean; alternativePhoneNumber?: string;
   premiumAd?: boolean; isPremium?: boolean; description: string; media: Media[];
   status: "active" | "inactive" | "sold"; views?: number; createdAt: string; updatedAt: string; isOffice?: boolean;
 }
