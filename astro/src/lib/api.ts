@@ -71,7 +71,7 @@ export const getAreas = async (lang: Lang) => normalizeIds(await get<Area[]>("/m
 export const getPropertyTypes = async (lang: Lang) =>
   normalizeIds(await get<PropertyType[]>("/metadata/property-types", undefined, { lang, ttl: 3600 }));
 
-export const getAds = (params: { page?: number; limit?: number; purpose?: string; propertyType?: string; area?: string[]; minPrice?: number; maxPrice?: number; status?: string }, lang: Lang) =>
+export const getAds = (params: { page?: number; limit?: number; purpose?: string; propertyType?: string; area?: string[]; minPrice?: number; maxPrice?: number; status?: string; search?: string }, lang: Lang) =>
   get<AdsPage>("/ads", params as Query, { lang, ttl: 30 });
 
 export const getAd = (id: string, lang: Lang) => get<Ad>(`/ads/${id}`, undefined, { lang, ttl: 30 });

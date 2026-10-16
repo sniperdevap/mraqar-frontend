@@ -2,9 +2,9 @@
 import Base from "@/layouts/Base.astro";
 import AdCard from "@/components/AdCard.astro";
 import AreaPicker from "@/components/AreaPicker.astro";
-import { getAds, getAreas, getPropertyTypes } from "@/lib/api";
+import { getAd, getAds, getAreas, getPropertyTypes } from "@/lib/api";
 import { getLang, dict } from "@/lib/i18n";
-import { pluralSlug } from "@/lib/ad-url";
+import { pluralSlug, adHref } from "@/lib/ad-url";
 
 const lang = getLang(Astro.cookies);
 const t = dict(lang);
@@ -15,13 +15,20 @@ const area = q.getAll("area").filter(Boolean);
 const minPrice = q.get("minPrice") || "";
 const maxPrice = q.get("maxPrice") || "";
 const page = Math.max(1, Number(q.get("page") || 1));
+// Free text, or an ad number ("4063" / "#4063") which opens that ad directly.
+const text = (q.get("q") || "").trim().slice(0, 60);
+const code = text.replace(/^#/, "");
+if (/^\d{2,9}$/.test(code)) {
+  const [found, allAreas] = await Promise.all([getAd(code, lang).catch(() => null), getAreas(lang).catch(() => [])]);
+  if (found) return Astro.redirect(adHref(found, allAreas), 302);
+}
 const LIMIT = 20;
 const purposeNames: Record<string, string> = { sale: t.sale, rent: t.rent, exchange: t.exchange };
 
 const [areas, types, result] = await Promise.all([
   getAreas(lang).catch(() => []),
   getPropertyTypes(lang).catch(() => []),
-  getAds({ page, limit: LIMIT, purpose: purpose || undefined, propertyType: propertyType || undefined, area, minPrice: minPrice ? Number(minPrice) : undefined, maxPrice: maxPrice ? Number(maxPrice) : undefined, status: "active" }, lang).catch(() => null),
+  getAds({ page, limit: LIMIT, purpose: purpose || undefined, propertyType: propertyType || undefined, area, minPrice: minPrice ? Number(minPrice) : undefined, maxPrice: maxPrice ? Number(maxPrice) : undefined, status: "active", search: text || undefined }, lang).catch(() => null),
 ]);
 Astro.response.headers.set("Cache-Control", "public, max-age=0, s-maxage=30, stale-while-revalidate=120");
 
@@ -44,7 +51,30 @@ area.forEach((a) => keep.append("area", a));
 const canonicalParams = new URLSearchParams(keep);
 if (page > 1) canonicalParams.set("page", String(page));
 const canonical = `/search${canonicalParams.toString() ? `?${canonicalParams}` : ""}`;
-const pageHref = (p: number) => { const s = new URLSearchParams(keep); if (minPrice) s.set("minPrice", minPrice); if (maxPrice) s.set("maxPrice", maxPrice); if (p > 1) s.set("page", String(p)); return `/search?${s}`; };
+const pageHref = (p: number) => { const s = new URLSearchParams(keep); if (text) s.set("q", text); if (minPrice) s.set("minPrice", minPrice); if (maxPrice) s.set("maxPrice", maxPrice); if (p > 1) s.set("page", String(p)); return `/search?${s}`; };
+
+// Area guide block (shown when one area is picked): the area plus nearby areas in
+// the same governorate, each with the four searches people make most.
+const chosenArea = area.length === 1 ? areas.find((a) => String(a.id) === area[0]) : undefined;
+const linkPurpose = purpose || "rent";
+const linkPurposeLabel = (t as Record<string, string>)[linkPurpose];
+const typeByValue = (v: string) => types.find((x) => x.value === v);
+const linkTypes = [
+  { ty: undefined, ar: "عقارات", en: "Properties" },
+  { ty: typeByValue("house"), ar: "بيوت", en: "Houses" },
+  { ty: typeByValue("land"), ar: "اراضي", en: "Land" },
+  { ty: typeByValue("apartment"), ar: "شقق", en: "Apartments" },
+];
+const areaName = (a: (typeof areas)[number]) => (lang === "ar" ? a.labelAr : a.label);
+const guideAreas = chosenArea
+  ? [chosenArea, ...areas.filter((a) => a.governorate === chosenArea.governorate && a.id !== chosenArea.id).slice(0, 5)]
+  : [];
+const guideHref = (a: (typeof areas)[number], tyId?: number) => {
+  const s = new URLSearchParams({ purpose: linkPurpose });
+  if (tyId) s.set("propertyType", String(tyId));
+  s.append("area", String(a.id));
+  return `/search?${s}`;
+};
 
 const site = Astro.site!.origin;
 const crumbs = [{ name: t.breadcrumbHome, item: site }, ...(purpose ? [{ name: purposeLabel, item: `${site}/search?purpose=${purpose}` }] : []), { name: heading, item: `${site}${canonical}` }];
@@ -52,7 +82,7 @@ const jsonLd = [
   { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: crumbs.map((c, i) => ({ "@type": "ListItem", position: i + 1, name: c.name, item: c.item })) },
 ];
 ---
-<Base title={heading} description={description} canonical={canonical} noindex={Boolean(minPrice || maxPrice) || total === 0} jsonLd={jsonLd} active="search">
+<Base title={heading} description={description} canonical={canonical} noindex={Boolean(minPrice || maxPrice || text) || total === 0} jsonLd={jsonLd} active="search">
   <div class="mx-auto max-w-[52rem] px-5 pt-6 pb-12">
     <h1 class="text-[22px] font-extrabold leading-8">{area.length || propertyType || purpose ? heading : (lang === "ar" ? "نتائج العقارات" : "Property results")}</h1>
     <p class="mt-0.5 text-[13px] font-semibold text-muted">{total.toLocaleString("en-US")} {lang === "ar" ? "نتيجة" : "results"}</p>
@@ -84,9 +114,16 @@ const jsonLd = [
           </select>
           <svg class="pointer-events-none absolute end-3.5 top-1/2 -translate-y-1/2 text-muted" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
         </label>
-        {(purpose || propertyType || area.length || maxPrice) && <a href="/search" class="flex h-10 shrink-0 items-center rounded-full px-3 text-[13.5px] font-semibold text-muted hover:text-brand">{t.clear}</a>}
+        {(purpose || propertyType || area.length || maxPrice || text) && <a href="/search" class="flex h-10 shrink-0 items-center rounded-full px-3 text-[13.5px] font-semibold text-muted hover:text-brand">{t.clear}</a>}
       </div>
-      <noscript><button class="h-11 w-full rounded-2xl bg-brand text-white">{t.searchBtn}</button></noscript>
+      <label class="relative block">
+        <span class="sr-only">{lang === "ar" ? "ابحث بكلمة أو رقم الإعلان" : "Search by keyword or ad number"}</span>
+        <svg class="pointer-events-none absolute start-3.5 top-1/2 -translate-y-1/2 text-muted" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input type="search" name="q" value={text} enterkeyhint="search" maxlength="60" autocomplete="off"
+          placeholder={lang === "ar" ? "ابحث بكلمة أو رقم الإعلان" : "Keyword or ad number"}
+          class:list={["h-11 w-full rounded-2xl border bg-white ps-10 pe-24 text-[14.5px] outline-none placeholder:text-muted/80 focus:border-brand", text ? "border-brand" : "border-line"]} />
+        <button class="absolute end-1.5 top-1/2 h-8 -translate-y-1/2 rounded-xl bg-brand px-4 text-[13px] font-bold text-white hover:bg-brand-dark">{t.searchBtn}</button>
+      </label>
     </form>
 
     {result?.ads.length ? (
@@ -99,6 +136,32 @@ const jsonLd = [
       </div>
     )}
     {page > 1 && <p class="mt-3 text-center"><a href={pageHref(page - 1)} rel="prev" class="text-[13.5px] text-muted hover:text-brand">{t.prev}</a></p>}
+
+    {chosenArea && (
+      <section class="mt-10 rounded-[18px] border border-line bg-white p-5 shadow-[0_2px_10px_rgba(50,40,37,0.05)]" aria-labelledby="area-guide">
+        <h2 id="area-guide" class="flex items-center gap-2 text-[17px] font-extrabold text-ink">
+          <span class="h-5 w-1 rounded-full bg-brand" aria-hidden="true"></span>
+          {heading}
+        </h2>
+        <p class="mt-3 text-[14px] leading-7 text-muted">
+          {lang === "ar"
+            ? `تستعرض صفحة (${heading}) العقارات المتاحة والمعروضة ${linkPurposeLabel} في ${areaName(chosenArea)}، ${chosenArea.governorateAr}. تواصل مباشرة مع المعلنين عبر الواتساب أو الاتصال الهاتفي بخصوص أي عرض، وللمساعدة والاستفسار تواصل مع إدارة موقع وتطبيق مستر عقار.`
+            : `This page lists ${heading.toLowerCase()} (${chosenArea.governorate}). Contact advertisers directly by WhatsApp or phone about any listing, and reach the Mr Aqar team for help.`}
+        </p>
+        <div class="mt-5 grid grid-cols-2 gap-x-6 gap-y-6 sm:grid-cols-3">
+          {guideAreas.map((a) => (
+            <div class="min-w-0">
+              <h3 class="text-[14.5px] font-extrabold text-ink">{lang === "ar" ? `منطقة ${areaName(a)}` : areaName(a)}</h3>
+              <ul class="mt-2 space-y-2">
+                {linkTypes.map((lt) => (
+                  <li><a href={guideHref(a, lt.ty?.id)} class="text-[13px] text-muted hover:text-brand">{lang === "ar" ? `${lt.ar} ${linkPurposeLabel} في ${areaName(a)}` : `${lt.en} ${linkPurposeLabel.toLowerCase()} in ${areaName(a)}`}</a></li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </section>
+    )}
   </div>
 
   <script>
