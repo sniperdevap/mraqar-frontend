@@ -85,11 +85,6 @@ const jsonLd = [
 ---
 <Base title={heading} description={description} canonical={canonical} noindex={Boolean(minPrice || maxPrice || text) || area.length > 1 || total === 0 || (result ? page > result.totalPages : false)} jsonLd={jsonLd} active="search">
   <div class="mx-auto max-w-[52rem] px-5 pt-6 pb-12">
-    <nav class="mb-2 flex flex-wrap items-center gap-x-1.5 text-[12.5px] font-semibold text-muted" aria-label={lang === "ar" ? "مسار التنقل" : "Breadcrumb"}>
-      <a href="/" class="hover:text-brand">{t.breadcrumbHome}</a>
-      {purpose && <><span aria-hidden="true">›</span><a href={`/search?purpose=${purpose}`} class="hover:text-brand">{purposeLabel}</a></>}
-      {(area.length || propertyType) && <><span aria-hidden="true">›</span><span aria-current="page">{heading}</span></>}
-    </nav>
     <h1 class="text-[22px] font-extrabold leading-8">{area.length || propertyType || purpose ? heading : (lang === "ar" ? "نتائج العقارات" : "Property results")}</h1>
     <p class="mt-0.5 text-[13px] font-semibold text-muted">{total.toLocaleString("en-US")} {lang === "ar" ? "نتيجة" : "results"}</p>
 
@@ -120,16 +115,18 @@ const jsonLd = [
           </select>
           <svg class="pointer-events-none absolute end-3.5 top-1/2 -translate-y-1/2 text-muted" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
         </label>
+        <button type="button" class:list={["flex h-10 shrink-0 items-center gap-1.5 rounded-full border bg-white px-4 text-[14px] font-medium", text ? "border-brand text-brand-deep" : "border-line text-ink"]} data-keyword-toggle aria-expanded={text ? "true" : "false"}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          {lang === "ar" ? "كلمات" : "Keywords"}
+        </button>
         {(purpose || propertyType || area.length || maxPrice || text) && <a href="/search" class="flex h-10 shrink-0 items-center rounded-full px-3 text-[13.5px] font-semibold text-muted hover:text-brand">{t.clear}</a>}
       </div>
-      <label class="relative block">
-        <span class="sr-only">{lang === "ar" ? "ابحث بكلمة أو رقم الإعلان" : "Search by keyword or ad number"}</span>
-        <svg class="pointer-events-none absolute start-3.5 top-1/2 -translate-y-1/2 text-muted" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <div class:list={["flex gap-2", !text && "hidden"]} data-keyword-box>
         <input type="search" name="q" value={text} enterkeyhint="search" maxlength="60" autocomplete="off"
-          placeholder={lang === "ar" ? "ابحث بكلمة أو رقم الإعلان" : "Keyword or ad number"}
-          class:list={["h-11 w-full rounded-2xl border bg-white ps-10 pe-20 text-[14.5px] outline-none placeholder:text-muted/80 focus:border-brand", text ? "border-brand" : "border-line"]} />
-        <button class="absolute end-2 top-1/2 h-7 -translate-y-1/2 rounded-lg bg-brand px-3 text-[12.5px] font-bold leading-7 text-white hover:bg-brand-dark">{t.searchBtn}</button>
-      </label>
+          placeholder={lang === "ar" ? "كلمة أو رقم إعلان" : "Keyword or ad number"} aria-label={lang === "ar" ? "كلمات" : "Keywords"}
+          class="h-10 min-w-0 flex-1 rounded-full border border-line bg-white px-4 text-[14px] outline-none focus:border-brand" />
+        <button class="h-10 shrink-0 rounded-full bg-ink px-4 text-[13px] font-bold text-white">{lang === "ar" ? "تطبيق" : "Apply"}</button>
+      </div>
     </form>
 
     {result?.ads.length ? (
@@ -144,17 +141,14 @@ const jsonLd = [
     {page > 1 && <p class="mt-3 text-center"><a href={pageHref(page - 1)} rel="prev" class="text-[13.5px] text-muted hover:text-brand">{t.prev}</a></p>}
 
     {chosenArea && (
-      <section class="mt-10 rounded-[18px] border border-line bg-white p-5 shadow-[0_2px_10px_rgba(50,40,37,0.05)]" aria-labelledby="area-guide">
-        <h2 id="area-guide" class="flex items-center gap-2 text-[17px] font-extrabold text-ink">
-          <span class="h-5 w-1 rounded-full bg-brand" aria-hidden="true"></span>
-          {heading}
-        </h2>
-        <p class="mt-3 text-[14px] leading-7 text-muted">
+      <section class="mt-10 border-t border-line pt-6" aria-labelledby="area-guide">
+        <h2 id="area-guide" class="text-[16px] font-extrabold text-ink">{heading}</h2>
+        <p class="mt-1.5 text-[13.5px] leading-7 text-muted">
           {lang === "ar"
-            ? `تستعرض صفحة (${heading}) العقارات المتاحة والمعروضة ${linkPurposeLabel} في ${areaName(chosenArea)}، ${chosenArea.governorateAr}. تواصل مباشرة مع المعلنين عبر الواتساب أو الاتصال الهاتفي بخصوص أي عرض، وللمساعدة والاستفسار تواصل مع إدارة موقع وتطبيق مستر عقار.`
-            : `This page lists ${heading.toLowerCase()} (${chosenArea.governorate}). Contact advertisers directly by WhatsApp or phone about any listing, and reach the Mr Aqar team for help.`}
+            ? `إعلانات ${linkPurposeLabel} في ${areaName(chosenArea)} من الملاك والمكاتب، تواصل مع المعلن مباشرة بالاتصال أو واتساب.`
+            : `Listings ${linkPurposeLabel.toLowerCase()} in ${areaName(chosenArea)} from owners and offices. Contact the advertiser directly by phone or WhatsApp.`}
         </p>
-        <div class="mt-5 grid grid-cols-2 gap-x-6 gap-y-6 sm:grid-cols-3">
+        <div class="mt-4 grid grid-cols-2 gap-x-6 gap-y-5 sm:grid-cols-3">
           {guideAreas.map((a) => (
             <div class="min-w-0">
               <h3 class="text-[14.5px] font-extrabold text-ink"><a href={areaGuidePath(a)} class="hover:text-brand">{lang === "ar" ? `منطقة ${areaName(a)}` : areaName(a)}</a></h3>
@@ -171,6 +165,13 @@ const jsonLd = [
   </div>
 
   <script>
+    // "كلمات" pill shows the keyword field.
+    document.querySelectorAll<HTMLButtonElement>("[data-keyword-toggle]").forEach((b) => b.addEventListener("click", () => {
+      const box = b.closest("form")!.querySelector<HTMLElement>("[data-keyword-box]")!;
+      box.classList.toggle("hidden");
+      b.setAttribute("aria-expanded", String(!box.classList.contains("hidden")));
+      box.querySelector("input")?.focus();
+    }));
     // Filters apply as soon as they change (area picks submit too).
     document.querySelectorAll<HTMLFormElement>("[data-autosubmit]").forEach((f) => {
       f.querySelectorAll("select").forEach((s) => s.addEventListener("change", () => f.requestSubmit()));
