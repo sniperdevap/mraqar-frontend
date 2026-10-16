@@ -125,7 +125,7 @@ export function SignupForm() {
 
         {/* Clean Signup Card */}
         <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5 md:p-6">
-          <div className="-mt-5 md:-mt-6 -mx-5 md:-mx-6 mb-4">
+          <div className="-mt-5 md:-mt-6 -mx-5 md:-mx-6 mb-5">
             <AuthTabs />
           </div>
           <Form {...form}>

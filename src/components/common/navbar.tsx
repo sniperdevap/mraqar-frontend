@@ -12,7 +12,6 @@ import {
   Bell,
   LogOut,
   ChevronLeft,
-  Heart,
   Menu,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -310,15 +309,6 @@ export function Navbar() {
 
               {/* Right side items: Favorites and Notification Bell */}
               <div className="flex items-center gap-6">
-                {/* Favorites button */}
-                <Link
-                  href="/account?tab=favourites"
-                  className="flex flex-col items-center justify-center text-[#555] hover:text-gray-600 transition-colors cursor-pointer"
-                >
-                  <Heart size={22} className="text-gray-900" strokeWidth={1.8} />
-                  <span className="text-[10px] font-bold mt-1 text-[#333]">Favorites</span>
-                </Link>
-
                 {/* Bell Icon */}
                 <button
                   onClick={() => router.push("/notifications")}

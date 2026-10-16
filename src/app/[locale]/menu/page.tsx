@@ -1,73 +1,76 @@
 import React from 'react';
 import Link from 'next/link';
-import { Shield, Info, ScrollText, Headset } from 'lucide-react';
-import Image from 'next/image';
-import { getLocale, getTranslations } from 'next-intl/server';
-import { MenuAuthItems, LanguageToggleItem, LogoutButton } from './menu-client-items';
+import { Shield, Info, ScrollText, Copyright } from 'lucide-react';
+import { getTranslations } from 'next-intl/server';
+import { MenuAuthItems, LanguageToggleItem, LogoutButton, MenuGroup, RowChevron, ROW, ICON_TILE } from './menu-client-items';
+import { WhatsAppIcon } from '@/components/icons/whatsapp-icon';
+
+const SUPPORT_WHATSAPP =
+  'https://wa.me/96590078005?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D8%8C%20%D8%A3%D8%AD%D8%AA%D8%A7%D8%AC%20%D8%A5%D9%84%D9%89%20%D9%85%D8%B3%D8%A7%D8%B9%D8%AF%D8%A9';
+const APP_STORE = 'https://apps.apple.com/kw/app/mr-aqar-%D9%85%D8%B3%D8%AA%D8%B1-%D8%B9%D9%82%D8%A7%D8%B1/id6786697649';
+const PLAY_STORE = 'https://play.google.com/store/apps/details?id=com.mraqar.app';
 
 export default async function MenuPage() {
-  const locale = await getLocale();
   const t = await getTranslations('common.menu');
+  const tFooter = await getTranslations('common.footer');
 
-  const staticItems = [
-    { id: 'privacy', label: t('privacyPolicy'), icon: Shield, href: '/privacy', color: 'text-primary' },
-    { id: 'about', label: t('aboutUs'), icon: Info, href: '/about', color: 'text-primary' },
-    { id: 'terms', label: t('termsAndConditions'), icon: ScrollText, href: '/terms', color: 'text-primary' },
-    {
-      id: 'whatsapp',
-      label: t('contactSupport'),
-      icon: Headset,
-      href: 'https://wa.me/96590078005?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D8%8C%20%D8%A3%D8%AD%D8%AA%D8%A7%D8%AC%20%D8%A5%D9%84%D9%89%20%D9%85%D8%B3%D8%A7%D8%B9%D8%AF%D8%A9',
-      color: 'text-primary',
-    },
+  const aboutItems = [
+    { id: 'about', label: t('aboutUs'), icon: Info, href: '/about' },
+    { id: 'privacy', label: t('privacyPolicy'), icon: Shield, href: '/privacy' },
+    { id: 'terms', label: t('termsAndConditions'), icon: ScrollText, href: '/terms' },
+    { id: 'copyright', label: t('copyrightNotice'), icon: Copyright, href: '/copyright' },
   ];
 
   return (
-    <div className="min-h-[calc(100vh-150px)] bg-[#f8f9fa] pb-24 lg:pb-0">
-      <div className="px-4 py-6 space-y-4">
-        {/* Evaluation Banner */}
-        {/* <Link href="/evaluation" prefetch={true} className="block">
-          <div className="bg-white rounded-2xl p-4 border border-gray-200 flex items-center gap-4 relative overflow-hidden active:scale-[0.98] transition-all hover:border-primary/50 cursor-pointer shadow-sm hover:shadow-md">
-            <div className="w-16 h-16 bg-[#e6f7f7] rounded-xl flex items-center justify-center shrink-0">
-              <Image src="/images/property_evaluation.c6efd28f985c120438a4.png" alt="Evaluation" width={48} height={48} className="object-contain" />
-            </div>
-            <div className="flex-1">
-              <h3 className="font-bold text-gray-900 text-[17px] leading-tight flex items-center gap-2">
-                {t('evaluateProperty')}
-                <span className="bg-primary text-white text-[9px] px-2 py-0.5 rounded-md font-bold uppercase tracking-wider">New</span>
-              </h3>
-              <p className="text-gray-500 text-[13px] mt-1">{t('evaluatePropertyDescription')}</p>
-            </div>
-          </div>
-        </Link> */}
+    <div className="min-h-[calc(100vh-150px)] bg-[#f8f9fa] pb-28 lg:pb-8">
+      <div className="mx-auto max-w-xl px-4 pt-5 space-y-6">
+        <MenuAuthItems />
 
-        {/* Menu List */}
-        <div className="grid grid-cols-2 gap-3">
-          <MenuAuthItems />
+        <MenuGroup title={t('sectionSettings')}>
           <LanguageToggleItem />
+        </MenuGroup>
 
-          {staticItems.map(item => {
-            const isExternal = item.href.startsWith('http');
-            return (
-              <Link
-                key={item.id}
-                href={item.href}
-                prefetch={isExternal ? undefined : true}
-                target={isExternal ? '_blank' : undefined}
-                rel={isExternal ? 'noopener noreferrer' : undefined}
-                className="bg-white rounded-2xl border border-gray-100 p-4 flex flex-col items-center justify-center gap-3 hover:shadow-md transition-all active:scale-[0.98]"
-              >
-                <div className={`bg-primary/5 p-3 rounded-full ${item.color}`}>
-                  <item.icon size={24} />
-                </div>
-                <span className="font-medium text-gray-700 text-[14px] text-center">{item.label}</span>
-              </Link>
-            );
-          })}
-        </div>
+        <MenuGroup title={t('sectionHelp')}>
+          <a href={SUPPORT_WHATSAPP} target="_blank" rel="noopener noreferrer" className={ROW}>
+            <span className={`${ICON_TILE} bg-[#16A34A]/10 text-[#16A34A]`}>
+              <WhatsAppIcon className="size-5" />
+            </span>
+            <span className="flex-1 min-w-0">
+              <span className="block text-[15px] font-medium text-gray-800">{t('contactSupport')}</span>
+              <span className="block text-[13px] text-gray-500">{t('supportHint')}</span>
+            </span>
+            <RowChevron />
+          </a>
+        </MenuGroup>
 
-        {/* Logout Section */}
+        <MenuGroup title={t('sectionAbout')}>
+          {aboutItems.map(item => (
+            <Link key={item.id} href={item.href} prefetch className={ROW}>
+              <span className={`${ICON_TILE} bg-primary/[0.07] text-primary`}>
+                <item.icon size={20} />
+              </span>
+              <span className="flex-1 text-[15px] font-medium text-gray-800">{item.label}</span>
+              <RowChevron />
+            </Link>
+          ))}
+        </MenuGroup>
+
         <LogoutButton />
+
+        <section className="space-y-3 pt-1 text-center">
+          <h2 className="text-[13px] font-semibold text-gray-500">{t('appTitle')}</h2>
+          <div className="grid grid-cols-2 gap-3">
+            <a href={APP_STORE} target="_blank" rel="noopener noreferrer" className="flex h-14 flex-col items-center justify-center rounded-xl bg-[#1f2937] text-white">
+              <span className="text-[11px] opacity-80">{tFooter('downloadOn')}</span>
+              <span className="text-[15px] font-semibold leading-5">{tFooter('appStore')}</span>
+            </a>
+            <a href={PLAY_STORE} target="_blank" rel="noopener noreferrer" className="flex h-14 flex-col items-center justify-center rounded-xl bg-[#1f2937] text-white">
+              <span className="text-[11px] opacity-80">{tFooter('downloadOn')}</span>
+              <span className="text-[15px] font-semibold leading-5">{tFooter('playStore')}</span>
+            </a>
+          </div>
+          <p className="text-[12px] text-gray-400">{tFooter('allRightsReserved')}</p>
+        </section>
       </div>
     </div>
   );

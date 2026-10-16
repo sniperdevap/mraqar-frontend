@@ -4,10 +4,23 @@ import React, { useState, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
+import { Headset, Phone, Play } from "lucide-react";
 import { isAdDetailPath } from "@/lib/ad-url";
+import { useLocale } from "@/hooks/use-locale";
+import { usePropertyTypes } from "@/hooks/use-metadata";
+import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
+
+const SUPPORT_PHONE = "+96590078005";
+const SUPPORT_WHATSAPP = "https://wa.me/96590078005";
+const APP_STORE = "https://apps.apple.com/kw/app/mr-aqar-%D9%85%D8%B3%D8%AA%D8%B1-%D8%B9%D9%82%D8%A7%D8%B1/id6786697649";
+const PLAY_STORE = "https://play.google.com/store/apps/details?id=com.mraqar.app";
 
 export function Footer() {
   const t = useTranslations("common.footer");
+  const tNav = useTranslations("common.nav");
+  const { locale, direction } = useLocale();
+  const { data: propertyTypes } = usePropertyTypes();
   const pathname = usePathname();
 
   // Default true so SSR/first paint reserve footer height; hide only in webviews.
@@ -133,41 +146,126 @@ export function Footer() {
 
   const showStickyBar = showAppButtons && !isFooterVisible;
 
+  const pageLinks = [
+    { href: "/", label: tNav("home") },
+    { href: "/search", label: t("browseProperties") },
+    { href: "/search?purpose=sale", label: t("forSale") },
+    { href: "/search?purpose=rent", label: t("forRent") },
+    { href: "/search?purpose=exchange", label: t("forExchange") },
+    { href: "/offices", label: tNav("offices") },
+    { href: "/about", label: t("aboutUs") },
+    { href: "/contact", label: t("contactUs") },
+    { href: "/privacy", label: t("privacyPolicy") },
+    { href: "/terms", label: t("termsAndConditions") },
+    { href: "/copyright", label: t("copyrightNotice") },
+  ];
+
+  const heading = "mb-4 text-[15px] font-bold text-white";
+  const linkClass = "text-[14.5px] text-white/70 transition-colors hover:text-white";
+  const iconButton =
+    "flex size-11 items-center justify-center rounded-xl bg-white/[0.08] text-white transition-colors hover:bg-white/[0.16]";
+  const storeButton =
+    "flex h-14 items-center gap-3 rounded-2xl bg-white/[0.08] px-4 text-white transition-colors hover:bg-white/[0.14]";
+
   return (
     <>
       <footer
         ref={footerRef}
-        className="bg-primary text-white py-4 px-3 mt-auto hidden lg:block"
+        className="mt-auto bg-[#1d2738] text-white"
+        dir={direction}
       >
-        <div className=" mx-auto flex flex-col xl:flex-row justify-between items-center gap-6 text-lg">
-          <p className="whitespace-nowrap">{t("allRightsReserved")}</p>
-
-          <div className="flex items-center gap-2 whitespace-nowrap">
-            <Link href="/about" className="hover:underline">
-              {t("aboutUs")}
-            </Link>
-            <span>|</span>
-            <Link href="/terms" className="hover:underline">
-              {t("termsAndConditions")}
-            </Link>
-            <span>|</span>
-            <Link href="/privacy" className="hover:underline">
-              {t("privacyPolicy")}
-            </Link>
-            <span>|</span>
-            <Link href="/copyright" className="hover:underline">
-              {t("copyrightNotice")}
-            </Link>
-            <span>|</span>
-            <Link href="/contact" prefetch={false} className="hover:underline">
-              {t("contactUs")}
-            </Link>
-          </div>
-          {showAppButtons && (
-            <div className="flex flex-col md:flex-row items-center gap-4">
-              <AppDownloadButtons />
+        <div className="mx-auto max-w-6xl px-5 pt-10 pb-28 lg:px-8 lg:pt-14 lg:pb-8">
+          <div className="grid grid-cols-2 gap-x-6 gap-y-10 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr] lg:gap-x-10">
+            {/* Brand */}
+            <div className="col-span-2 lg:col-span-1">
+              <Link href="/" className="inline-flex items-center gap-3" aria-label={t("brandName")}>
+                <span className="flex size-12 items-center justify-center rounded-2xl bg-white p-1.5">
+                  <Image src="/images/aqar-new-logo-sm.webp" alt="" width={40} height={27} className="h-auto w-10" />
+                </span>
+                <span className="text-xl font-bold">{t("brandName")}</span>
+              </Link>
+              <p className="mt-4 max-w-sm text-[14.5px] leading-7 text-white/70">{t("brandDescription")}</p>
+              <div className="mt-5 flex gap-2.5">
+                <a href={SUPPORT_WHATSAPP} target="_blank" rel="noopener noreferrer" className={iconButton} aria-label={t("whatsapp")}>
+                  <WhatsAppIcon className="size-5" />
+                </a>
+                <a href={`tel:${SUPPORT_PHONE}`} className={iconButton} aria-label={t("call")}>
+                  <Phone size={19} />
+                </a>
+              </div>
             </div>
-          )}
+
+            {/* Property types — internal links to each type's search page */}
+            <nav aria-label={t("propertyTypes")}>
+              <h2 className={heading}>{t("propertyTypes")}</h2>
+              <ul className="space-y-3">
+                {(propertyTypes || []).map((type) => (
+                  <li key={type.id}>
+                    <Link href={`/search?propertyType=${type.id}`} prefetch={false} className={linkClass}>
+                      {locale === "ar" ? type.labelAr || type.label : type.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+
+            {/* Site pages */}
+            <nav aria-label={t("sitePages")}>
+              <h2 className={heading}>{t("sitePages")}</h2>
+              <ul className="space-y-3">
+                {pageLinks.map((link) => (
+                  <li key={link.href}>
+                    <Link href={link.href} prefetch={false} className={linkClass}>
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+
+            {/* App + support */}
+            <div className="col-span-2 lg:col-span-1">
+              {showAppButtons && (
+                <>
+                  <h2 className={heading}>{t("getApp")}</h2>
+                  <div className="grid grid-cols-2 gap-3 lg:grid-cols-1">
+                    <a href={APP_STORE} target="_blank" rel="noopener noreferrer" className={storeButton}>
+                      <Play size={16} className="shrink-0 fill-white" aria-hidden="true" />
+                      <span className="leading-tight">
+                        <span className="block text-[11.5px] text-white/70">{t("downloadOn")}</span>
+                        <span className="block text-[15px] font-semibold">App Store</span>
+                      </span>
+                    </a>
+                    <a href={PLAY_STORE} target="_blank" rel="noopener noreferrer" className={storeButton}>
+                      <Play size={16} className="shrink-0 fill-white" aria-hidden="true" />
+                      <span className="leading-tight">
+                        <span className="block text-[11.5px] text-white/70">{t("downloadOn")}</span>
+                        <span className="block text-[15px] font-semibold">Google Play</span>
+                      </span>
+                    </a>
+                  </div>
+                </>
+              )}
+              <a
+                href={SUPPORT_WHATSAPP}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-3 flex items-center gap-3 rounded-2xl border border-white/10 px-4 py-3.5 transition-colors hover:bg-white/[0.06]"
+              >
+                <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#e11d1d] text-white">
+                  <Headset size={19} />
+                </span>
+                <span className="leading-tight">
+                  <span className="block text-[13px] text-white/70">{t("needHelp")}</span>
+                  <span className="block text-[15px] font-semibold">{t("support")}</span>
+                </span>
+              </a>
+            </div>
+          </div>
+
+          <div className="mt-10 border-t border-white/10 pt-6 text-center text-[13px] text-white/60">
+            © {t("allRightsReserved")}
+          </div>
         </div>
       </footer>
 

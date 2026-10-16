@@ -142,21 +142,21 @@ function HomeAdCardBase({
     (isLastViewed ? " ad-glow" : "");
 
   const actions = variant === "default" && (
-    <div className="flex items-center gap-1.5 shrink-0">
+    <div className="flex items-center gap-2 shrink-0">
       <button
         type="button"
         onClick={handleShare}
-        className="flex items-center gap-1 whitespace-nowrap bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 rounded-full px-3 py-1.5 text-[11px] sm:text-[12px] font-semibold transition-colors"
+        className="flex items-center gap-1 whitespace-nowrap bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 rounded-full px-3.5 py-2 text-[12.5px] sm:text-[13px] font-semibold transition-colors"
       >
-        <Share2 size={13} />
+        <Share2 size={14} />
         <span>{tButtons("share")}</span>
       </button>
       <button
         type="button"
         onClick={handleWhatsApp}
-        className="flex items-center gap-1 whitespace-nowrap bg-white border border-gray-200 text-[#16A34A] hover:bg-[#f0fdf4] rounded-full px-3 py-1.5 text-[11px] sm:text-[12px] font-semibold transition-colors"
+        className="flex items-center gap-1 whitespace-nowrap bg-white border border-gray-200 text-[#16A34A] hover:bg-[#f0fdf4] rounded-full px-3.5 py-2 text-[12.5px] sm:text-[13px] font-semibold transition-colors"
       >
-        <WhatsAppIcon className="w-3.5 h-3.5" />
+        <WhatsAppIcon className="w-4 h-4" />
         <span>{t("whatsapp")}</span>
       </button>
     </div>
@@ -164,28 +164,28 @@ function HomeAdCardBase({
 
   const cardContent = (
     <div
-      className={`relative w-full p-3 sm:p-3.5 ${variant === "my-ad" ? "" : boxClasses}`}
+      className={`relative w-full p-4 sm:p-4 md:p-3.5 ${variant === "my-ad" ? "" : boxClasses}`}
     >
       {isFeatured && (
-        <span className={`absolute top-2.5 ${direction === "rtl" ? "left-3" : "right-3"} z-10 flex items-center gap-1 bg-[linear-gradient(135deg,#b8891f_0%,#e6cb7a_50%,#b8891f_100%)] text-white px-2.5 py-0.5 text-[9px] sm:text-[10px] font-bold rounded-full shadow-sm tracking-wide`}>
+        <span className={`absolute top-3.5 ${direction === "rtl" ? "left-4" : "right-4"} md:top-2.5 z-10 flex items-center gap-1 bg-[linear-gradient(135deg,#b8891f_0%,#e6cb7a_50%,#b8891f_100%)] text-white px-2.5 py-1 md:py-0.5 text-[11px] md:text-[10px] font-bold rounded-full shadow-sm tracking-wide`}>
           {locale === "ar" ? "مميز" : "DISTINCT"}
-          <Crown size={10} className="fill-white text-white" />
+          <Crown size={11} className="fill-white text-white" />
         </span>
       )}
 
-      <div className="grid grid-cols-[auto_1fr] gap-x-2.5 gap-y-2.5 md:grid-cols-[8rem_1fr] md:gap-x-4 md:min-h-28">
+      <div className="grid grid-cols-[auto_1fr] gap-x-3.5 gap-y-3 md:grid-cols-[8rem_1fr] md:gap-x-4 md:min-h-28">
         {/* Title */}
-        <h3 className={`col-span-2 row-start-1 md:col-span-1 md:col-start-2 text-sm sm:text-base font-bold text-gray-900 line-clamp-2 leading-5 sm:leading-6 pt-0.5 ${direction === "rtl" ? "pl-14" : "pr-14"}`}>
+        <h3 className={`col-span-2 row-start-1 md:col-span-1 md:col-start-2 text-[15.5px] sm:text-base font-bold text-gray-900 line-clamp-2 leading-6 pt-0.5 ${direction === "rtl" ? "pl-14" : "pr-14"}`}>
           {title}
         </h3>
 
-        <div className={`relative col-start-1 row-start-2 w-20 sm:w-24 ${priceLabel ? "h-20 sm:h-24" : "h-28 sm:h-32"} md:row-start-1 md:row-span-3 md:w-full md:h-auto md:self-stretch shrink-0 rounded-2xl overflow-hidden bg-gray-100 ring-2 ring-white shadow-[0_3px_10px_rgba(16,24,40,0.12)]`}>
+        <div className={`relative col-start-1 row-start-2 w-[6.5rem] sm:w-28 ${priceLabel ? "h-[6.5rem] sm:h-28" : "h-32 sm:h-36"} md:row-start-1 md:row-span-3 md:w-full md:h-auto md:self-stretch shrink-0 rounded-2xl overflow-hidden bg-gray-100 ring-2 ring-white shadow-[0_3px_10px_rgba(16,24,40,0.12)]`}>
           <Image
             src={displayUrl as string}
             alt={ad.description}
             fill
             className="object-cover"
-            sizes="(min-width: 768px) 128px, (min-width: 640px) 112px, 96px"
+            sizes="(min-width: 768px) 128px, 112px"
             priority={priority}
             loading={priority ? "eager" : "lazy"}
           />
@@ -199,28 +199,28 @@ function HomeAdCardBase({
             </div>
           )}
           {/* view count */}
-          <span className="absolute top-2 right-2 flex items-center gap-1 bg-black/70 text-white ps-1.5 pe-2 py-0.5 rounded-full text-[10px] font-semibold leading-none shadow-sm">
+          <span className="absolute top-2 right-2 flex items-center gap-1 bg-black/70 text-white ps-1.5 pe-2 py-0.5 rounded-full text-[11px] font-semibold leading-none shadow-sm">
             <Eye strokeWidth={2.5} className="w-3 h-3" />
             {ad.views || 0}
           </span>
           {/* purpose sticker */}
           <div className="absolute bottom-1.5 inset-x-0 flex justify-center">
-            <span className="bg-white/95 text-gray-800 text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-md shadow-sm">
+            <span className="bg-white/95 text-gray-800 text-[11px] md:text-[10px] font-bold px-2.5 py-0.5 rounded-md shadow-sm">
               {t(ad.purpose)}
             </span>
           </div>
         </div>
 
-        <div className="col-start-2 row-start-2 min-w-0 flex flex-col justify-center gap-1 md:gap-1.5">
+        <div className="col-start-2 row-start-2 min-w-0 flex flex-col justify-center gap-1.5">
           {/* owner */}
           <div className="flex items-center gap-1.5 min-w-0">
-            <span className="flex items-center justify-center w-5 h-5 shrink-0 rounded-full overflow-hidden bg-brand-teal/10 text-brand-teal text-[8px] font-bold">
+            <span className="flex items-center justify-center w-6 h-6 shrink-0 rounded-full overflow-hidden bg-brand-teal/10 text-brand-teal text-[10px] font-bold">
               {avatarUrl ? (
                 <Image
                   src={avatarUrl}
                   alt={ownerName || "User"}
-                  width={20}
-                  height={20}
+                  width={24}
+                  height={24}
                   className="w-full h-full object-cover"
                   unoptimized
                 />
@@ -228,12 +228,12 @@ function HomeAdCardBase({
                 ownerName.trim().charAt(0) || "?"
               )}
             </span>
-            <span className="text-[10px] sm:text-[11px] font-medium text-gray-700 truncate">
+            <span className="text-[13px] font-medium text-gray-700 truncate">
               {ownerName}
             </span>
           </div>
           {/* date */}
-          <div className="flex items-center gap-1 text-gray-500 text-[10px] sm:text-[11px]">
+          <div className="flex items-center gap-1 text-gray-500 text-[12px]">
             {ad.isOffice && (
               <BadgeCheck size={12} className="text-[#16A34A] shrink-0" aria-hidden="true" />
             )}
@@ -243,7 +243,7 @@ function HomeAdCardBase({
             </span>
           </div>
           {/* description */}
-          <p className="text-[11px] sm:text-[12px] text-gray-600 line-clamp-2 leading-4 font-light">
+          <p className="text-[13px] text-gray-600 line-clamp-2 leading-5 font-light">
             {shortDescription}
           </p>
           {/* No price row to sit in — the actions move next to the image. */}
@@ -252,9 +252,9 @@ function HomeAdCardBase({
 
         {/* Price + actions */}
         {priceLabel && (
-          <div className="col-span-2 row-start-3 md:col-span-1 md:col-start-2 flex items-center justify-between gap-2">
+          <div className="col-span-2 row-start-3 md:col-span-1 md:col-start-2 flex items-center justify-between gap-3 pt-0.5">
             <div className="min-w-0">
-              <span className="whitespace-nowrap font-bold text-sm text-[#7546BD]">
+              <span className="whitespace-nowrap font-bold text-base text-[#7546BD]">
                 {priceLabel}
               </span>
             </div>
@@ -266,7 +266,7 @@ function HomeAdCardBase({
   );
 
   const cardClasses =
-    "relative block w-full cursor-pointer mb-3 hover:opacity-95 transition-opacity cv-card";
+    "relative block w-full cursor-pointer mb-4 hover:opacity-95 transition-opacity cv-card";
 
   const shareDialog = shareUrl !== null && (
     <ShareDialog
@@ -301,7 +301,7 @@ function HomeAdCardBase({
 
   return (
     <div
-      className={`relative block w-full mb-3 overflow-hidden ${boxClasses}`}
+      className={`relative block w-full mb-4 overflow-hidden ${boxClasses}`}
       dir={direction}
       {...(isLastViewed ? { [LAST_VIEWED_ATTR]: "" } : {})}
     >

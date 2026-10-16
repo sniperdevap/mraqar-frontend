@@ -5,17 +5,27 @@ import { useEffect, useState } from "react";
 const KEY = "lastViewedAd";
 export const LAST_VIEWED_ATTR = "data-last-viewed-ad";
 
+// Only a Back/Forward navigation should glide to the last opened ad. Opening an
+// ad must always land at the top of its page (its "similar ads" list can contain
+// the ad itself, which used to pull the page down to the middle).
+let cameBack = false;
+
 if (typeof window !== "undefined") {
   const nav = performance.getEntriesByType("navigation")[0] as
     | PerformanceNavigationTiming
     | undefined;
-  if (nav && nav.type !== "back_forward") {
+  cameBack = nav?.type === "back_forward";
+  if (!cameBack) {
     try {
       sessionStorage.removeItem(KEY);
     } catch {
       // ignore
     }
   }
+  // App Router back/forward navigations fire popstate; forward links don't.
+  window.addEventListener("popstate", () => {
+    cameBack = true;
+  });
 }
 
 let pendingId: string | null | undefined;
@@ -34,6 +44,7 @@ function takePendingId(): string | null {
 
 export function markAdViewed(id: string | number) {
   pendingId = undefined;
+  cameBack = false; // opening an ad is a forward navigation
   try {
     sessionStorage.setItem(KEY, String(id));
   } catch {
@@ -47,8 +58,9 @@ export function useIsLastViewedAd(id: string | number | undefined) {
   const [isLastViewed, setIsLastViewed] = useState(false);
 
   useEffect(() => {
-    if (id === undefined) return;
+    if (id === undefined || !cameBack) return;
     if (takePendingId() === String(id)) {
+      cameBack = false;
       pendingId = null;
       setIsLastViewed(true);
     }
