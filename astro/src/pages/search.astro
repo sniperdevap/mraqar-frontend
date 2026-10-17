@@ -130,14 +130,44 @@ const jsonLd = [
     </form>
 
     {result?.ads.length ? (
-      <div class="mt-5 grid grid-cols-1 gap-2">{result.ads.map((ad, i) => <AdCard ad={ad} areas={areas} lang={lang} eager={i < 3} headingLevel="h2" />)}</div>
+      <div class="mt-5 grid grid-cols-1 gap-2" data-ad-list>{result.ads.map((ad, i) => <AdCard ad={ad} areas={areas} lang={lang} eager={i < 3} headingLevel="h2" />)}</div>
     ) : <p class="mt-6 rounded-[18px] border border-dashed border-line bg-white p-10 text-center text-muted">{t.noAds}</p>}
 
     {result && page < result.totalPages && (
       <div class="mt-7 text-center">
-        <a href={pageHref(page + 1)} rel="next" class="inline-flex h-12 items-center rounded-full bg-soft px-7 text-[15px] font-bold text-ink hover:bg-line">{lang === "ar" ? "تحميل المزيد" : "Load more"}</a>
+        <a href={pageHref(page + 1)} rel="next" data-load-more class="inline-flex h-12 items-center rounded-full bg-soft px-7 text-[15px] font-bold text-ink hover:bg-line">{lang === "ar" ? "تحميل المزيد" : "Load more"}</a>
       </div>
     )}
+    <script>
+      // "Load more" adds the next page's ads under the ones already shown, instead of
+      // replacing the list. Without JavaScript the link still opens the next page.
+      const more = document.querySelector<HTMLAnchorElement>("[data-load-more]");
+      const list = document.querySelector<HTMLElement>("[data-ad-list]");
+      more?.addEventListener("click", async (e) => {
+        if (!list || e.metaKey || e.ctrlKey || e.shiftKey) return;
+        e.preventDefault();
+        more.setAttribute("aria-busy", "true");
+        more.textContent = document.documentElement.lang === "en" ? "Loading…" : "جارٍ التحميل…";
+        try {
+          const res = await fetch(more.href, { headers: { Accept: "text/html" } });
+          if (!res.ok) throw new Error(String(res.status));
+          const doc = new DOMParser().parseFromString(await res.text(), "text/html");
+          const next = doc.querySelector<HTMLElement>("[data-ad-list]");
+          if (!next) throw new Error("no list");
+          list.append(...Array.from(next.children));
+          const nextMore = doc.querySelector<HTMLAnchorElement>("[data-load-more]");
+          if (nextMore) {
+            more.href = nextMore.getAttribute("href") || more.href;
+            more.textContent = nextMore.textContent;
+            more.removeAttribute("aria-busy");
+          } else {
+            more.parentElement?.remove();
+          }
+        } catch {
+          window.location.href = more.href;
+        }
+      });
+    </script>
     {page > 1 && <p class="mt-3 text-center"><a href={pageHref(page - 1)} rel="prev" class="text-[13.5px] text-muted hover:text-brand">{t.prev}</a></p>}
 
     {chosenArea && (
