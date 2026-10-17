@@ -20,7 +20,7 @@ const featured = isFeatured(ad);
 const first = ad.media?.[0];
 const img = first ? mediaUrl(first, true) : "";
 const flat = (ad.description || "").replace(/\s+/g, " ").trim();
-const excerpt = flat.length > 32 ? flat.slice(0, 32).replace(/\s+\S*$/, "") + "…" : flat;
+const excerpt = flat.length > 20 ? flat.slice(0, 20).replace(/\s+\S*$/, "") + "…" : flat;
 const Heading = headingLevel;
 ---
 <article class:list={["ad-row group relative isolate flex min-h-[120px] overflow-hidden rounded-[18px] border bg-white shadow-[0_2px_10px_rgba(50,40,37,0.07)] transition-shadow hover:shadow-[0_8px_24px_rgba(50,40,37,0.12)]", featured ? "ad-featured" : "border-line"]}>
