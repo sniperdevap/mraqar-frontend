@@ -182,7 +182,7 @@ const icons: Record<string, string> = {
     <!-- Side menu -->
     <div id="drawer" class="drawer fixed inset-0 z-50" data-open="false" aria-hidden="true">
       <div class="drawer-scrim absolute inset-0 bg-black/45 backdrop-blur-[2px]" data-drawer-close></div>
-      <aside class="drawer-panel absolute inset-y-0 right-0 flex w-[82%] max-w-[360px] flex-col bg-white shadow-2xl" dir={dir} role="dialog" aria-modal="true" aria-label={t.menu} style="padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px)">
+      <aside class="drawer-panel absolute inset-y-0 right-0 flex w-[82%] max-w-[360px] flex-col drawer-tan shadow-2xl" dir={dir} role="dialog" aria-modal="true" aria-label={t.menu} style="padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px)">
         <div class="flex items-center justify-between px-4 pt-4 pb-3">
           <a href="/" class="flex items-center gap-2.5">
             <img src="/aqar-new-logo-nav.webp" alt="" width="62" height="40" class="logo-light h-10 w-auto" />
@@ -196,7 +196,7 @@ const icons: Record<string, string> = {
         <nav class="flex-1 overflow-y-auto px-3 pb-3" aria-label={t.menu}>
           {drawerItems.map((l) => (
             <a href={l.href} target={l.ext ? "_blank" : undefined} rel={l.ext ? "noopener" : undefined} data-app-link={l.k === "app" ? "" : undefined}
-              class:list={["mb-1 flex h-14 items-center gap-3.5 rounded-2xl px-4 text-[17px] font-semibold transition-colors", active === l.k ? "bg-brand-soft text-brand" : "text-ink hover:bg-canvas"]}
+              class:list={["mb-1 flex h-14 items-center gap-3.5 rounded-2xl px-4 text-[17px] font-semibold transition-colors", active === l.k ? "bg-[#433e38] text-white shadow-sm" : "text-ink hover:bg-canvas"]}
               aria-current={active === l.k ? "page" : undefined}>
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="shrink-0" aria-hidden="true" set:html={l.icon} />
               {l.label}

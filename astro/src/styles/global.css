@@ -140,3 +140,7 @@ html { -webkit-tap-highlight-color: transparent; }
 .app-band { background: linear-gradient(120deg, #d9363e, #a3222a 60%, #1d2738); }
 .no-scrollbar { scrollbar-width: none; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* Side menu: the warm tan gradient from the reference dashboard's sidebar */
+.drawer-tan { background: linear-gradient(180deg, #efe6cb 0%, #daccb0 50%, #bca688 100%); }
+:root[data-theme="dark"] .drawer-tan { background: var(--color-surface); }
