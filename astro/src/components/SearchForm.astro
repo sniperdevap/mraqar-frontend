@@ -14,12 +14,12 @@ const purposes = [["sale", t.sale], ["rent", t.rent], ["exchange", t.exchange]] 
 const areaData = areas.map((a) => ({ id: String(a.id), l: lang === "ar" ? a.labelAr : a.label, g: lang === "ar" ? a.governorateAr : a.governorate }));
 const chosen = areaData.filter((a) => selectedAreas.includes(a.id));
 ---
-<form action="/search" method="get" class:list={["flex flex-col gap-2.5", !compact && "rounded-3xl border border-line/80 bg-white/85 p-3 shadow-[0_12px_32px_rgba(50,40,37,0.07)] backdrop-blur"]} data-search-form>
+<form action="/search" method="get" class:list={["flex flex-col", compact ? "gap-2 rounded-2xl border border-line/80 bg-white/90 p-2.5 shadow-[0_8px_24px_rgba(50,40,37,0.06)]" : "gap-2.5 rounded-3xl border border-line/80 bg-white/85 p-3 shadow-[0_12px_32px_rgba(50,40,37,0.07)] backdrop-blur"]} data-search-form>
 
   <AreaPicker lang={lang} areas={areas} selected={selectedAreas} />
   <div class="relative">
     <svg class="pointer-events-none absolute start-3.5 top-1/2 -translate-y-1/2 text-brand-deep" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="1.5"/><path d="M9 7h1.5M13.5 7H15M9 11h1.5M13.5 11H15M9 15h1.5M13.5 15H15"/></svg>
-    <select name="propertyType" class="h-[52px] w-full appearance-none rounded-2xl border border-line bg-white ps-10 pe-10 text-[16px] font-medium text-ink outline-none focus:border-brand" aria-label={t.propertyType}>
+    <select name="propertyType" class:list={["w-full appearance-none rounded-2xl border border-line bg-white ps-10 pe-10 font-medium text-ink outline-none focus:border-brand", compact ? "h-11 text-[15px]" : "h-[52px] text-[16px]"]} aria-label={t.propertyType}>
       <option value="">{t.propertyType}</option>
       {types.map((ty) => <option value={String(ty.id)} selected={propertyType === String(ty.id)}>{lang === "ar" ? ty.labelAr : ty.label}</option>)}
     </select>
@@ -31,7 +31,7 @@ const chosen = areaData.filter((a) => selectedAreas.includes(a.id));
     {purposes.map(([v, label]) => (
       <label class="cursor-pointer">
         <input type="radio" name="purpose" value={v} class="peer sr-only" checked={purpose === v} />
-        <span class="flex h-9 items-center justify-center rounded-xl text-[14px] font-medium text-ink transition-all peer-checked:bg-surface peer-checked:font-semibold peer-checked:text-ink peer-checked:shadow-sm peer-focus-visible:outline-2 peer-focus-visible:outline-brand">{label}</span>
+        <span class="flex h-8 items-center justify-center rounded-xl text-[14px] font-medium text-ink transition-all peer-checked:bg-surface peer-checked:font-semibold peer-checked:text-ink peer-checked:shadow-sm peer-focus-visible:outline-2 peer-focus-visible:outline-brand">{label}</span>
       </label>
     ))}
   </fieldset>
@@ -42,7 +42,7 @@ const chosen = areaData.filter((a) => selectedAreas.includes(a.id));
     </div>
   )}
 
-  <button class="flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-brand text-[15px] font-bold text-white transition-colors hover:bg-brand-dark active:scale-[0.99]">
+  <button class="flex h-11 w-full items-center justify-center gap-2 rounded-2xl bg-brand text-[15px] font-bold text-white transition-colors hover:bg-brand-dark active:scale-[0.99]">
     <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
     {t.searchBtn}
   </button>

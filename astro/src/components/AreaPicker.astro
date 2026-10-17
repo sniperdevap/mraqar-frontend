@@ -9,7 +9,7 @@ const chosen = areaData.filter((a) => selected.includes(a.id));
 ---
   <!-- Area picker: type to search, grouped by governorate, several at once -->
   <div class="relative" data-area-picker data-placeholder={t.typeArea}>
-    <div class="flex min-h-[52px] w-full cursor-text flex-wrap items-center gap-1.5 rounded-2xl border border-line bg-white ps-10 pe-4 py-2 transition-colors focus-within:border-brand" data-area-box>
+    <div class="flex min-h-11 w-full cursor-text flex-wrap items-center gap-1.5 rounded-2xl border border-line bg-white ps-10 pe-4 py-1.5 transition-colors focus-within:border-brand" data-area-box>
       {icon === "pin" ? <svg class="pointer-events-none absolute start-3.5 top-[17px] text-brand-deep" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg> : <svg class="pointer-events-none absolute start-3.5 top-[17px] text-brand-deep" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>}
       {chosen.map((a) => (
         <span class="inline-flex items-center gap-1 rounded-lg bg-brand-soft px-2.5 py-1 text-[14px] text-ink" data-chip={a.id}>{a.l}
