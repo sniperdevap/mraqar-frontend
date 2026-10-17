@@ -14,18 +14,20 @@
   --color-ink: #322825;
   --color-ink-2: #4a423e;
   --color-muted: #686461;
-  --color-line: #e7e8ec;
-  --color-soft: #eceaed;
-  --color-canvas: #f5f6f8;
+  --color-line: #e8dcc2;
+  --color-soft: #f1e8cd;
+  --color-canvas: #f6f0de;
   --color-gold: #d49a39;
   --color-gold-soft: #fff4d6;
   --color-wa: #16a34a;
-  --color-surface: #ffffff;
+  --color-surface: #fffdf8;
   --color-night: #221c1a;
 }
 
 html { -webkit-text-size-adjust: 100%; }
 body { font-family: var(--font-sans); color: var(--color-ink); background: var(--color-canvas); }
+/* Warm cream page with a soft fade toward white, like the reference dashboard */
+.page-bg { background: linear-gradient(180deg, #f6f0de 0px, #fffdf8 720px); }
 :focus-visible { outline: 2px solid var(--color-brand); outline-offset: 2px; }
 h1, h2, h3 { text-wrap: balance; }
 
