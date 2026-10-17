@@ -28,9 +28,9 @@ const jsonLd = latest?.ads.length ? [{
   itemListElement: latest.ads.map((ad, i) => ({ "@type": "ListItem", position: i + 1, url: `${site}${adHref(ad, areas)}`, name: adTitle(ad, lang) })),
 }] : [];
 
-// Busiest offices (most ads) with a logo, for the offices strip.
-const topOffices = (officesPage?.offices || []).filter((o) => o.avatar && (o.adsCount || 0) > 0)
-  .sort((a, b) => (b.adsCount || 0) - (a.adsCount || 0)).slice(0, 12);
+// Offices strip: newest offices first (the API's order), so an office that just
+// joined and has posted ads shows up at the start. Offices without a logo get an initial.
+const topOffices = (officesPage?.offices || []).filter((o) => (o.adsCount || 0) > 0).slice(0, 12);
 const imgSrc = (a?: string) => (!a ? "" : a.startsWith("http") ? a : `${IMAGE_HOST}/${a.replace(/^\/+/, "")}`);
 
 // Line icons for the property-type shortcuts (24px grid, stroked).
@@ -124,12 +124,16 @@ const arrow = '<path d="m15 6-6 6 6 6"/>';
           <svg class="ltr:rotate-180" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true" set:html={arrow} />
         </a>
       </div>
-      <ul class="no-scrollbar flex snap-x gap-3 overflow-x-auto px-4 pb-2">
+      <ul data-offices-strip class="no-scrollbar flex gap-3 overflow-x-auto px-4 pb-2">
         {topOffices.map((o) => (
-          <li class="w-[132px] shrink-0 snap-start">
+          <li class="w-[132px] shrink-0">
             <a href={`/offices/${o.publicId}`} class="group block rounded-[20px] border border-line bg-white p-2.5 text-center transition hover:-translate-y-0.5 hover:shadow-[0_12px_28px_-10px_rgba(16,24,40,0.18)]">
               <span class="relative mx-auto block aspect-square overflow-hidden rounded-2xl bg-soft">
-                <img src={imgSrc(o.avatar)} alt={o.name} width="112" height="112" loading="lazy" decoding="async" class="absolute inset-0 size-full object-cover transition duration-300 group-hover:scale-105" />
+                {o.avatar ? (
+                  <img src={imgSrc(o.avatar)} alt={o.name} width="112" height="112" loading="lazy" decoding="async" class="absolute inset-0 size-full object-cover transition duration-300 group-hover:scale-105" />
+                ) : (
+                  <span class="absolute inset-0 grid place-items-center text-[30px] font-extrabold text-muted" aria-hidden="true">{(o.name || "•").trim().charAt(0)}</span>
+                )}
               </span>
               <span class="mt-2 block truncate text-[13.5px] font-extrabold text-ink">{o.name}</span>
               <span class="block text-[12px] font-semibold text-muted">{fmt(o.adsCount)} {ar ? "إعلان" : "ads"}</span>
@@ -156,3 +160,29 @@ const arrow = '<path d="m15 6-6 6 6 6"/>';
     </div>
   </section>
 </Base>
+
+<script>
+  // Offices strip drifts slowly so it looks alive. It pauses while the visitor
+  // touches, hovers or scrolls it, and stays still for reduced-motion users.
+  const strip = document.querySelector<HTMLElement>("[data-offices-strip]");
+  if (strip && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    let paused = false;
+    let timer = 0;
+    const hold = () => { paused = true; clearTimeout(timer); timer = window.setTimeout(() => (paused = false), 2500); };
+    ["pointerdown", "touchstart", "wheel", "mouseenter", "focusin"].forEach((ev) => strip.addEventListener(ev, hold, { passive: true }));
+    strip.addEventListener("mouseleave", () => (paused = false));
+    // In RTL the strip scrolls toward negative scrollLeft, so the drift direction flips.
+    const rtl = getComputedStyle(strip).direction === "rtl";
+    const dir = rtl ? -1 : 1;
+    const span = strip.scrollWidth - strip.clientWidth;
+    const step = () => {
+      if (!paused && span > 0) {
+        strip.scrollBy({ left: dir, behavior: "instant" as ScrollBehavior });
+        const atEnd = rtl ? strip.scrollLeft <= -span + 2 : strip.scrollLeft >= span - 2;
+        if (atEnd) strip.scrollTo({ left: 0, behavior: "instant" as ScrollBehavior });
+      }
+      requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+</script>
