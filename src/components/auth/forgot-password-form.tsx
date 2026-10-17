@@ -2,140 +2,145 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { ChevronLeft, ChevronRight, Mail, Smartphone } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useLocale } from "@/hooks/use-locale";
 import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { AuthTabs } from "@/components/auth/auth-tabs";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { useRouter } from "next/navigation";
-import { forgotPasswordValidationSchema } from "@/lib/schemas/auth";
+import { useLocale } from "@/hooks/use-locale";
 import { forgotPassword } from "@/lib/api/auth";
 import { normalizeKuwaitPhone } from "@/lib/utils/format";
+import { getErrorMessage } from "@/lib/utils/api";
+import { PhoneField, fieldClass } from "@/components/auth/auth-ui";
 
-type ForgotPasswordFormValues = z.infer<typeof forgotPasswordValidationSchema>;
+type Method = "phone" | "email";
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+/**
+ * Forgot password: the user picks how to get the reset code, by SMS to the
+ * mobile number on the account or by email to the address on the account.
+ */
 export function ForgotPasswordForm() {
   const t = useTranslations("auth.forgotPassword");
-  const tSignup = useTranslations("auth.signup"); // for phone label
   const { locale } = useLocale();
-  const [isLoading, setIsLoading] = useState(false);
+  const ar = locale === "ar";
   const router = useRouter();
-  const form = useForm<ForgotPasswordFormValues>({
-    resolver: zodResolver(forgotPasswordValidationSchema),
-    defaultValues: {
-      phoneNumber: "",
-    },
-  });
+  const [method, setMethod] = useState<Method>("phone");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
 
-  const handleSubmit = async (values: ForgotPasswordFormValues) => {
-    setIsLoading(true);
+  const L = ar
+    ? {
+        title: "نسيت كلمة السر؟",
+        sub: "اختر طريقة استلام رمز إعادة التعيين.",
+        phone: "رقم الموبايل", email: "البريد الإلكتروني",
+        phoneHint: "نرسل الرمز برسالة نصية إلى رقمك.",
+        emailHint: "نرسل الرمز إلى بريدك المسجّل في الحساب.",
+        phoneErr: "أدخل رقم الموبايل من 8 أرقام", emailErr: "أدخل بريدًا إلكترونيًا صحيحًا",
+        send: "إرسال الرمز", sending: "جارٍ الإرسال…",
+        sentPhone: "أرسلنا الرمز إلى رقمك", sentEmail: "أرسلنا الرمز إلى بريدك",
+        noEmail: "لا يوجد حساب بهذا البريد. جرّب رقم الموبايل.",
+      }
+    : {
+        title: "Forgot your password?",
+        sub: "Choose how to get your reset code.",
+        phone: "Mobile number", email: "Email",
+        phoneHint: "We'll text the code to your number.",
+        emailHint: "We'll email the code to the address on your account.",
+        phoneErr: "Enter the 8-digit number", emailErr: "Enter a valid email address",
+        send: "Send code", sending: "Sending…",
+        sentPhone: "Code sent to your phone", sentEmail: "Code sent to your email",
+        noEmail: "No account uses this email. Try your mobile number.",
+      };
 
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    if (method === "phone" && phone.length !== 8) return setError(L.phoneErr);
+    const mail = email.trim().toLowerCase();
+    if (method === "email" && !EMAIL_RE.test(mail)) return setError(L.emailErr);
+
+    setBusy(true);
     try {
-      const formattedPhone = normalizeKuwaitPhone(values.phoneNumber);
-      await forgotPassword({ phoneNumber: formattedPhone });
-      toast.success(t("success"));
-      form.reset();
-      router.push(
-        `/auth/verify?phoneNumber=${encodeURIComponent(formattedPhone)}&type=password-reset`,
-      );
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : t("failed"));
+      if (method === "phone") {
+        const phoneNumber = normalizeKuwaitPhone(phone);
+        await forgotPassword({ phoneNumber });
+        toast.success(L.sentPhone);
+        router.push(`/auth/verify?phoneNumber=${encodeURIComponent(phoneNumber)}&type=password-reset`);
+      } else {
+        await forgotPassword({ email: mail });
+        toast.success(L.sentEmail);
+        router.push(`/auth/verify?email=${encodeURIComponent(mail)}&type=password-reset`);
+      }
+    } catch (err) {
+      const msg = getErrorMessage(err, t("failed"));
+      setError(method === "email" && /not found/i.test(msg) ? L.noEmail : msg);
     } finally {
-      setIsLoading(false);
+      setBusy(false);
     }
   };
 
+  const tab = (m: Method, label: string, icon: React.ReactNode) => (
+    <button
+      type="button"
+      role="tab"
+      aria-selected={method === m}
+      onClick={() => { setMethod(m); setError(""); }}
+      className={`flex h-10 items-center justify-center gap-2 rounded-lg text-[14px] font-bold transition ${method === m ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-800"}`}
+    >
+      {icon}
+      {label}
+    </button>
+  );
+
   return (
-    <div className="flex-1 flex flex-col items-center justify-start md:justify-center pt-4 md:pt-6 pb-6 px-4 sm:px-6 lg:px-8">
-      <div className="w-full max-w-lg md:space-y-8 space-y-3">
-        {/* Logo and Header */}
-        <div className="flex flex-col items-center text-center mt-2">
-          <h2 className="md:text-2xl text-xl font-bold text-gray-900 mt-4">
-            {t("title")}
-          </h2>
-          <p className="text-gray-500 mt-2 text-center text-sm md:text-base">{t("subTitle")}</p>
+    <div className="flex flex-1 items-start justify-center bg-[#f5f6f8] px-4 pt-6 pb-12 md:items-center md:pt-10">
+      <div className="w-full max-w-[460px] rounded-[28px] border border-gray-100 bg-white p-6 shadow-[0_18px_48px_rgba(16,24,40,0.08)] md:p-8">
+        <h1 className="text-center text-[26px] font-extrabold text-gray-900">{L.title}</h1>
+        <p className="mt-1 text-center text-[14.5px] text-gray-500">{L.sub}</p>
+
+        <div role="tablist" className="mt-6 grid grid-cols-2 gap-1 rounded-xl bg-gray-100 p-1">
+          {tab("phone", L.phone, <Smartphone size={16} />)}
+          {tab("email", L.email, <Mail size={16} />)}
         </div>
 
-        {/* Forgot Password Card */}
-        <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden md:p-8 p-4">
-          <div className="-mt-4 md:-mt-8 -mx-4 md:-mx-8 mb-4">
-            <AuthTabs />
-          </div>
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(handleSubmit)}
-              className="space-y-3 md:space-y-4"
-            >
-              {/* Phone Number Field */}
-              <FormField
-                control={form.control}
-                name="phoneNumber"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-gray-700 font-semibold text-sm md:text-base">
-                      {tSignup("phone")}
-                    </FormLabel>
-                    <FormControl>
-                      <div className="flex items-stretch gap-2" dir="ltr">
-                        <div className="flex items-center gap-1.5 shrink-0 px-3 h-11 md:h-12 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 text-sm font-medium">
-                          <span className="text-lg leading-none" aria-hidden="true">🇰🇼</span>
-                          <span>+965</span>
-                        </div>
-                        <Input
-                          dir="ltr"
-                          type="text"
-                          inputMode="numeric"
-                          placeholder={tSignup("phonePlaceholder")}
-                          className="flex-1 bg-white border-gray-200 rounded-xl h-11 md:h-12 focus:ring-primary/20 focus:border-primary transition-all"
-                          {...field}
-                        />
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+        <form onSubmit={submit} className="mt-5 space-y-4" noValidate>
+          <div>
+            <label className="mb-1.5 block text-[13.5px] font-bold text-gray-800">{method === "phone" ? L.phone : L.email}</label>
+            {method === "phone" ? (
+              <PhoneField placeholder="9xxxxxxx" value={phone} onChange={(e) => setPhone(e.target.value)} invalid={!!error} autoFocus />
+            ) : (
+              <input
+                type="email"
+                dir="ltr"
+                inputMode="email"
+                autoComplete="email"
+                placeholder="name@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                aria-invalid={!!error || undefined}
+                className={`${fieldClass} text-start`}
+                autoFocus
               />
-
-              {/* Submit Button */}
-              <div className="pt-2">
-                <Button
-                  type="submit"
-                  disabled={form.formState.isSubmitting || isLoading}
-                  className="w-full bg-primary hover:bg-primary/90 text-white h-11 rounded-xl text-sm md:text-base font-medium"
-                >
-                  {form.formState.isSubmitting || isLoading
-                    ? t("submitting")
-                    : t("submit")}
-                </Button>
-              </div>
-            </form>
-          </Form>
-
-          {/* Back to login */}
-          <div className="mt-6 text-center" >
-            <Link
-              href="/auth/signin"
-              className="text-sm text-gray-500 hover:text-primary transition-colors flex items-center justify-center gap-2"
-            >
-              {locale === "ar" ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
-              {t("backToLogin")}
-            </Link>
+            )}
+            <p className={`mt-1.5 text-[12.5px] ${error ? "text-red-500" : "text-gray-500"}`}>{error || (method === "phone" ? L.phoneHint : L.emailHint)}</p>
           </div>
-        </div>
+
+          <button
+            type="submit"
+            disabled={busy}
+            className="flex h-11 w-full items-center justify-center rounded-xl bg-primary text-[15px] font-bold text-white transition hover:brightness-95 active:scale-[0.99] disabled:opacity-60"
+          >
+            {busy ? L.sending : L.send}
+          </button>
+        </form>
+
+        <Link href="/auth/signin" className="mt-6 flex items-center justify-center gap-1.5 text-[14.5px] font-bold text-gray-600 hover:text-primary">
+          {ar ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
+          {t("backToLogin")}
+        </Link>
       </div>
     </div>
   );

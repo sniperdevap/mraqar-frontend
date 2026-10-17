@@ -18,7 +18,7 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import { verifyOTP, resendOTP } from "@/lib/api/auth";
+import { verifyOTP, resendOTP, forgotPassword } from "@/lib/api/auth";
 import { useAuthStore } from "@/lib/store/auth-store";
 import { InputOTP } from "@/components/ui/input-otp";
 import { getErrorMessage, AUTH_COOKIE_DAYS } from "@/lib/utils/api";
@@ -57,6 +57,9 @@ export function OTPVerificationForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const phoneNumber = searchParams.get("phoneNumber") || "";
+  const email = searchParams.get("email") || "";
+  // Who to check the code against: the phone number, or the email when the code went by email.
+  const target = phoneNumber ? { phoneNumber } : { email };
   const type = searchParams.get("type") || "signup";
   const { isLoading, setLoading } = useAuthStore();
   const [timer, setTimer] = useState(60);
@@ -81,10 +84,7 @@ export function OTPVerificationForm() {
   const handleSubmit = async (values: OTPFormValues) => {
     try {
       setLoading(true);
-      const response = await verifyOTP({
-        phoneNumber,
-        code: values.code,
-      });
+      const response = await verifyOTP({ ...target, code: values.code });
 
       toast.success(t("success"));
 
@@ -120,7 +120,9 @@ export function OTPVerificationForm() {
 
   const handleResend = async () => {
     try {
-      await resendOTP(phoneNumber);
+      // A reset code is re-sent through forgot-password (resend-otp is for unverified sign-ups).
+      if (type === "password-reset") await forgotPassword(target);
+      else await resendOTP(phoneNumber);
       toast.success(t("codeSent"));
       setTimer(60);
     } catch (error) {
@@ -138,6 +140,9 @@ export function OTPVerificationForm() {
           <p className="text-gray-500 mt-2 text-sm md:text-base">
             {t("subTitle")}
           </p>
+          {(email || phoneNumber) && (
+            <p dir="ltr" className="mt-1 text-sm font-bold text-gray-800">{email || phoneNumber}</p>
+          )}
         </div>
 
         <div className=" md:p-8 p-4">

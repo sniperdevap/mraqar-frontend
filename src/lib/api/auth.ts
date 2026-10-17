@@ -44,8 +44,10 @@ export interface LoginResponse {
 
 export type SignupResponse = User;
 
+/** Send one of the two: the reset code goes by SMS or by email. */
 export interface ForgotPasswordRequest {
-  phoneNumber: string;
+  phoneNumber?: string;
+  email?: string;
 }
 
 export interface ResetPasswordRequest {
@@ -62,7 +64,8 @@ export interface VerifyResetTokenResponse {
 }
 
 export interface VerifyOTPRequest {
-  phoneNumber: string;
+  phoneNumber?: string;
+  email?: string;
   code: string;
 }
 
