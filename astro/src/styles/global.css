@@ -120,3 +120,21 @@ html { -webkit-tap-highlight-color: transparent; }
 
 .prose-ar img { width: 100%; height: auto; border-radius: 20px; margin: 1.5rem 0 .5rem; }
 .prose-ar img + em, .prose-ar p > em:only-child { display: block; font-size: 13px; color: var(--color-muted); }
+
+/* Home hero: soft brand glow over the canvas */
+.home-hero {
+  background:
+    radial-gradient(60% 55% at 50% 0%, color-mix(in srgb, var(--color-brand) 11%, transparent), transparent 70%),
+    radial-gradient(40% 40% at 90% 20%, color-mix(in srgb, var(--color-gold) 10%, transparent), transparent 70%),
+    linear-gradient(var(--color-surface), var(--color-canvas));
+}
+.home-hero::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .5;
+  background-image: radial-gradient(color-mix(in srgb, var(--color-ink) 9%, transparent) 1px, transparent 1px);
+  background-size: 18px 18px;
+  mask-image: radial-gradient(70% 60% at 50% 0%, #000, transparent 75%);
+}
+.home-hero > * { z-index: 1; }
+.app-band { background: linear-gradient(120deg, #d9363e, #a3222a 60%, #1d2738); }
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }

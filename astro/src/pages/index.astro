@@ -2,63 +2,157 @@
 import Base from "@/layouts/Base.astro";
 import AdCard from "@/components/AdCard.astro";
 import SearchForm from "@/components/SearchForm.astro";
-import { getAds, getAreas, getPropertyTypes } from "@/lib/api";
-import { getLang, dict, adTitle } from "@/lib/i18n";
+import { getAds, getAreas, getPropertyTypes, getOffices, IMAGE_HOST } from "@/lib/api";
+import { getLang, dict, adTitle, APP_STORE, PLAY_STORE } from "@/lib/i18n";
 import { adHref } from "@/lib/ad-url";
 
 const lang = getLang(Astro.cookies, Astro.locals);
+const ar = lang === "ar";
 const t = dict(lang);
-const [areas, types, latest] = await Promise.all([
+const [areas, types, latest, officesPage] = await Promise.all([
   getAreas(lang).catch(() => []),
   getPropertyTypes(lang).catch(() => []),
   getAds({ page: 1, limit: 12, status: "active" }, lang).catch(() => null),
+  getOffices({ page: 1, limit: 40 }, lang).catch(() => null),
 ]);
 Astro.response.headers.set("Cache-Control", "public, max-age=0, s-maxage=30, stale-while-revalidate=120");
 
-const title = lang === "ar" ? "مستر عقار | عقارات للبيع والإيجار والبدل في الكويت" : "Mr Aqar | Property for sale, rent and exchange in Kuwait";
-const description = lang === "ar"
+const title = ar ? "مستر عقار | عقارات للبيع والإيجار والبدل في الكويت" : "Mr Aqar | Property for sale, rent and exchange in Kuwait";
+const description = ar
   ? "شقق وبيوت وأراضٍ وعمارات وشاليهات للبيع والإيجار والبدل في كل مناطق الكويت. تواصل مباشرة مع الملاك والمكاتب، وأضف إعلانك مجانًا على مستر عقار."
   : "Apartments, houses, land, buildings and chalets for sale, rent and exchange across Kuwait. Contact owners and offices directly, and post your ad free on Mr Aqar.";
 const site = Astro.site!.origin + (lang === "en" ? "/en" : "");
 // The newest listings, as an ItemList (each item points at its own ad page).
 const jsonLd = latest?.ads.length ? [{
-  "@context": "https://schema.org", "@type": "ItemList", name: lang === "ar" ? "أحدث إعلانات العقارات في الكويت" : "Latest property ads in Kuwait",
+  "@context": "https://schema.org", "@type": "ItemList", name: ar ? "أحدث إعلانات العقارات في الكويت" : "Latest property ads in Kuwait",
   itemListElement: latest.ads.map((ad, i) => ({ "@type": "ListItem", position: i + 1, url: `${site}${adHref(ad, areas)}`, name: adTitle(ad, lang) })),
 }] : [];
+
+// Busiest offices (most ads) with a logo, for the offices strip.
+const topOffices = (officesPage?.offices || []).filter((o) => o.avatar && (o.adsCount || 0) > 0)
+  .sort((a, b) => (b.adsCount || 0) - (a.adsCount || 0)).slice(0, 12);
+const imgSrc = (a?: string) => (!a ? "" : a.startsWith("http") ? a : `${IMAGE_HOST}/${a.replace(/^\/+/, "")}`);
+
+// Line icons for the property-type shortcuts (24px grid, stroked).
+const ICONS: Record<string, string> = {
+  apartment: '<rect x="5" y="3" width="14" height="18" rx="1.5"/><path d="M9 7h1.5M13.5 7H15M9 11h1.5M13.5 11H15M9 15h1.5M13.5 15H15"/>',
+  studio: '<rect x="4" y="5" width="16" height="15" rx="1.5"/><path d="M4 10h16M9 20v-5h6v5"/>',
+  floor: '<path d="M3 21h18M5 21V9l7-5 7 5v12"/><path d="M5 14h14"/>',
+  house: '<path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+  duplex: '<path d="M2 12 8 7l6 5v9H2zM14 12l4-3.5 4 3.5v9h-8"/><path d="M6 21v-4h4v4"/>',
+  land: '<path d="M3 7l6-3 6 3 6-3v13l-6 3-6-3-6 3z"/><path d="M9 4v13M15 7v13"/>',
+  building: '<path d="M4 21V5a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v16M15 9h4a1 1 0 0 1 1 1v11M2 21h20"/><path d="M8 8h3M8 12h3M8 16h3"/>',
+  chalet: '<path d="M2 20c2 0 2-1.5 4-1.5S8 20 10 20s2-1.5 4-1.5 2 1.5 4 1.5 2-1.5 4-1.5"/><path d="M5 15 12 5l7 10"/><path d="M12 5v10"/>',
+  farm: '<path d="M12 22v-7"/><path d="M12 15a5 5 0 0 0 5-5c0-3-2.5-6-5-8-2.5 2-5 5-5 8a5 5 0 0 0 5 5z"/>',
+  commercial: '<path d="M4 9h16l-1.5-5h-13z"/><path d="M5 9v12h14V9M9 21v-6h6v6"/>',
+  warehouse: '<path d="M3 21V9l9-5 9 5v12"/><path d="M7 21v-8h10v8M7 17h10"/>',
+};
+const fmt = (n?: number) => (n || 0).toLocaleString("en-US");
+const arrow = '<path d="m15 6-6 6 6 6"/>';
 ---
 <Base title={title} description={description} canonical="/" jsonLd={jsonLd} active="home">
-  <section class="relative overflow-hidden bg-gradient-to-b from-white to-canvas">
-        <div class="relative mx-auto max-w-lg px-4 pt-4 pb-4 sm:pt-8 sm:pb-6">
-      <p class="mx-auto mb-2.5 flex w-fit items-center gap-1.5 rounded-full border border-line bg-white px-3.5 py-1.5 text-[12.5px] font-bold text-ink shadow-[0_4px_14px_rgba(50,40,37,0.06)]">
-        <svg class="text-brand" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9.94 14.06A2 2 0 0 0 8.5 12.62L2.37 11.04a.5.5 0 0 1 0-.96L8.5 8.5a2 2 0 0 0 1.44-1.44l1.58-6.13a.5.5 0 0 1 .96 0l1.58 6.13A2 2 0 0 0 15.5 8.5l6.13 1.58a.5.5 0 0 1 0 .96L15.5 12.62a2 2 0 0 0-1.44 1.44l-1.58 6.13a.5.5 0 0 1-.96 0z"/><path d="M19 3v4M17 5h4" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>
-        {lang === "ar" ? "مدعوم بتقنيات الذكاء الاصطناعي" : "Powered by AI technology"}
+  <section class="home-hero relative overflow-hidden">
+    <div class="relative mx-auto max-w-lg px-4 pt-3.5 pb-4 sm:pt-10 sm:pb-8">
+      <p class="mx-auto mb-3 flex w-fit items-center gap-1.5 rounded-full border border-line bg-white/80 px-3.5 py-1.5 text-[12.5px] font-bold text-ink backdrop-blur">
+        <svg class="text-brand" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9.94 14.06A2 2 0 0 0 8.5 12.62L2.37 11.04a.5.5 0 0 1 0-.96L8.5 8.5a2 2 0 0 0 1.44-1.44l1.58-6.13a.5.5 0 0 1 .96 0l1.58 6.13A2 2 0 0 0 15.5 8.5l6.13 1.58a.5.5 0 0 1 0 .96L15.5 12.62a2 2 0 0 0-1.44 1.44l-1.58 6.13a.5.5 0 0 1-.96 0z"/></svg>
+        {ar ? "مدعوم بتقنيات الذكاء الاصطناعي" : "Powered by AI technology"}
       </p>
-      <h1 class="text-center text-[20px] font-extrabold leading-[28px] sm:text-[30px] sm:leading-[40px]">{t.heroTitle}</h1>
-      <p class="mx-auto mt-1.5 hidden max-w-lg text-center text-[14px] leading-6 text-muted sm:block">{t.heroSub}</p>
-      <div class="mt-3"><SearchForm lang={lang} areas={areas} types={types} compact /></div>
+      <h1 class="text-center text-[21px] font-extrabold leading-[30px] tracking-tight sm:text-[36px] sm:leading-[48px]">
+        {ar ? <>ابحث عن عقارك في <span class="text-brand">الكويت</span> بسهولة</> : <>Find your property in <span class="text-brand">Kuwait</span>, easily</>}
+      </h1>
+      <p class="mx-auto mt-2 hidden max-w-md text-center text-[15px] leading-7 text-muted sm:block">{t.heroSub}</p>
+      <div class="mt-4"><SearchForm lang={lang} areas={areas} types={types} compact /></div>
+      {(latest?.total || officesPage?.total) ? (
+        <p class="mt-2.5 flex items-center justify-center gap-2 text-[12.5px] font-semibold text-muted">
+          <span class="relative flex size-2"><span class="absolute inline-flex size-full animate-ping rounded-full bg-wa opacity-60"></span><span class="relative inline-flex size-2 rounded-full bg-wa"></span></span>
+          {latest?.total ? <span><b class="font-extrabold text-ink">{fmt(latest.total)}</b> {ar ? "إعلان نشط" : "active ads"}</span> : null}
+          {officesPage?.total ? <span aria-hidden="true">·</span> : null}
+          {officesPage?.total ? <span><b class="font-extrabold text-ink">{fmt(officesPage.total)}</b> {ar ? "مكتب عقاري" : "offices"}</span> : null}
+        </p>
+      ) : null}
     </div>
   </section>
 
-  <section class="mx-auto max-w-6xl px-4 pt-3 pb-12">
-    <h2 class="text-center text-[20px] font-extrabold md:text-[24px]">{lang === "ar" ? "أحدث إعلانات العقارات" : "Latest property ads"}</h2>
-    <div class="mx-auto mt-2 h-1 w-16 rounded-full bg-brand" aria-hidden="true"></div>
-    <div class="mt-4">
-      {latest?.ads.length ? (
-        <div class="mx-auto grid w-full min-w-0 max-w-[52rem] grid-cols-1 gap-2">
-          {latest.ads.map((ad, i) => <AdCard ad={ad} areas={areas} lang={lang} eager={i < 3} />)}
-        </div>
-      ) : <p class="mx-auto max-w-[52rem] rounded-[18px] border border-dashed border-line bg-white p-10 text-center text-muted">{t.noAds}</p>}
+  {types.length > 0 && (
+    <nav class="mx-auto max-w-6xl" aria-label={t.propertyType}>
+      <ul class="no-scrollbar flex gap-2 overflow-x-auto px-4 pb-1 lg:justify-center">
+        {types.map((ty) => (
+          <li class="shrink-0">
+            <a href={`/search?propertyType=${ty.id}`} class="flex h-9 items-center gap-1.5 rounded-full border border-line bg-white px-3 text-[13.5px] font-bold text-ink transition hover:border-brand hover:text-brand">
+              <svg class="text-brand" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={ICONS[ty.value] || ICONS.house} />
+              {ar ? ty.labelAr : ty.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )}
+
+  <section class="mx-auto max-w-6xl px-4 pt-4 pb-10 sm:pt-6">
+    <div class="mb-3 flex items-end justify-between gap-3">
+      <div>
+        <h2 class="text-[20px] font-extrabold leading-7 md:text-[24px]">{ar ? "أحدث إعلانات العقارات" : "Latest property ads"}</h2>
+        <p class="hidden text-[13px] text-muted sm:block">{ar ? "تُحدَّث كل دقيقة من الملاك والمكاتب" : "Updated by the minute, from owners and offices"}</p>
+      </div>
+      <a href="/search" class="flex shrink-0 items-center gap-1 text-[14px] font-bold text-brand hover:underline">
+        {ar ? "عرض الكل" : "View all"}
+        <svg class="ltr:rotate-180" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true" set:html={arrow} />
+      </a>
     </div>
+    {latest?.ads.length ? (
+      <div class="grid w-full min-w-0 grid-cols-1 gap-2.5 lg:grid-cols-2">
+        {latest.ads.map((ad, i) => <AdCard ad={ad} areas={areas} lang={lang} eager={i < 3} />)}
+      </div>
+    ) : <p class="rounded-[18px] border border-dashed border-line bg-white p-10 text-center text-muted">{t.noAds}</p>}
     <div class="mt-6 text-center">
-      <a href="/search" class="inline-flex h-12 items-center rounded-full bg-soft px-7 text-[15px] font-bold text-ink hover:bg-line">{t.showMore}</a>
+      <a href="/search" class="inline-flex h-11 items-center gap-2 rounded-full border border-line bg-white px-6 text-[14.5px] font-bold text-ink shadow-sm transition hover:border-brand hover:text-brand">
+        {t.showMore}
+        <svg class="ltr:rotate-180" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true" set:html={arrow} />
+      </a>
     </div>
   </section>
 
-  <section class="mx-auto max-w-6xl px-5 pb-14">
-    <a href="/areas" class="mx-auto flex max-w-[52rem] items-center gap-3 rounded-[18px] border border-line bg-white p-4 shadow-[0_2px_10px_rgba(50,40,37,0.06)] hover:border-brand lg:max-w-none">
-      <span class="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-brand/10 text-brand"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></span>
-      <span class="min-w-0 flex-1"><span class="block text-[15px] font-extrabold text-ink">{lang === "ar" ? "دليل مناطق الكويت" : "Kuwait areas guide"}</span><span class="block text-[12.5px] text-muted">{lang === "ar" ? "نبذة عن كل منطقة في المحافظات الست وأحدث عقاراتها" : "Every area in the six governorates, with its latest listings"}</span></span>
-      <svg class="shrink-0 text-muted rtl:rotate-180" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+  {topOffices.length > 0 && (
+    <section class="mx-auto max-w-6xl pb-10">
+      <div class="mb-3 flex items-end justify-between gap-3 px-4">
+        <div>
+          <h2 class="text-[20px] font-extrabold leading-7 md:text-[24px]">{ar ? "مكاتب عقارية نشطة" : "Active real estate offices"}</h2>
+          <p class="text-[13px] text-muted">{ar ? "تصفّح إعلانات كل مكتب وتواصل معه مباشرة" : "Browse each office's ads and contact them directly"}</p>
+        </div>
+        <a href="/offices" class="flex shrink-0 items-center gap-1 text-[14px] font-bold text-brand hover:underline">
+          {ar ? "كل المكاتب" : "All offices"}
+          <svg class="ltr:rotate-180" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true" set:html={arrow} />
+        </a>
+      </div>
+      <ul class="no-scrollbar flex snap-x gap-3 overflow-x-auto px-4 pb-2">
+        {topOffices.map((o) => (
+          <li class="w-[132px] shrink-0 snap-start">
+            <a href={`/offices/${o.publicId}`} class="group block rounded-[20px] border border-line bg-white p-2.5 text-center transition hover:-translate-y-0.5 hover:shadow-[0_12px_28px_-10px_rgba(16,24,40,0.18)]">
+              <span class="relative mx-auto block aspect-square overflow-hidden rounded-2xl bg-soft">
+                <img src={imgSrc(o.avatar)} alt={o.name} width="112" height="112" loading="lazy" decoding="async" class="absolute inset-0 size-full object-cover transition duration-300 group-hover:scale-105" />
+              </span>
+              <span class="mt-2 block truncate text-[13.5px] font-extrabold text-ink">{o.name}</span>
+              <span class="block text-[12px] font-semibold text-muted">{fmt(o.adsCount)} {ar ? "إعلان" : "ads"}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  <section class="mx-auto grid max-w-6xl gap-3 px-4 pb-14 md:grid-cols-2">
+    <a href="/areas" class="group flex items-center gap-3.5 rounded-[22px] border border-line bg-white p-4 transition hover:border-brand">
+      <span class="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-brand/10 text-brand"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></span>
+      <span class="min-w-0 flex-1"><span class="block text-[15.5px] font-extrabold text-ink">{ar ? "دليل مناطق الكويت" : "Kuwait areas guide"}</span><span class="block text-[13px] leading-5 text-muted">{ar ? "نبذة عن كل منطقة في المحافظات الست وأحدث عقاراتها" : "Every area in the six governorates, with its latest listings"}</span></span>
+      <svg class="shrink-0 text-muted transition group-hover:text-brand ltr:rotate-180" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true" set:html={arrow} />
     </a>
+    <div class="app-band flex items-center gap-3.5 rounded-[22px] p-4 text-white">
+      <span class="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-white/15"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg></span>
+      <span class="min-w-0 flex-1"><span class="block text-[15.5px] font-extrabold">{ar ? "حمّل تطبيق مستر عقار" : "Get the Mr Aqar app"}</span><span class="block text-[13px] leading-5 text-white/80">{ar ? "تنبيهات فورية بالإعلانات الجديدة" : "Instant alerts for new ads"}</span></span>
+      <span class="flex shrink-0 gap-1.5">
+        <a href={APP_STORE} target="_blank" rel="noopener" class="flex h-9 items-center rounded-full bg-white px-3 text-[12.5px] font-extrabold text-[#1d2738]">iOS</a>
+        <a href={PLAY_STORE} target="_blank" rel="noopener" class="flex h-9 items-center rounded-full bg-white px-3 text-[12.5px] font-extrabold text-[#1d2738]">Android</a>
+      </span>
+    </div>
   </section>
 </Base>
