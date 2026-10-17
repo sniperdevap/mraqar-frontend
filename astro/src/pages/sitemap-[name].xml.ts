@@ -42,7 +42,7 @@ export const GET: APIRoute = async ({ params, site }) => {
       entries.push({ path: `/search?purpose=${p}`, freq: "hourly", priority: 0.9 });
       for (const ty of types) entries.push({ path: `/search?purpose=${p}&propertyType=${ty.id}`, freq: "daily", priority: 0.7 });
     }
-    entries.push({ path: "/offices", freq: "daily", priority: 0.8 }, { path: "/blog", freq: "weekly", priority: 0.7 }, { path: "/areas", freq: "weekly", priority: 0.7 }, { path: "/request-property", freq: "monthly", priority: 0.6 });
+    entries.push({ path: "/offices", freq: "daily", priority: 0.8 }, { path: "/blog", freq: "weekly", priority: 0.7 }, { path: "/request-property", freq: "monthly", priority: 0.6 });
     for (const path of new Set(areas.filter((a) => a.governorate).map(areaGuidePath))) entries.push({ path, freq: "daily", priority: 0.6 });
     for (const post of await getCollection("blog")) entries.push({ arOnly: true, path: `/blog/${post.id}`, lastmod: (post.data.updatedAt || post.data.publishedAt).toISOString().slice(0, 10), freq: "monthly", priority: 0.6, image: post.data.cover ? origin + post.data.cover : undefined });
     for (let page = 1, total = 1; page <= total && page <= 50; page++) {
