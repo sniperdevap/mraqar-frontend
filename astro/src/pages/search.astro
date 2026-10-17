@@ -110,14 +110,11 @@ const jsonLd = [
           </select>
           <svg class="pointer-events-none absolute end-3.5 top-1/2 -translate-y-1/2 text-muted" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
         </label>
-        <label class="relative shrink-0">
-          <span class="sr-only">{lang === "ar" ? "السعر" : "Price"}</span>
-          <select name="maxPrice" class:list={["h-10 appearance-none rounded-full border bg-white ps-4 pe-9 text-[14px] font-medium outline-none", maxPrice ? "border-brand text-brand-deep" : "border-line text-ink"]}>
-            <option value="">{lang === "ar" ? "السعر (د.ك)" : "Price (KD)"}</option>
-            {[500, 1000, 100000, 250000, 500000, 1000000].map((v) => <option value={v} selected={maxPrice === String(v)}>{(lang === "ar" ? "حتى " : "Up to ") + v.toLocaleString("en-US")}</option>)}
-          </select>
-          <svg class="pointer-events-none absolute end-3.5 top-1/2 -translate-y-1/2 text-muted" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
-        </label>
+        <div class="flex shrink-0 items-center gap-1.5">
+          <input type="number" inputmode="numeric" min="0" name="minPrice" value={minPrice} placeholder={lang === "ar" ? "من" : "Low"} aria-label={lang === "ar" ? "أقل سعر" : "Low price"} class:list={["h-10 w-24 rounded-full border bg-white px-4 text-[14px] font-medium outline-none focus:border-brand", minPrice ? "border-brand text-brand-deep" : "border-line text-ink"]} />
+          <span class="text-[13px] text-muted">–</span>
+          <input type="number" inputmode="numeric" min="0" name="maxPrice" value={maxPrice} placeholder={lang === "ar" ? "إلى" : "High"} aria-label={lang === "ar" ? "أعلى سعر" : "High price"} class:list={["h-10 w-24 rounded-full border bg-white px-4 text-[14px] font-medium outline-none focus:border-brand", maxPrice ? "border-brand text-brand-deep" : "border-line text-ink"]} />
+        </div>
         <button type="button" class:list={["flex h-10 shrink-0 items-center gap-1.5 rounded-full border bg-white px-4 text-[14px] font-medium", text ? "border-brand text-brand-deep" : "border-line text-ink"]} data-keyword-toggle aria-expanded={text ? "true" : "false"}>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
           {lang === "ar" ? "كلمات" : "Keywords"}
@@ -207,7 +204,7 @@ const jsonLd = [
     }));
     // Filters apply as soon as they change (area picks submit too).
     document.querySelectorAll<HTMLFormElement>("[data-autosubmit]").forEach((f) => {
-      f.querySelectorAll("select").forEach((s) => s.addEventListener("change", () => f.requestSubmit()));
+      f.querySelectorAll("select, input[type=number]").forEach((s) => s.addEventListener("change", () => f.requestSubmit()));
       new MutationObserver(() => f.requestSubmit()).observe(f.querySelector("[data-area-box]")!, { childList: true });
     });
   </script>
