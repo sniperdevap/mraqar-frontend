@@ -85,8 +85,11 @@ const jsonLd = [
 ---
 <Base title={heading} description={description} canonical={canonical} noindex={Boolean(minPrice || maxPrice || text) || area.length > 1 || total === 0 || (result ? page > result.totalPages : false)} jsonLd={jsonLd} active="search">
   <div class="mx-auto max-w-[52rem] px-5 pt-6 pb-12">
-    <h1 class="text-[22px] font-extrabold leading-8">{area.length || propertyType || purpose ? heading : (lang === "ar" ? "نتائج العقارات" : "Property results")}</h1>
-    <p class="mt-0.5 text-[13px] font-semibold text-muted">{total.toLocaleString("en-US")} {lang === "ar" ? "نتيجة" : "results"}</p>
+    <h1 class="text-[22px] font-extrabold leading-8">{area.length || propertyType || purpose ? heading : (lang === "ar" ? "أحدث إعلانات العقارات في الكويت" : "Latest property ads in Kuwait")}</h1>
+    <p class="mt-1 text-[13.5px] font-semibold text-muted">
+      <b class="font-extrabold text-ink">{total.toLocaleString("en-US")}</b> {lang === "ar" ? "إعلان" : (total === 1 ? "ad" : "ads")}
+      {" · "}{typeLabel}{purposeLabel ? ` · ${purposeLabel}` : ""}{" · "}{where}
+    </p>
 
     <form method="get" action="/search" class="mt-4 space-y-3" data-search-form data-autosubmit>
       <AreaPicker lang={lang} areas={areas} selected={area} icon="search" />
